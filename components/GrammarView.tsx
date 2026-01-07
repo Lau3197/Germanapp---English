@@ -11,47 +11,18 @@ export const GrammarView: React.FC = () => {
   const currentLevelData = GRAMMAR_DATA.find(l => l.level === selectedLevel) || GRAMMAR_DATA[0];
 
   useEffect(() => {
-    setActiveSectionIndex('all');
+    // Par défaut, on affiche la table des matières pour B2, et "tout" pour les autres niveaux
+    if (selectedLevel === LanguageLevel.B2) {
+      setActiveSectionIndex('all');
+    } else {
+      setActiveSectionIndex('all');
+    }
   }, [selectedLevel]);
-
-  const displayedSections = activeSectionIndex === 'all' 
-    ? currentLevelData.sections 
-    : [currentLevelData.sections[activeSectionIndex]];
 
   const handleVerbClick = (verb: string) => {
     const forms = KII_CONJUGATIONS[verb.toLowerCase()];
     if (forms) {
       setConjugationModal({ verb, forms });
-    }
-  };
-
-  // Calcule la profondeur du titre pour l'indentation (ex: 8.1.1 -> profondeur 3)
-  const getTopicDepth = (title: string) => {
-    const match = title.match(/^(\d+\.)+\d*/);
-    if (!match) return 0;
-    return match[0].split('.').filter(p => p !== '').length;
-  };
-
-  const scrollToTopic = (topicId: string, sectionIdx: number) => {
-    if (activeSectionIndex !== 'all' && activeSectionIndex !== sectionIdx) {
-      setActiveSectionIndex(sectionIdx);
-      setTimeout(() => {
-        const element = document.getElementById(`topic-${topicId}`);
-        if (element) {
-          const headerOffset = 100;
-          const elementPosition = element.getBoundingClientRect().top;
-          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-          window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-        }
-      }, 100);
-    } else {
-      const element = document.getElementById(`topic-${topicId}`);
-      if (element) {
-        const headerOffset = 100;
-        const elementPosition = element.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-        window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-      }
     }
   };
 
@@ -161,6 +132,37 @@ export const GrammarView: React.FC = () => {
     return elements;
   };
 
+  const renderB2TOC = () => (
+    <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+      <div className="mb-12">
+        <h3 className="text-4xl font-black text-slate-900 mb-4">Programme B2</h3>
+        <p className="text-slate-500 text-lg">Sélectionnez une leçon pour approfondir vos connaissances.</p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {currentLevelData.sections.map((section, idx) => (
+          <button
+            key={idx}
+            onClick={() => {
+              setActiveSectionIndex(idx);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="group p-8 bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:border-indigo-200 transition-all text-left flex flex-col h-full"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-black text-xl mb-6 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+              {idx + 1}
+            </div>
+            <h4 className="text-xl font-black text-slate-800 mb-3 group-hover:text-indigo-600 transition-colors">{section.title}</h4>
+            <p className="text-slate-400 text-sm font-medium line-clamp-3">Cliquez pour ouvrir la leçon complète sur ce sujet.</p>
+            <div className="mt-auto pt-6 flex items-center gap-2 text-indigo-600 font-black text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+              Ouvrir la leçon 
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14 5l7 7-7 7"></path></svg>
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 relative">
       {conjugationModal && (
@@ -208,33 +210,37 @@ export const GrammarView: React.FC = () => {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
-        <div className="lg:col-span-4">
-          <div className="sticky top-24 bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100">
-            <div className="mb-8">
-              <span className="inline-block px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase tracking-widest rounded-md mb-3">Module Actuel</span>
-              <h3 className="text-3xl font-black text-slate-900 mb-2">{currentLevelData.title}</h3>
-              <p className="text-slate-400 text-sm leading-relaxed italic">"{currentLevelData.description}"</p>
-            </div>
-            
-            <div className="space-y-3 pt-8 border-t border-slate-50 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
-              <button
-                onClick={() => setActiveSectionIndex('all')}
-                className={`w-full flex items-center gap-5 p-5 rounded-2xl text-sm font-black transition-all text-left ${
-                  activeSectionIndex === 'all' 
-                    ? 'bg-slate-900 text-white shadow-2xl scale-[1.02]' 
-                    : 'text-slate-400 hover:bg-slate-50 hover:text-slate-600'
-                }`}
-              >
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm shrink-0 ${activeSectionIndex === 'all' ? 'bg-white/20' : 'bg-slate-100'}`}>
-                  ∞
-                </div>
-                Tout le programme
-              </button>
+      {/* Spécifique B2 : Table des matières en mode Dashboard si rien n'est sélectionné */}
+      {selectedLevel === LanguageLevel.B2 && activeSectionIndex === 'all' ? (
+        renderB2TOC()
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+          <div className="lg:col-span-4">
+            <div className="sticky top-24 bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100">
+              <div className="mb-8">
+                <span className="inline-block px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase tracking-widest rounded-md mb-3">Module Actuel</span>
+                <h3 className="text-3xl font-black text-slate-900 mb-2">{currentLevelData.title}</h3>
+                <p className="text-slate-400 text-sm leading-relaxed italic">"{currentLevelData.description}"</p>
+              </div>
+              
+              <div className="space-y-3 pt-8 border-t border-slate-50 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                <button
+                  onClick={() => setActiveSectionIndex('all')}
+                  className={`w-full flex items-center gap-5 p-5 rounded-2xl text-sm font-black transition-all text-left ${
+                    activeSectionIndex === 'all' 
+                      ? 'bg-slate-900 text-white shadow-2xl scale-[1.02]' 
+                      : 'text-slate-400 hover:bg-slate-50 hover:text-slate-600'
+                  }`}
+                >
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm shrink-0 ${activeSectionIndex === 'all' ? 'bg-white/20' : 'bg-slate-100'}`}>
+                    {selectedLevel === LanguageLevel.B2 ? '🏠' : '∞'}
+                  </div>
+                  {selectedLevel === LanguageLevel.B2 ? 'Table des matières' : 'Tout le programme'}
+                </button>
 
-              {currentLevelData.sections.map((section, idx) => (
-                <div key={idx} className="space-y-1">
+                {currentLevelData.sections.map((section, idx) => (
                   <button 
+                    key={idx}
                     onClick={() => setActiveSectionIndex(idx)}
                     className={`w-full flex items-start gap-5 p-5 rounded-2xl text-sm font-bold transition-all text-left group ${
                       activeSectionIndex === idx 
@@ -247,108 +253,94 @@ export const GrammarView: React.FC = () => {
                     </div>
                     <span className="leading-snug pt-1">{section.title}</span>
                   </button>
-                  
-                  {(activeSectionIndex === idx || activeSectionIndex === 'all') && (
-                    <div className="ml-4 space-y-1 pb-4 animate-in fade-in slide-in-from-top-1 duration-300">
-                      {section.topics.map((topic, tIdx) => {
-                        const depth = getTopicDepth(topic.title);
-                        const isSubTopic = depth > 2;
-                        const isLevel2 = depth === 2;
-                        
-                        return (
-                          <button 
-                            key={tIdx} 
-                            onClick={() => scrollToTopic(topic.id, idx)}
-                            className={`
-                              w-full text-left font-bold transition-all flex items-start gap-2 py-1.5 px-2 border-l border-slate-100 hover:border-indigo-400 hover:text-indigo-600 hover:translate-x-1
-                              ${isSubTopic ? 'ml-8 text-[10px] text-slate-400' : isLevel2 ? 'ml-4 text-[11px] text-slate-500' : 'ml-2 text-[12px] text-slate-600'}
-                            `}
-                          >
-                             <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${isSubTopic ? 'bg-slate-200' : 'bg-indigo-200'}`}></div>
-                             <span className="leading-tight">{topic.title}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="lg:col-span-8 space-y-32">
-          {displayedSections.map((section, sIdx) => (
-            <div key={sIdx} className="animate-in fade-in slide-in-from-right-8 duration-700">
-              <div className="mb-12 relative">
-                <div className="flex items-center gap-6 mb-6">
-                  <span className="text-8xl font-black text-slate-100 leading-none select-none">
-                    {activeSectionIndex === 'all' ? sIdx + 1 : activeSectionIndex + 1}
-                  </span>
-                  <div className="h-0.5 bg-slate-100 flex-1"></div>
-                </div>
-                <h4 className="text-5xl font-black text-slate-900 tracking-tight leading-tight">
-                  {section.title}
-                </h4>
-              </div>
-              
-              <div className="space-y-20">
-                {section.topics.map((topic, tIdx) => (
-                  <div key={tIdx} id={`topic-${topic.id}`} className="relative">
-                    <div className="bg-white border border-slate-100 p-12 rounded-[3rem] shadow-xl shadow-slate-200/30 mb-12 relative overflow-hidden">
-                       <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-[5rem] -mr-16 -mt-16 opacity-50"></div>
-                       <h5 className="text-2xl font-black text-indigo-600 mb-8 flex items-center gap-3">
-                         <span className="w-8 h-1 bg-indigo-600 rounded-full"></span>
-                         {topic.title}
-                       </h5>
-                       {renderFormattedContent(topic.content)}
-                    </div>
-                    
-                    {topic.examples && (
-                      <div className="space-y-8 pl-4 lg:pl-8 border-l-4 border-indigo-50">
-                        <div className="flex items-center gap-4">
-                          <div className="flex -space-x-2">
-                             <div className="w-3 h-3 bg-indigo-400 rounded-full animate-ping"></div>
-                             <div className="w-3 h-3 bg-indigo-600 rounded-full"></div>
-                          </div>
-                          <p className="text-[11.4px] font-black text-slate-400 uppercase tracking-[0.4em]">Exemples d'application</p>
-                        </div>
-                        <div className="grid grid-cols-1 gap-6">
-                          {topic.examples.map((ex, exIdx) => (
-                            <div key={exIdx} className="bg-white border border-slate-100 p-8 rounded-[2rem] hover:ring-2 hover:ring-indigo-100 hover:shadow-2xl transition-all duration-500 group">
-                              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-10">
-                                <div className="space-y-3">
-                                  <p className="text-slate-900 font-black text-[19.95px] group-hover:text-indigo-600 transition-colors">
-                                    {parseInlineMarkdown(ex.de)}
-                                  </p>
-                                  <p className="text-slate-400 font-bold text-[13.3px]">
-                                    {parseInlineMarkdown(ex.fr)}
-                                  </p>
-                                </div>
-                                {ex.note && (
-                                  <div className="bg-indigo-50/50 px-6 py-5 rounded-2xl border border-indigo-100 lg:max-w-[340px] shrink-0">
-                                    <div className="flex items-center gap-2 mb-2">
-                                      <svg className="w-4 h-4 text-indigo-600" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" fillRule="evenodd" clipRule="evenodd"></path></svg>
-                                      <p className="text-[10px] text-indigo-600 font-black uppercase tracking-widest">Le conseil du prof</p>
-                                    </div>
-                                    <p className="text-[13.3px] text-slate-600 font-semibold leading-relaxed">
-                                      {parseInlineMarkdown(ex.note)}
-                                    </p>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
                 ))}
               </div>
             </div>
-          ))}
+          </div>
+
+          <div className="lg:col-span-8 space-y-32">
+            {activeSectionIndex !== 'all' && (
+               <button 
+                onClick={() => setActiveSectionIndex('all')}
+                className="inline-flex items-center gap-2 text-indigo-600 font-black text-sm hover:translate-x-[-4px] transition-transform mb-8"
+               >
+                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                 Retour au programme {selectedLevel}
+               </button>
+            )}
+
+            {(activeSectionIndex === 'all' ? currentLevelData.sections : [currentLevelData.sections[activeSectionIndex]]).map((section, sIdx) => (
+              <div key={sIdx} className="animate-in fade-in slide-in-from-right-8 duration-700">
+                <div className="mb-12 relative">
+                  <div className="flex items-center gap-6 mb-6">
+                    <span className="text-8xl font-black text-slate-100 leading-none select-none">
+                      {activeSectionIndex === 'all' ? sIdx + 1 : activeSectionIndex + 1}
+                    </span>
+                    <div className="h-0.5 bg-slate-100 flex-1"></div>
+                  </div>
+                  <h4 className="text-5xl font-black text-slate-900 tracking-tight leading-tight">
+                    {section.title}
+                  </h4>
+                </div>
+                
+                <div className="space-y-20">
+                  {section.topics.map((topic, tIdx) => (
+                    <div key={tIdx} id={`topic-${topic.id}`} className="relative">
+                      <div className="bg-white border border-slate-100 p-12 rounded-[3rem] shadow-xl shadow-slate-200/30 mb-12 relative overflow-hidden">
+                         <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-[5rem] -mr-16 -mt-16 opacity-50"></div>
+                         <h5 className="text-2xl font-black text-indigo-600 mb-8 flex items-center gap-3">
+                           <span className="w-8 h-1 bg-indigo-600 rounded-full"></span>
+                           {topic.title}
+                         </h5>
+                         {renderFormattedContent(topic.content)}
+                      </div>
+                      
+                      {topic.examples && (
+                        <div className="space-y-8 pl-4 lg:pl-8 border-l-4 border-indigo-50">
+                          <div className="flex items-center gap-4">
+                            <div className="flex -space-x-2">
+                               <div className="w-3 h-3 bg-indigo-400 rounded-full animate-ping"></div>
+                               <div className="w-3 h-3 bg-indigo-600 rounded-full"></div>
+                            </div>
+                            <p className="text-[11.4px] font-black text-slate-400 uppercase tracking-[0.4em]">Exemples d'application</p>
+                          </div>
+                          <div className="grid grid-cols-1 gap-6">
+                            {topic.examples.map((ex, exIdx) => (
+                              <div key={exIdx} className="bg-white border border-slate-100 p-8 rounded-[2rem] hover:ring-2 hover:ring-indigo-100 hover:shadow-2xl transition-all duration-500 group">
+                                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-10">
+                                  <div className="space-y-3">
+                                    <p className="text-slate-900 font-black text-[19.95px] group-hover:text-indigo-600 transition-colors">
+                                      {parseInlineMarkdown(ex.de)}
+                                    </p>
+                                    <p className="text-slate-400 font-bold text-[13.3px]">
+                                      {parseInlineMarkdown(ex.fr)}
+                                    </p>
+                                  </div>
+                                  {ex.note && (
+                                    <div className="bg-indigo-50/50 px-6 py-5 rounded-2xl border border-indigo-100 lg:max-w-[340px] shrink-0">
+                                      <div className="flex items-center gap-2 mb-2">
+                                        <svg className="w-4 h-4 text-indigo-600" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" fillRule="evenodd" clipRule="evenodd"></path></svg>
+                                        <p className="text-[10px] text-indigo-600 font-black uppercase tracking-widest">Le conseil du prof</p>
+                                      </div>
+                                      <p className="text-[13.3px] text-slate-600 font-semibold leading-relaxed">
+                                        {parseInlineMarkdown(ex.note)}
+                                      </p>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
