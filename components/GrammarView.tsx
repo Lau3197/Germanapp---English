@@ -25,43 +25,39 @@ export const GrammarView: React.FC = () => {
     }
   };
 
+  // Calcule la profondeur du titre pour l'indentation (ex: 8.1.1 -> profondeur 3)
+  const getTopicDepth = (title: string) => {
+    const match = title.match(/^(\d+\.)+\d*/);
+    if (!match) return 0;
+    return match[0].split('.').filter(p => p !== '').length;
+  };
+
   const scrollToTopic = (topicId: string, sectionIdx: number) => {
-    // Si la section n'est pas affichée, on l'active d'abord
     if (activeSectionIndex !== 'all' && activeSectionIndex !== sectionIdx) {
       setActiveSectionIndex(sectionIdx);
-      // On attend un court instant que le DOM se mette à jour avant de scroller
       setTimeout(() => {
         const element = document.getElementById(`topic-${topicId}`);
         if (element) {
           const headerOffset = 100;
           const elementPosition = element.getBoundingClientRect().top;
           const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-          window.scrollTo({
-            top: offsetPosition,
-            behavior: 'smooth'
-          });
+          window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
         }
       }, 100);
     } else {
-      // Si déjà affiché, on scrolle directement
       const element = document.getElementById(`topic-${topicId}`);
       if (element) {
         const headerOffset = 100;
         const elementPosition = element.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth'
-        });
+        window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
       }
     }
   };
 
   const parseInlineMarkdown = (text: string | undefined) => {
     if (!text) return "";
-    
     const parts = text.split(/(\*\*.*?\*\*|\[\[.*?\]\])/g);
-    
     return parts.map((part, index) => {
       if (part.startsWith('**') && part.endsWith('**')) {
         return <strong key={index} className="font-black text-slate-900 border-b-2 border-indigo-100">{part.slice(2, -2)}</strong>;
@@ -119,7 +115,6 @@ export const GrammarView: React.FC = () => {
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
-
       if (line.startsWith('|')) {
         currentTable.push(line);
         if (i === lines.length - 1 || !lines[i + 1].trim().startsWith('|')) {
@@ -163,13 +158,11 @@ export const GrammarView: React.FC = () => {
         elements.push(<div key={i} className="h-4"></div>);
       }
     }
-
     return elements;
   };
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 relative">
-      {/* Conjugation Modal */}
       {conjugationModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm">
           <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-300">
@@ -224,7 +217,7 @@ export const GrammarView: React.FC = () => {
               <p className="text-slate-400 text-sm leading-relaxed italic">"{currentLevelData.description}"</p>
             </div>
             
-            <div className="space-y-3 pt-8 border-t border-slate-50">
+            <div className="space-y-3 pt-8 border-t border-slate-50 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
               <button
                 onClick={() => setActiveSectionIndex('all')}
                 className={`w-full flex items-center gap-5 p-5 rounded-2xl text-sm font-black transition-all text-left ${
@@ -256,17 +249,26 @@ export const GrammarView: React.FC = () => {
                   </button>
                   
                   {(activeSectionIndex === idx || activeSectionIndex === 'all') && (
-                    <div className="ml-14 space-y-1 pb-4 animate-in fade-in slide-in-from-top-1 duration-300">
-                      {section.topics.map((topic, tIdx) => (
-                        <button 
-                          key={tIdx} 
-                          onClick={() => scrollToTopic(topic.id, idx)}
-                          className="w-full text-left text-[11px] font-bold text-slate-500 hover:text-indigo-600 hover:translate-x-1 flex items-start gap-2 py-1 px-2 border-l border-slate-100 ml-1 transition-all"
-                        >
-                           <div className="w-1.5 h-1.5 bg-indigo-200 rounded-full mt-1.5 shrink-0"></div>
-                           <span>{topic.title}</span>
-                        </button>
-                      ))}
+                    <div className="ml-4 space-y-1 pb-4 animate-in fade-in slide-in-from-top-1 duration-300">
+                      {section.topics.map((topic, tIdx) => {
+                        const depth = getTopicDepth(topic.title);
+                        const isSubTopic = depth > 2;
+                        const isLevel2 = depth === 2;
+                        
+                        return (
+                          <button 
+                            key={tIdx} 
+                            onClick={() => scrollToTopic(topic.id, idx)}
+                            className={`
+                              w-full text-left font-bold transition-all flex items-start gap-2 py-1.5 px-2 border-l border-slate-100 hover:border-indigo-400 hover:text-indigo-600 hover:translate-x-1
+                              ${isSubTopic ? 'ml-8 text-[10px] text-slate-400' : isLevel2 ? 'ml-4 text-[11px] text-slate-500' : 'ml-2 text-[12px] text-slate-600'}
+                            `}
+                          >
+                             <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${isSubTopic ? 'bg-slate-200' : 'bg-indigo-200'}`}></div>
+                             <span className="leading-tight">{topic.title}</span>
+                          </button>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
