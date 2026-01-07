@@ -1,0 +1,67 @@
+
+import { ThemeContent, LanguageLevel } from '../../types';
+
+export const decrirePersonnesContent: ThemeContent = {
+  words: [
+    // --- ASPECT PHYSIQUE ---
+    { article: 'das', german: 'Aussehen', french: 'Apparence', plural: 'n/a', level: LanguageLevel.A2, subTheme: 'Aspect physique', example: 'Sie hat ein gepflegtes Aussehen.' },
+    { article: 'die', german: 'Größe', french: 'Taille', plural: 'Größen', level: LanguageLevel.A1, subTheme: 'Aspect physique', example: 'Was ist Ihre Größe?' },
+    { article: '', german: 'groß', french: 'grand', plural: 'n/a', level: LanguageLevel.A1, subTheme: 'Aspect physique', example: 'Er ist sehr groß.' },
+    { article: '', german: 'klein', french: 'petit', plural: 'n/a', level: LanguageLevel.A1, subTheme: 'Aspect physique', example: 'Das Kind ist noch klein.' },
+    { article: '', german: 'schlank', french: 'mince', plural: 'n/a', level: LanguageLevel.A2, subTheme: 'Aspect physique', example: 'Sie ist sportlich und schlank.' },
+    { article: '', german: 'dick', french: 'gros', plural: 'n/a', level: LanguageLevel.A2, subTheme: 'Aspect physique', example: 'Der Hund ist zu dick geworden.' },
+    { article: '', german: 'mager', french: 'maigre', plural: 'n/a', level: LanguageLevel.B1, subTheme: 'Aspect physique', example: 'Nach der Krankheit war er sehr mager.' },
+    { article: '', german: 'kräftig', french: 'costaud', plural: 'n/a', level: LanguageLevel.B1, subTheme: 'Aspect physique', example: 'Er hat eine kräftige Gestalt.' },
+    { article: '', german: 'hübsch', french: 'joli / beau', plural: 'n/a', level: LanguageLevel.A1, subTheme: 'Aspect physique', example: 'Was für ein hübsches Mädchen!' },
+    { article: '', german: 'hässlich', french: 'laid', plural: 'n/a', level: LanguageLevel.A2, subTheme: 'Aspect physique', example: 'Das ist ein hässliches Gebäude.' },
+    { article: '', german: 'attraktiv', french: 'attrayant', plural: 'n/a', level: LanguageLevel.B1, subTheme: 'Aspect physique', example: 'Ein attraktives Lächeln.' },
+    { article: '', german: 'gepflegt', french: 'soigné', plural: 'n/a', level: LanguageLevel.B1, subTheme: 'Aspect physique', example: 'Ein gepflegter Bart.' },
+    { article: '', german: 'ungepflegt', french: 'négligé', plural: 'n/a', level: LanguageLevel.B1, subTheme: 'Aspect physique', example: 'Er sieht heute etwas ungepflegt aus.' },
+    { article: '', german: 'blond', french: 'blond', plural: 'n/a', level: LanguageLevel.A1, subTheme: 'Aspect physique', example: 'Lange blonde Haare.' },
+    { article: '', german: 'dunkelhaarig', french: 'brun', plural: 'n/a', level: LanguageLevel.A2, subTheme: 'Aspect physique', example: 'Die meisten Spanier sind dunkelhaarig.' },
+    { article: '', german: 'glatzköpfig', french: 'chauve', plural: 'n/a', level: LanguageLevel.B2, subTheme: 'Aspect physique', example: 'Mein Onkel ist glatzköpfig.' },
+    { article: 'der', german: 'Bart', french: 'Barbe', plural: 'Bärte', level: LanguageLevel.A2, subTheme: 'Aspect physique', example: 'Er trägt einen langen Bart.' },
+    { article: 'der', german: 'Schnurrbart', french: 'Moustache', plural: 'Schnurrbärte', level: LanguageLevel.B1, subTheme: 'Aspect physique', example: 'Ein eleganter Schnurrbart.' },
+    { article: 'die', german: 'Brille', french: 'Lunettes', plural: 'Brillen', level: LanguageLevel.A1, subTheme: 'Aspect physique', example: 'Ohne meine Brille sehe ich nichts.' },
+    { article: '', german: 'blass', french: 'pâle', plural: 'n/a', level: LanguageLevel.B1, subTheme: 'Aspect physique', example: 'Du bist so blass, geht es dir gut?' },
+    { article: '', german: 'muskulös', french: 'musclé', plural: 'n/a', level: LanguageLevel.B1, subTheme: 'Aspect physique', example: 'Er trainiert viel.' },
+    { article: 'die', german: 'Gestalt', french: 'Silhouette', plural: 'Gestalten', level: LanguageLevel.B2, subTheme: 'Aspect physique', example: 'Eine schmale Gestalt.' },
+    { article: '', german: 'breitschultrig', french: 'carré', plural: 'n/a', level: LanguageLevel.B2, subTheme: 'Aspect physique', example: 'Schwimmer sind oft breitschultrig.' },
+
+    // --- CARACTÈRE ---
+    { article: '', german: 'nett', french: 'gentil', plural: 'n/a', level: LanguageLevel.A1, subTheme: 'Caractère', example: 'Die Nachbarin ist sehr nett.' },
+    { article: '', german: 'höflich', french: 'poli', plural: 'n/a', level: LanguageLevel.A2, subTheme: 'Caractère', example: 'Sei bitte höflich zu den Gästen.' },
+    { article: '', german: 'unhöflich', french: 'impoli', plural: 'n/a', level: LanguageLevel.A2, subTheme: 'Caractère', example: 'Das war eine unhöfliche Bemerkung.' },
+    { article: '', german: 'freundlich', french: 'aimable', plural: 'n/a', level: LanguageLevel.A1, subTheme: 'Caractère', example: 'Ein freundliches Lächeln.' },
+    { article: '', german: 'geduldig', french: 'patient', plural: 'n/a', level: LanguageLevel.B1, subTheme: 'Caractère', example: 'Man muss beim Lernen geduldig sein.' },
+    { article: '', german: 'ungeduldig', french: 'impatient', plural: 'n/a', level: LanguageLevel.B1, subTheme: 'Caractère', example: 'Werde nicht gleich ungeduldig.' },
+    { article: '', german: 'ehrlich', french: 'honnête', plural: 'n/a', level: LanguageLevel.B1, subTheme: 'Caractère', example: 'Sag mir bitte die ehrliche Meinung.' },
+    { article: '', german: 'mutig', french: 'courageux', plural: 'n/a', level: LanguageLevel.B1, subTheme: 'Caractère', example: 'Ein mutiger Feuerwehrmann.' },
+    { article: '', german: 'feige', french: 'lâche', plural: 'n/a', level: LanguageLevel.B2, subTheme: 'Caractère', example: 'Es ist feige, wegzulaufen.' },
+    { article: '', german: 'klug', french: 'intelligent / sage', plural: 'n/a', level: LanguageLevel.A2, subTheme: 'Caractère', example: 'Eine kluge Entscheidung.' },
+    { article: '', german: 'intelligent', french: 'intelligent', plural: 'n/a', level: LanguageLevel.A2, subTheme: 'Caractère', example: 'Er ist ein intelligenter Junge.' },
+    { article: '', german: 'dumm', french: 'bête', plural: 'n/a', level: LanguageLevel.A1, subTheme: 'Caractère', example: 'Keine dummen Fragen.' },
+    { article: '', german: 'geizig', french: 'avare', plural: 'n/a', level: LanguageLevel.B2, subTheme: 'Caractère', example: 'Er ist sehr geizig.' },
+    { article: '', german: 'großzügig', french: 'généreux', plural: 'n/a', level: LanguageLevel.B1, subTheme: 'Caractère', example: 'Eine großzügige Spende.' },
+    { article: '', german: 'fleißig', french: 'travailleur', plural: 'n/a', level: LanguageLevel.A1, subTheme: 'Caractère', example: 'Eine sehr fleißige Schülerin.' },
+    { article: '', german: 'faul', french: 'paresseux', plural: 'n/a', level: LanguageLevel.A1, subTheme: 'Caractère', example: 'Am Sonntag bin ich gerne faul.' },
+    { article: '', german: 'arrogant', french: 'arrogant', plural: 'n/a', level: LanguageLevel.B1, subTheme: 'Caractère', example: 'Er wirkt arrogant.' },
+    { article: '', german: 'bescheiden', french: 'modeste', plural: 'n/a', level: LanguageLevel.B1, subTheme: 'Caractère', example: 'Trotz des Erfolgs ist er bescheiden.' },
+    { article: '', german: 'humorvoll', french: 'plein d\'humour', plural: 'n/a', level: LanguageLevel.A2, subTheme: 'Caractère', example: 'Er ist sehr humorvoll.' },
+    { article: '', german: 'ernst', french: 'sérieux', plural: 'n/a', level: LanguageLevel.A2, subTheme: 'Caractère', example: 'Warum bist du so ernst?' },
+    { article: '', german: 'eigensinnig', french: 'obstiné', plural: 'n/a', level: LanguageLevel.C1, subTheme: 'Caractère', example: 'Ein eigensinniges Kind.' },
+
+    // --- COMPORTEMENT ---
+    { article: '', german: 'ruhig', french: 'calme', plural: 'n/a', level: LanguageLevel.A1, subTheme: 'Comportement', example: 'Verhalte dich bitte ruhig.' },
+    { article: '', german: 'nervös', french: 'nerveux', plural: 'n/a', level: LanguageLevel.A2, subTheme: 'Comportement', example: 'Vor der Prüfung war ich nervös.' },
+    { article: '', german: 'frech', french: 'effronté', plural: 'n/a', level: LanguageLevel.B1, subTheme: 'Comportement', example: 'Antworte nicht so frech!' },
+    { article: '', german: 'schüchtern', french: 'timide', plural: 'n/a', level: LanguageLevel.A2, subTheme: 'Comportement', example: 'Das Kind ist schüchtern.' },
+    { article: '', german: 'selbstbewusst', french: 'sûr de soi', plural: 'n/a', level: LanguageLevel.B1, subTheme: 'Comportement', example: 'Sie wirkt sehr selbstbewusst.' },
+    { article: '', german: 'zuverlässig', french: 'fiable', plural: 'n/a', level: LanguageLevel.B1, subTheme: 'Comportement', example: 'Ein zuverlässiger Mitarbeiter.' },
+    { article: '', german: 'pünktlich', french: 'ponctuel', plural: 'n/a', level: LanguageLevel.A1, subTheme: 'Comportement', example: 'In Deutschland ist man pünktlich.' }
+  ],
+  phrases: [
+    { german: 'Wie sieht er aus?', french: 'À quoi ressemble-t-il ?', context: 'Description' },
+    { german: 'Sie hat ein Herz aus Gold.', french: 'Elle a un cœur d\'or.', context: 'Caractère' }
+  ]
+};
