@@ -32,7 +32,7 @@ export interface Theme {
   subThemes?: string[]; // Liste des sous-thèmes disponibles
 }
 
-export type MainTab = 'vocabulary' | 'nomen-verben' | 'grammar' | 'stats' | 'tables' | 'expressions';
+export type MainTab = 'vocabulary' | 'nomen-verben' | 'grammar' | 'stats' | 'tables' | 'expressions' | 'translation';
 export type ViewMode = 'themes' | 'learn' | 'quiz' | 'phrases' | 'trainer';
 
 export interface ThemeContent {

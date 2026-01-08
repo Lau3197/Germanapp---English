@@ -12,6 +12,7 @@ import { StatsView } from './components/StatsView.tsx';
 import { SyncModal } from './components/SyncModal.tsx';
 import { TablesView } from './components/TablesView.tsx';
 import { ExpressionsView } from './components/ExpressionsView.tsx';
+import { TranslationView } from './components/TranslationView.tsx';
 import { AuthModal } from './components/AuthModal.tsx';
 import { UserMenu } from './components/UserMenu.tsx';
 import { AuthProvider } from './contexts/AuthContext.tsx';
@@ -79,6 +80,7 @@ const AppContent: React.FC = () => {
                 { id: 'tables', label: 'Tableaux', icon: '📋' },
                 { id: 'expressions', label: 'Expressions', icon: '💬' },
                 { id: 'nomen-verben', label: 'Nomen-Verb', icon: '🔗' },
+                { id: 'translation', label: 'Traduction', icon: '📰' },
                 { id: 'stats', label: 'Stats', icon: '📊' }
               ].map(tab => (
                 <button 
@@ -126,6 +128,8 @@ const AppContent: React.FC = () => {
             {activeTab === 'tables' && <TablesView />}
             
             {activeTab === 'expressions' && <ExpressionsView />}
+            
+            {activeTab === 'translation' && <TranslationView />}
             
             {activeTab === 'vocabulary' && (
               <>
