@@ -13,6 +13,8 @@ import { SyncModal } from './components/SyncModal.tsx';
 import { TablesView } from './components/TablesView.tsx';
 import { ExpressionsView } from './components/ExpressionsView.tsx';
 import { TranslationView } from './components/TranslationView.tsx';
+import { RevisionView } from './components/RevisionView.tsx';
+import { GlobalSearch } from './components/GlobalSearch.tsx';
 import { AuthModal } from './components/AuthModal.tsx';
 import { UserMenu } from './components/UserMenu.tsx';
 import { AuthProvider } from './contexts/AuthContext.tsx';
@@ -76,6 +78,7 @@ const AppContent: React.FC = () => {
             <nav className="flex p-1.5 rounded-2xl overflow-x-auto" style={{ backgroundColor: 'var(--sand-100)' }}>
               {[
                 { id: 'vocabulary', label: 'Vocabulaire', icon: '📚' },
+                { id: 'revision', label: 'Révision', icon: '🧠' },
                 { id: 'grammar', label: 'Grammatik', icon: '📖' },
                 { id: 'tables', label: 'Tableaux', icon: '📋' },
                 { id: 'expressions', label: 'Expressions', icon: '💬' },
@@ -100,6 +103,14 @@ const AppContent: React.FC = () => {
                 </button>
               ))}
             </nav>
+            
+            {/* Recherche globale */}
+            <GlobalSearch onNavigate={(tab, context) => {
+              setActiveTab(tab);
+              setViewMode('themes');
+              setCurrentTheme(null);
+              // On pourrait gérer le contexte pour naviguer vers un élément spécifique
+            }} />
             
             {/* Bouton Sync */}
             <button
@@ -130,6 +141,8 @@ const AppContent: React.FC = () => {
             {activeTab === 'expressions' && <ExpressionsView />}
             
             {activeTab === 'translation' && <TranslationView />}
+            
+            {activeTab === 'revision' && <RevisionView />}
             
             {activeTab === 'vocabulary' && (
               <>
