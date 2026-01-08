@@ -258,3 +258,4 @@ router.delete('/deleteaccount', protect, async (req, res) => {
 
 export default router;
 
+

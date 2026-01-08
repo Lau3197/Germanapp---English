@@ -113,3 +113,4 @@ git push heroku main
 - Les tokens expirent après 7 jours (configurable)
 - CORS configuré pour le frontend
 
+
