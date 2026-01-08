@@ -14,6 +14,15 @@ export interface WordProgress {
   correctCount: number;     // Nombre de bonnes réponses
   incorrectCount: number;   // Nombre de mauvaises réponses
   streak: number;           // Série actuelle de bonnes réponses
+  isCustom?: boolean;       // Si le mot vient d'une liste personnalisée
+  customListId?: string;    // ID de la liste personnalisée
+}
+
+export interface CustomList {
+  id: string;
+  name: string;
+  createdAt: number;
+  words: { german: string; french: string }[];
 }
 
 export interface SpacedRepetitionStats {
@@ -37,11 +46,13 @@ const BOX_INTERVALS: Record<number, number> = {
 
 const STORAGE_KEY = 'spacedRepetition';
 const TODAY_KEY = 'spacedRepetitionToday';
+const CUSTOM_LISTS_KEY = 'spacedRepetitionCustomLists';
 
 export function useSpacedRepetition() {
   const [progress, setProgress] = useState<Map<string, WordProgress>>(new Map());
   const [todayReviewed, setTodayReviewed] = useState<number>(0);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [customLists, setCustomLists] = useState<CustomList[]>([]);
 
   // Charger les données au démarrage
   useEffect(() => {
@@ -66,6 +77,16 @@ export function useSpacedRepetition() {
       }
     }
 
+    // Charger les listes personnalisées
+    const savedLists = localStorage.getItem(CUSTOM_LISTS_KEY);
+    if (savedLists) {
+      try {
+        setCustomLists(JSON.parse(savedLists));
+      } catch (e) {
+        console.error('Erreur chargement listes personnalisées:', e);
+      }
+    }
+
     setIsLoaded(true);
   }, []);
 
@@ -82,6 +103,12 @@ export function useSpacedRepetition() {
     const today = new Date().toISOString().split('T')[0];
     localStorage.setItem(TODAY_KEY, JSON.stringify({ date: today, count: todayReviewed }));
   }, [todayReviewed, isLoaded]);
+
+  // Sauvegarder les listes personnalisées
+  useEffect(() => {
+    if (!isLoaded) return;
+    localStorage.setItem(CUSTOM_LISTS_KEY, JSON.stringify(customLists));
+  }, [customLists, isLoaded]);
 
   // Générer un ID unique pour un mot
   const getWordId = useCallback((theme: string, german: string): string => {
@@ -243,6 +270,194 @@ export function useSpacedRepetition() {
     localStorage.removeItem(TODAY_KEY);
   }, []);
 
+  // ===== GESTION DES LISTES PERSONNALISÉES =====
+
+  // Créer une nouvelle liste personnalisée
+  const createCustomList = useCallback((name: string, words: { german: string; french: string }[]): CustomList => {
+    const newList: CustomList = {
+      id: `custom-${Date.now()}`,
+      name,
+      createdAt: Date.now(),
+      words,
+    };
+    
+    setCustomLists(prev => [...prev, newList]);
+    
+    // Ajouter les mots au système de révision
+    words.forEach(word => {
+      const wordId = `${newList.id}-${word.german}`.toLowerCase().replace(/\s+/g, '-');
+      setProgress(prev => {
+        if (prev.has(wordId)) return prev;
+        const newMap = new Map(prev);
+        newMap.set(wordId, {
+          wordId,
+          german: word.german,
+          french: word.french,
+          theme: newList.id,
+          box: 1,
+          nextReview: Date.now(),
+          lastReview: 0,
+          correctCount: 0,
+          incorrectCount: 0,
+          streak: 0,
+          isCustom: true,
+          customListId: newList.id,
+        });
+        return newMap;
+      });
+    });
+
+    return newList;
+  }, []);
+
+  // Supprimer une liste personnalisée
+  const deleteCustomList = useCallback((listId: string) => {
+    setCustomLists(prev => prev.filter(l => l.id !== listId));
+    
+    // Supprimer les mots associés
+    setProgress(prev => {
+      const newMap = new Map(prev);
+      Array.from(prev.entries()).forEach(([key, word]) => {
+        if (word.customListId === listId) {
+          newMap.delete(key);
+        }
+      });
+      return newMap;
+    });
+  }, []);
+
+  // Importer une liste depuis JSON
+  const importListFromJSON = useCallback((jsonString: string): CustomList | null => {
+    try {
+      const data = JSON.parse(jsonString);
+      
+      // Validation
+      if (!data.name || !Array.isArray(data.words)) {
+        throw new Error('Format invalide');
+      }
+      
+      const words = data.words.map((w: any) => ({
+        german: w.german || w.de || w.allemand || '',
+        french: w.french || w.fr || w.francais || w.français || '',
+      })).filter((w: any) => w.german && w.french);
+      
+      if (words.length === 0) {
+        throw new Error('Aucun mot valide trouvé');
+      }
+      
+      return createCustomList(data.name, words);
+    } catch (e) {
+      console.error('Erreur import JSON:', e);
+      return null;
+    }
+  }, [createCustomList]);
+
+  // Importer une liste depuis CSV
+  const importListFromCSV = useCallback((csvString: string, listName: string): CustomList | null => {
+    try {
+      const lines = csvString.trim().split('\n');
+      const words: { german: string; french: string }[] = [];
+      
+      // Détecter si la première ligne est un header
+      const firstLine = lines[0].toLowerCase();
+      const hasHeader = firstLine.includes('german') || firstLine.includes('french') || 
+                        firstLine.includes('allemand') || firstLine.includes('français') ||
+                        firstLine.includes('de') || firstLine.includes('fr');
+      
+      const startIndex = hasHeader ? 1 : 0;
+      
+      for (let i = startIndex; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+        
+        // Supporter ; ou , ou tab comme séparateur
+        const separator = line.includes(';') ? ';' : line.includes('\t') ? '\t' : ',';
+        const parts = line.split(separator).map(p => p.trim().replace(/^["']|["']$/g, ''));
+        
+        if (parts.length >= 2 && parts[0] && parts[1]) {
+          words.push({
+            german: parts[0],
+            french: parts[1],
+          });
+        }
+      }
+      
+      if (words.length === 0) {
+        throw new Error('Aucun mot valide trouvé');
+      }
+      
+      return createCustomList(listName, words);
+    } catch (e) {
+      console.error('Erreur import CSV:', e);
+      return null;
+    }
+  }, [createCustomList]);
+
+  // Exporter une liste en JSON
+  const exportListToJSON = useCallback((listId: string): string | null => {
+    const list = customLists.find(l => l.id === listId);
+    if (!list) return null;
+    
+    return JSON.stringify({
+      name: list.name,
+      words: list.words,
+      exportedAt: new Date().toISOString(),
+    }, null, 2);
+  }, [customLists]);
+
+  // Exporter une liste en CSV
+  const exportListToCSV = useCallback((listId: string): string | null => {
+    const list = customLists.find(l => l.id === listId);
+    if (!list) return null;
+    
+    const header = 'German;French\n';
+    const rows = list.words.map(w => `${w.german};${w.french}`).join('\n');
+    return header + rows;
+  }, [customLists]);
+
+  // Obtenir les thèmes disponibles (app + custom)
+  const getAvailableThemes = useCallback((): { id: string; name: string; isCustom: boolean; wordCount: number; toReviewCount: number }[] => {
+    const now = Date.now();
+    const themes: Map<string, { name: string; isCustom: boolean; wordCount: number; toReviewCount: number }> = new Map();
+    
+    // Parcourir tous les mots pour compter par thème
+    Array.from(progress.values()).forEach(word => {
+      const existing = themes.get(word.theme);
+      const toReview = word.nextReview <= now ? 1 : 0;
+      
+      if (existing) {
+        existing.wordCount++;
+        existing.toReviewCount += toReview;
+      } else {
+        const customList = customLists.find(l => l.id === word.theme);
+        themes.set(word.theme, {
+          name: customList?.name || word.theme,
+          isCustom: !!word.isCustom,
+          wordCount: 1,
+          toReviewCount: toReview,
+        });
+      }
+    });
+    
+    return Array.from(themes.entries()).map(([id, data]) => ({
+      id,
+      ...data,
+    }));
+  }, [progress, customLists]);
+
+  // Obtenir les mots à réviser par thème(s)
+  const getWordsToReviewByThemes = useCallback((themeIds: string[], limit?: number): WordProgress[] => {
+    const now = Date.now();
+    const toReview = Array.from(progress.values())
+      .filter(word => themeIds.includes(word.theme) && word.nextReview <= now)
+      .sort((a, b) => {
+        if (a.box !== b.box) return a.box - b.box;
+        return a.nextReview - b.nextReview;
+      });
+    
+    return limit ? toReview.slice(0, limit) : toReview;
+  }, [progress]);
+
   return {
     progress,
     isLoaded,
@@ -255,6 +470,16 @@ export function useSpacedRepetition() {
     getWordProgress,
     hasWord,
     reset,
+    // Listes personnalisées
+    customLists,
+    createCustomList,
+    deleteCustomList,
+    importListFromJSON,
+    importListFromCSV,
+    exportListToJSON,
+    exportListToCSV,
+    getAvailableThemes,
+    getWordsToReviewByThemes,
   };
 }
 
