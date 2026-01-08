@@ -36,8 +36,9 @@ export const StatsView: React.FC = () => {
   const [stats, setStats] = useState<UserStats>(defaultStats);
   const [showGoalModal, setShowGoalModal] = useState(false);
   const [newGoal, setNewGoal] = useState(15);
-  const [sessionStart] = useState(Date.now());
   const [currentSessionTime, setCurrentSessionTime] = useState(0);
+  const [lastSavedTime, setLastSavedTime] = useState(0); // Pour éviter le double comptage
+  const [isLoaded, setIsLoaded] = useState(false);
 
   // Charger les stats au démarrage
   useEffect(() => {
@@ -47,59 +48,70 @@ export const StatsView: React.FC = () => {
       setStats(parsed);
       setNewGoal(parsed.dailyGoal || 15);
     }
+    setIsLoaded(true);
     
     // Mettre à jour le streak au chargement
     updateStreak();
   }, []);
 
-  // Timer pour la session actuelle
+  // Timer pour la session actuelle (compte chaque seconde)
   useEffect(() => {
     const interval = setInterval(() => {
-      const elapsed = Math.floor((Date.now() - sessionStart) / 1000);
-      setCurrentSessionTime(elapsed);
+      setCurrentSessionTime(prev => prev + 1);
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [sessionStart]);
+  }, []);
 
-  // Sauvegarder le temps à la fermeture/changement de page
+  // Sauvegarder le temps périodiquement et à la fermeture
   useEffect(() => {
+    if (!isLoaded) return;
+
     const saveTime = () => {
+      // Calculer seulement le temps écoulé depuis la dernière sauvegarde
+      const timeToSave = currentSessionTime - lastSavedTime;
+      if (timeToSave <= 0) return;
+
       const today = new Date().toISOString().split('T')[0];
-      const updatedStats = { ...stats };
       
-      // Ajouter le temps de session
-      updatedStats.totalTimeSpent += currentSessionTime;
-      
-      // Mettre à jour l'historique quotidien
-      const todayIndex = updatedStats.dailyHistory.findIndex(d => d.date === today);
-      if (todayIndex >= 0) {
-        updatedStats.dailyHistory[todayIndex].timeSpent += currentSessionTime;
-      } else {
-        updatedStats.dailyHistory.push({
-          date: today,
-          timeSpent: currentSessionTime,
-          lessonsCompleted: []
-        });
-      }
-      
-      updatedStats.lastActivityDate = today;
-      localStorage.setItem('grammarStats', JSON.stringify(updatedStats));
+      setStats(prevStats => {
+        const updatedStats = { ...prevStats };
+        
+        // Ajouter seulement le nouveau temps (pas le temps cumulé)
+        updatedStats.totalTimeSpent += timeToSave;
+        
+        // Mettre à jour l'historique quotidien
+        const todayIndex = updatedStats.dailyHistory.findIndex(d => d.date === today);
+        if (todayIndex >= 0) {
+          updatedStats.dailyHistory[todayIndex].timeSpent += timeToSave;
+        } else {
+          updatedStats.dailyHistory.push({
+            date: today,
+            timeSpent: timeToSave,
+            lessonsCompleted: []
+          });
+        }
+        
+        updatedStats.lastActivityDate = today;
+        localStorage.setItem('grammarStats', JSON.stringify(updatedStats));
+        return updatedStats;
+      });
+
+      setLastSavedTime(currentSessionTime);
     };
 
+    // Sauvegarder à la fermeture de la page
     window.addEventListener('beforeunload', saveTime);
     
     // Sauvegarder toutes les 30 secondes
-    const saveInterval = setInterval(() => {
-      saveTime();
-    }, 30000);
+    const saveInterval = setInterval(saveTime, 30000);
 
     return () => {
       window.removeEventListener('beforeunload', saveTime);
       clearInterval(saveInterval);
-      saveTime();
+      saveTime(); // Sauvegarder au démontage du composant
     };
-  }, [stats, currentSessionTime]);
+  }, [isLoaded, currentSessionTime, lastSavedTime]);
 
   // Mettre à jour le streak
   const updateStreak = () => {
@@ -135,12 +147,20 @@ export const StatsView: React.FC = () => {
   const getTodayStats = () => {
     const today = new Date().toISOString().split('T')[0];
     const todayData = stats.dailyHistory.find(d => d.date === today);
-    const timeToday = (todayData?.timeSpent || 0) + currentSessionTime;
+    // Ajouter seulement le temps non encore sauvegardé de la session actuelle
+    const unsavedTime = currentSessionTime - lastSavedTime;
+    const timeToday = (todayData?.timeSpent || 0) + unsavedTime;
     return {
       timeSpent: timeToday,
       goalProgress: Math.min(100, (timeToday / 60 / stats.dailyGoal) * 100),
       lessonsCompleted: todayData?.lessonsCompleted.length || 0
     };
+  };
+
+  // Calculer le temps total (sauvegardé + non sauvegardé de la session)
+  const getTotalTime = () => {
+    const unsavedTime = currentSessionTime - lastSavedTime;
+    return stats.totalTimeSpent + unsavedTime;
   };
 
   const getTotalLessons = () => {
@@ -342,7 +362,7 @@ export const StatsView: React.FC = () => {
             </div>
             <div>
               <p className="text-white/90 text-xs font-bold uppercase tracking-wider">Temps total</p>
-              <p className="text-4xl font-black text-white">{formatTime(stats.totalTimeSpent + currentSessionTime)}</p>
+              <p className="text-4xl font-black text-white">{formatTime(getTotalTime())}</p>
             </div>
           </div>
           <p className="text-white/80 text-sm">Session : {formatTime(currentSessionTime)}</p>
@@ -491,7 +511,7 @@ export const StatsView: React.FC = () => {
           <div className="text-right">
             <p className="text-xs text-slate-400 mb-1">Données sauvegardées localement</p>
             <p className="text-sm text-slate-500">
-              {stats.completedLessons.length} leçons · {formatTime(stats.totalTimeSpent)} d'étude
+              {stats.completedLessons.length} leçons · {formatTime(getTotalTime())} d'étude
             </p>
           </div>
         </div>
