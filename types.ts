@@ -4,7 +4,8 @@ export enum LanguageLevel {
   A2 = 'A2',
   B1 = 'B1',
   B2 = 'B2',
-  C1 = 'C1'
+  C1 = 'C1',
+  C2 = 'C2'
 }
 
 export interface GermanWord {
@@ -31,8 +32,8 @@ export interface Theme {
   subThemes?: string[]; // Liste des sous-thèmes disponibles
 }
 
-export type MainTab = 'vocabulary' | 'nomen-verben' | 'grammar';
-export type ViewMode = 'themes' | 'learn' | 'quiz' | 'phrases';
+export type MainTab = 'vocabulary' | 'nomen-verben' | 'grammar' | 'stats' | 'tables' | 'expressions';
+export type ViewMode = 'themes' | 'learn' | 'quiz' | 'phrases' | 'trainer';
 
 export interface ThemeContent {
   words: GermanWord[];

@@ -6,10 +6,18 @@ import { VOCABULARY_DATA } from './data/vocabularyData.ts';
 import { ThemeCard } from './components/ThemeCard.tsx';
 import { WordCard } from './components/WordCard.tsx';
 import { Quiz } from './components/Quiz.tsx';
+import { VocabularyTrainer } from './components/VocabularyTrainer.tsx';
 import { GrammarView } from './components/GrammarView.tsx';
+import { StatsView } from './components/StatsView.tsx';
+import { SyncModal } from './components/SyncModal.tsx';
+import { TablesView } from './components/TablesView.tsx';
+import { ExpressionsView } from './components/ExpressionsView.tsx';
+import { AuthModal } from './components/AuthModal.tsx';
+import { UserMenu } from './components/UserMenu.tsx';
+import { AuthProvider } from './contexts/AuthContext.tsx';
 import { NOMEN_VERBEN_LIST } from './data/nomenVerbenData.ts';
 
-const App: React.FC = () => {
+const AppContent: React.FC = () => {
   const [activeTab, setActiveTab] = useState<MainTab>('vocabulary');
   const [currentTheme, setCurrentTheme] = useState<Theme | null>(null);
   const [content, setContent] = useState<ThemeContent | null>(null);
@@ -17,6 +25,8 @@ const App: React.FC = () => {
   const [selectedLevel, setSelectedLevel] = useState<LanguageLevel | 'All'>('All');
   const [selectedSubTheme, setSelectedSubTheme] = useState<string | 'All'>('All');
   const [nvSearch, setNvSearch] = useState('');
+  const [showSyncModal, setShowSyncModal] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const handleThemeSelect = (theme: Theme) => {
     setCurrentTheme(theme);
@@ -48,34 +58,74 @@ const App: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen pb-20 bg-slate-50">
-      <header className="sticky top-0 z-50 bg-white border-b border-slate-200">
+    <div className="min-h-screen pb-20" style={{ backgroundColor: 'var(--sand-50)' }}>
+      {/* Modal de synchronisation */}
+      <SyncModal isOpen={showSyncModal} onClose={() => setShowSyncModal(false)} />
+      
+      {/* Modal d'authentification */}
+      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+      
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b" style={{ borderColor: 'var(--terracotta-100)' }}>
         <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => { setViewMode('themes'); setCurrentTheme(null); setContent(null); }}>
-            <div className="bg-indigo-600 p-2 rounded-xl text-white font-bold text-xl">🇩🇪</div>
-            <h1 className="text-xl font-black text-slate-800">DeutschMeister</h1>
+            <div className="p-2.5 rounded-2xl text-white font-bold text-xl shadow-terracotta" style={{ backgroundColor: 'var(--terracotta-600)' }}>🇩🇪</div>
+            <h1 className="text-xl font-black" style={{ color: 'var(--terracotta-800)' }}>DeutschMeister</h1>
           </div>
-          <nav className="flex bg-slate-100 p-1 rounded-xl">
-            {[
-              { id: 'vocabulary', label: 'Vocabulaire' },
-              { id: 'grammar', label: 'Grammatik' },
-              { id: 'nomen-verben', label: 'Nomen-Verb' }
-            ].map(tab => (
-              <button 
-                key={tab.id}
-                onClick={() => { setActiveTab(tab.id as MainTab); setViewMode('themes'); setCurrentTheme(null); }}
-                className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === tab.id ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-500 hover:text-indigo-400'}`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </nav>
+          <div className="flex items-center gap-3">
+            <nav className="flex p-1.5 rounded-2xl overflow-x-auto" style={{ backgroundColor: 'var(--sand-100)' }}>
+              {[
+                { id: 'vocabulary', label: 'Vocabulaire', icon: '📚' },
+                { id: 'grammar', label: 'Grammatik', icon: '📖' },
+                { id: 'tables', label: 'Tableaux', icon: '📋' },
+                { id: 'expressions', label: 'Expressions', icon: '💬' },
+                { id: 'nomen-verben', label: 'Nomen-Verb', icon: '🔗' },
+                { id: 'stats', label: 'Stats', icon: '📊' }
+              ].map(tab => (
+                <button 
+                  key={tab.id}
+                  onClick={() => { setActiveTab(tab.id as MainTab); setViewMode('themes'); setCurrentTheme(null); }}
+                  className={`px-3 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-1 whitespace-nowrap ${
+                    activeTab === tab.id 
+                      ? 'bg-white shadow-md' 
+                      : 'hover:bg-white/50'
+                  }`}
+                  style={{ 
+                    color: activeTab === tab.id ? 'var(--terracotta-600)' : 'var(--sand-700)'
+                  }}
+                >
+                  <span className="hidden sm:inline">{tab.icon}</span>
+                  {tab.label}
+                </button>
+              ))}
+            </nav>
+            
+            {/* Bouton Sync */}
+            <button
+              onClick={() => setShowSyncModal(true)}
+              className="p-2.5 rounded-xl transition-all group hover:shadow-md"
+              style={{ backgroundColor: 'var(--sand-100)' }}
+              title="Synchroniser mes données"
+            >
+              <svg className="w-5 h-5 transition-colors" style={{ color: 'var(--sand-600)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+              </svg>
+            </button>
+            
+            {/* Menu Utilisateur */}
+            <UserMenu onOpenAuth={() => setShowAuthModal(true)} />
+          </div>
         </div>
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-10">
           <>
             {activeTab === 'grammar' && <GrammarView />}
+            
+            {activeTab === 'stats' && <StatsView />}
+            
+            {activeTab === 'tables' && <TablesView />}
+            
+            {activeTab === 'expressions' && <ExpressionsView />}
             
             {activeTab === 'vocabulary' && (
               <>
@@ -148,9 +198,10 @@ const App: React.FC = () => {
                     )}
                     
                     <nav className="flex gap-4 mb-8">
-                       <button onClick={() => setViewMode('learn')} className={`pb-2 border-b-2 font-bold text-sm transition-all ${viewMode === 'learn' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>Flashcards ({filteredWords.length})</button>
-                       <button onClick={() => setViewMode('phrases')} className={`pb-2 border-b-2 font-bold text-sm transition-all ${viewMode === 'phrases' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>Phrases ({content.phrases.length})</button>
-                       <button onClick={() => setViewMode('quiz')} className={`pb-2 border-b-2 font-bold text-sm transition-all ${viewMode === 'quiz' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>Quiz</button>
+                       <button onClick={() => setViewMode('learn')} className={`pb-2 border-b-2 font-bold text-sm transition-all ${viewMode === 'learn' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>📚 Liste ({filteredWords.length})</button>
+                       <button onClick={() => setViewMode('phrases')} className={`pb-2 border-b-2 font-bold text-sm transition-all ${viewMode === 'phrases' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>💬 Phrases ({content.phrases.length})</button>
+                       <button onClick={() => setViewMode('trainer')} className={`pb-2 border-b-2 font-bold text-sm transition-all ${viewMode === 'trainer' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>🎯 S'entraîner</button>
+                       <button onClick={() => setViewMode('quiz')} className={`pb-2 border-b-2 font-bold text-sm transition-all ${viewMode === 'quiz' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>❓ Quiz rapide</button>
                     </nav>
 
                     {viewMode === 'learn' && (
@@ -204,6 +255,21 @@ const App: React.FC = () => {
                         </div>
                       )
                     )}
+
+                    {viewMode === 'trainer' && (
+                      filteredWords.length >= 5 ? (
+                        <VocabularyTrainer 
+                          words={filteredWords} 
+                          onComplete={() => setViewMode('learn')}
+                          themeName={currentTheme?.name}
+                        />
+                      ) : (
+                        <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-200">
+                          <p className="text-slate-400 font-bold text-lg">Besoin d'au moins 5 mots pour l'entraînement.</p>
+                          <p className="text-slate-400 text-sm mt-2">Réduisez les filtres pour obtenir plus de mots.</p>
+                        </div>
+                      )
+                    )}
                   </div>
                 )}
               </>
@@ -238,6 +304,15 @@ const App: React.FC = () => {
           </>
       </main>
     </div>
+  );
+};
+
+// App principal avec AuthProvider
+const App: React.FC = () => {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 };
 

@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import './index.css';
 
 // Empêche le plantage si process.env est accédé avant l'injection
 if (typeof window !== 'undefined' && !(window as any).process) {

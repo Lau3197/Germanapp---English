@@ -4,12 +4,16 @@ import { a1Grammar } from './grammar/a1/index.ts';
 import { a2Grammar } from './grammar/a2/index.ts';
 import { b1Grammar } from './grammar/b1/index.ts';
 import { b2Grammar } from './grammar/b2/index.ts';
+import { c1Grammar } from './grammar/c1/index.ts';
+import { c2Grammar } from './grammar/c2/index.ts';
 
 export const GRAMMAR_DATA: GrammarLevel[] = [
   a1Grammar,
   a2Grammar,
   b1Grammar,
-  b2Grammar
+  b2Grammar,
+  c1Grammar,
+  c2Grammar
 ];
 
 export const KII_CONJUGATIONS: Record<string, string[]> = {
