@@ -5,6 +5,15 @@ import { THEMES } from '../constants';
 
 type RevisionMode = 'menu' | 'themes' | 'import' | 'session' | 'results' | 'manage-lists';
 type AnswerState = 'waiting' | 'correct' | 'incorrect';
+type ExerciseType = 'flashcard' | 'writing' | 'qcm' | 'pairs' | 'fillblank' | 'chrono';
+
+interface PairItem {
+  id: string;
+  text: string;
+  type: 'german' | 'french';
+  matched: boolean;
+  selected: boolean;
+}
 
 export const RevisionView: React.FC = () => {
   const {
@@ -31,7 +40,7 @@ export const RevisionView: React.FC = () => {
   const [answerState, setAnswerState] = useState<AnswerState>('waiting');
   const [userInput, setUserInput] = useState('');
   const [sessionStats, setSessionStats] = useState({ correct: 0, incorrect: 0 });
-  const [reviewType, setReviewType] = useState<'flashcard' | 'writing'>('flashcard');
+  const [reviewType, setReviewType] = useState<ExerciseType>('flashcard');
   const [direction, setDirection] = useState<'de-fr' | 'fr-de'>('de-fr');
   const [selectedThemes, setSelectedThemes] = useState<string[]>([]);
   
@@ -42,7 +51,27 @@ export const RevisionView: React.FC = () => {
   const [importError, setImportError] = useState('');
   const [importSuccess, setImportSuccess] = useState('');
   
+  // QCM
+  const [qcmOptions, setQcmOptions] = useState<string[]>([]);
+  const [selectedQcmOption, setSelectedQcmOption] = useState<string | null>(null);
+  
+  // Pairs game
+  const [pairItems, setPairItems] = useState<PairItem[]>([]);
+  const [selectedPair, setSelectedPair] = useState<PairItem | null>(null);
+  const [pairsMatched, setPairsMatched] = useState(0);
+  const [pairsTotal, setPairsTotal] = useState(0);
+  
+  // Fill blank
+  const [fillBlankSentence, setFillBlankSentence] = useState('');
+  const [fillBlankAnswer, setFillBlankAnswer] = useState('');
+  
+  // Chrono mode
+  const [chronoTime, setChronoTime] = useState(60);
+  const [chronoRemaining, setChronoRemaining] = useState(60);
+  const [chronoActive, setChronoActive] = useState(false);
+  
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const chronoRef = useRef<NodeJS.Timeout | null>(null);
 
   const stats = getStats();
   const availableThemes = getAvailableThemes();
@@ -68,6 +97,86 @@ export const RevisionView: React.FC = () => {
     }
   }, [isLoaded, addWords]);
 
+  // Nettoyer le timer chrono
+  useEffect(() => {
+    return () => {
+      if (chronoRef.current) clearInterval(chronoRef.current);
+    };
+  }, []);
+
+  // Timer chrono
+  useEffect(() => {
+    if (chronoActive && chronoRemaining > 0) {
+      chronoRef.current = setInterval(() => {
+        setChronoRemaining(prev => {
+          if (prev <= 1) {
+            setChronoActive(false);
+            setMode('results');
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => {
+      if (chronoRef.current) clearInterval(chronoRef.current);
+    };
+  }, [chronoActive]);
+
+  // Générer les options QCM
+  const generateQcmOptions = useCallback((correctWord: WordProgress, allWords: WordProgress[]): string[] => {
+    const correctAnswer = direction === 'de-fr' ? correctWord.french : correctWord.german;
+    const otherAnswers = allWords
+      .filter(w => w.wordId !== correctWord.wordId)
+      .map(w => direction === 'de-fr' ? w.french : w.german)
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 3);
+    
+    const options = [correctAnswer, ...otherAnswers].sort(() => Math.random() - 0.5);
+    return options;
+  }, [direction]);
+
+  // Initialiser le jeu de paires
+  const initPairsGame = useCallback((words: WordProgress[]) => {
+    const pairWords = words.slice(0, 6); // 6 paires max
+    const items: PairItem[] = [];
+    
+    pairWords.forEach((word, idx) => {
+      items.push({
+        id: `de-${idx}`,
+        text: word.german,
+        type: 'german',
+        matched: false,
+        selected: false,
+      });
+      items.push({
+        id: `fr-${idx}`,
+        text: word.french,
+        type: 'french',
+        matched: false,
+        selected: false,
+      });
+    });
+    
+    // Mélanger
+    setPairItems(items.sort(() => Math.random() - 0.5));
+    setPairsMatched(0);
+    setPairsTotal(pairWords.length);
+  }, []);
+
+  // Générer une phrase à trous
+  const generateFillBlank = useCallback((word: WordProgress) => {
+    const templates = [
+      { de: `Das Wort "___" bedeutet "${word.french}" auf Französisch.`, answer: word.german },
+      { de: `"${word.german}" heißt "___" auf Französisch.`, answer: word.french },
+      { de: `Übersetzen Sie: ${word.german} = ___`, answer: word.french },
+      { de: `Wie sagt man "${word.french}" auf Deutsch? ___`, answer: word.german },
+    ];
+    const template = templates[Math.floor(Math.random() * templates.length)];
+    setFillBlankSentence(template.de);
+    setFillBlankAnswer(template.answer);
+  }, []);
+
   const startSession = useCallback((wordCount: number = 20) => {
     let words: WordProgress[];
     
@@ -85,8 +194,23 @@ export const RevisionView: React.FC = () => {
     setShowAnswer(false);
     setAnswerState('waiting');
     setUserInput('');
+    setSelectedQcmOption(null);
+    
+    // Initialisation spécifique par mode
+    if (reviewType === 'qcm') {
+      setQcmOptions(generateQcmOptions(words[0], words));
+    } else if (reviewType === 'pairs') {
+      initPairsGame(words);
+    } else if (reviewType === 'fillblank') {
+      generateFillBlank(words[0]);
+    } else if (reviewType === 'chrono') {
+      setChronoRemaining(chronoTime);
+      setChronoActive(true);
+      setQcmOptions(generateQcmOptions(words[0], words));
+    }
+    
     setMode('session');
-  }, [getWordsToReview, getWordsToReviewByThemes, selectedThemes]);
+  }, [getWordsToReview, getWordsToReviewByThemes, selectedThemes, reviewType, generateQcmOptions, initPairsGame, generateFillBlank, chronoTime]);
 
   const handleAnswer = useCallback((isCorrect: boolean) => {
     const currentWord = sessionWords[currentIndex];
@@ -99,17 +223,112 @@ export const RevisionView: React.FC = () => {
       incorrect: prev.incorrect + (isCorrect ? 0 : 1),
     }));
 
-    setTimeout(() => {
+    const goToNext = () => {
       if (currentIndex < sessionWords.length - 1) {
-        setCurrentIndex(prev => prev + 1);
+        const nextIndex = currentIndex + 1;
+        setCurrentIndex(nextIndex);
         setShowAnswer(false);
         setAnswerState('waiting');
         setUserInput('');
+        setSelectedQcmOption(null);
+        
+        // Réinitialiser pour le prochain mot
+        if (reviewType === 'qcm' || reviewType === 'chrono') {
+          setQcmOptions(generateQcmOptions(sessionWords[nextIndex], sessionWords));
+        } else if (reviewType === 'fillblank') {
+          generateFillBlank(sessionWords[nextIndex]);
+        }
       } else {
+        if (reviewType === 'chrono') {
+          setChronoActive(false);
+        }
         setMode('results');
       }
-    }, 1000);
-  }, [sessionWords, currentIndex, recordAnswer]);
+    };
+
+    // Délai plus court pour le mode chrono
+    const delay = reviewType === 'chrono' ? 500 : 1000;
+    setTimeout(goToNext, delay);
+  }, [sessionWords, currentIndex, recordAnswer, reviewType, generateQcmOptions, generateFillBlank]);
+
+  // Handler pour QCM
+  const handleQcmSelect = useCallback((option: string) => {
+    if (selectedQcmOption !== null) return; // Déjà répondu
+    
+    setSelectedQcmOption(option);
+    const currentWord = sessionWords[currentIndex];
+    const correctAnswer = direction === 'de-fr' ? currentWord.french : currentWord.german;
+    const isCorrect = option === correctAnswer;
+    
+    handleAnswer(isCorrect);
+  }, [selectedQcmOption, sessionWords, currentIndex, direction, handleAnswer]);
+
+  // Handler pour les paires
+  const handlePairSelect = useCallback((item: PairItem) => {
+    if (item.matched) return;
+    
+    if (!selectedPair) {
+      // Premier élément sélectionné
+      setSelectedPair(item);
+      setPairItems(prev => prev.map(p => 
+        p.id === item.id ? { ...p, selected: true } : { ...p, selected: false }
+      ));
+    } else {
+      // Deuxième élément sélectionné
+      if (selectedPair.type === item.type) {
+        // Même type, changer la sélection
+        setSelectedPair(item);
+        setPairItems(prev => prev.map(p => 
+          p.id === item.id ? { ...p, selected: true } : { ...p, selected: false }
+        ));
+      } else {
+        // Types différents, vérifier la correspondance
+        const idx1 = parseInt(selectedPair.id.split('-')[1]);
+        const idx2 = parseInt(item.id.split('-')[1]);
+        
+        if (idx1 === idx2) {
+          // Match !
+          setPairItems(prev => prev.map(p => 
+            (p.id === selectedPair.id || p.id === item.id) 
+              ? { ...p, matched: true, selected: false } 
+              : p
+          ));
+          setPairsMatched(prev => {
+            const newMatched = prev + 1;
+            // Enregistrer comme correct pour les deux mots
+            const word = sessionWords[idx1];
+            if (word) recordAnswer(word.wordId, true);
+            
+            if (newMatched >= pairsTotal) {
+              setTimeout(() => {
+                setSessionStats(prev => ({ ...prev, correct: prev.correct + pairsTotal }));
+                setMode('results');
+              }, 500);
+            }
+            return newMatched;
+          });
+        } else {
+          // Pas de match - animation d'erreur
+          setPairItems(prev => prev.map(p => 
+            (p.id === selectedPair.id || p.id === item.id) 
+              ? { ...p, selected: true } 
+              : p
+          ));
+          setTimeout(() => {
+            setPairItems(prev => prev.map(p => ({ ...p, selected: false })));
+          }, 500);
+        }
+        setSelectedPair(null);
+      }
+    }
+  }, [selectedPair, sessionWords, pairsTotal, recordAnswer]);
+
+  // Handler pour texte à trous
+  const handleFillBlankCheck = useCallback(() => {
+    const isCorrect = normalizeString(userInput) === normalizeString(fillBlankAnswer);
+    setShowAnswer(true);
+    handleAnswer(isCorrect);
+  }, [userInput, fillBlankAnswer, handleAnswer]);
 
   const checkWritingAnswer = useCallback(() => {
     const currentWord = sessionWords[currentIndex];
@@ -346,14 +565,14 @@ export const RevisionView: React.FC = () => {
           <h3 className="font-bold mb-4" style={{ color: 'var(--sand-800)' }}>Options</h3>
           
           <div className="grid grid-cols-2 gap-4">
-            <div>
+            <div className="col-span-2">
               <label className="text-sm font-medium mb-2 block" style={{ color: 'var(--sand-600)' }}>
                 Type d'exercice
               </label>
-              <div className="flex gap-2">
+              <div className="grid grid-cols-3 gap-2">
                 <button
                   onClick={() => setReviewType('flashcard')}
-                  className="flex-1 py-2 px-4 rounded-xl font-medium transition-all"
+                  className="py-3 px-3 rounded-xl font-medium transition-all text-sm"
                   style={{
                     backgroundColor: reviewType === 'flashcard' ? 'var(--coral-500)' : 'var(--sand-100)',
                     color: reviewType === 'flashcard' ? 'white' : 'var(--sand-700)'
@@ -363,7 +582,7 @@ export const RevisionView: React.FC = () => {
                 </button>
                 <button
                   onClick={() => setReviewType('writing')}
-                  className="flex-1 py-2 px-4 rounded-xl font-medium transition-all"
+                  className="py-3 px-3 rounded-xl font-medium transition-all text-sm"
                   style={{
                     backgroundColor: reviewType === 'writing' ? 'var(--coral-500)' : 'var(--sand-100)',
                     color: reviewType === 'writing' ? 'white' : 'var(--sand-700)'
@@ -371,10 +590,77 @@ export const RevisionView: React.FC = () => {
                 >
                   ✍️ Écriture
                 </button>
+                <button
+                  onClick={() => setReviewType('qcm')}
+                  className="py-3 px-3 rounded-xl font-medium transition-all text-sm"
+                  style={{
+                    backgroundColor: reviewType === 'qcm' ? 'var(--coral-500)' : 'var(--sand-100)',
+                    color: reviewType === 'qcm' ? 'white' : 'var(--sand-700)'
+                  }}
+                >
+                  📝 QCM
+                </button>
+                <button
+                  onClick={() => setReviewType('pairs')}
+                  className="py-3 px-3 rounded-xl font-medium transition-all text-sm"
+                  style={{
+                    backgroundColor: reviewType === 'pairs' ? 'var(--turquoise-500)' : 'var(--sand-100)',
+                    color: reviewType === 'pairs' ? 'white' : 'var(--sand-700)'
+                  }}
+                >
+                  🔗 Paires
+                </button>
+                <button
+                  onClick={() => setReviewType('fillblank')}
+                  className="py-3 px-3 rounded-xl font-medium transition-all text-sm"
+                  style={{
+                    backgroundColor: reviewType === 'fillblank' ? 'var(--turquoise-500)' : 'var(--sand-100)',
+                    color: reviewType === 'fillblank' ? 'white' : 'var(--sand-700)'
+                  }}
+                >
+                  📋 Trous
+                </button>
+                <button
+                  onClick={() => setReviewType('chrono')}
+                  className="py-3 px-3 rounded-xl font-medium transition-all text-sm"
+                  style={{
+                    backgroundColor: reviewType === 'chrono' ? 'var(--turquoise-500)' : 'var(--sand-100)',
+                    color: reviewType === 'chrono' ? 'white' : 'var(--sand-700)'
+                  }}
+                >
+                  ⏱️ Chrono
+                </button>
               </div>
             </div>
+          </div>
 
-            <div>
+          {/* Options supplémentaires pour chrono */}
+          {reviewType === 'chrono' && (
+            <div className="mt-4">
+              <label className="text-sm font-medium mb-2 block" style={{ color: 'var(--sand-600)' }}>
+                Temps limite
+              </label>
+              <div className="flex gap-2">
+                {[30, 60, 90, 120].map(time => (
+                  <button
+                    key={time}
+                    onClick={() => setChronoTime(time)}
+                    className="flex-1 py-2 px-3 rounded-xl font-medium transition-all text-sm"
+                    style={{
+                      backgroundColor: chronoTime === time ? 'var(--coral-500)' : 'var(--sand-100)',
+                      color: chronoTime === time ? 'white' : 'var(--sand-700)'
+                    }}
+                  >
+                    {time}s
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Direction - masqué pour le mode paires */}
+          {reviewType !== 'pairs' && (
+            <div className="mt-4">
               <label className="text-sm font-medium mb-2 block" style={{ color: 'var(--sand-600)' }}>
                 Direction
               </label>
@@ -401,7 +687,7 @@ export const RevisionView: React.FC = () => {
                 </button>
               </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Boutons de démarrage */}
@@ -836,7 +1122,89 @@ Haus;maison`}
     );
   }
 
-  // ===== ÉCRAN DE SESSION =====
+  // ===== ÉCRAN DE SESSION - MODE PAIRES =====
+  if (mode === 'session' && reviewType === 'pairs') {
+    return (
+      <div className="max-w-3xl mx-auto">
+        {/* Header */}
+        <div className="mb-8 text-center">
+          <h2 className="text-2xl font-black mb-2" style={{ color: 'var(--coral-700)' }}>
+            🔗 Associer les paires
+          </h2>
+          <p className="text-lg" style={{ color: 'var(--sand-600)' }}>
+            {pairsMatched} / {pairsTotal} paires trouvées
+          </p>
+          <div className="h-3 rounded-full overflow-hidden mt-4" style={{ backgroundColor: 'var(--sand-200)' }}>
+            <div 
+              className="h-full rounded-full transition-all duration-300"
+              style={{ width: `${(pairsMatched / pairsTotal) * 100}%`, backgroundColor: 'var(--turquoise-500)' }}
+            />
+          </div>
+        </div>
+
+        {/* Grille des paires */}
+        <div className="grid grid-cols-2 gap-4">
+          {/* Colonne allemand */}
+          <div className="space-y-3">
+            <p className="text-sm font-bold text-center mb-2" style={{ color: 'var(--sand-600)' }}>🇩🇪 Allemand</p>
+            {pairItems.filter(p => p.type === 'german').map(item => (
+              <button
+                key={item.id}
+                onClick={() => handlePairSelect(item)}
+                disabled={item.matched}
+                className={`w-full p-4 rounded-xl font-medium transition-all ${
+                  item.matched ? 'opacity-50 cursor-not-allowed' : 'hover:scale-102'
+                } ${item.selected ? 'ring-2 ring-coral-500' : ''}`}
+                style={{
+                  backgroundColor: item.matched ? 'var(--turquoise-100)' : 
+                                   item.selected ? 'var(--coral-100)' : 'white',
+                  color: item.matched ? 'var(--turquoise-700)' : 'var(--sand-800)',
+                  boxShadow: item.matched ? 'none' : '0 2px 10px rgba(0,0,0,0.1)'
+                }}
+              >
+                {item.text}
+                {item.matched && <span className="ml-2">✓</span>}
+              </button>
+            ))}
+          </div>
+
+          {/* Colonne français */}
+          <div className="space-y-3">
+            <p className="text-sm font-bold text-center mb-2" style={{ color: 'var(--sand-600)' }}>🇫🇷 Français</p>
+            {pairItems.filter(p => p.type === 'french').map(item => (
+              <button
+                key={item.id}
+                onClick={() => handlePairSelect(item)}
+                disabled={item.matched}
+                className={`w-full p-4 rounded-xl font-medium transition-all ${
+                  item.matched ? 'opacity-50 cursor-not-allowed' : 'hover:scale-102'
+                } ${item.selected ? 'ring-2 ring-coral-500' : ''}`}
+                style={{
+                  backgroundColor: item.matched ? 'var(--turquoise-100)' : 
+                                   item.selected ? 'var(--coral-100)' : 'white',
+                  color: item.matched ? 'var(--turquoise-700)' : 'var(--sand-800)',
+                  boxShadow: item.matched ? 'none' : '0 2px 10px rgba(0,0,0,0.1)'
+                }}
+              >
+                {item.text}
+                {item.matched && <span className="ml-2">✓</span>}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <button
+          onClick={() => { setMode('menu'); setChronoActive(false); }}
+          className="mt-8 w-full py-3 rounded-xl font-medium transition-all"
+          style={{ backgroundColor: 'var(--sand-100)', color: 'var(--sand-600)' }}
+        >
+          Quitter la session
+        </button>
+      </div>
+    );
+  }
+
+  // ===== ÉCRAN DE SESSION - AUTRES MODES =====
   if (mode === 'session' && currentWord) {
     const progress = ((currentIndex + 1) / sessionWords.length) * 100;
     const question = direction === 'de-fr' ? currentWord.german : currentWord.french;
@@ -844,21 +1212,32 @@ Haus;maison`}
 
     return (
       <div className="max-w-2xl mx-auto">
-        {/* Barre de progression */}
+        {/* Barre de progression + Chrono */}
         <div className="mb-8">
           <div className="flex justify-between text-sm mb-2" style={{ color: 'var(--sand-600)' }}>
             <span>Mot {currentIndex + 1} / {sessionWords.length}</span>
-            <span>Boîte {currentWord.box}/5</span>
+            {reviewType === 'chrono' ? (
+              <span className={`font-bold ${chronoRemaining <= 10 ? 'text-red-500 animate-pulse' : ''}`}>
+                ⏱️ {chronoRemaining}s
+              </span>
+            ) : (
+              <span>Boîte {currentWord.box}/5</span>
+            )}
           </div>
           <div className="h-3 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--sand-200)' }}>
             <div 
               className="h-full rounded-full transition-all duration-300"
-              style={{ width: `${progress}%`, backgroundColor: 'var(--coral-500)' }}
+              style={{ 
+                width: reviewType === 'chrono' ? `${(chronoRemaining / chronoTime) * 100}%` : `${progress}%`,
+                backgroundColor: reviewType === 'chrono' 
+                  ? (chronoRemaining <= 10 ? '#ef4444' : 'var(--turquoise-500)') 
+                  : 'var(--coral-500)'
+              }}
             />
           </div>
         </div>
 
-        {/* Carte */}
+        {/* Carte principale */}
         <div 
           className={`p-8 rounded-3xl text-center mb-8 transition-all ${
             answerState === 'correct' ? 'ring-4 ring-green-400' :
@@ -878,6 +1257,7 @@ Haus;maison`}
             </p>
           </div>
 
+          {/* Mode Flashcard */}
           {reviewType === 'flashcard' && (
             <>
               {showAnswer ? (
@@ -901,6 +1281,7 @@ Haus;maison`}
             </>
           )}
 
+          {/* Mode Écriture */}
           {reviewType === 'writing' && (
             <div className="pt-6 border-t" style={{ borderColor: 'var(--sand-200)' }}>
               {!showAnswer ? (
@@ -943,8 +1324,128 @@ Haus;maison`}
               )}
             </div>
           )}
+
+          {/* Mode QCM */}
+          {reviewType === 'qcm' && (
+            <div className="pt-6 border-t" style={{ borderColor: 'var(--sand-200)' }}>
+              <div className="grid grid-cols-2 gap-3">
+                {qcmOptions.map((option, idx) => {
+                  const isSelected = selectedQcmOption === option;
+                  const isCorrect = option === answer;
+                  const showResult = selectedQcmOption !== null;
+                  
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => handleQcmSelect(option)}
+                      disabled={selectedQcmOption !== null}
+                      className={`p-4 rounded-xl font-medium transition-all ${
+                        showResult 
+                          ? isCorrect 
+                            ? 'bg-green-100 text-green-700 ring-2 ring-green-400'
+                            : isSelected 
+                              ? 'bg-red-100 text-red-700 ring-2 ring-red-400'
+                              : 'opacity-50'
+                          : 'hover:scale-102'
+                      }`}
+                      style={{
+                        backgroundColor: !showResult ? 'var(--sand-100)' : undefined,
+                        color: !showResult ? 'var(--sand-800)' : undefined
+                      }}
+                    >
+                      {option}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Mode Chrono (QCM rapide) */}
+          {reviewType === 'chrono' && (
+            <div className="pt-6 border-t" style={{ borderColor: 'var(--sand-200)' }}>
+              <div className="grid grid-cols-2 gap-3">
+                {qcmOptions.map((option, idx) => {
+                  const isSelected = selectedQcmOption === option;
+                  const isCorrect = option === answer;
+                  const showResult = selectedQcmOption !== null;
+                  
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => handleQcmSelect(option)}
+                      disabled={selectedQcmOption !== null}
+                      className={`p-4 rounded-xl font-medium transition-all ${
+                        showResult 
+                          ? isCorrect 
+                            ? 'bg-green-100 text-green-700'
+                            : isSelected 
+                              ? 'bg-red-100 text-red-700'
+                              : 'opacity-50'
+                          : 'hover:scale-105 hover:shadow-md'
+                      }`}
+                      style={{
+                        backgroundColor: !showResult ? 'var(--sand-100)' : undefined,
+                        color: !showResult ? 'var(--sand-800)' : undefined
+                      }}
+                    >
+                      {option}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Mode Texte à trous */}
+          {reviewType === 'fillblank' && (
+            <div className="pt-6 border-t" style={{ borderColor: 'var(--sand-200)' }}>
+              <p className="text-lg mb-4" style={{ color: 'var(--sand-700)' }}>
+                {fillBlankSentence}
+              </p>
+              {!showAnswer ? (
+                <>
+                  <input
+                    type="text"
+                    value={userInput}
+                    onChange={(e) => setUserInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleFillBlankCheck()}
+                    placeholder="Votre réponse..."
+                    className="w-full px-4 py-3 rounded-xl border-2 text-center text-lg font-medium focus:outline-none"
+                    style={{ borderColor: 'var(--sand-300)', backgroundColor: 'var(--sand-50)' }}
+                    autoFocus
+                  />
+                  <button
+                    onClick={handleFillBlankCheck}
+                    className="mt-4 px-8 py-3 rounded-xl font-bold text-white transition-all hover:scale-105"
+                    style={{ backgroundColor: 'var(--coral-500)' }}
+                  >
+                    Vérifier
+                  </button>
+                </>
+              ) : (
+                <div>
+                  <p className="text-sm font-medium mb-1" style={{ color: 'var(--sand-500)' }}>
+                    Votre réponse :
+                  </p>
+                  <p className={`text-xl font-bold mb-3 ${
+                    answerState === 'correct' ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    {userInput || '(vide)'}
+                  </p>
+                  <p className="text-sm font-medium mb-1" style={{ color: 'var(--sand-500)' }}>
+                    Réponse correcte :
+                  </p>
+                  <p className="text-xl font-bold" style={{ color: 'var(--coral-600)' }}>
+                    {fillBlankAnswer}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
+        {/* Boutons Flashcard */}
         {reviewType === 'flashcard' && showAnswer && answerState === 'waiting' && (
           <div className="flex gap-4 justify-center">
             <button
@@ -964,7 +1465,8 @@ Haus;maison`}
           </div>
         )}
 
-        {answerState !== 'waiting' && (
+        {/* Feedback */}
+        {answerState !== 'waiting' && reviewType !== 'chrono' && (
           <div className={`text-center p-4 rounded-xl font-bold text-lg ${
             answerState === 'correct' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
           }`}>
@@ -973,7 +1475,7 @@ Haus;maison`}
         )}
 
         <button
-          onClick={() => setMode('menu')}
+          onClick={() => { setMode('menu'); setChronoActive(false); }}
           className="mt-8 w-full py-3 rounded-xl font-medium transition-all"
           style={{ backgroundColor: 'var(--sand-100)', color: 'var(--sand-600)' }}
         >
