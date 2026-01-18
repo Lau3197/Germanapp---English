@@ -32,7 +32,10 @@ const defaultStats: UserStats = {
   quizResults: []
 };
 
+import { useGrammar } from '../contexts/GrammarContext';
+
 export const StatsView: React.FC = () => {
+  const { completedLessons } = useGrammar(); // Utiliser le contexte pour la vérité terrain
   const [stats, setStats] = useState<UserStats>(defaultStats);
   const [showGoalModal, setShowGoalModal] = useState(false);
   const [newGoal, setNewGoal] = useState(15);
@@ -49,10 +52,15 @@ export const StatsView: React.FC = () => {
       setNewGoal(parsed.dailyGoal || 15);
     }
     setIsLoaded(true);
-    
+
     // Mettre à jour le streak au chargement
     updateStreak();
   }, []);
+
+  // Synchroniser avec le contexte
+  useEffect(() => {
+    setStats(prev => ({ ...prev, completedLessons }));
+  }, [completedLessons]);
 
   // Timer pour la session actuelle (compte chaque seconde)
   useEffect(() => {
@@ -73,13 +81,13 @@ export const StatsView: React.FC = () => {
       if (timeToSave <= 0) return;
 
       const today = new Date().toISOString().split('T')[0];
-      
+
       setStats(prevStats => {
         const updatedStats = { ...prevStats };
-        
+
         // Ajouter seulement le nouveau temps (pas le temps cumulé)
         updatedStats.totalTimeSpent += timeToSave;
-        
+
         // Mettre à jour l'historique quotidien
         const todayIndex = updatedStats.dailyHistory.findIndex(d => d.date === today);
         if (todayIndex >= 0) {
@@ -91,7 +99,7 @@ export const StatsView: React.FC = () => {
             lessonsCompleted: []
           });
         }
-        
+
         updatedStats.lastActivityDate = today;
         localStorage.setItem('grammarStats', JSON.stringify(updatedStats));
         return updatedStats;
@@ -102,7 +110,7 @@ export const StatsView: React.FC = () => {
 
     // Sauvegarder à la fermeture de la page
     window.addEventListener('beforeunload', saveTime);
-    
+
     // Sauvegarder toutes les 30 secondes
     const saveInterval = setInterval(saveTime, 30000);
 
@@ -117,10 +125,10 @@ export const StatsView: React.FC = () => {
   const updateStreak = () => {
     const today = new Date().toISOString().split('T')[0];
     const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-    
+
     setStats(prev => {
       const updated = { ...prev };
-      
+
       if (prev.lastActivityDate === today) {
         // Déjà actif aujourd'hui, ne rien changer
         return prev;
@@ -136,7 +144,7 @@ export const StatsView: React.FC = () => {
           updated.currentStreak = 1;
         }
       }
-      
+
       updated.lastActivityDate = today;
       localStorage.setItem('grammarStats', JSON.stringify(updated));
       return updated;
@@ -175,7 +183,7 @@ export const StatsView: React.FC = () => {
 
   const getCompletionByLevel = () => {
     const result: { level: LanguageLevel; completed: number; total: number }[] = [];
-    
+
     GRAMMAR_DATA.forEach(levelData => {
       let total = 0;
       let completed = 0;
@@ -189,7 +197,7 @@ export const StatsView: React.FC = () => {
       });
       result.push({ level: levelData.level, completed, total });
     });
-    
+
     return result;
   };
 
@@ -213,7 +221,7 @@ export const StatsView: React.FC = () => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
-    
+
     if (hours > 0) {
       return `${hours}h ${minutes}m`;
     } else if (minutes > 0) {
@@ -325,7 +333,7 @@ export const StatsView: React.FC = () => {
           </div>
           <div className="flex items-center gap-2">
             <div className="flex-1 h-2 bg-white/30 rounded-full overflow-hidden">
-              <div 
+              <div
                 className="h-full bg-white rounded-full transition-all duration-500"
                 style={{ width: `${todayStats.goalProgress}%` }}
               ></div>
@@ -397,14 +405,13 @@ export const StatsView: React.FC = () => {
             return (
               <div key={idx} className="flex flex-col items-center">
                 <div className="w-full h-24 bg-slate-100 rounded-xl relative overflow-hidden mb-2">
-                  <div 
-                    className={`absolute bottom-0 w-full rounded-xl transition-all duration-500 ${
-                      day.goalReached || (isToday && todayStats.goalProgress >= 100)
-                        ? 'bg-gradient-to-t from-emerald-500 to-emerald-400' 
-                        : isToday 
-                          ? 'bg-gradient-to-t from-violet-500 to-violet-400'
-                          : 'bg-gradient-to-t from-slate-300 to-slate-200'
-                    }`}
+                  <div
+                    className={`absolute bottom-0 w-full rounded-xl transition-all duration-500 ${day.goalReached || (isToday && todayStats.goalProgress >= 100)
+                      ? 'bg-gradient-to-t from-emerald-500 to-emerald-400'
+                      : isToday
+                        ? 'bg-gradient-to-t from-violet-500 to-violet-400'
+                        : 'bg-gradient-to-t from-slate-300 to-slate-200'
+                      }`}
                     style={{ height: `${height}%` }}
                   ></div>
                   {(day.goalReached || (isToday && todayStats.goalProgress >= 100)) && (
@@ -445,7 +452,7 @@ export const StatsView: React.FC = () => {
               <div key={idx} className="flex items-center gap-4">
                 <span className="w-12 text-lg font-black text-slate-400">{level.level}</span>
                 <div className="flex-1 h-8 bg-slate-100 rounded-xl overflow-hidden relative">
-                  <div 
+                  <div
                     className={`h-full bg-gradient-to-r ${colors[idx]} transition-all duration-700 rounded-xl`}
                     style={{ width: `${percentage}%` }}
                   ></div>
@@ -468,7 +475,7 @@ export const StatsView: React.FC = () => {
             <h3 className="text-xl font-black text-amber-800">Conseil du jour</h3>
           </div>
           <p className="text-amber-700 leading-relaxed">
-            {stats.currentStreak >= 7 
+            {stats.currentStreak >= 7
               ? "Incroyable ! Vous êtes sur une série de " + stats.currentStreak + " jours ! Continuez ainsi, la régularité est la clé de l'apprentissage."
               : stats.currentStreak >= 3
                 ? "Beau travail ! " + stats.currentStreak + " jours consécutifs d'apprentissage. Essayez d'atteindre 7 jours pour une semaine complète !"
@@ -539,41 +546,10 @@ export const StatsView: React.FC = () => {
   );
 };
 
-// Hook pour marquer une leçon comme complétée (à utiliser dans GrammarView)
+// Hook pour marquer une leçon comme complétée (OBSOLÈTE : Utiliser useGrammar)
+/*
 export const useCompletedLessons = () => {
-  const markLessonCompleted = (topicId: string) => {
-    const savedStats = localStorage.getItem('grammarStats');
-    const stats: UserStats = savedStats ? JSON.parse(savedStats) : defaultStats;
-    
-    if (!stats.completedLessons.includes(topicId)) {
-      stats.completedLessons.push(topicId);
-      
-      // Mettre à jour l'historique quotidien
-      const today = new Date().toISOString().split('T')[0];
-      const todayIndex = stats.dailyHistory.findIndex(d => d.date === today);
-      if (todayIndex >= 0) {
-        if (!stats.dailyHistory[todayIndex].lessonsCompleted.includes(topicId)) {
-          stats.dailyHistory[todayIndex].lessonsCompleted.push(topicId);
-        }
-      } else {
-        stats.dailyHistory.push({
-          date: today,
-          timeSpent: 0,
-          lessonsCompleted: [topicId]
-        });
-      }
-      
-      localStorage.setItem('grammarStats', JSON.stringify(stats));
-    }
-  };
-
-  const isLessonCompleted = (topicId: string) => {
-    const savedStats = localStorage.getItem('grammarStats');
-    if (!savedStats) return false;
-    const stats: UserStats = JSON.parse(savedStats);
-    return stats.completedLessons.includes(topicId);
-  };
-
-  return { markLessonCompleted, isLessonCompleted };
+  // ... (Code déplacé dans GrammarContext)
 };
+*/
 

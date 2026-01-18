@@ -2,7 +2,7 @@
 import { ThemeContent } from '../types.ts';
 import { presentationContent } from './vocabulary/presentation.ts';
 import { renseignementsContent } from './vocabulary/renseignements.ts';
-import { decrirePersonnesContent } from './vocabulary/decrire-personnes/index.ts';
+import { decrirePersonnesContent } from './vocabulary/decrire-personnes.ts';
 import { decrireObjetsContent } from './vocabulary/decrire-objets/index.ts';
 import { emotionsContent } from './vocabulary/emotions/index.ts';
 import { corpsHumainContent } from './vocabulary/corps-humain/index.ts';

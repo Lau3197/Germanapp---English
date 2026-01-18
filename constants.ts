@@ -35,7 +35,7 @@ export const THEMES: Theme[] = [
     name: 'Les émotions',
     icon: '😊',
     description: 'Joie, tristesse, fureur, peur et sentiments.',
-    subThemes: ['Joie & Bonheur', 'Tristesse', 'Colère', 'Peur & Inquiétude', 'Surprise', 'Autres']
+    subThemes: ['Joie & Bonheur', 'Tristesse', 'Colère', 'Peur & Inquiétude', 'Surprise', 'Goûts & Préférences', 'Autres']
   },
   {
     id: 'corps-humain',
