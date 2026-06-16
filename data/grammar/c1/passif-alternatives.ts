@@ -1,78 +1,352 @@
-
 import { GrammarSection } from '../../../types';
 
 export const passifAlternativesC1: GrammarSection = {
-  title: "5.3 Le Passif et toutes ses Alternatives (Passiversatzformen)",
+  title: "5.3 The Passive and Its Alternatives (Passiversatzformen)",
   topics: [
     {
       id: "c1-5-3",
       title: "5.3 Introduction",
-      content: "Au niveau C1, vous devez maîtriser toutes les manières alternatives d'exprimer une idée passive pour éviter les répétitions et varier votre style.\n\nVous connaissez déjà le passif avec **werden** (passif d'action) et **sein** (passif d'état). Le C1 exige de connaître et d'utiliser toutes les alternatives pour exprimer le passif de manière élégante et variée.",
+      content: `At C1 level, you should be able to express passive meaning in several ways. This helps you avoid repetition and choose the right register.
+
+You already know the standard passive with **werden** and the state passive with **sein**. C1 requires you to use passive alternatives: **sich lassen**, **sein + zu**, adjectives in **-bar/-lich**, and impersonal **man**.`,
       examples: [
-        { de: "Passif standard: Das Problem kann gelöst werden. → Alternative: Das Problem lässt sich leicht lösen.", fr: "Le problème peut être résolu.", note: "Alternative au passif avec sich lassen." }
+        { de: "Passiv: Das Problem kann gelöst werden. -> Alternative: Das Problem lässt sich leicht lösen.", fr: "The problem can be solved easily.", note: "Alternative with sich lassen." }
       ]
     },
     {
       id: "c1-5-3-1",
-      title: "5.3.1 Passif avec 'sich lassen' + Infinitif (Possibilité)",
-      content: "La construction **sich lassen + Infinitif** exprime une **possibilité** passive de manière élégante.\n\n### Structure\n\n**Passif standard (B2)** :\n• Das Problem **kann gelöst werden**.\n(Le problème **peut être résolu**.)\n\n**Alternative avec sich lassen (C1)** :\n• Das Problem **lässt sich leicht lösen**.\n(Le problème **se laisse facilement résoudre** / Le problème peut être résolu facilement.)\n\n### Formation\n\n**Structure** : Subjet + sich lassen + (adverbe) + Infinitif\n\n**Conjugaison de sich lassen** :\n| Personne | Conjugaison |\n|---|---|\n| ich | Das lässt sich... |\n| du | Das lässt dich... (rare) |\n| er/sie/es | Das **lässt sich** lösen |\n| wir | Das lässt uns... (rare) |\n| ihr | Das lässt euch... (rare) |\n| sie/Sie | Das **lässt sich** lösen |\n\n**Attention** : \"sich lassen\" est **impersonnel** au passif, donc on utilise principalement la 3ème personne du singulier.\n\n### Exemples de transformation\n\n**Exemple 1** :\n• Passif : Diese Frage **kann beantwortet werden**.\n• Alternative : Diese Frage **lässt sich beantworten**.\n(Cette question peut être répondue.)\n\n**Exemple 2** :\n• Passif : Das Problem **kann leicht gelöst werden**.\n• Alternative : Das Problem **lässt sich leicht lösen**.\n(Le problème peut être facilement résolu.)\n\n**Exemple 3** :\n• Passif : Diese Aufgabe **kann schnell erledigt werden**.\n• Alternative : Diese Aufgabe **lässt sich schnell erledigen**.\n(Cette tâche peut être rapidement accomplie.)\n\n### Verbes courants avec sich lassen\n\n| Verbe | Passif standard | Alternative mit sich lassen |\n|---|---|---|\n| lösen | kann gelöst werden | **lässt sich lösen** |\n| beantworten | kann beantwortet werden | **lässt sich beantworten** |\n| erledigen | kann erledigt werden | **lässt sich erledigen** |\n| erklären | kann erklärt werden | **lässt sich erklären** |\n| vermeiden | kann vermieden werden | **lässt sich vermeiden** |\n| finden | kann gefunden werden | **lässt sich finden** |\n\n### Nuances de sens\n\n**sich lassen** exprime :\n- Une **possibilité objective**\n- Une **faisabilité**\n- Parfois une nuance de **facilité**\n\n**Comparaison** :\n• Das Problem **kann gelöst werden**. (possibilité générale)\n• Das Problem **lässt sich leicht lösen**. (possibilité + facilité)\n\n### Pièges à éviter\n\n**Erreur 1** : Oublier \"sich\"\n• Faux : Das Problem **lässt lösen** ❌\n• Correct : Das Problem **lässt sich lösen** ✅\n\n**Erreur 2** : Utiliser la mauvaise personne\n• Faux : Ich **lasse mich** lösen ❌\n• Correct : Das **lässt sich** lösen ✅\n\n**Erreur 3** : Confondre avec le sens actif de lassen\n• Actif : Ich **lasse** das Problem lösen. (Je fais résoudre le problème)\n• Passif : Das Problem **lässt sich** lösen. (Le problème peut être résolu)",
+      title: "5.3.1 Passive Alternative with sich lassen + Infinitive",
+      content: `The construction **sich lassen + infinitive** expresses passive **possibility** in an elegant and natural way.
+
+### Structure
+Standard passive:
+- Das Problem **kann gelöst werden**.
+
+Alternative:
+- Das Problem **lässt sich leicht lösen**.
+
+### Formation
+**Subject + lässt/lassen + sich + adverb/complement + infinitive**
+
+In passive-like use, this structure is mostly used in the third person:
+| Number | Example |
+|---|---|
+| Singular | Das Problem **lässt sich** lösen. |
+| Plural | Die Probleme **lassen sich** lösen. |
+
+### Transformations
+- Diese Frage **kann beantwortet werden**.
+  -> Diese Frage **lässt sich beantworten**.
+
+- Das Problem **kann leicht gelöst werden**.
+  -> Das Problem **lässt sich leicht lösen**.
+
+- Diese Aufgabe **kann schnell erledigt werden**.
+  -> Diese Aufgabe **lässt sich schnell erledigen**.
+
+### Common verbs
+| Verb | Standard passive | Alternative |
+|---|---|---|
+| lösen | kann gelöst werden | **lässt sich lösen** |
+| beantworten | kann beantwortet werden | **lässt sich beantworten** |
+| erledigen | kann erledigt werden | **lässt sich erledigen** |
+| erklären | kann erklärt werden | **lässt sich erklären** |
+| vermeiden | kann vermieden werden | **lässt sich vermeiden** |
+| finden | kann gefunden werden | **lässt sich finden** |
+
+### Meaning
+**sich lassen** expresses:
+- objective possibility
+- feasibility
+- sometimes ease, especially with adverbs such as **leicht**, **gut**, **problemlos**
+
+Compare:
+- Das Problem **kann gelöst werden**. = general possibility
+- Das Problem **lässt sich leicht lösen**. = possibility plus ease
+
+### Common traps
+Incorrect: Das Problem **lässt lösen**.
+Correct: Das Problem **lässt sich lösen**.
+
+Incorrect: Ich **lasse mich** lösen.
+Correct: Das **lässt sich** lösen.
+
+Active **lassen** is different:
+- Ich **lasse** das Problem lösen. = I have the problem solved by someone.
+- Das Problem **lässt sich** lösen. = The problem can be solved.`,
       examples: [
-        { de: "Das Problem lässt sich leicht lösen.", fr: "Le problème peut être facilement résolu.", note: "Possibilité passive avec sich lassen." },
-        { de: "Diese Frage lässt sich beantworten.", fr: "Cette question peut être répondue.", note: "Alternative élégante au passif." },
-        { de: "Die Aufgabe lässt sich schnell erledigen.", fr: "La tâche peut être rapidement accomplie.", note: "Avec adverbe." },
-        { de: "Das lässt sich nicht vermeiden.", fr: "Cela ne peut pas être évité.", note: "Avec négation." },
-        { de: "Dieses Buch lässt sich gut lesen.", fr: "Ce livre se lit bien.", note: "Verbe à préfixe séparable." }
+        { de: "Das Problem lässt sich leicht lösen.", fr: "The problem can be solved easily.", note: "Passive possibility with sich lassen." },
+        { de: "Diese Frage lässt sich beantworten.", fr: "This question can be answered.", note: "Elegant passive alternative." },
+        { de: "Die Aufgabe lässt sich schnell erledigen.", fr: "The task can be completed quickly.", note: "With an adverb." },
+        { de: "Das lässt sich nicht vermeiden.", fr: "That cannot be avoided.", note: "With negation." },
+        { de: "Dieses Buch lässt sich gut lesen.", fr: "This book is easy to read.", note: "The construction expresses readability." }
       ]
     },
     {
       id: "c1-5-3-2",
-      title: "5.3.2 Construction avec 'sein + zu + Infinitif' (Nécessité ou Possibilité)",
-      content: "La construction **sein + zu + Infinitif** exprime une **nécessité** ou une **possibilité** passive de manière très formelle.\n\n### Structure\n\n**Passif avec müssen/können (B2)** :\n• Diese Aufgabe **muss bis morgen erledigt werden**.\n(Cette tâche **doit être accomplie** pour demain.)\n\n**Alternative avec sein + zu (C1)** :\n• Diese Aufgabe **ist bis morgen zu erledigen**.\n(Cette tâche **est à accomplir** pour demain.)\n\n### Formation\n\n**Structure** : Subjet + sein + (compléments) + zu + Infinitif\n\n**Conjugaison** :\n| Personne | Conjugaison | Exemple |\n|---|---|---|\n| ich | bin zu... | Ich bin zu informieren. |\n| du | bist zu... | Du bist zu benachrichtigen. |\n| er/sie/es | **ist zu** erledigen | Die Aufgabe **ist zu** erledigen. |\n| wir | sind zu... | Wir sind zu prüfen. |\n| ihr | seid zu... | Ihr seid zu benachrichtigen. |\n| sie/Sie | **sind zu** erledigen | Die Aufgaben **sind zu** erledigen. |\n\n### Sens : Nécessité ou Possibilité\n\n**Nécessité (müssen)** :\n• Diese Aufgabe **ist zu erledigen**. (= Diese Aufgabe muss erledigt werden.)\n(Cette tâche doit être accomplie.)\n\n**Possibilité (können)** :\n• Das Problem **ist zu lösen**. (= Das Problem kann gelöst werden.)\n(Le problème peut être résolu.)\n\n**Le contexte détermine le sens** :\n- Si il y a un délai ou une obligation → nécessité\n- Si il y a une possibilité objective → possibilité\n\n### Exemples de transformation\n\n**Nécessité** :\n• B2 : Das Dokument **muss bis morgen eingereicht werden**.\n• C1 : Das Dokument **ist bis morgen einzureichen**.\n(Le document doit être soumis pour demain.)\n\n**Possibilité** :\n• B2 : Diese Frage **kann leicht beantwortet werden**.\n• C1 : Diese Frage **ist leicht zu beantworten**.\n(Cette question peut être facilement répondue.)\n\n### Compléments avec sein + zu\n\n**Compléments temporels** :\n• Die Aufgabe **ist bis morgen zu erledigen**.\n• Das Dokument **ist sofort zu prüfen**.\n\n**Adverbes de manière** :\n• Das Problem **ist leicht zu lösen**.\n• Diese Frage **ist schnell zu beantworten**.\n\n**Compléments prépositionnels** :\n• Die Aufgabe **ist von allen zu erledigen**.\n• Das Problem **ist mit Geduld zu lösen**.\n\n### Verbes avec préfixe séparable\n\nAvec les verbes à préfixe séparable, \"zu\" se place **entre** le préfixe et le verbe.\n\n**Exemples** :\n• einzureichen (soumettre) → Das Dokument ist **einzureichen**.\n• abzugeben (remettre) → Das Formular ist **abzugeben**.\n• auszufüllen (remplir) → Der Antrag ist **auszufüllen**.\n\n### Comparaison avec autres structures\n\n| Structure | Exemple | Niveau |\n|---|---|---|\n| Passif standard | Das Problem **kann gelöst werden**. | B2 |\n| sein + zu | Das Problem **ist zu lösen**. | C1 (formel) |\n| sich lassen | Das Problem **lässt sich lösen**. | C1 (courant) |\n| Adjectif -bar | Das Problem ist **lösbar**. | B2 |\n\n### Pièges à éviter\n\n**Erreur 1** : Oublier \"zu\"\n• Faux : Die Aufgabe **ist erledigen** ❌\n• Correct : Die Aufgabe **ist zu erledigen** ✅\n\n**Erreur 2** : Mauvais placement de \"zu\" avec préfixe séparable\n• Faux : Das Dokument ist **zu einzureichen** ❌\n• Correct : Das Dokument ist **einzureichen** ✅\n\n**Erreur 3** : Confondre sens nécessité/possibilité\n• Contexte d'obligation : Die Aufgabe **ist zu erledigen** (doit être accomplie)\n• Contexte de possibilité : Das Problem **ist zu lösen** (peut être résolu)",
+      title: "5.3.2 sein + zu + Infinitive",
+      content: `The construction **sein + zu + infinitive** expresses passive **necessity** or **possibility** in a formal way.
+
+### Structure
+Standard passive with a modal:
+- Diese Aufgabe **muss bis morgen erledigt werden**.
+
+Alternative:
+- Diese Aufgabe **ist bis morgen zu erledigen**.
+
+### Formation
+**Subject + sein + complements + zu + infinitive**
+
+| Subject | Example |
+|---|---|
+| singular | Die Aufgabe **ist zu** erledigen. |
+| plural | Die Aufgaben **sind zu** erledigen. |
+
+### Meaning: necessity or possibility
+Necessity:
+- Diese Aufgabe **ist zu erledigen**. = must be completed
+
+Possibility:
+- Das Problem **ist zu lösen**. = can be solved
+
+The context decides the meaning:
+- deadline, rule, requirement -> necessity
+- objective feasibility -> possibility
+
+### Transformations
+Necessity:
+- Das Dokument **muss bis morgen eingereicht werden**.
+- Das Dokument **ist bis morgen einzureichen**.
+
+Possibility:
+- Diese Frage **kann leicht beantwortet werden**.
+- Diese Frage **ist leicht zu beantworten**.
+
+### Complements
+Time:
+- Die Aufgabe **ist bis morgen zu erledigen**.
+- Das Dokument **ist sofort zu prüfen**.
+
+Manner:
+- Das Problem **ist leicht zu lösen**.
+- Diese Frage **ist schnell zu beantworten**.
+
+Prepositional complements:
+- Die Aufgabe **ist von allen zu erledigen**.
+- Das Problem **ist mit Geduld zu lösen**.
+
+### Separable-prefix verbs
+With separable-prefix verbs, **zu** is inserted between the prefix and the verb:
+- einreichen -> **einzureichen**
+- abgeben -> **abzugeben**
+- ausfüllen -> **auszufüllen**
+
+### Comparison
+| Structure | Example | Style |
+|---|---|---|
+| Standard passive | Das Problem **kann gelöst werden**. | neutral |
+| sein + zu | Das Problem **ist zu lösen**. | formal |
+| sich lassen | Das Problem **lässt sich lösen**. | natural, common |
+| -bar adjective | Das Problem ist **lösbar**. | concise |
+
+### Common traps
+Incorrect: Die Aufgabe **ist erledigen**.
+Correct: Die Aufgabe **ist zu erledigen**.
+
+Incorrect: Das Dokument ist **zu einzureichen**.
+Correct: Das Dokument ist **einzureichen**.`,
       examples: [
-        { de: "Diese Aufgabe ist bis morgen zu erledigen.", fr: "Cette tâche doit être accomplie pour demain.", note: "Nécessité - très formel." },
-        { de: "Das Problem ist leicht zu lösen.", fr: "Le problème peut être facilement résolu.", note: "Possibilité avec adverbe." },
-        { de: "Das Dokument ist sofort zu prüfen.", fr: "Le document doit être vérifié immédiatement.", note: "Nécessité avec complément temporel." },
-        { de: "Der Antrag ist auszufüllen und einzureichen.", fr: "La demande doit être remplie et soumise.", note: "Avec préfixes séparables." },
-        { de: "Die Unterlagen sind von allen zu prüfen.", fr: "Les documents doivent être vérifiés par tous.", note: "Avec complément (von + Datif)." }
+        { de: "Diese Aufgabe ist bis morgen zu erledigen.", fr: "This task must be completed by tomorrow.", note: "Necessity; formal style." },
+        { de: "Das Problem ist leicht zu lösen.", fr: "The problem can be solved easily.", note: "Possibility with an adverb." },
+        { de: "Das Dokument ist sofort zu prüfen.", fr: "The document must be checked immediately.", note: "Necessity with a time complement." },
+        { de: "Der Antrag ist auszufüllen und einzureichen.", fr: "The application must be filled in and submitted.", note: "Separable-prefix verbs." },
+        { de: "Die Unterlagen sind von allen zu prüfen.", fr: "The documents must be checked by everyone.", note: "With von + dative." }
       ]
     },
     {
       id: "c1-5-3-3",
-      title: "5.3.3 Adjectifs en '-bar' ou '-lich' (Passif implicite)",
-      content: "Les adjectifs en **-bar** ou **-lich** expriment une **possibilité passive** de manière concise et élégante.\n\n### Structure\n\n**Passif standard (B2)** :\n• Das Wasser **kann getrunken werden**.\n(L'eau **peut être bue**.)\n\n**Alternative avec adjectif -bar (C1)** :\n• Das Wasser **ist trinkbar**.\n(L'eau **est potable**.)\n\n### Adjectifs en -bar\n\n**Formation** : Verbe (racine) + **-bar**\n\n**Sens** : \"qui peut être...\" / \"...able\"\n\n| Verbe | Adjectif -bar | Sens |\n|---|---|---|\n| trinken | **trinkbar** | potable (qui peut être bu) |\n| lesen | **lesbar** | lisible (qui peut être lu) |\n| lösen | **lösbar** | soluble (qui peut être résolu) |\n| vermeiden | **vermeidbar** | évitable |\n| ersetzen | **ersetzbar** | remplaçable |\n| verstehen | **verständlich** | compréhensible |\n\n### Exemples de transformation\n\n**Exemple 1** :\n• Passif : Das Wasser **kann getrunken werden**.\n• Adjectif : Das Wasser **ist trinkbar**.\n(L'eau est potable.)\n\n**Exemple 2** :\n• Passif : Die Schrift **kann nicht gelesen werden**.\n• Adjectif : Die Schrift **ist unlesbar**.\n(L'écriture est illisible.)\n\n**Exemple 3** :\n• Passif : Dieses Problem **kann gelöst werden**.\n• Adjectif : Dieses Problem **ist lösbar**.\n(Ce problème est soluble.)\n\n### Adjectifs en -lich\n\n**Formation** : Nom/Verbe + **-lich**\n\n**Sens** : Souvent \"qui peut être...\" ou \"relatif à...\"\n\n| Base | Adjectif -lich | Sens |\n|---|---|---|\n| vergessen | **unvergesslich** | inoubliable |\n| verstehen | **verständlich** | compréhensible |\n| vergleichen | **vergleichlich** | comparable |\n| glauben | **glaubwürdig** | crédible (avec -würdig) |\n\n### Exemples avec -lich\n\n**Exemple 1** :\n• Passif : Eine Reise, **die nicht vergessen werden kann**.\n• Adjectif : Eine **unvergessliche** Reise.\n(Un voyage inoubliable.)\n\n**Exemple 2** :\n• Passif : Der Text **kann verstanden werden**.\n• Adjectif : Der Text **ist verständlich**.\n(Le texte est compréhensible.)\n\n### Déclinaison des adjectifs en -bar/-lich\n\nCes adjectifs se déclinent **comme des adjectifs normaux**.\n\n| Cas | Masculin | Féminin | Neutre |\n|---|---|---|---|\n| Nominatif | ein **trinkbares** Wasser | eine **trinkbare** Flüssigkeit | ein **trinkbares** Getränk |\n| Accusatif | ein **trinkbares** Wasser | eine **trinkbare** Flüssigkeit | ein **trinkbares** Getränk |\n| Datif | einem **trinkbaren** Wasser | einer **trinkbaren** Flüssigkeit | einem **trinkbaren** Getränk |\n\n### Négation\n\n**Avec un-** :\n• trinkbar → **untrinkbar** (non potable)\n• lesbar → **unlesbar** (illisible)\n• lösbar → **unlösbar** (insoluble)\n• vergesslich → **unvergesslich** (inoubliable)\n\n### Comparaison des structures\n\n| Structure | Exemple | Niveau |\n|---|---|---|\n| Passif | Das Wasser **kann getrunken werden**. | B2 |\n| Adjectif -bar | Das Wasser **ist trinkbar**. | C1 (courant) |\n| sein + zu | Das Wasser **ist zu trinken**. | C1 (formel) |\n| sich lassen | Das Wasser **lässt sich trinken**. | C1 |\n\n### Quand utiliser -bar ou -lich ?\n\n**-bar** : Principalement avec des verbes d'action\n- trinken → trinkbar\n- lesen → lesbar\n- lösen → lösbar\n\n**-lich** : Souvent avec des noms ou des concepts\n- vergessen → unvergesslich\n- verstehen → verständlich\n- Vergnügen → vergnüglich\n\n### Pièges à éviter\n\n**Erreur 1** : Confondre -bar et -lich\n• Faux : Das Wasser ist **trinklich** ❌\n• Correct : Das Wasser ist **trinkbar** ✅\n\n**Erreur 2** : Oublier la négation\n• Faux : Das Wasser ist **trinkbar nicht** ❌\n• Correct : Das Wasser ist **untrinkbar** ✅",
+      title: "5.3.3 Adjectives in -bar or -lich",
+      content: `Adjectives in **-bar** and some adjectives in **-lich** can express passive possibility in a compact way.
+
+### -bar adjectives
+Formation: verb stem + **-bar**
+
+Meaning: "can be..." / "-able"
+
+| Verb | Adjective | Meaning |
+|---|---|---|
+| trinken | **trinkbar** | drinkable |
+| lesen | **lesbar** | readable |
+| lösen | **lösbar** | solvable |
+| vermeiden | **vermeidbar** | avoidable |
+| ersetzen | **ersetzbar** | replaceable |
+| erklären | **erklärbar** | explainable |
+
+### Transformations
+- Das Wasser **kann getrunken werden**.
+- Das Wasser **ist trinkbar**.
+
+- Die Schrift **kann nicht gelesen werden**.
+- Die Schrift **ist unlesbar**.
+
+- Dieses Problem **kann gelöst werden**.
+- Dieses Problem **ist lösbar**.
+
+### -lich adjectives
+Some **-lich** adjectives also express a similar idea, but they are less mechanically predictable than **-bar** forms.
+
+Examples:
+- **verständlich** = understandable
+- **unvergesslich** = unforgettable
+- **erträglich** = bearable/tolerable
+- **vergleichbar** = comparable (note: this one uses -bar)
+
+### Declension
+These forms decline like normal adjectives:
+| Case | Masculine | Feminine | Neuter |
+|---|---|---|---|
+| Nominative | ein **lesbarer** Text | eine **lesbare** Schrift | ein **lesbares** Dokument |
+| Accusative | einen **lesbaren** Text | eine **lesbare** Schrift | ein **lesbares** Dokument |
+| Dative | einem **lesbaren** Text | einer **lesbaren** Schrift | einem **lesbaren** Dokument |
+
+### Negation with un-
+- trinkbar -> **untrinkbar**
+- lesbar -> **unlesbar**
+- lösbar -> **unlösbar**
+- vergesslich -> **unvergesslich**
+
+### Comparison
+| Structure | Example | Style |
+|---|---|---|
+| Passive | Das Wasser **kann getrunken werden**. | neutral |
+| -bar adjective | Das Wasser **ist trinkbar**. | concise |
+| sein + zu | Das Wasser **ist zu trinken**. | formal/context-dependent |
+| sich lassen | Das Wasser **lässt sich trinken**. | natural but context-dependent |
+
+### Common traps
+Incorrect: Das Wasser ist **trinklich**.
+Correct: Das Wasser ist **trinkbar**.
+
+Incorrect: Das Wasser ist **trinkbar nicht**.
+Correct: Das Wasser ist **untrinkbar** or **nicht trinkbar**.`,
       examples: [
-        { de: "Das Wasser ist trinkbar.", fr: "L'eau est potable.", note: "Adjectif -bar - possibilité passive." },
-        { de: "Die Schrift ist unlesbar.", fr: "L'écriture est illisible.", note: "Avec négation un-." },
-        { de: "Dieses Problem ist lösbar.", fr: "Ce problème est soluble.", note: "Possibilité passive concise." },
-        { de: "Eine unvergessliche Reise.", fr: "Un voyage inoubliable.", note: "Adjectif -lich." },
-        { de: "Der Text ist verständlich geschrieben.", fr: "Le texte est écrit de manière compréhensible.", note: "Adjectif -lich avec participe." }
+        { de: "Das Wasser ist trinkbar.", fr: "The water is drinkable.", note: "-bar adjective with passive possibility." },
+        { de: "Die Schrift ist unlesbar.", fr: "The handwriting is illegible.", note: "Negation with un-." },
+        { de: "Dieses Problem ist lösbar.", fr: "This problem is solvable.", note: "Concise passive possibility." },
+        { de: "Eine unvergessliche Reise.", fr: "An unforgettable trip.", note: "-lich adjective." },
+        { de: "Der Text ist verständlich geschrieben.", fr: "The text is written clearly.", note: "-lich adjective with a participle." }
       ]
     },
     {
       id: "c1-5-3-4",
-      title: "5.3.4 Utilisation du pronom 'man' (Alternative passive)",
-      content: "Le pronom **man** permet d'exprimer une idée passive de manière impersonnelle et courante.\n\n### Structure\n\n**Passif standard (B2)** :\n• Hier **wurde** ein Unfall **gemeldet**.\n(Un accident **a été signalé** hier.)\n\n**Alternative avec man (C1)** :\n• Hier **meldete man** einen Unfall.\n(On **a signalé** un accident hier.)\n\n### Formation\n\n**Structure** : man + verbe actif\n\n**Conjugaison** :\nLe pronom **man** se conjugue comme **er** (3ème personne du singulier).\n\n| Temps | Conjugaison | Exemple |\n|---|---|---|\n| Présent | man + verbe présent | **Man sagt**, dass... |\n| Passé | man + verbe au passé | **Man meldete** einen Unfall. |\n| Parfait | man hat + Partizip II | **Man hat** es **gemeldet**. |\n| Futur | man wird + Infinitif | **Man wird** es **prüfen**. |\n\n### Exemples de transformation\n\n**Exemple 1** :\n• Passif : Es **wurde beschlossen**, die Preise zu erhöhen.\n• Avec man : **Man beschloss**, die Preise zu erhöhen.\n(On a décidé d'augmenter les prix.)\n\n**Exemple 2** :\n• Passif : Hier **wurde** ein neues Gesetz **eingeführt**.\n• Avec man : Hier **führte man** ein neues Gesetz **ein**.\n(Ici, on a introduit une nouvelle loi.)\n\n**Exemple 3** :\n• Passif : Es **wird oft gesagt**, dass...\n• Avec man : **Man sagt oft**, dass...\n(On dit souvent que...)\n\n### Verbes courants avec man\n\n| Passif | Avec man | Sens |\n|---|---|---|\n| Es wurde beschlossen... | **Man beschloss**... | On a décidé... |\n| Es wurde gesagt... | **Man sagte**... | On a dit... |\n| Es wird geglaubt... | **Man glaubt**... | On croit... |\n| Es wurde gemeldet... | **Man meldete**... | On a signalé... |\n| Es wird erwartet... | **Man erwartet**... | On s'attend... |\n\n### Nuances de sens\n\n**man** exprime :\n- Une action **impersonnelle**\n- Une **généralité** (on, les gens)\n- Parfois une **autorité** (on = les autorités)\n\n**Différence avec le passif** :\n• Passif : Plus impersonnel, met l'accent sur l'action\n• man : Plus dynamique, suggère un agent (même général)\n\n### Comparaison des structures\n\n| Structure | Exemple | Style |\n|---|---|---|\n| Passif impersonnel | Es **wurde beschlossen**... | Formel, impersonnel |\n| man | **Man beschloss**... | Courant, dynamique |\n| Passif avec werden | Es **wird** oft **gesagt**... | Général |\n| man | **Man sagt** oft... | Naturel, courant |\n\n### Quand utiliser 'man' ?\n\n**Utilisez man quand** :\n- Vous voulez un style plus direct et dynamique\n- Vous parlez d'une action générale (les gens, on)\n- Le contexte est oral ou informel\n- Vous voulez éviter la répétition du passif\n\n**Préférez le passif quand** :\n- Le contexte est très formel\n- Vous voulez mettre l'accent sur l'action, pas sur l'agent\n- Le style doit être impersonnel et objectif\n\n### Pièges à éviter\n\n**Erreur 1** : Oublier que man = 3ème personne singulier\n• Faux : **Man** **sagen** oft... ❌\n• Correct : **Man sagt** oft... ✅\n\n**Erreur 2** : Confondre man et une\n• Faux : **Man** (pour désigner une femme) ❌\n• Correct : **Man** est impersonnel, pas genré ✅\n\n**Erreur 3** : Utiliser man dans un contexte trop formel\n• Contexte académique : Es **wurde** festgestellt... ✅\n• Contexte courant : **Man** stellte fest... ✅",
+      title: "5.3.4 Impersonal man as a Passive Alternative",
+      content: `The pronoun **man** expresses an action impersonally. It is not a passive form, but it often replaces passive sentences in a more natural or dynamic style.
+
+### Structure
+Standard passive:
+- Hier **wurde** ein Unfall **gemeldet**.
+
+Alternative with man:
+- Hier **meldete man** einen Unfall.
+
+### Conjugation
+**man** takes the verb in the third person singular, like **er/sie/es**.
+
+| Tense | Pattern | Example |
+|---|---|---|
+| Present | man + present verb | **Man sagt**, dass... |
+| Preterite | man + preterite verb | **Man meldete** einen Unfall. |
+| Perfect | man hat + Partizip II | **Man hat** es **gemeldet**. |
+| Future | man wird + infinitive | **Man wird** es **prüfen**. |
+
+### Transformations
+- Es **wurde beschlossen**, die Preise zu erhöhen.
+  -> **Man beschloss**, die Preise zu erhöhen.
+
+- Hier **wurde** ein neues Gesetz **eingeführt**.
+  -> Hier **führte man** ein neues Gesetz **ein**.
+
+- Es **wird oft gesagt**, dass...
+  -> **Man sagt oft**, dass...
+
+### Common verbs
+| Passive | With man | Meaning |
+|---|---|---|
+| Es wurde beschlossen... | **Man beschloss**... | A decision was made... |
+| Es wurde gesagt... | **Man sagte**... | People said... |
+| Es wird geglaubt... | **Man glaubt**... | People believe... |
+| Es wurde gemeldet... | **Man meldete**... | It was reported... |
+| Es wird erwartet... | **Man erwartet**... | People expect... |
+
+### Nuance
+**man** can suggest:
+- people in general
+- an unspecified actor
+- an institution or authority, depending on context
+
+Passive: more impersonal, focus on the action.
+man: more active, more dynamic, and often more natural.
+
+### When to use man
+Use **man** when the style should be direct, natural, or spoken, or when a general actor is acceptable.
+
+Prefer the passive when the text must remain very formal, objective, or focused on the action rather than the actor.
+
+### Common traps
+Incorrect: **Man sagen** oft...
+Correct: **Man sagt** oft...
+
+Do not read **man** as a gendered noun. It is an impersonal pronoun.`,
       examples: [
-        { de: "Man sagt oft, dass Deutsch schwer ist.", fr: "On dit souvent que l'allemand est difficile.", note: "Avec man - style naturel." },
-        { de: "Man beschloss, die Preise zu erhöhen.", fr: "On a décidé d'augmenter les prix.", note: "Alternative au passif avec man." },
-        { de: "Hier meldete man einen Unfall.", fr: "Ici, on a signalé un accident.", note: "Passé avec man." },
-        { de: "Man erwartet, dass sich die Situation verbessert.", fr: "On s'attend à ce que la situation s'améliore.", note: "Avec proposition infinitive." },
-        { de: "Man glaubt, dass es besser wird.", fr: "On croit que cela va s'améliorer.", note: "Avec dass-Satz." }
+        { de: "Man sagt oft, dass Deutsch schwer ist.", fr: "People often say that German is difficult.", note: "Natural impersonal style." },
+        { de: "Man beschloss, die Preise zu erhöhen.", fr: "A decision was made to raise prices.", note: "Alternative to a passive sentence." },
+        { de: "Hier meldete man einen Unfall.", fr: "An accident was reported here.", note: "Preterite with man." },
+        { de: "Man erwartet, dass sich die Situation verbessert.", fr: "People expect the situation to improve.", note: "With a dass-clause." },
+        { de: "Man glaubt, dass es besser wird.", fr: "People believe it will get better.", note: "General belief." }
       ]
     },
     {
       id: "c1-5-3-5",
-      title: "5.3.5 Récapitulatif et Comparaison des Alternatives",
-      content: "Voici un tableau récapitulatif de toutes les alternatives au passif pour varier votre style au niveau C1.\n\n### Tableau comparatif complet\n\n| Structure | Exemple | Niveau | Style | Usage |\n|---|---|---|---|---|\n| **Passif standard** | Das Problem **kann gelöst werden**. | B2 | Formel | Général |\n| **sich lassen** | Das Problem **lässt sich lösen**. | C1 | Courant | Possibilité |\n| **sein + zu** | Das Problem **ist zu lösen**. | C1 | Très formel | Nécessité/Possibilité |\n| **Adjectif -bar** | Das Problem ist **lösbar**. | B2-C1 | Courant | Possibilité |\n| **Adjectif -lich** | Eine **unvergessliche** Reise. | B2-C1 | Littéraire | Qualité |\n| **man** | **Man** löst das Problem. | C1 | Naturel | Action générale |\n\n### Exemples comparatifs pour un même sens\n\n**Sens : \"Le problème peut être résolu\"**\n\n1. Passif standard : Das Problem **kann gelöst werden**.\n2. sich lassen : Das Problem **lässt sich lösen**.\n3. sein + zu : Das Problem **ist zu lösen**.\n4. Adjectif -bar : Das Problem ist **lösbar**.\n5. man : **Man kann** das Problem lösen.\n\n**Tous ces exemples expriment essentiellement le même sens, mais avec des nuances de style différentes.**\n\n### Choix selon le contexte\n\n**Contexte formel/académique** :\n- sein + zu (très formel)\n- Passif standard\n- Adjectifs -bar/-lich\n\n**Contexte courant** :\n- sich lassen\n- man\n- Adjectifs -bar\n\n**Contexte oral** :\n- man\n- sich lassen\n- Adjectifs -bar\n\n### Règle d'or\n\n**Au niveau C1, variez !** N'utilisez pas toujours le même passif. Alternez entre les différentes structures pour créer un style riche et naturel.",
+      title: "5.3.5 Summary and Comparison",
+      content: `C1 style depends on being able to choose the right passive alternative.
+
+### Complete comparison
+| Structure | Example | Style | Typical use |
+|---|---|---|---|
+| Standard passive | Das Problem **kann gelöst werden**. | neutral/formal | general passive |
+| **sich lassen** | Das Problem **lässt sich lösen**. | natural | possibility/feasibility |
+| **sein + zu** | Das Problem **ist zu lösen**. | very formal | necessity or possibility |
+| **-bar** adjective | Das Problem ist **lösbar**. | concise | possibility |
+| **-lich** adjective | Eine **unvergessliche** Reise. | descriptive/literary | quality |
+| **man** | **Man** löst das Problem. | active/natural | general action |
+
+### Same meaning, different style
+"The problem can be solved":
+1. Das Problem **kann gelöst werden**.
+2. Das Problem **lässt sich lösen**.
+3. Das Problem **ist zu lösen**.
+4. Das Problem ist **lösbar**.
+5. **Man kann** das Problem lösen.
+
+### Choosing by context
+Formal or academic:
+- standard passive
+- sein + zu
+- -bar/-lich adjectives
+
+Natural or spoken:
+- sich lassen
+- man
+- -bar adjectives
+
+Golden rule: vary the structure. A C1 text should not repeat the same passive pattern in every sentence.`,
       examples: [
-        { de: "Passif: Das Problem kann gelöst werden.", fr: "Le problème peut être résolu.", note: "Passif standard." },
-        { de: "sich lassen: Das Problem lässt sich lösen.", fr: "Le problème peut être résolu.", note: "Alternative avec sich lassen." },
-        { de: "sein + zu: Das Problem ist zu lösen.", fr: "Le problème est à résoudre.", note: "Alternative avec sein + zu." },
-        { de: "Adjectif: Das Problem ist lösbar.", fr: "Le problème est soluble.", note: "Alternative avec adjectif -bar." },
-        { de: "man: Man kann das Problem lösen.", fr: "On peut résoudre le problème.", note: "Alternative avec man." }
+        { de: "Passiv: Das Problem kann gelöst werden.", fr: "The problem can be solved.", note: "Standard passive." },
+        { de: "sich lassen: Das Problem lässt sich lösen.", fr: "The problem can be solved.", note: "Alternative with sich lassen." },
+        { de: "sein + zu: Das Problem ist zu lösen.", fr: "The problem is to be solved / can be solved.", note: "Alternative with sein + zu." },
+        { de: "Adjektiv: Das Problem ist lösbar.", fr: "The problem is solvable.", note: "Alternative with a -bar adjective." },
+        { de: "man: Man kann das Problem lösen.", fr: "One can solve the problem.", note: "Active impersonal alternative." }
       ]
     }
   ]
 };
-
-

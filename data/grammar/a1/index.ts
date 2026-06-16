@@ -9,8 +9,8 @@ import { homonymesGenre } from './homonymes-genre';
 
 export const a1Grammar: GrammarLevel = {
   level: LanguageLevel.A1,
-  title: "Les Fondations",
-  description: "Comprendre et utiliser des expressions familières et quotidiennes, se présenter, poser des questions simples.",
+  title: "Foundations",
+  description: "Understand and use familiar everyday expressions, introduce yourself, and ask simple questions.",
   sections: [
     alphabetPrononciation,
     syntaxeBase,

@@ -2,24 +2,24 @@
 import { GrammarSection } from '../../../types';
 
 export const verbesNomsB1: GrammarSection = {
-  title: "3.4 Verbes et Noms",
+  title: "3.4 Verbs and Nouns",
   topics: [
     {
       id: "b1-4-1",
-      title: "Les Verbes à prépositions fixes",
-      content: "C'est l'un des plus grands défis du niveau B1. Certains verbes sont liés à une préposition et un cas précis qu'il faut apprendre par cœur.\n\n| VERBE + PRÉP. | CAS | TRADUCTION |\n|---|---|---|\n| **warten auf** | Accusatif | attendre |\n| **sich freuen auf** | Accusatif | se réjouir de (futur) |\n| **sich freuen über** | Accusatif | se réjouir de (présent/passé) |\n| **träumen von** | Datif | rêver de |\n| **sprechen mit** | Datif | parler avec |\n| **denken an** | Accusatif | penser à |",
+      title: "Verbs with Fixed Prepositions",
+      content: "This is one of the biggest challenges at B1 level. Some verbs are tied to a specific preposition and case, and they must be learned by heart.\n\n| VERB + PREP. | CASE | TRANSLATION |\n|---|---|---|\n| **warten auf** | Accusative | to wait for |\n| **sich freuen auf** | Accusative | to look forward to (future) |\n| **sich freuen über** | Accusative | to be pleased about (present/past) |\n| **träumen von** | Dative | to dream of/about |\n| **sprechen mit** | Dative | to speak with |\n| **denken an** | Accusative | to think of/about |",
       examples: [
-        { de: "Ich warte **auf den Bus**.", fr: "J'attends le bus.", note: "warten auf + Accusatif." },
-        { de: "Ich träume **von einem Haus**.", fr: "Je rêve d'une maison.", note: "träumen von + Datif." }
+        { de: "Ich warte **auf den Bus**.", fr: "I am waiting for the bus.", note: "warten auf + accusative." },
+        { de: "Ich träume **von einem Haus**.", fr: "I dream of a house.", note: "träumen von + dative." }
       ]
     },
     {
       id: "b1-4-2",
-      title: "Questions avec prépositions (Wo... / Da...)",
-      content: "Pour poser une question ou remplacer un objet lié à une préposition :\n\n• **Wovon** träumst du? (De quoi rêves-tu ?)\n• Ich träume **davon**. (J'en rêve.)\n• **Worauf** wartest du? (Qu'attends-tu ?)\n• Ich warte **darauf**. (Je l'attends.)",
+      title: "Questions with Prepositions (Wo... / Da...)",
+      content: "To ask a question or replace an object linked to a preposition:\n\n• **Wovon** träumst du? (What are you dreaming of?)\n• Ich träume **davon**. (I dream of it.)\n• **Worauf** wartest du? (What are you waiting for?)\n• Ich warte **darauf**. (I am waiting for it.)",
       examples: [
-        { de: "Woran denkst du? - Ich denke an den Urlaub.", fr: "À quoi penses-tu ? - Je pense aux vacances." },
-        { de: "Interessierst du dich dafür?", fr: "Est-ce que tu t'y intéresses ?" }
+        { de: "Woran denkst du? - Ich denke an den Urlaub.", fr: "What are you thinking about? - I am thinking about the holiday." },
+        { de: "Interessierst du dich dafür?", fr: "Are you interested in it?" }
       ]
     }
   ]

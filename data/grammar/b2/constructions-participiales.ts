@@ -2,58 +2,58 @@
 import { GrammarSection } from '../../../types';
 
 export const participialesB2: GrammarSection = {
-  title: "5. Les constructions participiales (Partizipialkonstruktionen)",
+  title: "5. Participial Constructions (Partizipialkonstruktionen)",
   topics: [
     {
       id: "b2-5-1",
-      title: "5.1 Le concept : L'art de la condensation",
-      content: "Les constructions participiales permettent de transformer une **proposition relative** (longue et lourde) en un simple **adjectif étendu** placé devant le nom.\n\n### Pourquoi les utiliser ?\n• **Style soutenu** : Indispensable à l'écrit (journaux, rapports, université).\n• **Densité** : On donne énormément d'informations sans jamais couper le flux de la phrase principale.\n\n### La transformation visuelle\n• *Relativsatz* : Der Mann, **der dort an der Ecke wartet**, ist mein Onkel.\n• *Partizipialkonstruktion* : Der [dort an der Ecke **wartende**] Mann ist mein Onkel.",
+      title: "5.1 The Concept: The Art of Condensation",
+      content: "Participial constructions let you turn a **relative clause** (long and heavy) into a simple **extended adjective** placed before the noun.\n\n### Why use them?\n• **Formal style**: Essential in writing (newspapers, reports, university work).\n• **Density**: You can give a lot of information without interrupting the flow of the main sentence.\n\n### Visual Transformation\n• *Relativsatz*: Der Mann, **der dort an der Ecke wartet**, ist mein Onkel.\n• *Partizipialkonstruktion*: Der [dort an der Ecke **wartende**] Mann ist mein Onkel.",
       examples: [
-        { de: "Die **lachenden** Kinder spielen im Park.", fr: "Les enfants qui rient jouent dans le parc.", note: "Le participe remplace la relative 'die lachen'." }
+        { de: "Die **lachenden** Kinder spielen im Park.", fr: "The laughing children are playing in the park.", note: "The participle replaces the relative clause 'die lachen'." }
       ]
     },
     {
       id: "b2-5-2",
-      title: "5.2 Partizip I : Actif et Simultané",
-      content: "Le Partizip I décrit une action qui se passe **en même temps** que le verbe principal et dont le nom est l'**auteur**.\n\n### Formation\n**Infinitif + 'd' + terminaison d'adjectif**.\n• *laufen* -> laufend- (courant)\n• *arbeiten* -> arbeitend- (travaillant)\n\n### Sens\nToujours **actif**. Si le nom fait l'action, on utilise le Partizip I.",
+      title: "5.2 Partizip I: Active and Simultaneous",
+      content: "Partizip I describes an action that happens **at the same time** as the main verb and whose noun is the **doer**.\n\n### Formation\n**Infinitive + 'd' + adjective ending**.\n• *laufen* -> laufend- (running)\n• *arbeiten* -> arbeitend- (working)\n\n### Meaning\nAlways **active**. If the noun performs the action, use Partizip I.",
       examples: [
-        { de: "Die **singenden** Vögel begrüßen den Morgen.", fr: "Les oiseaux chantants (qui chantent) saluent le matin." },
-        { de: "Ein **sich schnell entwickelndes** Land.", fr: "Un pays qui se développe rapidement." }
+        { de: "Die **singenden** Vögel begrüßen den Morgen.", fr: "The singing birds greet the morning." },
+        { de: "Ein **sich schnell entwickelndes** Land.", fr: "A rapidly developing country." }
       ]
     },
     {
       id: "b2-5-3",
-      title: "5.3 Partizip II : Passif et Terminé",
-      content: "Le Partizip II décrit une action qui est **terminée** ou qui a un sens **passif**.\n\n### Formation\n**Forme du participe passé + terminaison d'adjectif**.\n• *kaufen* -> gekauft- (acheté)\n• *schreiben* -> geschrieben- (écrit)\n\n### Sens\nLe nom subit l'action ou l'action est achevée.",
+      title: "5.3 Partizip II: Passive and Completed",
+      content: "Partizip II describes an action that is **completed** or has a **passive** meaning.\n\n### Formation\n**Past participle form + adjective ending**.\n• *kaufen* -> gekauft- (bought)\n• *schreiben* -> geschrieben- (written)\n\n### Meaning\nThe noun undergoes the action, or the action is complete.",
       examples: [
-        { de: "Das **gestohlene** Fahrrad wurde gefunden.", fr: "Le vélo volé (qui a été volé) a été retrouvé." },
-        { de: "Die **neu eröffnete** Bibliothek ist toll.", fr: "La bibliothèque nouvellement ouverte est superbe." }
+        { de: "Das **gestohlene** Fahrrad wurde gefunden.", fr: "The stolen bicycle was found." },
+        { de: "Die **neu eröffnete** Bibliothek ist toll.", fr: "The newly opened library is great." }
       ]
     },
     {
       id: "b2-5-4",
-      title: "5.4 L'attribut étendu : Le « Sandwich » B2",
-      content: "C'est la structure reine du B2. On insère tous les compléments entre l'article et le participe décliné.\n\n### Structure de la construction\n**[Article] + {Adverbe / Lieu / Temps / Objet} + [Participe décliné] + [NOM]**\n\n### Exemple étape par étape :\n1. La base : *Die Frau* (La femme).\n2. L'action : *Die **arbeitende** Frau* (La femme travaillant).\n3. L'extension : Die [seit zehn Jahren in dieser Firma] **arbeitende** Frau.\n\n**Règle d'or** : Le participe se place TOUJOURS juste avant le nom et prend la terminaison de l'adjectif standard.",
+      title: "5.4 The Extended Attribute: The B2 Sandwich",
+      content: "This is the signature B2 structure. All complements are inserted between the article and the declined participle.\n\n### Construction Structure\n**[Article] + {adverb / place / time / object} + [declined participle] + [NOUN]**\n\n### Step-by-Step Example:\n1. Base: *Die Frau* (the woman).\n2. Action: *Die **arbeitende** Frau* (the working woman).\n3. Extension: Die [seit zehn Jahren in dieser Firma] **arbeitende** Frau.\n\n**Golden rule**: The participle ALWAYS goes right before the noun and takes the standard adjective ending.",
       examples: [
-        { de: "Das [von der Regierung neu verabschiedete] Gesetz.", fr: "La loi nouvellement adoptée par le gouvernement.", note: "Sandwich : Article (Das) -> Détails -> Participe (verabschiedete) -> Nom (Gesetz)." },
-        { de: "Die [heute Morgen gelieferten] Pakete.", fr: "Les colis livrés ce matin." }
+        { de: "Das [von der Regierung neu verabschiedete] Gesetz.", fr: "The law newly passed by the government.", note: "Sandwich: article (Das) -> details -> participle (verabschiedete) -> noun (Gesetz)." },
+        { de: "Die [heute Morgen gelieferten] Pakete.", fr: "The packages delivered this morning." }
       ]
     },
     {
       id: "b2-5-5",
-      title: "5.5 Le Gérondif : 'zu' + Partizip I",
-      content: "Cette structure particulière exprime une **possibilité** ou une **obligation passive** (équivalent de *müssen/können + Passif*).\n\n### Structure\n**zu + Partizip I + terminaison d'adjectif**.\n\n### Sens\n• *Das zu lösende Problem* = Le problème qui doit être résolu / qui peut être résolu.",
+      title: "5.5 The Gerundive: 'zu' + Partizip I",
+      content: "This specific structure expresses a **possibility** or a **passive obligation**, equivalent to *müssen/können + passive*.\n\n### Structure\n**zu + Partizip I + adjective ending**.\n\n### Meaning\n• *Das zu lösende Problem* = The problem that must be solved / can be solved.",
       examples: [
-        { de: "Die **zu erledigenden** Aufgaben.", fr: "Les tâches à accomplir (qui doivent être accomplies).", note: "Très courant dans le monde du travail." },
-        { de: "Ein schwer **zu verstehender** Text.", fr: "Un texte difficile à comprendre." }
+        { de: "Die **zu erledigenden** Aufgaben.", fr: "The tasks to be completed.", note: "Very common in the workplace." },
+        { de: "Ein schwer **zu verstehender** Text.", fr: "A text that is hard to understand." }
       ]
     },
     {
       id: "b2-5-6",
-      title: "5.6 Récapitulatif et terminaisons",
-      content: "Le participe fonctionne exactement comme un **adjectif**. Vous devez donc appliquer les règles de déclinaison de l'adjectif (Faible, Mixte ou Forte) vues en A2/B1.\n\n| Type | Sens | Exemple |\n|---|---|---|\n| **Partizip I** | Actif / Présent | der **lesende** Student |\n| **Partizip II** | Passif / Passé | das **gelesene** Buch |\n| **zu + Part. I** | Obligation / Poss. | das **zu lesende** Buch |",
+      title: "5.6 Summary and Endings",
+      content: "The participle works exactly like an **adjective**. You therefore need to apply the adjective-declension rules (weak, mixed, or strong) learned in A2/B1.\n\n| Type | Meaning | Example |\n|---|---|---|\n| **Partizip I** | Active / present | der **lesende** Student |\n| **Partizip II** | Passive / past | das **gelesene** Buch |\n| **zu + Part. I** | Obligation / possibility | das **zu lesende** Buch |",
       examples: [
-        { de: "Ich sehe den **schlafenden** Hund.", fr: "Je vois le chien qui dort.", note: "Accusatif masculin : terminaison -en." }
+        { de: "Ich sehe den **schlafenden** Hund.", fr: "I see the sleeping dog.", note: "Masculine accusative: -en ending." }
       ]
     }
   ]

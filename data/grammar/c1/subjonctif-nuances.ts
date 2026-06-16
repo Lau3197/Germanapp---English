@@ -1,57 +1,272 @@
-
 import { GrammarSection } from '../../../types';
 
 export const subjonctifNuancesC1: GrammarSection = {
-  title: "5.4 Les Nuances du Subjonctif (Konjunktiv I und II)",
+  title: "5.4 Nuances of the Subjunctive (Konjunktiv I und II)",
   topics: [
     {
       id: "c1-5-4",
       title: "5.4 Introduction",
-      content: "Au niveau C1, la maîtrise du subjonctif dépasse le simple conditionnel. Vous devez maîtriser toutes les nuances et tous les usages du Subjonctif I et II dans des contextes formels et complexes.\n\nCette section approfondit les connaissances du B2 sur le Subjonctif I et II pour atteindre une maîtrise complète dans tous les contextes.",
+      content: `At C1 level, the German subjunctive is not just a conditional form. You need to control the nuance between **Konjunktiv I** and **Konjunktiv II** in formal and complex contexts.
+
+This section deepens the B2 material on reported speech, neutrality, doubt, unreal comparison, and formal style.`,
       examples: [
-        { de: "Subjonctif I formel: Er sagte, er werde morgen kommen.", fr: "Il a dit qu'il viendrait demain.", note: "Subjonctif I pour discours indirect formel." }
+        { de: "Er sagte, er werde morgen kommen.", fr: "He said he would come tomorrow.", note: "Formal Konjunktiv I in reported speech." }
       ]
     },
     {
       id: "c1-5-4-1",
-      title: "5.4.1 Le Subjonctif I (Konjunktiv I) - Maîtrise Complète",
-      content: "Le Subjonctif I est le mode du **discours indirect formel**. Au niveau C1, vous devez maîtriser ses formes pour **tous les verbes**, pas seulement sei et habe.\n\n### Règle fondamentale du KI\n\n**Usage principal** : Rapporter les paroles de quelqu'un dans un contexte **formel** sans s'engager sur la véracité (journalisme, sciences, administration).\n\n### Formation du KI pour tous les verbes\n\n**Structure** : Radical de l'infinitif + Terminaisons du KI\n\n**Terminaisons du KI** :\n| Personne | Terminaison | Exemple (machen) |\n|---|---|---|\n| ich | **-e** | ich mache (identique à l'indicatif) |\n| du | **-est** | du machest |\n| er/sie/es | **-e** | **er mache** (distinct : macht → mache) |\n| wir | **-en** | wir machen (identique à l'indicatif) |\n| ihr | **-et** | ihr machet |\n| sie/Sie | **-en** | sie machen (identique à l'indicatif) |\n\n**Point crucial** : Le radical **ne change JAMAIS** (pas de changement e→i ou Umlaut comme au présent).\n\n### Verbes importants au KI\n\n#### Verbes réguliers\n| Verbe | 3ème pers. KI | Indicatif présent | Différence ? |\n|---|---|---|---|\n| machen | er **mache** | er macht | OUI ✅ |\n| kommen | er **komme** | er kommt | OUI ✅ |\n| lernen | er **lerne** | er lernt | OUI ✅ |\n| arbeiten | er **arbeite** | er arbeitet | OUI ✅ |\n| wohnen | er **wohne** | er wohnt | OUI ✅ |\n\n#### Verbes irréguliers\n| Verbe | 3ème pers. KI | Indicatif présent | Différence ? |\n|---|---|---|---|\n| sein | er **sei** | er ist | OUI ✅ |\n| haben | er **habe** | er hat | OUI ✅ |\n| werden | er **werde** | er wird | OUI ✅ |\n| wissen | er **wisse** | er weiß | OUI ✅ |\n| gehen | er **gehe** | er geht | OUI ✅ |\n| geben | er **gebe** | er gibt | OUI ✅ |\n| nehmen | er **nehme** | er nimmt | OUI ✅ |\n| sehen | er **sehe** | er sieht | OUI ✅ |\n| tun | er **tue** | er tut | OUI ✅ |\n\n**Règle** : Pour la plupart des verbes, le KI à la 3ème personne est **différent** de l'indicatif présent, donc utilisable.\n\n### Substitution : Quand le KI = Indicatif\n\n**Problème** : Si le KI est identique à l'indicatif, on ne peut pas l'utiliser (ambiguïté).\n\n**Solution** : Chaîne de substitution\n1. **KI = Indicatif ?** → Substitution par **Konjunktiv II**\n2. **KII = Prétérit ?** → Substitution par **würde + Infinitif**\n\n### Exemples de substitution\n\n**Exemple 1 : lernen**\n• Indicatif : wir lernen\n• KI (théorique) : wir lernen → **IDENTIQUE** ❌\n• KII : wir lernten → **IDENTIQUE au prétérit** ❌\n• Forme finale : wir **würden lernen** ✅\n\n**Exemple 2 : kommen**\n• Indicatif : sie kommen\n• KI (théorique) : sie kommen → **IDENTIQUE** ❌\n• KII : sie kämen → **DISTINCT** ✅\n• Forme finale : sie **kämen** (ou sie würden kommen)\n\n### Le KI à tous les temps\n\n#### 1. Présent du KI\n\nForme simple avec les terminaisons vues ci-dessus.\n\n**Exemples** :\n• Er sagte, er **komme** morgen. (Il a dit qu'il venait demain.)\n• Sie meinte, sie **habe** kein Geld. (Elle pensait qu'elle n'avait pas d'argent.)\n• Er behauptete, er **sei** krank. (Il prétendait être malade.)\n\n#### 2. Passé du KI\n\n**Structure** : Auxiliaire (KI) + Partizip II\n\n**Auxiliaires** :\n• **haben** (KI) + Partizip II\n• **sein** (KI) + Partizip II\n\n**Exemples** :\n• Er sagte, er **habe gearbeitet**. (Il a dit avoir travaillé.)\n• Sie meinte, sie **sei gekommen**. (Elle pensait être venue.)\n• Er behauptete, er **habe** nichts **gesehen**. (Il prétendait n'avoir rien vu.)\n\n**Important** : Le KI au passé couvre **tous les temps passés** de l'indicatif (Parfait, Prétérit, PQP).\n\n#### 3. Futur du KI\n\n**Structure** : werden (KI) + Infinitif\n\n**Exemples** :\n• Er sagte, er **werde kommen**. (Il a dit qu'il viendrait.)\n• Sie meinte, sie **werde** es **tun**. (Elle pensait qu'elle le ferait.)\n• Er behauptete, er **werde** morgen **arbeiten**. (Il prétendait travailler demain.)\n\n### Usage formel du KI\n\n**Contexte journalistique** :\n• Der Minister sagte, die Steuern **seien** zu hoch.\n(Le ministre a dit que les impôts étaient trop élevés.)\n\n**Contexte scientifique** :\n• Die Studie zeigt, dass die Ergebnisse **signifikant seien**.\n(L'étude montre que les résultats sont significatifs.)\n\n**Contexte administratif** :\n• Das Amt teilte mit, der Antrag **werde** geprüft.\n(L'administration a informé que la demande serait examinée.)\n\n### Verbes introducteurs courants\n\n**Verbes de parole** :\n• sagen (dire), meinen (penser), behaupten (prétendre), erklären (expliquer), betonen (souligner)\n\n**Verbes de perception** :\n• sehen (voir), hören (entendre), beobachten (observer)\n\n**Verbes d'opinion** :\n• glauben (croire), denken (penser), vermuten (supposer)\n\n### Règles importantes\n\n1. **3ème personne** : Toujours distincte de l'indicatif → utilisable directement\n2. **SEIN** : Utilisable à toutes les personnes car toujours distinct\n3. **Substitution** : Si identique à l'indicatif → KII ou würde\n4. **Style** : Formel, surtout écrit\n\n### Pièges à éviter\n\n**Erreur 1** : Utiliser le KI pour un souhait\n• Faux : Ich will, dass er **komme**. ❌ (pour un souhait)\n• Correct : Ich will, dass er **kommt**. ✅ (indicatif pour souhait)\n\n**Erreur 2** : Oublier la substitution\n• Faux : Sie sagte, sie **lernen**. ❌ (KI = Indicatif)\n• Correct : Sie sagte, sie **würden lernen**. ✅ (substitution)\n\n**Erreur 3** : Confondre KI et KII\n• KI = Discours indirect (neutralité)\n• KII = Conditionnel, irréel, doute",
+      title: "5.4.1 Konjunktiv I: Full Command",
+      content: `**Konjunktiv I** is the mood of formal reported speech. It allows you to report someone's words without taking responsibility for whether they are true.
+
+### Main use
+Use KI in journalism, academic writing, administration, official reports, and formal summaries.
+
+### Formation
+**Infinitive stem + KI endings**
+
+| Person | Ending | Example: machen |
+|---|---|---|
+| ich | **-e** | ich mache |
+| du | **-est** | du machest |
+| er/sie/es | **-e** | er mache |
+| wir | **-en** | wir machen |
+| ihr | **-et** | ihr machet |
+| sie/Sie | **-en** | sie machen |
+
+Crucial point: the stem does **not** change. There is no e->i change and no Umlaut as in the present indicative.
+
+### Important third-person forms
+Regular verbs:
+| Verb | KI | Indicative | Distinct? |
+|---|---|---|---|
+| machen | er **mache** | er macht | yes |
+| kommen | er **komme** | er kommt | yes |
+| lernen | er **lerne** | er lernt | yes |
+| arbeiten | er **arbeite** | er arbeitet | yes |
+| wohnen | er **wohne** | er wohnt | yes |
+
+Irregular verbs:
+| Verb | KI | Indicative | Distinct? |
+|---|---|---|---|
+| sein | er **sei** | er ist | yes |
+| haben | er **habe** | er hat | yes |
+| werden | er **werde** | er wird | yes |
+| wissen | er **wisse** | er weiß | yes |
+| gehen | er **gehe** | er geht | yes |
+| geben | er **gebe** | er gibt | yes |
+| nehmen | er **nehme** | er nimmt | yes |
+| sehen | er **sehe** | er sieht | yes |
+| tun | er **tue** | er tut | yes |
+
+For most verbs, the third-person singular KI is distinct from the indicative and can be used directly.
+
+### Substitution when KI is identical to the indicative
+Problem: if KI looks exactly like the indicative, the reported-speech signal disappears.
+
+Solution:
+1. **KI = indicative?** Use **Konjunktiv II**.
+2. **KII = preterite?** Use **würde + infinitive**.
+
+Examples:
+- Indicative: wir lernen
+- KI: wir lernen -> identical
+- KII: wir lernten -> looks like the preterite
+- Final form: wir **würden lernen**
+
+- Indicative: sie kommen
+- KI: sie kommen -> identical
+- KII: sie **kämen** -> distinct
+- Final form: sie **kämen** or sie **würden kommen**
+
+### KI in different tenses
+Present:
+- Er sagte, er **komme** morgen.
+- Sie meinte, sie **habe** kein Geld.
+- Er behauptete, er **sei** krank.
+
+Past:
+**Auxiliary in KI + Partizip II**
+- Er sagte, er **habe gearbeitet**.
+- Sie meinte, sie **sei gekommen**.
+- Er behauptete, er **habe** nichts **gesehen**.
+
+The KI past form covers the meanings of Perfekt, Präteritum, and Plusquamperfekt in reported speech.
+
+Future:
+**werden in KI + infinitive**
+- Er sagte, er **werde kommen**.
+- Sie meinte, sie **werde** es **tun**.
+
+### Formal contexts
+Journalistic:
+- Der Minister sagte, die Steuern **seien** zu hoch.
+
+Academic:
+- Die Studie zeigt, dass die Ergebnisse **signifikant seien**.
+
+Administrative:
+- Das Amt teilte mit, der Antrag **werde** geprüft.
+
+### Common reporting verbs
+- sagen, meinen, behaupten, erklären, betonen
+- mitteilen, berichten, angeben, feststellen
+- glauben, denken, vermuten
+
+### Common traps
+Do not use KI for ordinary wishes:
+- Incorrect: Ich will, dass er **komme**.
+- Correct: Ich will, dass er **kommt**.
+
+Do not ignore substitution:
+- Incorrect: Sie sagte, sie **lernen**.
+- Correct: Sie sagte, sie **würden lernen**.
+
+Remember the core distinction:
+- KI = neutral reported speech
+- KII = unreal, hypothetical, doubt, or politeness`,
       examples: [
-        { de: "Er sagte, er komme morgen.", fr: "Il a dit qu'il viendrait demain.", note: "KI présent - 3ème personne distincte." },
-        { de: "Sie meinte, sie habe kein Geld.", fr: "Elle pensait qu'elle n'avait pas d'argent.", note: "KI présent avec haben." },
-        { de: "Er behauptete, er sei krank.", fr: "Il prétendait être malade.", note: "KI présent avec sein." },
-        { de: "Der Minister sagte, die Steuern seien zu hoch.", fr: "Le ministre a dit que les impôts étaient trop élevés.", note: "KI présent - pluriel avec sein." },
-        { de: "Er sagte, er habe gearbeitet.", fr: "Il a dit avoir travaillé.", note: "KI passé avec haben." },
-        { de: "Sie meinte, sie sei gekommen.", fr: "Elle pensait être venue.", note: "KI passé avec sein." },
-        { de: "Er behauptete, er werde morgen kommen.", fr: "Il prétendait venir demain.", note: "KI futur." },
-        { de: "Die Studie zeigt, dass die Ergebnisse signifikant seien.", fr: "L'étude montre que les résultats sont significatifs.", note: "KI dans contexte scientifique formel." }
+        { de: "Er sagte, er komme morgen.", fr: "He said he would come tomorrow.", note: "Present KI; third person singular is distinct." },
+        { de: "Sie meinte, sie habe kein Geld.", fr: "She said she had no money.", note: "Present KI with haben." },
+        { de: "Er behauptete, er sei krank.", fr: "He claimed to be ill.", note: "Present KI with sein." },
+        { de: "Der Minister sagte, die Steuern seien zu hoch.", fr: "The minister said taxes were too high.", note: "KI with plural sein." },
+        { de: "Er sagte, er habe gearbeitet.", fr: "He said he had worked.", note: "Past KI with haben." },
+        { de: "Sie meinte, sie sei gekommen.", fr: "She said she had come.", note: "Past KI with sein." },
+        { de: "Er behauptete, er werde morgen kommen.", fr: "He claimed he would come tomorrow.", note: "Future KI." },
+        { de: "Die Studie zeigt, dass die Ergebnisse signifikant seien.", fr: "The study shows that the results are said to be significant.", note: "Formal academic KI." }
       ]
     },
     {
       id: "c1-5-4-2",
-      title: "5.4.2 Le Subjonctif II pour les Comparaisons Irréelles",
-      content: "Le Subjonctif II est utilisé pour exprimer des **comparaisons irréelles** avec \"als ob\" (comme si) ou \"als wenn\" (comme si).\n\n### Structure : als ob / als wenn\n\n**Structure** : Hauptsatz + als ob/als wenn + Subjonctif II\n\n**Traduction** : \"comme si\" / \"comme s'il/elle\"\n\n### Formation\n\n**Structure** : als ob / als wenn + Subjonctif II\n\nLe Subjonctif II suit les règles normales (voir B2) mais est utilisé ici pour exprimer une **comparaison fictive**.\n\n### Exemples de base\n\n**Exemple 1** :\n• Er tut so, **als ob** er alles **wüsste**.\n(Il fait comme s'il **savait** tout.)\n\n**Exemple 2** :\n• Er redet, **als wäre** er der Chef.\n(Il parle comme s'il **était** le patron.)\n\n### Verbes introducteurs courants\n\n**Verbes qui peuvent introduire als ob** :\n• tun (faire) : Er tut so, als ob...\n• reden (parler) : Er redet, als ob...\n• aussehen (avoir l'air) : Er sieht aus, als ob...\n• sich verhalten (se comporter) : Er verhält sich, als ob...\n• handeln (agir) : Er handelt, als ob...\n\n### Variantes : als ob vs als wenn vs als\n\n**als ob** (le plus courant) :\n• Er tut so, **als ob** er krank wäre.\n\n**als wenn** (équivalent) :\n• Er tut so, **als wenn** er krank wäre.\n\n**als** (plus court, familier) :\n• Er tut so, **als** wäre er krank.\n\n**Attention** : Avec \"als\" seul, le verbe se place **avant** le sujet (ordre inversé).\n\n### Subjonctif II au présent\n\n**Exemples** :\n• Sie sieht aus, **als ob** sie **sähe**, was ich denke.\n(Elle a l'air comme si elle **voyait** ce que je pense.)\n\n• Er handelt, **als ob** er **wüsste**, was passiert.\n(Il agit comme s'il **savait** ce qui se passe.)\n\n• Du redest, **als wäre** ich nicht hier.\n(Tu parles comme si je **n'étais** pas là.)\n\n### Subjonctif II au passé\n\n**Exemples** :\n• Er tut so, **als ob** er nichts **gewusst hätte**.\n(Il fait comme s'il n'**avait** rien **su**.)\n\n• Sie redet, **als wäre** sie nie **gekommen**.\n(Elle parle comme si elle **n'était** jamais **venue**.)\n\n• Er verhält sich, **als hätte** er es nicht **gemacht**.\n(Il se comporte comme s'il ne l'**avait** pas **fait**.)\n\n### Tableau des formes courantes\n\n| Sens | als ob + KII | Exemple |\n|---|---|---|\n| Savoir (présent) | als ob er **wüsste** | Er tut so, als ob er alles wüsste. |\n| Être (présent) | als ob er **wäre** | Er redet, als ob er der Chef wäre. |\n| Avoir (présent) | als ob er **hätte** | Sie tut so, als ob sie Geld hätte. |\n| Venir (présent) | als ob er **käme** | Er sieht aus, als ob er käme. |\n| Savoir (passé) | als ob er **gewusst hätte** | Er tut so, als ob er es gewusst hätte. |\n| Être (passé) | als ob er **gewesen wäre** | Sie redet, als wäre sie nicht gekommen. |\n\n### Nuances de sens\n\n**als ob** exprime :\n- Une **comparaison fictive** (il ne sait pas vraiment)\n- Une **supposition** (comme si c'était vrai, mais ce n'est pas sûr)\n- Une **façon de faire** (il fait comme si...)\n\n### Différence avec le conditionnel\n\n**Conditionnel** :\n• Wenn ich Geld hätte, **würde** ich reisen.\n(Si j'avais de l'argent, je voyagerais.)\n\n**Comparaison irréelle** :\n• Er tut so, **als hätte** er Geld.\n(Il fait comme s'il avait de l'argent.)\n\n**Point clé** : \"als ob\" introduit une **comparaison**, pas une **condition**.\n\n### Pièges à éviter\n\n**Erreur 1** : Utiliser l'indicatif au lieu du KII\n• Faux : Er tut so, als ob er alles **weiß**. ❌\n• Correct : Er tut so, als ob er alles **wüsste**. ✅\n\n**Erreur 2** : Oublier \"ob\"\n• Faux : Er tut so, **als** er alles wüsste. ❌\n• Correct : Er tut so, **als ob** er alles wüsste. ✅\n\n**Erreur 3** : Confondre avec le conditionnel\n• Conditionnel : **Wenn** er Zeit hätte, würde er kommen.\n• Comparaison : Er tut so, **als ob** er Zeit hätte.",
+      title: "5.4.2 Konjunktiv II in Unreal Comparisons",
+      content: `**Konjunktiv II** is used in unreal comparisons with **als ob**, **als wenn**, or shorter **als**.
+
+### Structure
+**Main clause + als ob / als wenn + Konjunktiv II**
+
+Meaning: "as if".
+
+### Basic examples
+- Er tut so, **als ob** er alles **wüsste**.
+- Er redet, **als wäre** er der Chef.
+
+### Common introductory verbs
+- tun: Er tut so, als ob...
+- reden: Er redet, als ob...
+- aussehen: Er sieht aus, als ob...
+- sich verhalten: Er verhält sich, als ob...
+- handeln: Er handelt, als ob...
+
+### als ob, als wenn, als
+**als ob** is the most common:
+- Er tut so, **als ob** er krank wäre.
+
+**als wenn** is equivalent:
+- Er tut so, **als wenn** er krank wäre.
+
+**als** alone is shorter and often more literary or compact. It uses inverted order:
+- Er tut so, **als** wäre er krank.
+
+### Present unreal comparison
+- Sie sieht aus, **als ob** sie **sähe**, was ich denke.
+- Er handelt, **als ob** er **wüsste**, was passiert.
+- Du redest, **als wäre** ich nicht hier.
+
+### Past unreal comparison
+- Er tut so, **als ob** er nichts **gewusst hätte**.
+- Sie redet, **als wäre** sie nie **gekommen**.
+- Er verhält sich, **als hätte** er es nicht **gemacht**.
+
+### Common forms
+| Meaning | Form | Example |
+|---|---|---|
+| know, present | als ob er **wüsste** | Er tut so, als ob er alles wüsste. |
+| be, present | als ob er **wäre** | Er redet, als ob er der Chef wäre. |
+| have, present | als ob er **hätte** | Sie tut so, als ob sie Geld hätte. |
+| come, present | als ob er **käme** | Er sieht aus, als ob er käme. |
+| know, past | als ob er **gewusst hätte** | Er tut so, als ob er es gewusst hätte. |
+| be, past | als wäre er **gewesen** | Er redet, als wäre er dort gewesen. |
+
+### Meaning
+**als ob** introduces a comparison, not a condition. The speaker presents the situation as imagined, doubtful, or contrary to reality.
+
+Compare:
+- Condition: **Wenn** ich Geld hätte, würde ich reisen.
+- Unreal comparison: Er tut so, **als hätte** er Geld.
+
+### Common traps
+Incorrect: Er tut so, als ob er alles **weiß**.
+Correct: Er tut so, als ob er alles **wüsste**.
+
+Incorrect: Er tut so, **als** er alles wüsste.
+Correct: Er tut so, **als ob** er alles wüsste.
+
+With **als** alone, use inversion:
+- Er tut so, **als wüsste** er alles.`,
       examples: [
-        { de: "Er tut so, als ob er alles wüsste.", fr: "Il fait comme s'il savait tout.", note: "Comparaison irréelle avec wüsste." },
-        { de: "Er redet, als wäre er der Chef.", fr: "Il parle comme s'il était le patron.", note: "Avec wäre - ordre inversé." },
-        { de: "Sie sieht aus, als ob sie traurig wäre.", fr: "Elle a l'air comme si elle était triste.", note: "Avec aussehen." },
-        { de: "Er verhält sich, als hätte er nichts gesehen.", fr: "Il se comporte comme s'il n'avait rien vu.", note: "Comparaison au passé." },
-        { de: "Du redest, als wäre ich nicht hier.", fr: "Tu parles comme si je n'étais pas là.", note: "Avec négation." },
-        { de: "Er tut so, als ob er nichts gewusst hätte.", fr: "Il fait comme s'il n'avait rien su.", note: "Comparaison au passé avec hätte." }
+        { de: "Er tut so, als ob er alles wüsste.", fr: "He acts as if he knew everything.", note: "Unreal comparison with wüsste." },
+        { de: "Er redet, als wäre er der Chef.", fr: "He talks as if he were the boss.", note: "als alone with inverted order." },
+        { de: "Sie sieht aus, als ob sie traurig wäre.", fr: "She looks as if she were sad.", note: "With aussehen." },
+        { de: "Er verhält sich, als hätte er nichts gesehen.", fr: "He behaves as if he had seen nothing.", note: "Past unreal comparison." },
+        { de: "Du redest, als wäre ich nicht hier.", fr: "You talk as if I were not here.", note: "With negation." },
+        { de: "Er tut so, als ob er nichts gewusst hätte.", fr: "He acts as if he had known nothing.", note: "Past comparison with hätte." }
       ]
     },
     {
       id: "c1-5-4-3",
-      title: "5.4.3 Comparaison KI vs KII dans les Contextes C1",
-      content: "Au niveau C1, il est crucial de maîtriser la distinction entre KI et KII dans tous les contextes.\n\n### Tableau comparatif : KI vs KII\n\n| Aspect | Konjunktiv I (KI) | Konjunktiv II (KII) |\n|---|---|---|\n| **Usage principal** | Discours indirect formel | Conditionnel, irréel, comparaisons |\n| **Sens** | Neutralité (ne pas s'engager) | Irréel, hypothétique, doute |\n| **Contexte** | Journalisme, sciences, admin | Conditionnel, comparaisons, souhaits |\n| **Engagement** | Neutre (je rapporte) | Personnel (je doute/suppose) |\n\n### Exemples contrastés\n\n**Discours indirect** :\n• KI : Er sagte, er **habe** kein Geld. (Il a dit qu'il n'avait pas d'argent - neutralité)\n• KII : Er sagte, er **hätte** kein Geld. (Il a dit qu'il n'avait pas d'argent - doute de ma part)\n\n**Conditionnel** :\n• KII : **Wenn** ich Geld **hätte**, würde ich reisen. (Si j'avais de l'argent, je voyagerais - condition)\n• KI : N'est pas utilisé pour les conditions ❌\n\n**Comparaison** :\n• KII : Er tut so, **als ob** er Geld **hätte**. (Il fait comme s'il avait de l'argent - comparaison irréelle)\n• KI : N'est pas utilisé pour les comparaisons ❌\n\n### Quand utiliser KI vs KII ?\n\n**Utilisez le KI** :\n- Discours indirect formel (citations, rapports)\n- Contexte journalistique ou scientifique\n- Vous voulez rester neutre (ne pas vous engager)\n- Vous rapportez les paroles de quelqu'un\n\n**Utilisez le KII** :\n- Conditions irréelles (si + irréel)\n- Comparaisons irréelles (als ob)\n- Souhaits et regrets\n- Vous exprimez un doute ou une supposition\n\n### Nuances subtiles au niveau C1\n\n**Exemple 1 - Discours indirect avec doute** :\n• KI : Er sagte, er **habe** es nicht gemacht. (Je rapporte ses paroles, neutre)\n• KII : Er sagte, er **hätte** es nicht gemacht. (Je rapporte mais je doute)\n\n**Exemple 2 - Comparaison vs Citation** :\n• KII : Er tut so, **als ob** er **wüsste**, was passiert. (Comparaison - il ne sait pas vraiment)\n• KI : Er sagte, er **wisse**, was passiert. (Citation - il a dit qu'il savait)\n\n### Règle d'or C1\n\n**Pour un style impeccable au C1** :\n1. Discours indirect formel → KI\n2. Conditions et comparaisons → KII\n3. Si vous doutez dans le discours indirect → KII accepté\n4. Variez et maîtrisez les deux !",
+      title: "5.4.3 KI vs KII in C1 Contexts",
+      content: `At C1 level, you must be able to choose between KI and KII precisely.
+
+### Comparison table
+| Aspect | Konjunktiv I | Konjunktiv II |
+|---|---|---|
+| Main use | formal reported speech | unreal, hypothetical, doubt, politeness |
+| Meaning | neutrality | unreality or speaker distance |
+| Context | journalism, reports, academic writing | conditions, comparisons, wishes |
+| Speaker stance | "I report" | "I doubt / imagine / distance myself" |
+
+### Contrast in reported speech
+KI:
+- Er sagte, er **habe** kein Geld.
+- Neutral report: I do not comment on whether it is true.
+
+KII:
+- Er sagte, er **hätte** kein Geld.
+- Report with distance or possible doubt.
+
+### Conditions
+Use KII:
+- **Wenn** ich Geld **hätte**, würde ich reisen.
+
+KI is not used for conditions.
+
+### Unreal comparisons
+Use KII:
+- Er tut so, **als ob** er Geld **hätte**.
+
+KI is not used for unreal comparisons.
+
+### Subtle C1 nuance
+Reported speech with neutrality:
+- Er sagte, er **habe** es nicht gemacht.
+
+Reported speech with doubt or distance:
+- Er sagte, er **hätte** es nicht gemacht.
+
+Comparison vs quotation:
+- KII: Er tut so, **als ob** er **wüsste**, was passiert.
+- KI: Er sagte, er **wisse**, was passiert.
+
+### C1 decision rule
+1. Formal reported speech -> KI.
+2. Unreal conditions and comparisons -> KII.
+3. Reported speech with doubt or distance -> KII is possible.
+4. If KI is identical to the indicative -> substitute with KII or würde.`,
       examples: [
-        { de: "KI (neutralité): Er sagte, er habe kein Geld.", fr: "Il a dit qu'il n'avait pas d'argent.", note: "Discours indirect neutre." },
-        { de: "KII (doute): Er sagte, er hätte kein Geld.", fr: "Il a dit qu'il n'avait pas d'argent.", note: "Discours indirect avec doute." },
-        { de: "KII (condition): Wenn ich Geld hätte, würde ich reisen.", fr: "Si j'avais de l'argent, je voyagerais.", note: "Condition irréelle." },
-        { de: "KII (comparaison): Er tut so, als hätte er Geld.", fr: "Il fait comme s'il avait de l'argent.", note: "Comparaison irréelle." }
+        { de: "KI: Er sagte, er habe kein Geld.", fr: "He said he had no money.", note: "Neutral reported speech." },
+        { de: "KII: Er sagte, er hätte kein Geld.", fr: "He said he had no money.", note: "Reported speech with doubt or distance." },
+        { de: "KII: Wenn ich Geld hätte, würde ich reisen.", fr: "If I had money, I would travel.", note: "Unreal condition." },
+        { de: "KII: Er tut so, als hätte er Geld.", fr: "He acts as if he had money.", note: "Unreal comparison." }
       ]
     }
   ]
 };
-
-

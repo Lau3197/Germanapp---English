@@ -8,8 +8,8 @@ import { autresPoints } from './autres-points';
 
 export const a2Grammar: GrammarLevel = {
   level: LanguageLevel.A2,
-  title: "Niveau A2 : La Consolidation",
-  description: "Communiquer lors de tâches simples et habituelles, décrire son environnement, son parcours.",
+  title: "A2 Level: Consolidation",
+  description: "Communicate in simple, routine tasks, describe your environment, and talk about your background.",
   sections: [
     tempsPasse,
     declinaisonAdjectif,

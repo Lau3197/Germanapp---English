@@ -1,243 +1,804 @@
-
 import { GrammarSection } from '../../../types';
 
 export const declinaisonsComplexesB2: GrammarSection = {
-  title: "8. Déclinaisons dans des contextes complexes",
+  title: "8. Declensions in Complex Contexts",
   topics: [
     {
       id: "b2-8-1",
-      title: "8.1 La N-Deklination",
-      content: "La **N-Deklination** (ou \"masculins faibles\") concerne un groupe particulier de noms masculins qui ajoutent la terminaison **-(e)n** à l'accusatif, au datif et au génitif. Seul le nominatif reste inchangé.\n\nCette règle touche de nombreux mots courants (Student, Kollege, Tourist, Junge, etc.) et est essentielle pour communiquer correctement en allemand.\n\n### Objectifs de cette section\n- Comprendre le principe de déclinaison (8.1.1)\n- Identifier les 4 catégories de noms concernés (8.1.2)\n- Maîtriser les exceptions (8.1.3 et 8.1.4)",
+      title: "8.1 N-Deklination",
+      content: `The **N-Deklination** (also called "weak masculine nouns") applies to a specific group of masculine nouns. These nouns add **-(e)n** in the accusative, dative, and genitive. Only the nominative stays unchanged.
+
+This pattern affects many common nouns such as Student, Kollege, Tourist, Junge, and Kunde. It is essential for accurate German because the article alone is often not enough: the noun also changes.
+
+### Goals of this section
+- Understand the basic declension pattern (8.1.1)
+- Identify the four main groups of nouns affected (8.1.2)
+- Master the mixed and irregular special cases (8.1.3 and 8.1.4)`,
       examples: [
-        { de: "Der Student lernt. → Ich sehe den Studenten.", fr: "L'étudiant apprend. → Je vois l'étudiant.", note: "Nominatif inchangé, accusatif avec -en" },
-        { de: "Der Kollege kommt. → Ich helfe dem Kollegen.", fr: "Le collègue vient. → J'aide le collègue.", note: "Nominatif inchangé, datif avec -en" }
+        { de: "Der Student lernt. -> Ich sehe den Studenten.", fr: "The student is studying. -> I see the student.", note: "Nominative unchanged; accusative with -en." },
+        { de: "Der Kollege kommt. -> Ich helfe dem Kollegen.", fr: "The colleague is coming. -> I help the colleague.", note: "Nominative unchanged; dative with -en." }
       ]
     },
     {
       id: "b2-8-1-1",
-      title: "8.1.1 Le concept",
-      content: "Principe : les noms concernés prennent **-(e)n** à l'accusatif, au datif et au génitif. Le nominatif reste inchangé.\n\n### Déclinaison type (Student)\n| Cas | Article | Forme |\n|---|---|---|\n| Nominatif | der | Student |\n| Accusatif | den | Studenten |\n| Datif | dem | Studenten |\n| Génitif | des | Studenten |\n\n### -n ou -en ?\n- Si le nom finit en **-e** → ajouter **-n** (Kollege → Kollegen)\n- Sinon → ajouter **-en** (Student → Studenten)\n\n### Règle mémorielle\nUn seul cas sans changement : le nominatif. Trois cas avec -en : Accusatif, Datif, Génitif.\n\n### Erreurs courantes\n- Ich sehe den Student ❌ → Ich sehe den Studenten ✅\n- Ich helfe dem Kollege ❌ → Ich helfe dem Kollegen ✅",
+      title: "8.1.1 The Concept",
+      content: `Core rule: the affected nouns take **-(e)n** in the accusative, dative, and genitive. The nominative remains unchanged.
+
+### Standard declension: Student
+| Case | Article | Form |
+|---|---|---|
+| Nominative | der | Student |
+| Accusative | den | Studenten |
+| Dative | dem | Studenten |
+| Genitive | des | Studenten |
+
+### -n or -en?
+- If the noun ends in **-e**, add **-n**: Kollege -> Kollegen
+- Otherwise, add **-en**: Student -> Studenten
+
+### Memory rule
+Only one case has no ending: the nominative. The other three cases take -en: accusative, dative, and genitive.
+
+### Common mistakes
+- Ich sehe den Student -> Ich sehe den Studenten
+- Ich helfe dem Kollege -> Ich helfe dem Kollegen`,
       examples: [
-        { de: "Ich sehe den Kunden.", fr: "Je vois le client (Accusatif).", note: "Le nom 'Kunde' appartient à la N-Deklination." }
+        { de: "Ich sehe den Kunden.", fr: "I see the customer.", note: "Kunde belongs to the N-Deklination." }
       ]
     },
     {
       id: "b2-8-1-2",
-      title: "8.1.2 Les 4 Catégories de noms concernés",
-      content: "Les noms de la N-Deklination sont presque tous **masculins**. Ils se répartissent en 4 groupes :\n\n1. **Êtres vivants en -e** : der Junge, der Kollege, der Löwe, der Hase.\n2. **Nationalités en -e** : der Franzose, der Russe, der Pole, der Chinese.\n3. **Suffixes latins/grecs** : -ant (Elefant), -ent (Student), -ist (Journalist), -at (Soldat), -oge (Biologe).\n4. **Exceptions sans -e** : der Mensch, der Herr, der Bär, der Nachbar, der Held.\n\n### Guide de reconnaissance\n- Terminaison en **-e** fréquente (Junge, Kollege, Löwe, Franzose)\n- Désigne souvent une **personne** ou un **animal**\n- Suffixes typiques : **-ant, -ent, -ist, -at, -oge**\n- Exceptions à mémoriser : **Mensch, Herr, Bär, Nachbar, Held**\n\nStratégie : Masculin ? en -e/suffixe ? être vivant ? exception connue ? → probablement N‑Deklination.",
+      title: "8.1.2 The Four Main Groups",
+      content: `N-Deklination nouns are almost always **masculine**. They fall into four practical groups:
+
+1. **Living beings ending in -e**: der Junge, der Kollege, der Löwe, der Hase.
+2. **Nationalities ending in -e**: der Franzose, der Russe, der Pole, der Chinese.
+3. **Latin or Greek suffixes**: -ant (Elefant), -ent (Student), -ist (Journalist), -at (Soldat), -oge (Biologe).
+4. **Important exceptions without -e**: der Mensch, der Herr, der Bär, der Nachbar, der Held.
+
+### Recognition guide
+- The noun is masculine.
+- It often names a person or animal.
+- It often ends in **-e** or in a learned suffix such as **-ant, -ent, -ist, -at, -oge**.
+- A small group must simply be memorised: **Mensch, Herr, Bär, Nachbar, Held**.
+
+Strategy: masculine + person/animal + ending in -e or a typical suffix = probably N-Deklination.`,
       examples: [
-        { de: "Die Arbeit des Biologen.", fr: "Le travail du biologiste (Génitif)." }
+        { de: "Die Arbeit des Biologen.", fr: "The biologist's work.", note: "Biologe takes -n in the genitive: des Biologen." }
       ]
     },
     {
       id: "b2-8-1-3",
-      title: "8.1.3 Les Exceptions de l'Exception (Le groupe -ns)",
-      content: "Un petit groupe de noms masculins suit la N-Deklination mais ajoute un **-s** supplémentaire au Génitif. On appelle cela la déclinaison mixte.\n\nCes mots suivent la règle de la N-Deklination (ajout de -(e)n à l'accusatif, datif et génitif) mais ajoutent aussi un **-s** au génitif, ce qui donne **-ns**.\n\n### der Name\n\n| Cas | Article | Forme |\n|---|---|---|\n| Nominatif | der | Name |\n| Accusatif | den | Namen |\n| Datif | dem | Namen |\n| Génitif | des | Namens |\n\n### der Gedanke\n\n| Cas | Article | Forme |\n|---|---|---|\n| Nominatif | der | Gedanke |\n| Accusatif | den | Gedanken |\n| Datif | dem | Gedanken |\n| Génitif | des | Gedankens |\n\n### der Buchstabe\n\n| Cas | Article | Forme |\n|---|---|---|\n| Nominatif | der | Buchstabe |\n| Accusatif | den | Buchstaben |\n| Datif | dem | Buchstaben |\n| Génitif | des | Buchstabens |\n\n### der Friede\n\n| Cas | Article | Forme |\n|---|---|---|\n| Nominatif | der | Friede |\n| Accusatif | den | Frieden |\n| Datif | dem | Frieden |\n| Génitif | des | Friedens |\n\n### der Wille\n\n| Cas | Article | Forme |\n|---|---|---|\n| Nominatif | der | Wille |\n| Accusatif | den | Willen |\n| Datif | dem | Willen |\n| Génitif | des | Willens |\n\n**Règle** : Tous ces mots finissent par **-e** au nominatif, prennent **-n** à l'accusatif et au datif, et **-ns** au génitif.",
+      title: "8.1.3 Exceptions to the Exception: the -ns Group",
+      content: `A small group of masculine nouns follows the N-Deklination but adds an extra **-s** in the genitive. This is often called **mixed declension**.
+
+These nouns take **-n** in the accusative and dative, but **-ns** in the genitive.
+
+### der Name
+| Case | Article | Form |
+|---|---|---|
+| Nominative | der | Name |
+| Accusative | den | Namen |
+| Dative | dem | Namen |
+| Genitive | des | Namens |
+
+### der Gedanke
+| Case | Article | Form |
+|---|---|---|
+| Nominative | der | Gedanke |
+| Accusative | den | Gedanken |
+| Dative | dem | Gedanken |
+| Genitive | des | Gedankens |
+
+### der Buchstabe
+| Case | Article | Form |
+|---|---|---|
+| Nominative | der | Buchstabe |
+| Accusative | den | Buchstaben |
+| Dative | dem | Buchstaben |
+| Genitive | des | Buchstabens |
+
+### der Friede
+| Case | Article | Form |
+|---|---|---|
+| Nominative | der | Friede |
+| Accusative | den | Frieden |
+| Dative | dem | Frieden |
+| Genitive | des | Friedens |
+
+### der Wille
+| Case | Article | Form |
+|---|---|---|
+| Nominative | der | Wille |
+| Accusative | den | Willen |
+| Dative | dem | Willen |
+| Genitive | des | Willens |
+
+**Rule**: these nouns end in **-e** in the nominative, take **-n** in the accusative and dative, and take **-ns** in the genitive.`,
       examples: [
-        { de: "Im Namen des Gesetzes.", fr: "Au nom de la loi (Génitif en -ns)." },
-        { de: "Der Name ist bekannt. → Ich kenne den Namen. → Ich denke an den Namen. → Im Namen des Vaters.", fr: "Le nom est connu. → Je connais le nom. → Je pense au nom. → Au nom du père." },
-        { de: "Der Gedanke kommt mir. → Ich habe den Gedanken. → Ich denke an den Gedanken. → Die Kraft des Gedankens.", fr: "L'idée me vient. → J'ai l'idée. → Je pense à l'idée. → La force de la pensée." },
-        { de: "Der Buchstabe ist groß. → Ich schreibe den Buchstaben. → Ich lese den Buchstaben. → Die Form des Buchstabens.", fr: "La lettre est grande. → J'écris la lettre. → Je lis la lettre. → La forme de la lettre." },
-        { de: "Der Friede ist wichtig. → Wir wünschen den Frieden. → Wir arbeiten für den Frieden. → Die Hoffnung des Friedens.", fr: "La paix est importante. → Nous souhaitons la paix. → Nous travaillons pour la paix. → L'espoir de la paix." },
-        { de: "Der Wille ist stark. → Ich bewundere den Willen. → Ich vertraue dem Willen. → Die Stärke des Willens.", fr: "La volonté est forte. → J'admire la volonté. → Je fais confiance à la volonté. → La force de la volonté." }
+        { de: "Im Namen des Gesetzes.", fr: "In the name of the law.", note: "Genitive in -ns: des Namens." },
+        { de: "Der Name ist bekannt. -> Ich kenne den Namen. -> Im Namen des Vaters.", fr: "The name is known. -> I know the name. -> In the name of the father.", note: "Name: Namen in accusative, Namens in genitive." },
+        { de: "Die Kraft des Gedankens.", fr: "The power of the thought.", note: "Gedanke becomes Gedankens in the genitive." },
+        { de: "Die Form des Buchstabens.", fr: "The shape of the letter.", note: "Buchstabe becomes Buchstabens in the genitive." },
+        { de: "Die Hoffnung des Friedens.", fr: "The hope for peace.", note: "Friede becomes Friedens in the genitive." },
+        { de: "Die Stärke des Willens.", fr: "The strength of the will.", note: "Wille becomes Willens in the genitive." }
       ]
     },
     {
       id: "b2-8-1-4",
-      title: "8.1.4 Cas particuliers : 'der Herr' et 'das Herz'",
-      content: "### der Herr\nC'est le seul mot dont la terminaison diffère entre le singulier et le pluriel au sein de la règle :\n• Singulier (Acc/Dat/Gen) : **Herrn**\n• Pluriel (Tous les cas) : **Herren**\n\n### das Herz\nC'est le seul nom **neutre** concerné. Il ne change pas à l'Accusatif, mais prend **-en** au Datif et **-ens** au Génitif.\n• *Datif :* dem Herzen\n• *Génitif :* des Herzens",
+      title: "8.1.4 Special Cases: der Herr and das Herz",
+      content: `### der Herr
+This noun has a different singular and plural ending:
+- Singular accusative/dative/genitive: **Herrn**
+- Plural in all cases: **Herren**
+
+Examples: Ich sehe den Herrn. / Ich spreche mit den Herren.
+
+### das Herz
+This is the only common **neuter** noun in this pattern. It does not change in the accusative, but it takes **-en** in the dative and **-ens** in the genitive.
+- Dative: dem Herzen
+- Genitive: des Herzens`,
       examples: [
-        { de: "Von ganzem Herzen.", fr: "De tout cœur (Datif)." }
+        { de: "Von ganzem Herzen.", fr: "With all my heart.", note: "Dative: Herzen." }
       ]
     },
     {
       id: "b2-8-2",
-      title: "8.2 Les Adjectifs Substantivés",
-      content: "Un adjectif substantivé est un adjectif utilisé comme un nom. Il prend une majuscule mais **garde sa déclinaison d'adjectif**.\n\nCette section vous apprendra à décider activement quand utiliser un adjectif substantivé plutôt qu'un nom normal.",
+      title: "8.2 Substantivised Adjectives",
+      content: `A substantivised adjective is an adjective used as a noun. It is written with a capital letter, but it **keeps adjective declension**.
+
+This section teaches you when to use a substantivised adjective instead of an ordinary noun, and how to decline it correctly.`,
       examples: [
-        { de: "krank (adj.) -> der Kranke (nom)", fr: "malade -> le malade" }
+        { de: "krank (Adjektiv) -> der Kranke (Nomen)", fr: "ill/sick -> the sick person", note: "The adjective becomes a noun and is capitalised." }
       ]
     },
     {
       id: "b2-8-2-1",
-      title: "8.2.1 Quand utiliser un adjectif substantivé ? Guide de décision active",
-      content: "La question fondamentale : **Quand dois-je utiliser un adjectif substantivé plutôt qu'un nom normal ?**\n\n### Critère 1 : L'absence de nom spécifique\n\nUtilisez un adjectif substantivé quand il **n'existe pas de nom spécifique** pour désigner la personne ou le concept.\n\n**Exemples où l'adjectif substantivé est obligatoire :**\n• **der Deutsche** (l'Allemand) - Il n'y a pas de nom spécifique pour \"personne allemande\"\n• **der Kranke** (le malade) - Pas de nom unique pour désigner une personne malade\n• **der Angestellte** (l'employé) - C'est un adjectif substantivé, pas un nom autonome\n• **das Gute** (le bien) - Concept abstrait, pas de nom spécifique\n\n**Contre-exemples avec des noms normaux :**\n• **der Arzt** (le médecin) - Nom spécifique existant, pas \"der Medizinische\"\n• **der Lehrer** (le professeur) - Nom spécifique, pas \"der Lehrende\"\n• **der Student** (l'étudiant) - Nom spécifique, pas \"der Studierende\"\n\n### Critère 2 : Désigner une catégorie plutôt qu'une profession\n\n**Adjectif substantivé** = catégorie générale, caractéristique :\n• **der Alte** = toute personne âgée (catégorie)\n• **der Reiche** = toute personne riche (caractéristique)\n• **der Jugendliche** = tout jeune (catégorie d'âge)\n\n**Nom normal** = profession ou rôle spécifique :\n• **der Arzt** = profession médicale\n• **der Ingenieur** = profession technique\n• **der Vater** = rôle familial\n\n**Règle pratique** : Si vous pouvez dire \"c'est une personne qui est...\" → adjectif substantivé.\nSi vous pouvez dire \"c'est son métier/rôle...\" → nom normal.\n\n### Critère 3 : Les concepts abstraits neutres\n\nAvec **etwas, nichts, alles, viel**, utilisez **toujours** l'adjectif substantivé neutre :\n\n• **etwas** + Adjectif substantivé neutre : *etwas Neues* (quelque chose de nouveau)\n• **nichts** + Adjectif substantivé neutre : *nichts Besonderes* (rien de spécial)\n• **alles** + Adjectif substantivé neutre : *alles Gute* (tout ce qui est bon)\n• **viel** + Adjectif substantivé neutre : *viel Interessantes* (beaucoup de choses intéressantes)\n\n**Pourquoi ?** Ces pronoms désignent des concepts abstraits, pas des objets concrets avec des noms.\n\n### Critère 4 : Les nationalités et groupes ethniques\n\nPour les nationalités, utilisez **toujours** l'adjectif substantivé :\n• **der Deutsche, die Deutsche** (pas de nom spécifique pour \"personne allemande\")\n• **der Franzose** (nom spécifique) vs **der Französische** (rare, utilisé dans certains contextes)\n\n**Règle** : Les nationalités en **-e** au masculin sont généralement des adjectifs substantivés (der Franzose, der Russe = exception, ce sont des noms de la N-Deklination).\n\n### Critère 5 : Le contexte français traduit\n\n**Test actif** : En français, si vous dites :\n• \"le vieux\", \"la malade\", \"les jeunes\", \"quelque chose de nouveau\"\n→ **Adjectif substantivé** en allemand\n\nSi vous dites :\n• \"le médecin\", \"la professeure\", \"l'étudiant\"\n→ **Nom normal** en allemand\n\n### Checklist de décision active\n\nAvant d'écrire, posez-vous ces questions :\n\n1. **Existe-t-il un nom spécifique pour cette personne/objet ?**\n   - OUI → Utilisez le nom normal (der Arzt, der Lehrer)\n   - NON → Passez à la question 2\n\n2. **Désignez-vous une catégorie ou une caractéristique ?**\n   - OUI → Adjectif substantivé (der Alte, der Kranke)\n   - NON → Passez à la question 3\n\n3. **Parlez-vous d'un concept abstrait après etwas/nichts/alles/viel ?**\n   - OUI → Adjectif substantivé neutre (etwas Neues)\n   - NON → Passez à la question 4\n\n4. **Parlez-vous d'une nationalité ou d'un groupe ethnique ?**\n   - OUI → Adjectif substantivé (der Deutsche, die Deutsche)\n   - NON → Vérifiez le dictionnaire, c'est probablement un nom normal\n\n### Comment distinguer à l'écrit\n\n**Test orthographique** : Un adjectif substantivé peut toujours être remplacé par l'adjectif correspondant + nom :\n• **der Alte** → **der alte Mann** ✅ (on peut compléter)\n• **der Arzt** → **der arzt Mann** ❌ (on ne peut pas compléter)\n\n**Test sémantique** : Un adjectif substantivé désigne toujours une **qualité transformée en nom** :\n• **alt** (vieux) → **der Alte** (celui qui est vieux)\n• **krank** (malade) → **der Kranke** (celui qui est malade)\n\nUn nom normal désigne une **entité spécifique** :\n• **der Arzt** = profession médicale (pas \"celui qui soigne\", c'est un nom propre de métier)\n\n### Piège : Mots qui peuvent être les deux\n\nCertains mots peuvent être **nom normal** ou **adjectif substantivé** selon le contexte :\n\n• **der/die Bekannte** (adjectif substantivé) = une connaissance (qualité \"connu\")\n• **der Bekannte** (nom normal, rare) = terme technique\n\n**Solution** : Le contexte décide. Dans 99% des cas, \"Bekannte\" est un adjectif substantivé.\n\n### Règle d'or\n\n**Quand vous hésitez** :\n1. Cherchez dans le dictionnaire si un nom spécifique existe\n2. Si un nom existe → utilisez-le\n3. Si aucun nom n'existe → adjectif substantivé\n4. Pour les concepts abstraits après etwas/nichts/alles/viel → toujours adjectif substantivé neutre",
+      title: "8.2.1 When to Use a Substantivised Adjective",
+      content: `The key question is: **When should I use a substantivised adjective instead of a normal noun?**
+
+### Criterion 1: There is no specific noun
+Use a substantivised adjective when German has no specific noun for the person or concept.
+
+Examples where the substantivised adjective is the natural choice:
+- **der Deutsche**: the German person
+- **der Kranke**: the sick person
+- **der Angestellte**: the employee
+- **das Gute**: the good, what is good
+
+Counterexamples with normal nouns:
+- **der Arzt**: doctor, not "der Medizinische"
+- **der Lehrer**: teacher, not "der Lehrende" in ordinary use
+- **der Student**: student, not "der Studierende" unless you deliberately choose inclusive or formal wording
+
+### Criterion 2: A category, not a profession
+**Substantivised adjective** = a general category or characteristic:
+- **der Alte** = an old man / the old person
+- **der Reiche** = a rich person
+- **der Jugendliche** = a young person / adolescent
+
+**Normal noun** = a profession, role, or fixed lexical noun:
+- **der Arzt** = medical profession
+- **der Ingenieur** = technical profession
+- **der Vater** = family role
+
+Practical rule: if you mean "a person who is..." -> substantivised adjective. If you mean a job, role, or fixed noun -> normal noun.
+
+### Criterion 3: Neuter abstract concepts
+After **etwas, nichts, alles, viel**, German normally uses a neuter substantivised adjective:
+- **etwas Neues** = something new
+- **nichts Besonderes** = nothing special
+- **alles Gute** = all the best / everything good
+- **viel Interessantes** = many interesting things / much that is interesting
+
+These pronouns point to abstract content, not to a concrete noun.
+
+### Criterion 4: Nationalities and groups
+Many nationalities are expressed through substantivised adjectives:
+- **der Deutsche, die Deutsche** = the German man/woman
+- **die Deutschen** = the Germans
+
+Some nationalities, however, are normal N-Deklination nouns: **der Franzose, der Russe, der Pole, der Chinese**.
+
+### English test
+If English uses an adjective as a noun-like category, German often does the same:
+- "the old", "the sick", "the young", "something new" -> substantivised adjective
+- "the doctor", "the teacher", "the student" -> normal noun
+
+### Decision checklist
+Before writing, ask:
+1. Is there a specific noun? If yes, use the noun: der Arzt, der Lehrer.
+2. Am I naming a category or characteristic? If yes, use a substantivised adjective: der Alte, der Kranke.
+3. Is it an abstract concept after etwas/nichts/alles/viel? If yes, use the neuter form: etwas Neues.
+4. Is it a nationality or group? Check whether German uses a substantivised adjective or a fixed noun.
+
+### Spelling test
+A substantivised adjective can usually be expanded to adjective + noun:
+- **der Alte** -> der alte Mann
+- **der Arzt** -> not "der arzt Mann"
+
+### Semantic test
+A substantivised adjective turns a quality into a noun:
+- **alt** -> **der Alte**
+- **krank** -> **der Kranke**
+
+A normal noun names a specific entity or role:
+- **der Arzt** = doctor as a profession.`,
       examples: [
-        { de: "Der Deutsche spricht Deutsch. (adjectif substantivé - pas de nom spécifique)", fr: "L'Allemand parle allemand.", note: "On ne dit pas \"der Deutschlander\" (n'existe pas)." },
-        { de: "Der Arzt behandelt Patienten. (nom normal - profession spécifique)", fr: "Le médecin soigne des patients.", note: "On ne dit pas \"der Medizinische\" pour désigner la profession." },
-        { de: "Gibt es etwas Neues? (adjectif substantivé neutre obligatoire)", fr: "Y a-t-il quelque chose de nouveau ?", note: "Après \"etwas\", l'adjectif substantivé neutre est la seule option." },
-        { de: "Ich kenne einen Deutschen. (adjectif substantivé - nationalité)", fr: "Je connais un Allemand.", note: "Nationalité = toujours adjectif substantivé." },
-        { de: "Der Lehrer unterrichtet. (nom normal - profession)", fr: "Le professeur enseigne.", note: "Profession spécifique = nom normal, pas \"der Lehrende\"." },
-        { de: "Die Alten brauchen Hilfe. (adjectif substantivé - catégorie)", fr: "Les vieux ont besoin d'aide.", note: "Catégorie d'âge = adjectif substantivé, pas un nom spécifique." }
+        { de: "Der Deutsche spricht Deutsch.", fr: "The German speaks German.", note: "Substantivised adjective: no separate noun like 'Deutschlander'." },
+        { de: "Der Arzt behandelt Patienten.", fr: "The doctor treats patients.", note: "Normal noun: a specific profession." },
+        { de: "Gibt es etwas Neues?", fr: "Is there anything new?", note: "After etwas, German uses the neuter substantivised adjective." },
+        { de: "Ich kenne einen Deutschen.", fr: "I know a German.", note: "Masculine accusative: einen Deutschen." },
+        { de: "Der Lehrer unterrichtet.", fr: "The teacher teaches.", note: "Profession = normal noun." },
+        { de: "Die Alten brauchen Hilfe.", fr: "The old people need help.", note: "Category = substantivised adjective." }
       ]
     },
     {
       id: "b2-8-2-2",
-      title: "8.2.2 Le Concept et la Déclinaison",
-      content: "Puisque ces noms sont d'anciens adjectifs, leur terminaison dépendra de ce qui les précède (Article défini, indéfini ou absence d'article).\n\n**Règle fondamentale** : Un adjectif substantivé **garde exactement la même déclinaison** qu'un adjectif normal placé après un article.\n\n### Déclinaison après article défini (der/die/das) - Déclinaison FAIBLE\n\n| Cas | Masculin | Féminin | Neutre | Pluriel |\n|---|---|---|---|---|\n| Nominatif | der Alte | die Alte | das Alte | die Alten |\n| Accusatif | den Alten | die Alte | das Alte | die Alten |\n| Datif | dem Alten | der Alten | dem Alten | den Alten |\n| Génitif | des Alten | der Alten | des Alten | der Alten |\n\n**Règle** : Déclinaison **faible** (comme \"der gute Mann\")\n\n### Déclinaison après article indéfini (ein/eine) - Déclinaison MIXTE\n\n| Cas | Masculin | Féminin | Neutre |\n|---|---|---|---|\n| Nominatif | ein Alter | eine Alte | ein Altes |\n| Accusatif | einen Alten | eine Alte | ein Altes |\n| Datif | einem Alten | einer Alten | einem Alten |\n| Génitif | eines Alten | einer Alten | eines Alten |\n\n**Règle** : Déclinaison **mixte** (comme \"ein guter Mann\")\n\n### Déclinaison sans article - Déclinaison FORTE\n\n**Attention importante** : Les adjectifs substantivés sans article sont **rares au singulier** mais courants **au pluriel**. Si vous voyez un **nom qui suit** l'adjectif (comme \"Alter Mann\"), c'est un **adjectif normal**, pas un adjectif substantivé !\n\n**Différence fondamentale** :\n- **Alter Mann** = adjectif normal + nom (PAS un adjectif substantivé)\n- **Alte** (seul) = adjectif substantivé qui signifie \"les vieux\" (pas de nom qui suit)\n\n**Adjectif substantivé au pluriel sans article** :\n\n| Cas | Forme | Exemple |\n|---|---|---|\n| Nominatif | Alte | **Alte** brauchen Hilfe. (Les vieux ont besoin d'aide.) |\n| Accusatif | Alte | Ich kenne **Alte**. (Je connais des vieux.) |\n| Datif | Alten | Wir helfen **Alten**. (Nous aidons des vieux.) |\n| Génitif | Alter | Die Häuser **Alter**. (Les maisons de vieux.) |\n\n**Comparaison : Adjectif normal vs Adjectif substantivé (sans article)** :\n\n| Cas | Adjectif normal (avec nom) | Adjectif substantivé (sans nom) |\n|---|---|---|\n| Nominatif Pluriel | **Alte** Menschen leben hier. | **Alte** brauchen Hilfe. |\n| Accusatif Pluriel | Ich sehe **Alte** Menschen. | Ich kenne **Alte**. |\n| Datif Pluriel | Wir helfen **Alten** Menschen. | Wir helfen **Alten**. |\n| Génitif Pluriel | Die Häuser **Alter** Menschen. | Die Häuser **Alter**. |\n\n**Règle** : Un adjectif substantivé **n'a pas de nom qui suit**. Si vous voyez un nom après (comme \"Mann\", \"Frau\", \"Menschen\"), c'est un **adjectif normal**, pas un adjectif substantivé.\n\n**Quand utilise-t-on un adjectif substantivé sans article ?**\nPrincipalement au **pluriel** pour désigner des groupes de personnes :\n- Alte (les vieux)\n- Junge (les jeunes)\n- Deutsche (les Allemands)\n- Kranke (les malades)\n\nAu singulier, les adjectifs substantivés sans article sont très rares et surtout utilisés après \"etwas/nichts/alles/viel\" (voir section 8.2.4).\n\n**Règle mémorielle** : Déclinaison **forte** pour les adjectifs substantivés sans article, mais uniquement s'il n'y a **pas de nom qui suit** !\n\n### Déclinaison après pronoms possessifs (mein, dein, sein, etc.)\n\nLes pronoms possessifs (mein, dein, sein, ihr, unser, euer, Ihr) fonctionnent comme les articles indéfinis : **déclinaison mixte**.\n\n| Cas | Masculin | Féminin | Neutre |\n|---|---|---|---|\n| Nominatif | mein Alter | meine Alte | mein Altes |\n| Accusatif | meinen Alten | meine Alte | mein Altes |\n| Datif | meinem Alten | meiner Alten | meinem Alten |\n| Génitif | meines Alten | meiner Alten | meines Alten |\n\n**Règle** : Même déclinaison qu'après \"ein/eine\"\n\n### Déclinaison après démonstratifs (dieser, jener, jeder, welcher)\n\nLes démonstratifs (dieser, jener, jeder, welcher) fonctionnent comme les articles définis : **déclinaison faible**.\n\n| Cas | Masculin | Féminin | Neutre | Pluriel |\n|---|---|---|---|---|\n| Nominatif | dieser Alte | diese Alte | dieses Alte | diese Alten |\n| Accusatif | diesen Alten | diese Alte | dieses Alte | diese Alten |\n| Datif | diesem Alten | dieser Alten | diesem Alten | diesen Alten |\n| Génitif | dieses Alten | dieser Alten | dieses Alten | dieser Alten |\n\n**Règle** : Même déclinaison qu'après \"der/die/das\"\n\n### Comparaison directe : Adjectif normal vs Adjectif substantivé\n\n| Cas | Adjectif normal | Adjectif substantivé |\n|---|---|---|\n| Nom. Sg. (masc.) | der **gute** Mann | der **Alte** |\n| Acc. Sg. (masc.) | den **guten** Mann | den **Alten** |\n| Dat. Sg. (masc.) | dem **guten** Mann | dem **Alten** |\n| Gen. Sg. (masc.) | des **guten** Mannes | des **Alten** |\n| Nom. Sg. (masc. indéf.) | ein **guter** Mann | ein **Alter** |\n| Acc. Sg. (masc. indéf.) | einen **guten** Mann | einen **Alten** |\n\n**Important** : La terminaison est **identique**. Seule la majuscule change !",
+      title: "8.2.2 The Concept and the Declension",
+      content: `Because these nouns come from adjectives, their ending depends on what comes before them: definite article, indefinite article, possessive, demonstrative, or no article.
+
+**Fundamental rule**: a substantivised adjective keeps exactly the same ending as a normal adjective in the same position.
+
+### After a definite article: weak declension
+| Case | Masculine | Feminine | Neuter | Plural |
+|---|---|---|---|---|
+| Nominative | der Alte | die Alte | das Alte | die Alten |
+| Accusative | den Alten | die Alte | das Alte | die Alten |
+| Dative | dem Alten | der Alten | dem Alten | den Alten |
+| Genitive | des Alten | der Alten | des Alten | der Alten |
+
+Same pattern as **der gute Mann**.
+
+### After an indefinite article: mixed declension
+| Case | Masculine | Feminine | Neuter |
+|---|---|---|---|
+| Nominative | ein Alter | eine Alte | ein Altes |
+| Accusative | einen Alten | eine Alte | ein Altes |
+| Dative | einem Alten | einer Alten | einem Alten |
+| Genitive | eines Alten | einer Alten | eines Alten |
+
+Same pattern as **ein guter Mann**.
+
+### Without an article: strong declension
+Substantivised adjectives without an article are uncommon in the singular but common in the plural.
+
+Important distinction:
+- **Alter Mann** = normal adjective + noun
+- **Alte** = substantivised adjective, no following noun
+
+Plural without an article:
+| Case | Form | Example |
+|---|---|---|
+| Nominative | Alte | Alte brauchen Hilfe. |
+| Accusative | Alte | Ich kenne Alte. |
+| Dative | Alten | Wir helfen Alten. |
+| Genitive | Alter | Die Häuser Alter. |
+
+### Possessives: mixed declension
+Possessives such as **mein, dein, sein, ihr, unser, euer, Ihr** behave like indefinite articles.
+
+| Case | Masculine | Feminine | Neuter |
+|---|---|---|---|
+| Nominative | mein Alter | meine Alte | mein Altes |
+| Accusative | meinen Alten | meine Alte | mein Altes |
+| Dative | meinem Alten | meiner Alten | meinem Alten |
+| Genitive | meines Alten | meiner Alten | meines Alten |
+
+### Demonstratives: weak declension
+Demonstratives such as **dieser, jener, jeder, welcher** behave like definite articles.
+
+| Case | Masculine | Feminine | Neuter | Plural |
+|---|---|---|---|---|
+| Nominative | dieser Alte | diese Alte | dieses Alte | diese Alten |
+| Accusative | diesen Alten | diese Alte | dieses Alte | diese Alten |
+| Dative | diesem Alten | dieser Alten | diesem Alten | diesen Alten |
+| Genitive | dieses Alten | dieser Alten | dieses Alten | dieser Alten |
+
+### Direct comparison
+| Case | Normal adjective | Substantivised adjective |
+|---|---|---|
+| Nom. masc. definite | der **gute** Mann | der **Alte** |
+| Acc. masc. definite | den **guten** Mann | den **Alten** |
+| Dat. masc. definite | dem **guten** Mann | dem **Alten** |
+| Gen. masc. definite | des **guten** Mannes | des **Alten** |
+| Nom. masc. indefinite | ein **guter** Mann | ein **Alter** |
+| Acc. masc. indefinite | einen **guten** Mann | einen **Alten** |
+
+The ending follows the same grammar. The difference is capitalisation and the absence of a following noun.`,
       examples: [
-        { de: "Der Kranke braucht Medizin.", fr: "Le malade a besoin de médicament.", note: "Déclinaison faible après article défini - Nominatif." },
-        { de: "Ich sehe den Kranken.", fr: "Je vois le malade.", note: "Déclinaison faible - Accusatif." },
-        { de: "Ich helfe dem Kranken.", fr: "J'aide le malade.", note: "Déclinaison faible - Datif." },
-        { de: "Das Buch des Kranken.", fr: "Le livre du malade.", note: "Déclinaison faible - Génitif." },
-        { de: "Ein Reisender wartet am Gleis.", fr: "Un voyageur attend sur le quai.", note: "Déclinaison mixte après article indéfini - Nominatif." },
-        { de: "Ich treffe einen Reisenden.", fr: "Je rencontre un voyageur.", note: "Déclinaison mixte - Accusatif." },
-        { de: "Ich gebe einem Reisenden eine Karte.", fr: "Je donne une carte à un voyageur.", note: "Déclinaison mixte - Datif." },
-        { de: "Mein Alter braucht Hilfe.", fr: "Mon vieux a besoin d'aide.", note: "Déclinaison mixte après pronom possessif." },
-        { de: "Ich kenne diesen Alten.", fr: "Je connais ce vieux.", note: "Déclinaison faible après démonstratif." },
-        { de: "Alte Menschen leben hier.", fr: "De vieux gens vivent ici.", note: "Déclinaison forte sans article - Pluriel." }
+        { de: "Der Kranke braucht Medizin.", fr: "The sick person needs medicine.", note: "Weak declension after a definite article; nominative." },
+        { de: "Ich sehe den Kranken.", fr: "I see the sick person.", note: "Weak declension; accusative masculine." },
+        { de: "Ich helfe dem Kranken.", fr: "I help the sick person.", note: "Weak declension; dative masculine." },
+        { de: "Das Buch des Kranken.", fr: "The sick person's book.", note: "Weak declension; genitive masculine." },
+        { de: "Ein Reisender wartet am Gleis.", fr: "A traveller is waiting on the platform.", note: "Mixed declension after an indefinite article." },
+        { de: "Ich treffe einen Reisenden.", fr: "I am meeting a traveller.", note: "Mixed declension; accusative masculine." },
+        { de: "Ich gebe einem Reisenden eine Karte.", fr: "I give a traveller a ticket.", note: "Mixed declension; dative masculine." },
+        { de: "Mein Alter braucht Hilfe.", fr: "My old man needs help.", note: "Mixed declension after a possessive." },
+        { de: "Ich kenne diesen Alten.", fr: "I know this old man.", note: "Weak declension after a demonstrative." }
       ]
     },
     {
       id: "b2-8-2-3",
-      title: "8.2.3 Déclinaison pour les Personnes (Masculin / Féminin)",
-      content: "C'est crucial pour désigner des catégories de personnes ou des nationalités.\n\n### Tableau récapitulatif : Nationalités et Catégories\n\n| Personne | Avec 'Der/Die' | Avec 'Ein/Eine' |\n|---|---|---|\n| Allemand | der Deutsche | ein Deutsche**r** |\n| Allemande | die Deutsche | eine Deutsche |\n| Employé | der Angestellte | ein Angestellte**r** |\n| Employée | die Angestellte | eine Angestellte |\n| Jeune | der Jugendliche | ein Jugendliche**r** |\n| Jeune (f) | die Jugendliche | eine Jugendliche |\n| Riche | der Reiche | ein Reiche**r** |\n| Riche (f) | die Reiche | eine Reiche |\n\n### Déclinaison complète : der Deutsche / die Deutsche\n\n| Cas | Masculin Singulier | Féminin Singulier | Pluriel |\n|---|---|---|---|\n| Nominatif | der Deutsche | die Deutsche | die Deutschen |\n| Accusatif | den Deutschen | die Deutsche | die Deutschen |\n| Datif | dem Deutschen | der Deutschen | den Deutschen |\n| Génitif | des Deutschen | der Deutschen | der Deutschen |\n\n### Déclinaison avec article indéfini : ein Deutsche / eine Deutsche\n\n| Cas | Masculin | Féminin |\n|---|---|---|\n| Nominatif | ein Deutscher | eine Deutsche |\n| Accusatif | einen Deutschen | eine Deutsche |\n| Datif | einem Deutschen | einer Deutschen |\n| Génitif | eines Deutschen | einer Deutschen |\n\n### Points importants\n\n1. **Masculin singulier** : Avec \"der\" → terminaison **-e**, avec \"ein\" → terminaison **-er** (Nominatif)\n2. **Féminin** : Terminaison **-e** au Nominatif et Accusatif, **-en** au Datif et Génitif\n3. **Pluriel** : Toujours **-en** pour toutes les formes (die Deutschen, den Deutschen, etc.)\n4. **Nationalités** : Presque toujours des adjectifs substantivés (der Deutsche, der Franzose = exception, c'est la N-Deklination)\n\n### Catégories de personnes courantes\n\n**Âge** :\n• der/die Alte (le/la vieux/vieille)\n• der/die Jugendliche (le/la jeune)\n• der/die Erwachsene (l'adulte)\n\n**État/Situation** :\n• der/die Kranke (le/la malade)\n• der/die Gesunde (le/la bien portant(e))\n• der/die Verletzte (le/la blessé(e))\n\n**Social** :\n• der/die Reiche (le/la riche)\n• der/die Arme (le/la pauvre)\n• der/die Angestellte (l'employé(e))\n• der/die Arbeitslose (le/la chômeur(se))\n\n**Nationalités** :\n• der/die Deutsche (l'Allemand(e))\n• der/die Franzose/Französin (le/la Français(e))\n• der/die Engländer/Engländerin (l'Anglais(e))\n\n**Règle** : Tous ces mots suivent les mêmes règles de déclinaison que les adjectifs normaux.",
+      title: "8.2.3 Declension for People: Masculine and Feminine",
+      content: `For people, substantivised adjectives usually have masculine and feminine forms.
+
+### With a definite article
+| Case | Masculine | Feminine |
+|---|---|---|
+| Nominative | der Kranke | die Kranke |
+| Accusative | den Kranken | die Kranke |
+| Dative | dem Kranken | der Kranken |
+| Genitive | des Kranken | der Kranken |
+
+### With an indefinite article
+| Case | Masculine | Feminine |
+|---|---|---|
+| Nominative | ein Kranker | eine Kranke |
+| Accusative | einen Kranken | eine Kranke |
+| Dative | einem Kranken | einer Kranken |
+| Genitive | eines Kranken | einer Kranken |
+
+### Without an article in the plural
+| Case | Form |
+|---|---|
+| Nominative | Kranke |
+| Accusative | Kranke |
+| Dative | Kranken |
+| Genitive | Kranker |
+
+The gender is grammatical and follows the person referred to. The endings are not optional: **der Kranke**, but **ein Kranker**.`,
       examples: [
-        { de: "Der Deutsche spricht Deutsch.", fr: "L'Allemand parle allemand.", note: "Nominatif masculin après article défini." },
-        { de: "Ich kenne einen Deutschen.", fr: "Je connais un Allemand.", note: "Accusatif masculin après article indéfini." },
-        { de: "Ich habe mit einer Deutschen gesprochen.", fr: "J'ai parlé avec une Allemande.", note: "Datif féminin après article indéfini." },
-        { de: "Die Hilfe der Deutschen war wichtig.", fr: "L'aide des Allemands était importante.", note: "Génitif pluriel." },
-        { de: "Ein Jugendlicher kommt heute.", fr: "Un jeune vient aujourd'hui.", note: "Nominatif masculin après 'ein'." },
-        { de: "Ich sehe die Angestellten.", fr: "Je vois les employés.", note: "Accusatif pluriel après article défini." },
-        { de: "Wir helfen den Kranken.", fr: "Nous aidons les malades.", note: "Datif pluriel." },
-        { de: "Das Haus des Alten.", fr: "La maison du vieux.", note: "Génitif masculin singulier." }
+        { de: "Der Verletzte liegt im Krankenhaus.", fr: "The injured man is in hospital.", note: "Masculine nominative after a definite article." },
+        { de: "Eine Verletzte wartet im Flur.", fr: "An injured woman is waiting in the corridor.", note: "Feminine nominative after an indefinite article." },
+        { de: "Ich helfe einem Kranken.", fr: "I help a sick man/person.", note: "Dative masculine after an indefinite article." },
+        { de: "Kranke brauchen Ruhe.", fr: "Sick people need rest.", note: "Plural without article." }
       ]
     },
     {
       id: "b2-8-2-4",
-      title: "8.2.4 Les Concepts Abstraits (Neutre)",
-      content: "On utilise souvent le neutre pour des concepts généraux, après *etwas, nichts, viel, alles*.\n\n**Règle fondamentale** : Après ces pronoms indéfinis, l'adjectif substantivé est **toujours au neutre singulier** et suit la déclinaison **forte** (car il n'y a pas d'article).\n\n### Déclinaison complète après pronoms indéfinis\n\n| Cas | Après \"etwas\" | Après \"nichts\" | Après \"alles\" | Après \"viel\" |\n|---|---|---|---|---|\n| Nominatif/Accusatif | etwas Neues | nichts Besonderes | alles Gute | viel Interessantes |\n| Datif (rare) | etwas Neuem | nichts Besonderem | allem Guten | vielem Interessanten |\n| Génitif (très rare) | etwas Neuen | nichts Besonderen | allen Guten | vielem Interessanten |\n\n### Exemples courants avec déclinaison\n\n**Nominatif/Accusatif (99% des cas)** :\n• alles Gute (tout de bon)\n• alles Beste (tout le meilleur)\n• alles Neue (tout ce qui est nouveau)\n• etwas Schönes (quelque chose de beau)\n• etwas Gutes (quelque chose de bon)\n• etwas Wichtiges (quelque chose d'important)\n• nichts Besonderes (rien de spécial)\n• nichts Interessantes (rien d'intéressant)\n• viel Neues (beaucoup de choses nouvelles)\n• viel Gutes (beaucoup de bonnes choses)\n• wenig Wichtiges (peu de choses importantes)\n\n### Pourquoi le neutre ?\n\nCes pronoms (etwas, nichts, alles, viel) désignent des **concepts abstraits**, pas des objets concrets. Le neutre est utilisé car :\n\n1. Il n'y a pas d'objet spécifique à désigner\n2. Le concept est général et abstrait\n3. Il n'y a pas de genre spécifique à attribuer\n\n**Règle mémorielle** : Abstrait = Neutre = Terminaison en **-es** au Nominatif/Accusatif\n\n### Terminaisons\n\n**Nominatif/Accusatif** (le plus courant) :\n• Adjectif finissant en consonne : **-es** (etwas Gutes, nichts Besonderes)\n• Adjectif finissant en -e : **-s** (etwas Gute → alles Gute, mais plutôt \"etwas Gutes\")\n• Adjectif finissant en -el/-er/-en : **-es** (etwas Neues)\n\n**Datif** (rare mais correct) :\n• Terminaison **-em** : an etwas Neuem (à quelque chose de nouveau)\n\n**Génitif** (très rare) :\n• Terminaison **-en** : wegen nichts Besonderen (à cause de rien de spécial)\n\n### Attention : Ne pas confondre avec les noms neutres\n\n**Adjectif substantivé** : etwas Neues (quelque chose de nouveau - concept abstrait)\n**Nom neutre** : etwas Neues (peut aussi être un nom comme \"das Neue\" = la nouveauté)\n\n**Test** : Si vous pouvez dire \"quelque chose de + adjectif\" → adjectif substantivé.\nSi vous pouvez dire \"la + nom\" → nom normal.\n\n### Formules toutes faites courantes\n\n• **Alles Gute !** (Bon anniversaire ! / Bonne chance !)\n• **Alles Beste !** (Tous mes vœux !)\n• **Alles Liebe !** (Tous mes amours !)\n• **Gibt es etwas Neues ?** (Y a-t-il quelque chose de nouveau ?)\n• **Nichts Besonderes.** (Rien de spécial.)\n• **Viel Glück !** (Bonne chance !)\n• **Viel Erfolg !** (Beaucoup de succès !)",
+      title: "8.2.4 Abstract Concepts: Neuter Forms",
+      content: `For abstract ideas, German uses the neuter substantivised adjective, especially after **etwas, nichts, alles, viel, wenig**.
+
+### Common forms
+| Trigger | Example | Meaning |
+|---|---|---|
+| etwas | etwas Neues | something new |
+| nichts | nichts Besonderes | nothing special |
+| alles | alles Gute | all the best / everything good |
+| viel | viel Interessantes | much that is interesting |
+| wenig | wenig Neues | little that is new |
+
+### Why the ending changes
+After **etwas, nichts, viel, wenig**, the adjective usually takes strong neuter endings:
+- etwas Neues
+- nichts Besonderes
+- viel Interessantes
+
+After **alles**, the adjective usually has weak declension:
+- alles Gute
+- alles Neue
+
+### Useful fixed expressions
+- Alles Gute!
+- Etwas Neues?
+- Nichts Besonderes.
+- Viel Interessantes erfahren.`,
       examples: [
-        { de: "Gibt es etwas Neues?", fr: "Y a-t-il quelque chose de nouveau ?", note: "Nominatif/Accusatif neutre après 'etwas'." },
-        { de: "Alles Gute zum Geburtstag!", fr: "Bon anniversaire !", note: "Formule toute faite avec 'alles'." },
-        { de: "Ich habe nichts Besonderes gesehen.", fr: "Je n'ai rien vu de spécial.", note: "Accusatif neutre après 'nichts'." },
-        { de: "Er erzählt viel Interessantes.", fr: "Il raconte beaucoup de choses intéressantes.", note: "Accusatif neutre après 'viel'." },
-        { de: "Ich denke an etwas Neues.", fr: "Je pense à quelque chose de nouveau.", note: "Accusatif après préposition + 'etwas'." },
-        { de: "Alles Beste für die Zukunft!", fr: "Tous mes vœux pour l'avenir !", note: "Formule de politesse." },
-        { de: "Es gibt wenig Wichtiges zu besprechen.", fr: "Il y a peu de choses importantes à discuter.", note: "Avec 'wenig' aussi, déclinaison forte." },
-        { de: "Nichts Gutes kommt davon.", fr: "Rien de bon n'en sort.", note: "Nominatif après 'nichts'." }
+        { de: "Ich habe etwas Interessantes gelesen.", fr: "I read something interesting.", note: "Neuter strong ending after etwas." },
+        { de: "Es gibt nichts Neues.", fr: "There is nothing new.", note: "Neuter strong ending after nichts." },
+        { de: "Alles Gute zum Geburtstag!", fr: "All the best for your birthday!", note: "Weak ending after alles." },
+        { de: "Wir haben viel Neues gelernt.", fr: "We learned many new things.", note: "Neuter abstract use after viel." }
       ]
     },
     {
       id: "b2-8-2-5",
-      title: "8.2.5 Le Pluriel des Adjectifs Substantivés",
-      content: "Le pluriel des adjectifs substantivés suit les mêmes règles que les adjectifs normaux.\n\n### Règle générale\n\n**Après article défini (die)** : Déclinaison **faible** (terminaison **-en**)\n• die Deutschen (les Allemands)\n• die Alten (les vieux)\n• die Kranken (les malades)\n• die Jugendlichen (les jeunes)\n\n**Sans article** : Déclinaison **forte** (terminaison **-e**)\n• Alte Menschen (vieux gens)\n• Deutsche sprechen Deutsch (Les Allemands parlent allemand)\n• Kranke brauchen Hilfe (Les malades ont besoin d'aide)\n\n### Déclinaison complète du pluriel\n\n| Cas | Après article défini (die Alten) | Sans article (Alte) |\n|---|---|---|\n| Nominatif | die Alten | Alte Menschen |\n| Accusatif | die Alten | Alte Menschen |\n| Datif | den Alten | Alten Menschen |\n| Génitif | der Alten | Alter Menschen |\n\n### Différence avec le singulier\n\n**Singulier** : La déclinaison dépend fortement du genre (der/die/das Alte)\n**Pluriel** : La déclinaison est identique pour tous les genres (die Alten)\n\n**Règle** : Au pluriel, tous les genres fusionnent en une seule forme : **die + Adjectif en -en**\n\n### Exemples pratiques au pluriel\n\n**Nationalités** :\n• die Deutschen (les Allemands)\n• die Franzosen (les Français - nom normal, pas adjectif substantivé)\n• die Engländer (les Anglais - nom normal)\n\n**Catégories** :\n• die Alten (les vieux)\n• die Jungen (les jeunes)\n• die Kranken (les malades)\n• die Gesunden (les bien portants)\n• die Reichen (les riches)\n• die Armen (les pauvres)\n\n**Professions (adjectifs substantivés)** :\n• die Angestellten (les employés)\n• die Arbeitslosen (les chômeurs)\n• die Reisenden (les voyageurs)\n\n### Cas particuliers\n\n**Pluriel après \"alle\" (tous)** :\n• alle Deutschen (tous les Allemands) - déclinaison faible\n• alle Alten (tous les vieux)\n• alle Kranken (tous les malades)\n\n**Pluriel après \"viele\" (beaucoup)** :\n• viele Alte (beaucoup de vieux) - déclinaison forte\n• viele Junge (beaucoup de jeunes)\n• viele Kranke (beaucoup de malades)\n\n**Règle** : \"alle\" et \"beide\" → déclinaison faible (-en)\n\"viele\", \"einige\", \"manche\" → déclinaison forte (-e)\n\n### Règle mémorielle\n\n**Pluriel = Terminaison -en** après article défini ou déterminants totaux (alle, beide)\n**Pluriel = Terminaison -e** sans article ou après déterminants partiels (viele, einige)",
+      title: "8.2.5 Plural of Substantivised Adjectives",
+      content: `Plural forms are very common when you refer to groups of people.
+
+### With a definite article
+| Case | Form | Example |
+|---|---|---|
+| Nominative | die Kranken | Die Kranken warten. |
+| Accusative | die Kranken | Ich sehe die Kranken. |
+| Dative | den Kranken | Ich helfe den Kranken. |
+| Genitive | der Kranken | Die Zimmer der Kranken. |
+
+### Without an article
+| Case | Form | Example |
+|---|---|---|
+| Nominative | Kranke | Kranke warten. |
+| Accusative | Kranke | Ich sehe Kranke. |
+| Dative | Kranken | Ich helfe Kranken. |
+| Genitive | Kranker | Die Zimmer Kranker. |
+
+### After alle and viele
+This is a frequent B2 trap:
+- **alle Deutschen** = all Germans (weak: -en)
+- **viele Deutsche** = many Germans (strong plural nominative/accusative: -e)
+- **allen Deutschen** = to all Germans
+- **vielen Deutschen** = to many Germans
+
+Do not add an extra ending by analogy with English. The form is controlled by German adjective declension.`,
       examples: [
-        { de: "Die Alten brauchen Hilfe.", fr: "Les vieux ont besoin d'aide.", note: "Pluriel après article défini - Nominatif." },
-        { de: "Ich kenne die Deutschen.", fr: "Je connais les Allemands.", note: "Pluriel - Accusatif." },
-        { de: "Wir helfen den Kranken.", fr: "Nous aidons les malades.", note: "Pluriel - Datif." },
-        { de: "Die Häuser der Alten.", fr: "Les maisons des vieux.", note: "Pluriel - Génitif." },
-        { de: "Alte Menschen leben hier.", fr: "De vieux gens vivent ici.", note: "Pluriel sans article - déclinaison forte." },
-        { de: "Alle Deutschen sprechen Deutsch.", fr: "Tous les Allemands parlent allemand.", note: "Pluriel après 'alle' - déclinaison faible." },
-        { de: "Viele Alte brauchen Pflege.", fr: "Beaucoup de vieux ont besoin de soins.", note: "Pluriel après 'viele' - déclinaison forte." }
+        { de: "Die Jugendlichen diskutieren.", fr: "The young people are discussing.", note: "Plural after a definite article." },
+        { de: "Jugendliche diskutieren.", fr: "Young people are discussing.", note: "Plural without article." },
+        { de: "Alle Deutschen kennen das Wort.", fr: "All Germans know the word.", note: "Weak declension after alle." },
+        { de: "Viele Deutsche leben im Ausland.", fr: "Many Germans live abroad.", note: "Strong declension after viele." }
       ]
     },
     {
       id: "b2-8-2-6",
-      title: "8.2.6 Erreurs courantes des francophones",
-      content: "### Erreur 1 : Oublier la terminaison au Datif\n\n**Faux** : Ich helfe dem Krank ❌\n**Correct** : Ich helfe dem **Kranken** ✅\n\n**Pourquoi** : Au datif, l'adjectif substantivé prend la terminaison **-en**, comme un adjectif normal (dem guten Mann → dem Kranken)\n\n**Exemples corrigés** :\n• Faux : Ich gebe dem Alt → Correct : Ich gebe dem **Alten**\n• Faux : Ich schreibe der Deutsch → Correct : Ich schreibe der **Deutschen**\n\n### Erreur 2 : Utiliser 'von' après etwas/nichts/alles\n\n**Faux** : etwas von neu ❌\n**Faux** : nichts von besonder ❌\n**Faux** : alles von gut ❌\n\n**Correct** : etwas **Neues** ✅\n**Correct** : nichts **Besonderes** ✅\n**Correct** : alles **Gute** ✅\n\n**Pourquoi** : En français, on dit \"quelque chose **de** nouveau\", mais en allemand, on ne met **pas** de préposition. L'adjectif substantivé suit directement le pronom.\n\n### Erreur 3 : Oublier la majuscule\n\n**Faux** : der alte (personne âgée) ❌\n**Faux** : etwas neues ❌\n**Faux** : alles gute ❌\n\n**Correct** : der **Alte** ✅\n**Correct** : etwas **Neues** ✅\n**Correct** : alles **Gute** ✅\n\n**Pourquoi** : Un adjectif substantivé devient un **nom**, donc il prend une majuscule comme tous les noms allemands.\n\n### Erreur 4 : Confondre terminaison masculin après 'der' vs 'ein'\n\n**Faux** : ein Deutsche (au lieu de Deutscher) ❌\n**Faux** : ein Alte (au lieu de Alter) ❌\n\n**Correct** : ein **Deutscher** ✅\n**Correct** : ein **Alter** ✅\n\n**Pourquoi** : Après \"der\", le masculin prend **-e** (der Deutsche). Après \"ein\", il prend **-er** au Nominatif (ein Deutscher). C'est la déclinaison mixte.\n\n### Erreur 5 : Utiliser un nom normal au lieu d'un adjectif substantivé\n\n**Faux** : der Deutschlander (pour désigner un Allemand) ❌\n**Faux** : der Medizinische (pour désigner un médecin) ❌\n\n**Correct** : der **Deutsche** ✅\n**Correct** : der **Arzt** (nom normal) ✅\n\n**Pourquoi** : Il n'y a pas de nom \"Deutschlander\" en allemand. Pour les nationalités sans nom spécifique, on utilise l'adjectif substantivé. Pour les professions, on utilise le nom spécifique s'il existe.\n\n### Erreur 6 : Oublier la terminaison au pluriel\n\n**Faux** : die Deutsche (au pluriel) ❌\n**Faux** : die Alt (au pluriel) ❌\n\n**Correct** : die **Deutschen** ✅\n**Correct** : die **Alten** ✅\n\n**Pourquoi** : Au pluriel, après article défini, la terminaison est toujours **-en** (déclinaison faible).\n\n### Erreur 7 : Mauvais genre pour les concepts abstraits\n\n**Faux** : etwas Neue (au lieu de Neues) ❌\n**Faux** : nichts Besondere (au lieu de Besonderes) ❌\n\n**Correct** : etwas **Neues** ✅\n**Correct** : nichts **Besonderes** ✅\n\n**Pourquoi** : Après etwas/nichts/alles/viel, l'adjectif substantivé est **toujours au neutre** (terminaison **-es**).\n\n### Erreur 8 : Confondre adjectif substantivé et nom normal au pluriel\n\n**Faux** : Viele Deutsche (après 'viele' avec -e) ❌\n**Correct** : Viele **Deutsche** ✅ (déclinaison forte = pas de terminaison -e, c'est correct !)\n\n**Attention** : Après \"viele\", \"einige\", \"manche\", la déclinaison est **forte**, donc pas de terminaison supplémentaire au pluriel. Mais c'est différent de \"alle\" qui prend **-en**.\n\n**Règle** :\n• **alle, beide** → déclinaison faible → **-en** (alle Deutschen)\n• **viele, einige, manche** → déclinaison forte → **-e** (viele Deutsche) ou pas de terminaison selon le contexte\n\n### Checklist de vérification\n\nAvant de soumettre votre texte, vérifiez :\n1. Majuscule à l'adjectif substantivé ?\n2. Terminaison correcte au Datif et Génitif ?\n3. Pas de \"von\" après etwas/nichts/alles/viel ?\n4. Terminaison correcte après \"der\" vs \"ein\" ?\n5. Pluriel avec **-en** après article défini ?\n6. Neutre après etwas/nichts/alles/viel ?\n7. Adjectif substantivé ou nom normal choisi correctement ?",
+      title: "8.2.6 Common Mistakes",
+      content: `### Mistake 1: Forgetting the capital letter
+Incorrect: der kranke
+Correct: der Kranke
+
+The word is now used as a noun, so it is capitalised.
+
+### Mistake 2: Using noun endings instead of adjective endings
+Incorrect: ein Kranken
+Correct: ein Kranker
+
+After **ein**, masculine nominative needs the mixed adjective ending **-er**.
+
+### Mistake 3: Treating the form as fixed
+Incorrect: Ich sehe der Kranke.
+Correct: Ich sehe den Kranken.
+
+The article and the substantivised adjective both follow case.
+
+### Mistake 4: Confusing normal adjective + noun with substantivised adjective
+- **alte Menschen** = old people, adjective + noun
+- **Alte** = old people / the old, substantivised adjective
+
+If a noun follows, the adjective is not substantivised.
+
+### Mistake 5: Confusing alle Deutschen and viele Deutsche
+- **alle Deutschen**: weak declension after alle
+- **viele Deutsche**: strong declension after viele
+
+### Quick correction checklist
+1. Is the word capitalised?
+2. Is there a following noun? If yes, it is a normal adjective.
+3. Which determiner comes before it: der/ein/no article/alle/viele?
+4. Which case and gender are needed?
+5. Does the ending match ordinary adjective declension?`,
       examples: [
-        { de: "Ich helfe dem Kranken. ✅", fr: "J'aide le malade.", note: "Datif avec terminaison -en correcte." },
-        { de: "Faux : Ich helfe dem Krank ❌ → Correct : Ich helfe dem Kranken ✅", fr: "Ne jamais oublier la terminaison au datif !", note: "Erreur 1 corrigée." },
-        { de: "Etwas Neues ist passiert. ✅", fr: "Quelque chose de nouveau est arrivé.", note: "Pas de 'von', neutre avec -es correct." },
-        { de: "Faux : etwas von neu ❌ → Correct : etwas Neues ✅", fr: "Ne jamais mettre 'von' après etwas.", note: "Erreur 2 corrigée." },
-        { de: "Ein Deutscher kommt heute.", fr: "Un Allemand vient aujourd'hui.", note: "Masculin après 'ein' avec terminaison -er correcte." },
-        { de: "Die Deutschen sprechen Deutsch.", fr: "Les Allemands parlent allemand.", note: "Pluriel avec terminaison -en après article défini." },
-        { de: "Viele Deutsche leben hier.", fr: "Beaucoup d'Allemands vivent ici.", note: "Pluriel après 'viele' - déclinaison forte, pas de terminaison supplémentaire." }
+        { de: "Incorrect: ein Kranken -> Correct: ein Kranker", fr: "After ein, masculine nominative takes -er.", note: "Mixed declension." },
+        { de: "Incorrect: Ich sehe der Kranke -> Correct: Ich sehe den Kranken", fr: "Accusative masculine requires den Kranken.", note: "Case agreement." },
+        { de: "Alte Menschen vs Alte", fr: "Old people (with noun) vs old people/the old (without noun).", note: "Normal adjective vs substantivised adjective." }
       ]
     },
     {
       id: "b2-8-3",
-      title: "8.3 Déclinaison après les pronoms indéfinis",
-      content: "Les pronoms indéfinis (alle, viele, einige, manche, etc.) influencent la déclinaison des adjectifs et des adjectifs substantivés qui les suivent. La règle fondamentale : les **déterminants totaux** forcent une déclinaison faible, les **déterminants partiels** forcent une déclinaison forte.\n\nCette section détaille comment décliner correctement les adjectifs après chaque type de pronom indéfini.",
+      title: "8.3 Declension after Indefinite Pronouns",
+      content: `Some German indefinite pronouns behave like complete determiners; others behave more like quantity words. This changes the adjective ending that follows them.
+
+The main contrast is:
+- **total determiners**: alle, beide, sämtliche -> weak declension
+- **partial determiners**: viele, einige, manche, mehrere, wenige -> strong declension
+
+This distinction is especially important in the plural.`,
       examples: [
-        { de: "Alle guten Freunde helfen mir.", fr: "Tous les bons amis m'aident.", note: "Déclinaison faible après 'alle'." },
-        { de: "Ich habe viele neue Freunde.", fr: "J'ai beaucoup de nouveaux amis.", note: "Déclinaison forte après 'viele'." }
+        { de: "alle guten Freunde vs viele gute Freunde", fr: "all good friends vs many good friends", note: "alle takes weak adjective endings; viele takes strong endings." }
       ]
     },
     {
       id: "b2-8-3-1",
-      title: "8.3.1 Le principe fondamental : Déterminants totaux vs Partiels",
-      content: "Pour comprendre la déclinaison après les pronoms indéfinis, il faut distinguer deux catégories :\n\n### Groupe 1 : Déterminants totaux (Déclinaison FAIBLE)\n\nLes déterminants **totaux** désignent **100%** d'un groupe. Ils forcent une déclinaison **faible** (terminaison **-en** pour l'adjectif au pluriel).\n\n**Pronoms concernés** :\n• **alle** (tous, toutes)\n• **beide** (les deux)\n• **sämtliche** (tous sans exception)\n\n**Règle** : Déclinaison faible = comme après \"der/die/das\" au pluriel\n\n**Exemples** :\n• Alle **guten** Freunde (tous les bons amis) - déclinaison faible\n• Beide **schönen** Häuser (les deux belles maisons) - déclinaison faible\n• Sämtliche **neuen** Bücher (tous les nouveaux livres) - déclinaison faible\n\n### Groupe 2 : Déterminants partiels (Déclinaison FORTE)\n\nLes déterminants **partiels** désignent **une partie** d'un groupe (beaucoup, quelques, plusieurs). Ils forcent une déclinaison **forte** (terminaison **-e** ou aucune terminaison selon le contexte).\n\n**Pronoms concernés** :\n• **viele** (beaucoup)\n• **einige** (quelques)\n• **manche** (certains)\n• **mehrere** (plusieurs)\n• **wenige** (peu)\n• **mancher** (au singulier : certain)\n\n**Règle** : Déclinaison forte = comme sans article\n\n**Exemples** :\n• Viele **gute** Freunde (beaucoup de bons amis) - déclinaison forte\n• Einige **neue** Bücher (quelques nouveaux livres) - déclinaison forte\n• Manche **schöne** Häuser (certaines belles maisons) - déclinaison forte\n\n### Pourquoi cette distinction ?\n\n**Déterminant total** (alle, beide) :\n- Remplace implicitement l'article défini\n- Fonctionne comme \"die\" au pluriel\n- → Déclinaison faible (comme après \"die\")\n\n**Déterminant partiel** (viele, einige, etc.) :\n- Ne remplace pas l'article\n- Fonctionne comme s'il n'y avait pas d'article\n- → Déclinaison forte (comme sans article)\n\n### Règle mémorielle\n\n**\"Tous\" = Faible (-en)**\n**\"Beaucoup\" = Forte (-e)**\n\nSi le pronom signifie \"tous sans exception\" → déclinaison faible\nSi le pronom signifie \"une partie\" → déclinaison forte",
+      title: "8.3.1 The Fundamental Principle: Total vs Partial Determiners",
+      content: `### Total determiners
+Words such as **alle, beide, sämtliche** present the group as complete. They already carry clear grammatical information, so the adjective uses **weak declension**.
+
+Examples:
+- alle **guten** Freunde
+- beide **neuen** Autos
+- sämtliche **wichtigen** Dokumente
+
+### Partial determiners
+Words such as **viele, einige, manche, mehrere, wenige** present only part of a group. The adjective must carry more grammatical information, so it uses **strong declension**.
+
+Examples:
+- viele **gute** Freunde
+- einige **neue** Bücher
+- mehrere **wichtige** Dokumente
+
+### Practical shortcut
+If the word means "all/both/every single one" -> weak ending **-en** in nominative/accusative plural.
+If the word means "many/some/several/few" -> strong ending **-e** in nominative/accusative plural.`,
       examples: [
-        { de: "Alle guten Schüler bestehen die Prüfung.", fr: "Tous les bons élèves réussissent l'examen.", note: "Déterminant total → déclinaison faible." },
-        { de: "Viele gute Schüler bestehen die Prüfung.", fr: "Beaucoup de bons élèves réussissent l'examen.", note: "Déterminant partiel → déclinaison forte." },
-        { de: "Beide neuen Autos sind teuer.", fr: "Les deux nouvelles voitures sont chères.", note: "'beide' = total → déclinaison faible." },
-        { de: "Einige neue Autos sind teuer.", fr: "Quelques nouvelles voitures sont chères.", note: "'einige' = partiel → déclinaison forte." }
+        { de: "Alle guten Freunde kommen.", fr: "All good friends are coming.", note: "Total group -> weak declension." },
+        { de: "Viele gute Freunde kommen.", fr: "Many good friends are coming.", note: "Partial group -> strong declension." }
       ]
     },
     {
       id: "b2-8-3-2",
-      title: "8.3.2 Déclinaison après 'alle' (tous, toutes)",
-      content: "**alle** est le pronom indéfini le plus courant pour désigner \"tous\" au pluriel. Il force toujours une **déclinaison faible**.\n\n### Déclinaison complète de 'alle' + adjectif\n\n| Cas | Pluriel | Exemple |\n|---|---|---|\n| Nominatif | alle **guten** Freunde | Alle **guten** Freunde kommen. (Tous les bons amis viennent.) |\n| Accusatif | alle **guten** Freunde | Ich kenne alle **guten** Freunde. (Je connais tous les bons amis.) |\n| Datif | allen **guten** Freunden | Ich helfe allen **guten** Freunden. (J'aide tous les bons amis.) |\n| Génitif | aller **guten** Freunde | Die Hilfe aller **guten** Freunde. (L'aide de tous les bons amis.) |\n\n### Points importants\n\n1. **Pluriel uniquement** : \"alle\" s'utilise principalement au pluriel\n2. **Terminaison -en** : L'adjectif prend toujours **-en** après \"alle\"\n3. **Déclinaison de 'alle'** : Le pronom lui-même se décline aussi (alle, alle, allen, aller)\n\n### Tableau détaillé : alle + adjectif (exemple: gute Freunde)\n\n| Cas | Pronom 'alle' | Adjectif | Nom | Traduction |\n|---|---|---|---|---|\n| Nominatif | **alle** | **guten** | Freunde | tous les bons amis |\n| Accusatif | **alle** | **guten** | Freunde | tous les bons amis |\n| Datif | **allen** | **guten** | Freunden | à tous les bons amis |\n| Génitif | **aller** | **guten** | Freunde | de tous les bons amis |\n\n### Exemples avec adjectifs substantivés\n\nAvec des adjectifs substantivés, la même règle s'applique :\n• Alle **Deutschen** (tous les Allemands)\n• Alle **Alten** (tous les vieux)\n• Alle **Jungen** (tous les jeunes)\n• Alle **Kranken** (tous les malades)\n\n**Tableau** :\n| Cas | Forme | Exemple |\n|---|---|---|\n| Nominatif | alle Deutschen | Alle **Deutschen** sprechen Deutsch. |\n| Accusatif | alle Deutschen | Ich kenne alle **Deutschen**. |\n| Datif | allen Deutschen | Ich helfe allen **Deutschen**. |\n| Génitif | aller Deutschen | Die Meinung aller **Deutschen**. |\n\n### Cas particuliers\n\n**\"alle\" au singulier neutre** :\n• Alles **Gute** (tout ce qui est bon) - après \"alles\", c'est un adjectif substantivé neutre (voir section 8.2.4)\n• Alles **Neue** (tout ce qui est nouveau)\n\n**Attention** : \"alles\" (neutre singulier) est différent de \"alle\" (pluriel).",
+      title: "8.3.2 Declension after alle",
+      content: `**alle** means "all" and behaves like a definite determiner. The adjective takes **weak declension**.
+
+### Complete pattern: alle + adjective
+| Case | Pronoun | Adjective | Noun | Meaning |
+|---|---|---|---|---|
+| Nominative | alle | guten | Freunde | all good friends |
+| Accusative | alle | guten | Freunde | all good friends |
+| Dative | allen | guten | Freunden | to all good friends |
+| Genitive | aller | guten | Freunde | of all good friends |
+
+### Key points
+1. **alle** is mainly used in the plural.
+2. The adjective takes **-en** after alle in nominative and accusative plural.
+3. The pronoun itself also declines: alle, alle, allen, aller.
+
+### With substantivised adjectives
+The same rule applies:
+- Alle **Deutschen**
+- Alle **Alten**
+- Alle **Jungen**
+- Alle **Kranken**
+
+### Singular neuter: alles
+**alles** is different from plural **alle**:
+- Alles **Gute**
+- Alles **Neue**
+
+Here you are dealing with a neuter abstract expression, not a plural group.`,
       examples: [
-        { de: "Alle guten Freunde helfen mir.", fr: "Tous les bons amis m'aident.", note: "Nominatif pluriel - déclinaison faible." },
-        { de: "Ich kenne alle neuen Schüler.", fr: "Je connais tous les nouveaux élèves.", note: "Accusatif pluriel." },
-        { de: "Ich schreibe allen guten Freunden.", fr: "J'écris à tous les bons amis.", note: "Datif pluriel - 'allen' + adjectif en -en." },
-        { de: "Die Hilfe aller guten Freunde.", fr: "L'aide de tous les bons amis.", note: "Génitif pluriel - 'aller'." },
-        { de: "Alle Deutschen sind pünktlich.", fr: "Tous les Allemands sont ponctuels.", note: "Avec adjectif substantivé." },
-        { de: "Ich helfe allen Kranken.", fr: "J'aide tous les malades.", note: "Datif après 'allen'." }
+        { de: "Alle guten Freunde helfen mir.", fr: "All good friends help me.", note: "Nominative plural; weak declension." },
+        { de: "Ich kenne alle neuen Schüler.", fr: "I know all the new pupils.", note: "Accusative plural." },
+        { de: "Ich schreibe allen guten Freunden.", fr: "I write to all good friends.", note: "Dative plural: allen + adjective in -en." },
+        { de: "Die Hilfe aller guten Freunde.", fr: "The help of all good friends.", note: "Genitive plural: aller." },
+        { de: "Alle Deutschen sind pünktlich.", fr: "All Germans are punctual.", note: "With a substantivised adjective." },
+        { de: "Ich helfe allen Kranken.", fr: "I help all the sick people.", note: "Dative after allen." }
       ]
     },
     {
       id: "b2-8-3-3",
-      title: "8.3.3 Déclinaison après 'beide' (les deux)",
-      content: "**beide** signifie \"les deux\" et fonctionne exactement comme **alle**, avec une **déclinaison faible**.\n\n### Déclinaison complète de 'beide' + adjectif\n\n| Cas | Pluriel | Exemple |\n|---|---|---|\n| Nominatif | beide **guten** Freunde | Beide **guten** Freunde kommen. (Les deux bons amis viennent.) |\n| Accusatif | beide **guten** Freunde | Ich kenne beide **guten** Freunde. (Je connais les deux bons amis.) |\n| Datif | beiden **guten** Freunden | Ich helfe beiden **guten** Freunden. (J'aide les deux bons amis.) |\n| Génitif | beider **guten** Freunde | Die Hilfe beider **guten** Freunde. (L'aide des deux bons amis.) |\n\n### Tableau détaillé : beide + adjectif\n\n| Cas | Pronom 'beide' | Adjectif | Nom | Traduction |\n|---|---|---|---|---|\n| Nominatif | **beide** | **guten** | Freunde | les deux bons amis |\n| Accusatif | **beide** | **guten** | Freunde | les deux bons amis |\n| Datif | **beiden** | **guten** | Freunden | aux deux bons amis |\n| Génitif | **beider** | **guten** | Freunde | des deux bons amis |\n\n### Différence avec 'alle'\n\n**alle** = tous (plus de 2)\n**beide** = les deux (exactement 2)\n\nMais la déclinaison est **identique** : déclinaison faible dans les deux cas.\n\n### Exemples avec adjectifs substantivés\n\n• Beide **Deutschen** (les deux Allemands)\n• Beide **Alten** (les deux vieux)\n• Beide **Schwestern** (les deux sœurs - nom normal, pas adjectif substantivé)\n\n**Règle** : Même règle qu'avec \"alle\" - toujours déclinaison faible.",
+      title: "8.3.3 Declension after beide",
+      content: `**beide** means "both" and behaves like **alle**. It takes **weak declension**.
+
+### Complete pattern
+| Case | Plural | Example |
+|---|---|---|
+| Nominative | beide **guten** Freunde | Beide **guten** Freunde kommen. |
+| Accusative | beide **guten** Freunde | Ich kenne beide **guten** Freunde. |
+| Dative | beiden **guten** Freunden | Ich helfe beiden **guten** Freunden. |
+| Genitive | beider **guten** Freunde | Die Hilfe beider **guten** Freunde. |
+
+### Difference from alle
+- **alle** = all, usually more than two
+- **beide** = both, exactly two
+
+The declension pattern is the same: weak adjective endings.`,
       examples: [
-        { de: "Beide neuen Autos sind rot.", fr: "Les deux nouvelles voitures sont rouges.", note: "Nominatif - déclinaison faible." },
-        { de: "Ich sehe beide schönen Häuser.", fr: "Je vois les deux belles maisons.", note: "Accusatif." },
-        { de: "Ich helfe beiden alten Leuten.", fr: "J'aide les deux vieilles personnes.", note: "Datif - 'beiden' + adjectif en -en." },
-        { de: "Die Meinung beider jungen Männer.", fr: "L'opinion des deux jeunes hommes.", note: "Génitif - 'beider'." },
-        { de: "Beide Deutschen sprechen Deutsch.", fr: "Les deux Allemands parlent allemand.", note: "Avec adjectif substantivé." }
+        { de: "Beide neuen Autos sind rot.", fr: "Both new cars are red.", note: "Nominative; weak declension." },
+        { de: "Ich sehe beide schönen Häuser.", fr: "I see both beautiful houses.", note: "Accusative." },
+        { de: "Ich helfe beiden alten Leuten.", fr: "I help both elderly people.", note: "Dative: beiden + adjective in -en." },
+        { de: "Die Meinung beider jungen Männer.", fr: "The opinion of both young men.", note: "Genitive: beider." },
+        { de: "Beide Deutschen sprechen Deutsch.", fr: "Both Germans speak German.", note: "With a substantivised adjective." }
       ]
     },
     {
       id: "b2-8-3-4",
-      title: "8.3.4 Déclinaison après 'viele', 'einige', 'manche', 'mehrere'",
-      content: "Ces pronoms indéfinis désignent une **partie** d'un groupe et forcent une **déclinaison forte**.\n\n### Règle générale\n\n**viele** (beaucoup), **einige** (quelques), **manche** (certains), **mehrere** (plusieurs) :\n→ Déclinaison **forte** (comme sans article)\n→ Terminaison **-e** pour l'adjectif au pluriel (Nominatif/Accusatif)\n\n### Déclinaison complète : viele + adjectif\n\n| Cas | Pluriel | Exemple |\n|---|---|---|\n| Nominatif | viele **gute** Freunde | Viele **gute** Freunde kommen. (Beaucoup de bons amis viennent.) |\n| Accusatif | viele **gute** Freunde | Ich kenne viele **gute** Freunde. (Je connais beaucoup de bons amis.) |\n| Datif | vielen **guten** Freunden | Ich helfe vielen **guten** Freunden. (J'aide à beaucoup de bons amis.) |\n| Génitif | vieler **guter** Freunde | Die Hilfe vieler **guter** Freunde. (L'aide de beaucoup de bons amis.) |\n\n### Tableaux détaillés pour chaque pronom\n\n**viele (beaucoup)** :\n| Cas | Pronom | Adjectif | Exemple |\n|---|---|---|---|\n| Nominatif | viele | gute | Viele **gute** Freunde |\n| Accusatif | viele | gute | viele **gute** Freunde |\n| Datif | vielen | guten | vielen **guten** Freunden |\n| Génitif | vieler | guter | vieler **guter** Freunde |\n\n**einige (quelques)** :\n| Cas | Pronom | Adjectif | Exemple |\n|---|---|---|---|\n| Nominatif | einige | neue | Einige **neue** Bücher |\n| Accusatif | einige | neue | einige **neue** Bücher |\n| Datif | einigen | neuen | einigen **neuen** Büchern |\n| Génitif | einiger | neuer | einiger **neuer** Bücher |\n\n**manche (certains)** :\n| Cas | Pronom | Adjectif | Exemple |\n|---|---|---|---|\n| Nominatif | manche | schöne | Manche **schöne** Häuser |\n| Accusatif | manche | schöne | manche **schöne** Häuser |\n| Datif | manchen | schönen | manchen **schönen** Häusern |\n| Génitif | mancher | schöner | mancher **schöner** Häuser |\n\n**mehrere (plusieurs)** :\n| Cas | Pronom | Adjectif | Exemple |\n|---|---|---|---|\n| Nominatif | mehrere | interessante | Mehrere **interessante** Ideen |\n| Accusatif | mehrere | interessante | mehrere **interessante** Ideen |\n| Datif | mehreren | interessanten | mehreren **interessanten** Ideen |\n| Génitif | mehrerer | interessanter | mehrerer **interessanter** Ideen |\n\n### Points importants\n\n1. **Nominatif/Accusatif** : Terminaison **-e** pour l'adjectif (déclinaison forte)\n2. **Datif** : Terminaison **-en** (normal au datif pluriel)\n3. **Génitif** : Terminaison **-er** (déclinaison forte au génitif pluriel)\n4. **Le pronom se décline aussi** : viele, viele, vielen, vieler\n\n### Exemples avec adjectifs substantivés\n\nAvec des adjectifs substantivés, attention :\n• Viele **Deutsche** (beaucoup d'Allemands) - pas de terminaison supplémentaire\n• Einige **Alte** (quelques vieux)\n• Manche **Junge** (certains jeunes)\n• Mehrere **Kranke** (plusieurs malades)\n\n**Attention** : Les adjectifs substantivés n'ont pas de terminaison supplémentaire après ces pronoms au Nominatif/Accusatif car ils finissent déjà en -e ou sont invariables.\n\n**Tableau** :\n| Cas | Viele Deutsche | Einige Alte |\n|---|---|---|\n| Nominatif | viele **Deutsche** | einige **Alte** |\n| Accusatif | viele **Deutsche** | einige **Alte** |\n| Datif | vielen **Deutschen** | einigen **Alten** |\n| Génitif | vieler **Deutscher** | einiger **Alter** |",
+      title: "8.3.4 Declension after viele, einige, manche, mehrere",
+      content: `These indefinite pronouns refer to **part of a group** and trigger **strong declension**.
+
+### General rule
+**viele** (many), **einige** (some), **manche** (some/certain), **mehrere** (several):
+- strong declension
+- adjective ending **-e** in nominative/accusative plural
+- adjective ending **-en** in dative plural
+- adjective ending **-er** in genitive plural
+
+### Complete pattern: viele + adjective
+| Case | Plural | Example |
+|---|---|---|
+| Nominative | viele **gute** Freunde | Viele **gute** Freunde kommen. |
+| Accusative | viele **gute** Freunde | Ich kenne viele **gute** Freunde. |
+| Dative | vielen **guten** Freunden | Ich helfe vielen **guten** Freunden. |
+| Genitive | vieler **guter** Freunde | Die Hilfe vieler **guter** Freunde. |
+
+### Patterns by pronoun
+| Pronoun | Nominative/Accusative | Dative | Genitive |
+|---|---|---|---|
+| viele | viele gute Freunde | vielen guten Freunden | vieler guter Freunde |
+| einige | einige neue Bücher | einigen neuen Büchern | einiger neuer Bücher |
+| manche | manche schöne Häuser | manchen schönen Häusern | mancher schöner Häuser |
+| mehrere | mehrere interessante Ideen | mehreren interessanten Ideen | mehrerer interessanter Ideen |
+
+### With substantivised adjectives
+Pay attention to the contrast:
+- Viele **Deutsche**
+- Einige **Alte**
+- Manche **Junge**
+- Mehrere **Kranke**
+
+In nominative/accusative plural, there is no extra **-n** after these partial determiners. Compare:
+- Alle **Deutschen**
+- Viele **Deutsche**`,
       examples: [
-        { de: "Viele gute Schüler bestehen die Prüfung.", fr: "Beaucoup de bons élèves réussissent l'examen.", note: "Nominatif - déclinaison forte." },
-        { de: "Ich kenne einige neue Kollegen.", fr: "Je connais quelques nouveaux collègues.", note: "Accusatif - déclinaison forte." },
-        { de: "Ich helfe manchen alten Menschen.", fr: "J'aide à certaines vieilles personnes.", note: "Datif - terminaison -en normale." },
-        { de: "Die Hilfe mehrerer guter Freunde.", fr: "L'aide de plusieurs bons amis.", note: "Génitif - terminaison -er." },
-        { de: "Viele Deutsche leben hier.", fr: "Beaucoup d'Allemands vivent ici.", note: "Avec adjectif substantivé - pas de terminaison supplémentaire." },
-        { de: "Einige Alte brauchen Hilfe.", fr: "Quelques vieux ont besoin d'aide.", note: "Adjectif substantivé après 'einige'." }
+        { de: "Viele gute Schüler bestehen die Prüfung.", fr: "Many good pupils pass the exam.", note: "Nominative; strong declension." },
+        { de: "Ich kenne einige neue Kollegen.", fr: "I know some new colleagues.", note: "Accusative; strong declension." },
+        { de: "Ich helfe manchen alten Menschen.", fr: "I help some elderly people.", note: "Dative plural; -en is required." },
+        { de: "Die Hilfe mehrerer guter Freunde.", fr: "The help of several good friends.", note: "Genitive plural; strong ending -er." },
+        { de: "Viele Deutsche leben hier.", fr: "Many Germans live here.", note: "Substantivised adjective after viele." },
+        { de: "Einige Alte brauchen Hilfe.", fr: "Some old people need help.", note: "Substantivised adjective after einige." }
       ]
     },
     {
       id: "b2-8-3-5",
-      title: "8.3.5 Cas particuliers : 'wenige', 'sämtliche', 'mancher'",
-      content: "Certains pronoms indéfinis moins courants suivent des règles spécifiques.\n\n### wenige (peu) - Déclinaison FORTE\n\n**wenige** signifie \"peu\" et suit la même règle que \"viele\" : **déclinaison forte**.\n\n| Cas | Pluriel | Exemple |\n|---|---|---|\n| Nominatif | wenige **gute** Freunde | Wenige **gute** Freunde bleiben. (Peu de bons amis restent.) |\n| Accusatif | wenige **gute** Freunde | Ich kenne wenige **gute** Freunde. |\n| Datif | wenigen **guten** Freunden | Ich helfe wenigen **guten** Freunden. |\n| Génitif | weniger **guter** Freunde | Die Meinung weniger **guter** Freunde. |\n\n### sämtliche (tous sans exception) - Déclinaison FAIBLE\n\n**sämtliche** signifie \"tous sans exception\" et fonctionne comme \"alle\" : **déclinaison faible**.\n\n| Cas | Pluriel | Exemple |\n|---|---|---|\n| Nominatif | sämtliche **guten** Freunde | Sämtliche **guten** Freunde sind da. (Tous les bons amis sont là.) |\n| Accusatif | sämtliche **guten** Freunde | Ich kenne sämtliche **guten** Freunde. |\n| Datif | sämtlichen **guten** Freunden | Ich helfe sämtlichen **guten** Freunden. |\n| Génitif | sämtlicher **guten** Freunde | Die Hilfe sämtlicher **guten** Freunde. |\n\n**Attention** : \"sämtliche\" est formel et moins courant que \"alle\".\n\n### mancher (certain - au singulier) - Déclinaison MIXTE\n\n**mancher** au singulier fonctionne comme un article indéfini : **déclinaison mixte**.\n\n| Cas | Masculin | Féminin | Neutre |\n|---|---|---|---|\n| Nominatif | mancher **gute** Freund | manche **gute** Freundin | manches **gute** Buch |\n| Accusatif | manchen **guten** Freund | manche **gute** Freundin | manches **gute** Buch |\n| Datif | manchem **guten** Freund | mancher **guten** Freundin | manchem **guten** Buch |\n| Génitif | manches **guten** Freundes | mancher **guten** Freundin | manches **guten** Buches |\n\n**Règle** : Au singulier, \"mancher\" fonctionne comme \"ein\" → déclinaison mixte\nAu pluriel, \"manche\" fonctionne comme \"viele\" → déclinaison forte\n\n### Récapitulatif : Tous les pronoms indéfinis\n\n| Pronom | Type | Déclinaison | Exemple |\n|---|---|---|---|\n| **alle** | Total | Faible (-en) | alle **guten** Freunde |\n| **beide** | Total | Faible (-en) | beide **guten** Freunde |\n| **sämtliche** | Total | Faible (-en) | sämtliche **guten** Freunde |\n| **viele** | Partiel | Forte (-e) | viele **gute** Freunde |\n| **einige** | Partiel | Forte (-e) | einige **gute** Freunde |\n| **manche** (pluriel) | Partiel | Forte (-e) | manche **gute** Freunde |\n| **mehrere** | Partiel | Forte (-e) | mehrere **gute** Freunde |\n| **wenige** | Partiel | Forte (-e) | wenige **gute** Freunde |\n| **mancher** (singulier) | - | Mixte | mancher **gute** Freund |",
+      title: "8.3.5 Special Cases: wenige, sämtliche, mancher",
+      content: `Some less frequent indefinite pronouns follow specific patterns.
+
+### wenige: strong declension
+**wenige** means "few" and follows the same pattern as **viele**.
+
+| Case | Plural | Example |
+|---|---|---|
+| Nominative | wenige **gute** Freunde | Wenige **gute** Freunde bleiben. |
+| Accusative | wenige **gute** Freunde | Ich kenne wenige **gute** Freunde. |
+| Dative | wenigen **guten** Freunden | Ich helfe wenigen **guten** Freunden. |
+| Genitive | weniger **guter** Freunde | Die Meinung weniger **guter** Freunde. |
+
+### sämtliche: weak declension
+**sämtliche** means "all without exception" and behaves like **alle**.
+
+| Case | Plural | Example |
+|---|---|---|
+| Nominative | sämtliche **guten** Freunde | Sämtliche **guten** Freunde sind da. |
+| Accusative | sämtliche **guten** Freunde | Ich kenne sämtliche **guten** Freunde. |
+| Dative | sämtlichen **guten** Freunden | Ich helfe sämtlichen **guten** Freunden. |
+| Genitive | sämtlicher **guten** Freunde | Die Hilfe sämtlicher **guten** Freunde. |
+
+**sämtliche** is formal and less common than **alle**.
+
+### mancher in the singular: mixed declension
+In the singular, **mancher** behaves like an indefinite article and takes **mixed declension**.
+
+| Case | Masculine | Feminine | Neuter |
+|---|---|---|---|
+| Nominative | mancher **gute** Freund | manche **gute** Freundin | manches **gute** Buch |
+| Accusative | manchen **guten** Freund | manche **gute** Freundin | manches **gute** Buch |
+| Dative | manchem **guten** Freund | mancher **guten** Freundin | manchem **guten** Buch |
+| Genitive | manches **guten** Freundes | mancher **guten** Freundin | manches **guten** Buches |
+
+Rule:
+- singular **mancher** behaves like **ein** -> mixed declension
+- plural **manche** behaves like **viele** -> strong declension`,
       examples: [
-        { de: "Wenige gute Schüler bestehen nicht.", fr: "Peu de bons élèves échouent.", note: "Déclinaison forte après 'wenige'." },
-        { de: "Sämtliche neuen Mitarbeiter sind da.", fr: "Tous les nouveaux employés sont là.", note: "Déclinaison faible après 'sämtliche'." },
-        { de: "Mancher gute Freund hilft mir.", fr: "Un certain bon ami m'aide.", note: "Déclinaison mixte - singulier masculin." },
-        { de: "Manche gute Freundin ruft an.", fr: "Une certaine bonne amie appelle.", note: "Déclinaison mixte - singulier féminin." },
-        { de: "Manches gute Buch ist teuer.", fr: "Un certain bon livre est cher.", note: "Déclinaison mixte - singulier neutre." }
+        { de: "Wenige gute Schüler bestehen nicht.", fr: "Few good pupils fail.", note: "Strong declension after wenige." },
+        { de: "Sämtliche neuen Mitarbeiter sind da.", fr: "All new employees are here.", note: "Weak declension after sämtliche." },
+        { de: "Mancher gute Freund hilft mir.", fr: "Many a good friend helps me.", note: "Mixed declension; masculine singular." },
+        { de: "Manche gute Freundin ruft an.", fr: "Many a good female friend calls.", note: "Mixed declension; feminine singular." },
+        { de: "Manches gute Buch ist teuer.", fr: "Many a good book is expensive.", note: "Mixed declension; neuter singular." }
       ]
     },
     {
       id: "b2-8-3-6",
-      title: "8.3.6 Tableau comparatif complet",
-      content: "Voici un tableau récapitulatif permettant de comparer toutes les déclinaisons après les pronoms indéfinis les plus courants.\n\n### Comparaison : alle vs viele (au pluriel)\n\n| Cas | alle + Adjectif | viele + Adjectif |\n|---|---|---|\n| Nominatif | alle **guten** Freunde | viele **gute** Freunde |\n| Accusatif | alle **guten** Freunde | viele **gute** Freunde |\n| Datif | allen **guten** Freunden | vielen **guten** Freunden |\n| Génitif | aller **guten** Freunde | vieler **guter** Freunde |\n\n**Différence clé** :\n- **alle** → **-en** au Nominatif/Accusatif (déclinaison faible)\n- **viele** → **-e** au Nominatif/Accusatif (déclinaison forte)\n- Au Datif : les deux prennent **-en** (normal au datif)\n- Au Génitif : **alle** → **-en**, **viele** → **-er** (déclinaison forte)\n\n### Comparaison complète : Tous les pronoms indéfinis\n\n**Nominatif/Accusatif pluriel** :\n| Pronom | Déclinaison | Terminaison adjectif | Exemple |\n|---|---|---|---|\n| alle | Faible | **-en** | alle **guten** Freunde |\n| beide | Faible | **-en** | beide **guten** Freunde |\n| sämtliche | Faible | **-en** | sämtliche **guten** Freunde |\n| viele | Forte | **-e** | viele **gute** Freunde |\n| einige | Forte | **-e** | einige **gute** Freunde |\n| manche | Forte | **-e** | manche **gute** Freunde |\n| mehrere | Forte | **-e** | mehrere **gute** Freunde |\n| wenige | Forte | **-e** | wenige **gute** Freunde |\n\n**Datif pluriel** (tous prennent -en) :\n| Pronom | Forme | Exemple |\n|---|---|---|\n| allen | allen **guten** Freunden | Ich helfe allen **guten** Freunden. |\n| beiden | beiden **guten** Freunden | Ich helfe beiden **guten** Freunden. |\n| sämtlichen | sämtlichen **guten** Freunden | Ich helfe sämtlichen **guten** Freunden. |\n| vielen | vielen **guten** Freunden | Ich helfe vielen **guten** Freunden. |\n| einigen | einigen **guten** Freunden | Ich helfe einigen **guten** Freunden. |\n| manchen | manchen **guten** Freunden | Ich helfe manchen **guten** Freunden. |\n| mehreren | mehreren **guten** Freunden | Ich helfe mehreren **guten** Freunden. |\n| wenigen | wenigen **guten** Freunden | Ich helfe wenigen **guten** Freunden. |\n\n**Génitif pluriel** :\n| Pronom | Déclinaison | Terminaison | Exemple |\n|---|---|---|---|\n| aller | Faible | **-en** | aller **guten** Freunde |\n| beider | Faible | **-en** | beider **guten** Freunde |\n| sämtlicher | Faible | **-en** | sämtlicher **guten** Freunde |\n| vieler | Forte | **-er** | vieler **guter** Freunde |\n| einiger | Forte | **-er** | einiger **guter** Freunde |\n| mancher | Forte | **-er** | mancher **guter** Freunde |\n| mehrerer | Forte | **-er** | mehrerer **guter** Freunde |\n| weniger | Forte | **-er** | weniger **guter** Freunde |",
+      title: "8.3.6 Complete Comparison Table",
+      content: `Use this comparison to separate the two major families: total determiners and partial determiners.
+
+### alle vs viele in the plural
+| Case | alle + adjective | viele + adjective |
+|---|---|---|
+| Nominative | alle **guten** Freunde | viele **gute** Freunde |
+| Accusative | alle **guten** Freunde | viele **gute** Freunde |
+| Dative | allen **guten** Freunden | vielen **guten** Freunden |
+| Genitive | aller **guten** Freunde | vieler **guter** Freunde |
+
+### Key difference
+- **alle** -> **-en** in nominative/accusative plural: weak declension
+- **viele** -> **-e** in nominative/accusative plural: strong declension
+- Dative plural: both take **-en**
+- Genitive plural: total determiners keep **-en**, partial determiners take **-er**
+
+### Nominative/accusative plural
+| Pronoun | Type | Adjective ending | Example |
+|---|---|---|---|
+| alle | total | **-en** | alle **guten** Freunde |
+| beide | total | **-en** | beide **guten** Freunde |
+| sämtliche | total | **-en** | sämtliche **guten** Freunde |
+| viele | partial | **-e** | viele **gute** Freunde |
+| einige | partial | **-e** | einige **gute** Freunde |
+| manche | partial | **-e** | manche **gute** Freunde |
+| mehrere | partial | **-e** | mehrere **gute** Freunde |
+| wenige | partial | **-e** | wenige **gute** Freunde |
+
+### Dative plural
+All forms take **-en** on the adjective:
+| Pronoun form | Example |
+|---|---|
+| allen | allen **guten** Freunden |
+| beiden | beiden **guten** Freunden |
+| sämtlichen | sämtlichen **guten** Freunden |
+| vielen | vielen **guten** Freunden |
+| einigen | einigen **guten** Freunden |
+| manchen | manchen **guten** Freunden |
+| mehreren | mehreren **guten** Freunden |
+| wenigen | wenigen **guten** Freunden |
+
+### Genitive plural
+| Pronoun | Declension | Ending | Example |
+|---|---|---|---|
+| aller | weak | **-en** | aller **guten** Freunde |
+| beider | weak | **-en** | beider **guten** Freunde |
+| sämtlicher | weak | **-en** | sämtlicher **guten** Freunde |
+| vieler | strong | **-er** | vieler **guter** Freunde |
+| einiger | strong | **-er** | einiger **guter** Freunde |
+| mancher | strong | **-er** | mancher **guter** Freunde |
+| mehrerer | strong | **-er** | mehrerer **guter** Freunde |
+| weniger | strong | **-er** | weniger **guter** Freunde |`,
       examples: [
-        { de: "Alle guten vs Viele gute Freunde", fr: "Tous les bons vs Beaucoup de bons amis", note: "Comparaison directe des terminaisons." },
-        { de: "Ich helfe allen guten Freunden. (alle)", fr: "J'aide tous les bons amis.", note: "Datif après 'allen'." },
-        { de: "Ich helfe vielen guten Freunden. (viele)", fr: "J'aide beaucoup de bons amis.", note: "Même terminaison au datif." },
-        { de: "Die Hilfe aller guten Freunde. (alle)", fr: "L'aide de tous les bons amis.", note: "Génitif - déclinaison faible." },
-        { de: "Die Hilfe vieler guter Freunde. (viele)", fr: "L'aide de beaucoup de bons amis.", note: "Génitif - déclinaison forte." }
+        { de: "Alle guten vs viele gute Freunde", fr: "All good vs many good friends.", note: "Direct comparison of adjective endings." },
+        { de: "Ich helfe allen guten Freunden.", fr: "I help all good friends.", note: "Dative after allen." },
+        { de: "Ich helfe vielen guten Freunden.", fr: "I help many good friends.", note: "Same dative adjective ending." },
+        { de: "Die Hilfe aller guten Freunde.", fr: "The help of all good friends.", note: "Genitive; weak declension." },
+        { de: "Die Hilfe vieler guter Freunde.", fr: "The help of many good friends.", note: "Genitive; strong declension." }
       ]
     },
     {
       id: "b2-8-3-7",
-      title: "8.3.7 Erreurs courantes et pièges à éviter",
-      content: "### Erreur 1 : Confondre 'alle' et 'viele' au Nominatif/Accusatif\n\n**Faux** : Alle **gute** Freunde ❌ (après 'alle')\n**Faux** : Viele **guten** Freunde ❌ (après 'viele')\n\n**Correct** : Alle **guten** Freunde ✅ (déclinaison faible)\n**Correct** : Viele **gute** Freunde ✅ (déclinaison forte)\n\n**Pourquoi** : \"alle\" = déterminant total → déclinaison faible (-en)\n\"viele\" = déterminant partiel → déclinaison forte (-e)\n\n### Erreur 2 : Oublier que le Datif prend toujours -en\n\n**Faux** : Ich helfe vielen **gute** Freunden ❌\n**Correct** : Ich helfe vielen **guten** Freunden ✅\n\n**Pourquoi** : Au datif pluriel, TOUS les adjectifs prennent **-en**, quelle que soit la déclinaison (faible ou forte).\n\n### Erreur 3 : Confondre au Génitif\n\n**Faux** : Die Hilfe vieler **guten** Freunde ❌\n**Correct** : Die Hilfe vieler **guter** Freunde ✅\n\n**Pourquoi** : Après \"viele\" (déclinaison forte), le génitif pluriel prend **-er**, pas **-en**.\n\n**Comparaison** :\n• aller **guten** Freunde (déclinaison faible) ✅\n• vieler **guter** Freunde (déclinaison forte) ✅\n\n### Erreur 4 : Confondre 'mancher' singulier et 'manche' pluriel\n\n**Faux** : Mancher **guten** Freund (singulier) ❌\n**Correct** : Mancher **gute** Freund (singulier) ✅\n\n**Correct** : Manche **gute** Freunde (pluriel) ✅\n\n**Pourquoi** : \"mancher\" au singulier fonctionne comme \"ein\" → déclinaison mixte (-e au Nominatif masculin)\n\"manche\" au pluriel fonctionne comme \"viele\" → déclinaison forte\n\n### Erreur 5 : Oublier la déclinaison du pronom lui-même\n\n**Faux** : Ich helfe alle **guten** Freunden ❌\n**Correct** : Ich helfe **allen** **guten** Freunden ✅\n\n**Pourquoi** : Le pronom \"alle\" se décline aussi : alle, alle, **allen**, aller\n\n### Erreur 6 : Adjectifs substantivés après 'viele'\n\n**Faux** : Viele **Deutschen** ❌\n**Correct** : Viele **Deutsche** ✅\n\n**Pourquoi** : Les adjectifs substantivés n'ont pas de terminaison supplémentaire après \"viele\" au Nominatif/Accusatif. \"Deutsche\" reste \"Deutsche\" (c'est déjà un pluriel).\n\n**Comparaison** :\n• Alle **Deutschen** ✅ (déclinaison faible : -en ajouté)\n• Viele **Deutsche** ✅ (déclinaison forte : pas de terminaison supplémentaire)\n\n### Checklist de vérification\n\nAvant d'écrire, vérifiez :\n1. Le pronom est-il un déterminant total (alle, beide) ou partiel (viele, etc.) ?\n2. Si total → déclinaison faible (-en au Nom/Acc)\n3. Si partiel → déclinaison forte (-e au Nom/Acc)\n4. Au Datif → toujours -en (peu importe le pronom)\n5. Au Génitif → -en pour les totaux, -er pour les partiels\n6. Le pronom lui-même est-il bien décliné ?\n7. Avec adjectif substantivé → attention à la différence alle/viele",
+      title: "8.3.7 Common Mistakes and Traps",
+      content: `### Mistake 1: Confusing alle and viele in nominative/accusative
+Incorrect: Alle **gute** Freunde
+Incorrect: Viele **guten** Freunde
+
+Correct: Alle **guten** Freunde
+Correct: Viele **gute** Freunde
+
+Reason: **alle** is a total determiner -> weak declension. **viele** is a partial determiner -> strong declension.
+
+### Mistake 2: Forgetting that the dative plural always takes -en
+Incorrect: Ich helfe vielen **gute** Freunden.
+Correct: Ich helfe vielen **guten** Freunden.
+
+In the dative plural, adjectives take **-en** regardless of whether the broader pattern is weak or strong.
+
+### Mistake 3: Using -en in the genitive after viele
+Incorrect: Die Hilfe vieler **guten** Freunde.
+Correct: Die Hilfe vieler **guter** Freunde.
+
+After **viele** with strong declension, the genitive plural adjective ending is **-er**.
+
+Compare:
+- aller **guten** Freunde
+- vieler **guter** Freunde
+
+### Mistake 4: Confusing singular mancher and plural manche
+Incorrect: Mancher **guten** Freund.
+Correct: Mancher **gute** Freund.
+
+Correct plural: Manche **gute** Freunde.
+
+Reason: singular **mancher** behaves like **ein**, while plural **manche** behaves like **viele**.
+
+### Mistake 5: Forgetting to decline the pronoun itself
+Incorrect: Ich helfe alle **guten** Freunden.
+Correct: Ich helfe **allen guten** Freunden.
+
+The pronoun declines too: alle, alle, **allen**, aller.
+
+### Mistake 6: Adding -n after viele with substantivised adjectives
+Incorrect: Viele **Deutschen**
+Correct: Viele **Deutsche**
+
+Compare:
+- Alle **Deutschen**: weak declension after alle
+- Viele **Deutsche**: strong declension after viele
+
+### Verification checklist
+1. Is the pronoun total (alle, beide, sämtliche) or partial (viele, einige, manche, mehrere, wenige)?
+2. If total: weak declension, usually **-en** in nominative/accusative plural.
+3. If partial: strong declension, usually **-e** in nominative/accusative plural.
+4. In the dative plural: adjective **-en**.
+5. In the genitive plural: **-en** for total determiners, **-er** for partial determiners.
+6. Has the pronoun itself been declined?
+7. With substantivised adjectives, check the contrast: alle Deutschen vs viele Deutsche.`,
       examples: [
-        { de: "Faux : Alle gute Freunde ❌ → Correct : Alle guten Freunde ✅", fr: "Ne jamais oublier le -n après 'alle'.", note: "Erreur 1 corrigée." },
-        { de: "Faux : Viele guten Freunde ❌ → Correct : Viele gute Freunde ✅", fr: "Après 'viele', déclinaison forte avec -e.", note: "Erreur 1 corrigée (autre cas)." },
-        { de: "Ich helfe allen guten Freunden.", fr: "J'aide tous les bons amis.", note: "Datif correct - -en obligatoire." },
-        { de: "Die Hilfe vieler guter Freunde.", fr: "L'aide de beaucoup de bons amis.", note: "Génitif correct - -er avec 'viele'." },
-        { de: "Alle Deutschen vs Viele Deutsche", fr: "Tous les Allemands vs Beaucoup d'Allemands", note: "Différence avec adjectif substantivé." }
+        { de: "Incorrect: Alle gute Freunde -> Correct: Alle guten Freunde", fr: "Do not forget -en after alle.", note: "Weak declension after a total determiner." },
+        { de: "Incorrect: Viele guten Freunde -> Correct: Viele gute Freunde", fr: "After viele, use strong declension with -e.", note: "Strong declension after a partial determiner." },
+        { de: "Ich helfe allen guten Freunden.", fr: "I help all good friends.", note: "Correct dative plural." },
+        { de: "Die Hilfe vieler guter Freunde.", fr: "The help of many good friends.", note: "Correct genitive plural after viele." },
+        { de: "Alle Deutschen vs viele Deutsche", fr: "All Germans vs many Germans.", note: "Substantivised adjective contrast." }
       ]
     }
   ]

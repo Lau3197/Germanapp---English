@@ -1,50 +1,218 @@
-
 import { GrammarSection } from '../../../types';
 
 export const nominalisationVerbalisationC1: GrammarSection = {
-  title: "5.2 La Nominalisation et la Verbalisation (Nominalisierung / Verbalisierung)",
+  title: "5.2 Nominalisation and Verbalisation (Nominalisierung / Verbalisierung)",
   topics: [
     {
       id: "c1-5-2",
       title: "5.2 Introduction",
-      content: "La nominalisation et la verbalisation sont des compétences clés au niveau C1. Il s'agit de savoir transformer un verbe en nom (Nominalisierung) et inversement (Verbalisierung) pour varier son style et adapter son langage au contexte.\n\nLa nominalisation est très fréquente dans le langage académique, administratif et formel. La verbalisation permet de rendre un texte plus dynamique et accessible.",
+      content: `Nominalisation and verbalisation are key C1 skills. You learn to transform a verb or verbal sentence into a noun phrase, and the other way around.
+
+Nominalisation is common in academic, administrative, legal, and formal German. Verbalisation makes a text more direct, dynamic, and accessible.`,
       examples: [
-        { de: "Nominalisation: Die Regierung hat beschlossen → Der Beschluss der Regierung", fr: "La décision du gouvernement", note: "Transformation verbe → nom." },
-        { de: "Verbalisation: Nach Prüfung → Nachdem wir geprüft haben", fr: "Après que nous ayons vérifié", note: "Transformation nom → verbe." }
+        { de: "Nominalisierung: Die Regierung hat beschlossen -> Der Beschluss der Regierung", fr: "The government's decision.", note: "Verb -> noun." },
+        { de: "Verbalisierung: Nach Prüfung -> Nachdem wir geprüft haben", fr: "After we have checked.", note: "Noun phrase -> verbal clause." }
       ]
     },
     {
       id: "c1-5-2-1",
-      title: "5.2.1 La Nominalisation (Nominalisierung)",
-      content: "La nominalisation transforme un verbe (ou une phrase verbale) en nom pour créer un style plus formel et dense.\n\n### Principe fondamental\n\n**Style verbal (B2 - courant)** :\n• Die Regierung **hat beschlossen**, die Steuern zu erhöhen.\n(Le gouvernement **a décidé** d'augmenter les impôts.)\n\n**Style nominal (C1 - formel)** :\n• **Der Beschluss** der Regierung **zur Erhöhung** der Steuern...\n(La décision du gouvernement d'augmenter les impôts...)\n\n### Structures de nominalisation courantes\n\n#### 1. Verbe → Nom d'action\n\n**Transformation** : Infinitif + suffixe → Nom masculin (der)\n\n| Verbe | Nom | Exemple |\n|---|---|---|\n| beschließen | der **Beschluss** | Der **Beschluss** ist wichtig. |\n| entscheiden | die **Entscheidung** | Die **Entscheidung** wurde getroffen. |\n| erhöhen | die **Erhöhung** | Die **Erhöhung** der Steuern. |\n| prüfen | die **Prüfung** | Nach **Prüfung** der Unterlagen. |\n| erfüllen | die **Erfüllung** | Die **Erfüllung** der Aufgabe. |\n| entwickeln | die **Entwicklung** | Die **Entwicklung** ist positiv. |\n| verstehen | das **Verständnis** | Das **Verständnis** des Problems. |\n| lernen | das **Lernen** | Das **Lernen** ist wichtig. |\n\n### 2. Suffixes de nominalisation\n\n**Masculin (-ung, -us, -ismus)** :\n• -ung : die **Bildung** (formation), die **Entscheidung** (décision)\n• -us : der **Beschluss** (décision), der **Genuss** (plaisir)\n• -ismus : der **Optimismus** (optimisme), der **Realismus**\n\n**Féminin (-ung, -heit, -keit, -ion)** :\n• -ung : die **Prüfung** (examen), die **Entwicklung** (développement)\n• -heit : die **Wahrheit** (vérité), die **Freiheit** (liberté)\n• -keit : die **Möglichkeit** (possibilité), die **Sicherheit** (sécurité)\n• -ion : die **Diskussion** (discussion), die **Produktion** (production)\n\n**Neutre (-um, -tum, -nis)** :\n• -um : das **Studium** (études), das **Zentrum** (centre)\n• -tum : das **Eigentum** (propriété), das **Königtum** (royauté)\n• -nis : das **Verständnis** (compréhension), das **Ergebnis** (résultat)\n\n### 3. Structures complexes avec nominalisation\n\n**Phrase verbale (B2)** :\n• Die Regierung **beschloss**, die Steuern zu erhöhen.\n\n**Phrase nominale (C1)** :\n• **Der Beschluss** der Regierung, die Steuern zu erhöhen...\n• **Der Beschluss** der Regierung **zur Erhöhung** der Steuern...\n• **Die Erhöhung** der Steuern **durch** die Regierung...\n\n### Exemples de transformations complètes\n\n**Exemple 1** :\n• B2 : Wir **prüfen** die Unterlagen, dann entscheiden wir.\n• C1 : **Nach Prüfung** der Unterlagen treffen wir eine Entscheidung.\n(Après vérification des documents, nous prenons une décision.)\n\n**Exemple 2** :\n• B2 : Er **hat studiert** viele Jahre, daher kennt er viel.\n• C1 : **Nach langjährigem Studium** verfügt er über großes Wissen.\n(Après de nombreuses années d'études, il possède de grandes connaissances.)\n\n**Exemple 3** :\n• B2 : Sie **hat sich entwickelt** sehr gut.\n• C1 : Ihre **Entwicklung** ist sehr gut verlaufen.\n(Son développement s'est très bien passé.)\n\n### Compléments avec nominalisation\n\n**Avec prépositions** :\n• **zur** Erhöhung (pour l'augmentation)\n• **bei** der Prüfung (lors de la vérification)\n• **durch** die Entscheidung (par la décision)\n• **trotz** der Erfüllung (malgré l'accomplissement)\n• **aufgrund** der Entwicklung (en raison du développement)\n\n**Avec génitif** :\n• der Beschluss **der Regierung**\n• die Erhöhung **der Steuern**\n• die Prüfung **der Unterlagen**\n• die Entwicklung **des Landes**\n\n### Avantages de la nominalisation\n\n**Style** :\n- Plus formel et académique\n- Plus dense (plus d'information en moins de mots)\n- Plus objectif (moins personnel)\n- Langage administratif et scientifique\n\n**Exemples de domaines** :\n- Textes administratifs\n- Articles scientifiques\n- Rapports professionnels\n- Langage juridique\n\n### Pièges à éviter\n\n**Erreur 1** : Sur-nominalisation\n• Faux : Die Durchführung der Durchführung der Prüfung... ❌\n• Correct : Die Durchführung der Prüfung... ✅\n\n**Erreur 2** : Confondre genre du nom\n• Faux : der **Entscheidung** ❌ (c'est féminin)\n• Correct : die **Entscheidung** ✅",
+      title: "5.2.1 Nominalisation (Nominalisierung)",
+      content: `Nominalisation turns a verb or verbal idea into a noun. The result is usually more formal, denser, and more impersonal.
+
+### Basic principle
+Verbal style:
+- Die Regierung **hat beschlossen**, die Steuern zu erhöhen.
+
+Nominal style:
+- **Der Beschluss** der Regierung **zur Erhöhung** der Steuern...
+
+### Common nominalisation patterns
+#### 1. Verb -> action noun
+| Verb | Noun | Example |
+|---|---|---|
+| beschließen | der **Beschluss** | Der **Beschluss** ist wichtig. |
+| entscheiden | die **Entscheidung** | Die **Entscheidung** wurde getroffen. |
+| erhöhen | die **Erhöhung** | Die **Erhöhung** der Steuern. |
+| prüfen | die **Prüfung** | Nach **Prüfung** der Unterlagen. |
+| erfüllen | die **Erfüllung** | Die **Erfüllung** der Aufgabe. |
+| entwickeln | die **Entwicklung** | Die **Entwicklung** ist positiv. |
+| verstehen | das **Verständnis** | Das **Verständnis** des Problems. |
+| lernen | das **Lernen** | Das **Lernen** ist wichtig. |
+
+#### 2. Common nominalisation suffixes
+Feminine nouns:
+- **-ung**: die Bildung, die Entscheidung, die Entwicklung
+- **-heit**: die Wahrheit, die Freiheit
+- **-keit**: die Möglichkeit, die Sicherheit
+- **-ion**: die Diskussion, die Produktion
+
+Masculine nouns:
+- **-schluss / -uss**: der Beschluss, der Genuss
+- **-ismus**: der Optimismus, der Realismus
+
+Neuter nouns:
+- **-um**: das Studium, das Zentrum
+- **-tum**: das Eigentum, das Königtum
+- **-nis**: das Verständnis, das Ergebnis
+- infinitives used as nouns: das Lernen, das Essen, das Lesen
+
+### Complex nominalisation
+Verbal sentence:
+- Die Regierung **beschloss**, die Steuern zu erhöhen.
+
+Nominal versions:
+- **Der Beschluss** der Regierung, die Steuern zu erhöhen...
+- **Der Beschluss** der Regierung **zur Erhöhung** der Steuern...
+- **Die Erhöhung** der Steuern **durch** die Regierung...
+
+### Full transformations
+1. Wir **prüfen** die Unterlagen, dann entscheiden wir.
+   -> **Nach Prüfung** der Unterlagen treffen wir eine Entscheidung.
+
+2. Er **hat viele Jahre studiert**, daher kennt er viel.
+   -> **Nach langjährigem Studium** verfügt er über großes Wissen.
+
+3. Sie **hat sich sehr gut entwickelt**.
+   -> Ihre **Entwicklung** ist sehr gut verlaufen.
+
+### Complements in nominal style
+Prepositional complements:
+- **zur** Erhöhung
+- **bei** der Prüfung
+- **durch** die Entscheidung
+- **trotz** der Erfüllung
+- **aufgrund** der Entwicklung
+
+Genitive complements:
+- der Beschluss **der Regierung**
+- die Erhöhung **der Steuern**
+- die Prüfung **der Unterlagen**
+- die Entwicklung **des Landes**
+
+### Why use nominalisation?
+- Formal or academic style
+- More information in fewer words
+- More objective and less personal tone
+- Typical in administration, reports, legal language, and research writing
+
+### Common traps
+Do not over-nominalise:
+- Poor: Die Durchführung der Durchführung der Prüfung...
+- Better: Die Durchführung der Prüfung...
+
+Learn the noun gender:
+- Incorrect: der **Entscheidung**
+- Correct: die **Entscheidung**`,
       examples: [
-        { de: "Der Beschluss der Regierung zur Erhöhung der Steuern ist umstritten.", fr: "La décision du gouvernement d'augmenter les impôts est controversée.", note: "Style nominal - formel." },
-        { de: "Nach Prüfung der Unterlagen können wir eine Entscheidung treffen.", fr: "Après vérification des documents, nous pouvons prendre une décision.", note: "Nominalisation avec préposition." },
-        { de: "Die Entwicklung des Landes ist positiv verlaufen.", fr: "Le développement du pays s'est bien passé.", note: "Nominalisation avec génitif." },
-        { de: "Aufgrund der Erfüllung aller Bedingungen wurde der Vertrag unterschrieben.", fr: "En raison de l'accomplissement de toutes les conditions, le contrat a été signé.", note: "Nominalisation complexe." },
-        { de: "Trotz der Erhöhung der Preise blieb die Nachfrage stabil.", fr: "Malgré l'augmentation des prix, la demande est restée stable.", note: "Nominalisation dans une proposition subordonnée." }
+        { de: "Der Beschluss der Regierung zur Erhöhung der Steuern ist umstritten.", fr: "The government's decision to raise taxes is controversial.", note: "Formal nominal style." },
+        { de: "Nach Prüfung der Unterlagen können wir eine Entscheidung treffen.", fr: "After checking the documents, we can make a decision.", note: "Nominalisation with a preposition." },
+        { de: "Die Entwicklung des Landes ist positiv verlaufen.", fr: "The country's development has gone well.", note: "Nominalisation with a genitive complement." },
+        { de: "Aufgrund der Erfüllung aller Bedingungen wurde der Vertrag unterschrieben.", fr: "Because all conditions were fulfilled, the contract was signed.", note: "Complex nominal structure." },
+        { de: "Trotz der Erhöhung der Preise blieb die Nachfrage stabil.", fr: "Despite the price increase, demand remained stable.", note: "Nominalisation after trotz." }
       ]
     },
     {
       id: "c1-5-2-2",
-      title: "5.2.2 La Verbalisation (Verbalisierung)",
-      content: "La verbalisation transforme un nom (ou une structure nominale) en verbe pour créer un style plus dynamique, direct et accessible.\n\n### Principe fondamental\n\n**Style nominal (C1 - formel)** :\n• **Nach Prüfung** der Unterlagen...\n(Après vérification des documents...)\n\n**Style verbal (B2 - courant)** :\n• **Nachdem wir** die Unterlagen **geprüft haben**...\n(Après que nous ayons vérifié les documents...)\n\n### Structures de verbalisation courantes\n\n#### 1. Nom d'action → Verbe\n\n**Transformation** : Nom → Verbe correspondant\n\n| Nom | Verbe | Exemple |\n|---|---|---|\n| die Prüfung | **prüfen** | Wir **prüfen** die Unterlagen. |\n| die Entscheidung | **entscheiden** | Wir **entscheiden** uns. |\n| die Erhöhung | **erhöhen** | Wir **erhöhen** die Preise. |\n| die Entwicklung | **entwickeln** | Das Land **entwickelt** sich. |\n| das Verständnis | **verstehen** | Wir **verstehen** das Problem. |\n| die Erfüllung | **erfüllen** | Wir **erfüllen** die Aufgabe. |\n\n### 2. Transformation des structures complexes\n\n**Style nominal avec préposition (C1)** :\n• **Nach Prüfung** der Unterlagen...\n• **Bei der Entscheidung** über...\n• **Trotz der Erhöhung** der Preise...\n• **Aufgrund der Entwicklung**...\n\n**Style verbal (B2)** :\n• **Nachdem wir** die Unterlagen **geprüft haben**...\n• **Wenn wir** über etwas **entscheiden**...\n• **Obwohl** die Preise **erhöht wurden**...\n• **Weil** sich das Land **entwickelt hat**...\n\n### Exemples de transformations complètes\n\n**Exemple 1** :\n• C1 : **Nach Prüfung** der Unterlagen treffen wir eine Entscheidung.\n• B2 : **Nachdem wir** die Unterlagen **geprüft haben**, treffen wir eine Entscheidung.\n(Après que nous ayons vérifié les documents, nous prenons une décision.)\n\n**Exemple 2** :\n• C1 : **Trotz der Erhöhung** der Steuern bleibt die Nachfrage stabil.\n• B2 : **Obwohl** die Steuern **erhöht wurden**, bleibt die Nachfrage stabil.\n(Bien que les impôts aient été augmentés, la demande reste stable.)\n\n**Exemple 3** :\n• C1 : **Aufgrund der Entwicklung** der Technologie...\n• B2 : **Weil** sich die Technologie **entwickelt hat**...\n(Parce que la technologie s'est développée...)\n\n### Transformations des prépositions\n\n**Après** :\n• C1 : **Nach** Prüfung... → B2 : **Nachdem** wir geprüft haben...\n\n**Pendant** :\n• C1 : **Bei** der Entscheidung... → B2 : **Wenn** wir entscheiden...\n\n**Malgré** :\n• C1 : **Trotz** der Erfüllung... → B2 : **Obwohl** wir erfüllt haben...\n\n**En raison de** :\n• C1 : **Aufgrund** der Entwicklung... → B2 : **Weil** sich entwickelt hat...\n\n**Avant** :\n• C1 : **Vor** der Prüfung... → B2 : **Bevor** wir prüfen...\n\n### Avantages de la verbalisation\n\n**Style** :\n- Plus dynamique et vivant\n- Plus accessible et compréhensible\n- Plus personnel (présence du sujet)\n- Langage courant et oral\n\n**Contexte approprié** :\n- Conversations quotidiennes\n- Textes narratifs\n- Communication directe\n- Style informel\n\n### Quand utiliser la verbalisation ?\n\n**Utilisez la verbalisation** :\n- Pour simplifier un texte trop formel\n- Pour rendre un texte plus accessible\n- Dans le langage oral\n- Pour un style plus dynamique\n- Pour mettre l'accent sur l'action\n\n**Gardez la nominalisation** :\n- Dans les textes académiques\n- Dans les documents administratifs\n- Pour un style formel\n- Pour densifier l'information",
+      title: "5.2.2 Verbalisation (Verbalisierung)",
+      content: `Verbalisation turns a noun phrase back into a verbal clause. It creates a more dynamic, direct, and accessible style.
+
+### Basic principle
+Nominal style:
+- **Nach Prüfung** der Unterlagen...
+
+Verbal style:
+- **Nachdem wir** die Unterlagen **geprüft haben**...
+
+### Common transformations
+| Noun | Verb | Example |
+|---|---|---|
+| die Prüfung | **prüfen** | Wir **prüfen** die Unterlagen. |
+| die Entscheidung | **entscheiden** | Wir **entscheiden** uns. |
+| die Erhöhung | **erhöhen** | Wir **erhöhen** die Preise. |
+| die Entwicklung | **entwickeln** | Das Land **entwickelt** sich. |
+| das Verständnis | **verstehen** | Wir **verstehen** das Problem. |
+| die Erfüllung | **erfüllen** | Wir **erfüllen** die Aufgabe. |
+
+### From nominal connectors to verbal clauses
+| Nominal style | Verbal style |
+|---|---|
+| **Nach Prüfung** der Unterlagen... | **Nachdem wir** die Unterlagen **geprüft haben**... |
+| **Bei der Entscheidung** über... | **Wenn wir** über etwas **entscheiden**... |
+| **Trotz der Erhöhung** der Preise... | **Obwohl** die Preise **erhöht wurden**... |
+| **Aufgrund der Entwicklung**... | **Weil** sich etwas **entwickelt hat**... |
+| **Vor der Prüfung**... | **Bevor** wir prüfen... |
+
+### Full transformations
+1. C1: **Nach Prüfung** der Unterlagen treffen wir eine Entscheidung.
+   -> B2: **Nachdem wir** die Unterlagen **geprüft haben**, treffen wir eine Entscheidung.
+
+2. C1: **Trotz der Erhöhung** der Steuern bleibt die Nachfrage stabil.
+   -> B2: **Obwohl** die Steuern **erhöht wurden**, bleibt die Nachfrage stabil.
+
+3. C1: **Aufgrund der Entwicklung** der Technologie...
+   -> B2: **Weil** sich die Technologie **entwickelt hat**...
+
+### Why use verbalisation?
+- More dynamic and readable
+- More personal, because a subject appears
+- Better for speech, narratives, explanations, and direct communication
+- Useful when a text has become too dense or bureaucratic
+
+### When to keep nominalisation
+Keep nominalisation in academic writing, administrative documents, formal reports, and contexts where compact objective style matters.`,
       examples: [
-        { de: "Nachdem wir die Unterlagen geprüft haben, können wir entscheiden.", fr: "Après que nous ayons vérifié les documents, nous pouvons décider.", note: "Verbalisation - style plus dynamique." },
-        { de: "Obwohl die Preise erhöht wurden, blieb die Nachfrage stabil.", fr: "Bien que les prix aient été augmentés, la demande est restée stable.", note: "Verbalisation avec obwohl." },
-        { de: "Weil sich das Land entwickelt hat, ist die Wirtschaft gewachsen.", fr: "Parce que le pays s'est développé, l'économie a grandi.", note: "Verbalisation avec weil." },
-        { de: "Bevor wir eine Entscheidung treffen, müssen wir alles prüfen.", fr: "Avant de prendre une décision, nous devons tout vérifier.", note: "Verbalisation avec bevor." },
-        { de: "Wenn wir die Aufgabe erfüllen, werden wir belohnt.", fr: "Quand nous accomplissons la tâche, nous serons récompensés.", note: "Verbalisation avec wenn." }
+        { de: "Nachdem wir die Unterlagen geprüft haben, können wir entscheiden.", fr: "After we have checked the documents, we can decide.", note: "Verbalisation creates a more dynamic style." },
+        { de: "Obwohl die Preise erhöht wurden, blieb die Nachfrage stabil.", fr: "Although prices were raised, demand remained stable.", note: "Verbalisation with obwohl." },
+        { de: "Weil sich das Land entwickelt hat, ist die Wirtschaft gewachsen.", fr: "Because the country has developed, the economy has grown.", note: "Verbalisation with weil." },
+        { de: "Bevor wir eine Entscheidung treffen, müssen wir alles prüfen.", fr: "Before we make a decision, we must check everything.", note: "Verbalisation with bevor." },
+        { de: "Wenn wir die Aufgabe erfüllen, werden wir belohnt.", fr: "When we complete the task, we will be rewarded.", note: "Verbalisation with wenn." }
       ]
     },
     {
       id: "c1-5-2-3",
-      title: "5.2.3 Comparaison et Choix du Style",
-      content: "Le choix entre nominalisation et verbalisation dépend du contexte, du registre de langue et de l'objectif de communication.\n\n### Tableau comparatif : Nominalisation vs Verbalisation\n\n| Aspect | Nominalisation (C1 - formel) | Verbalisation (B2 - courant) |\n|---|---|---|\n| **Style** | Formel, académique, dense | Dynamique, accessible, direct |\n| **Contexte** | Textes administratifs, scientifiques | Conversations, récits |\n| **Densité** | Haute (plus d'info en moins de mots) | Normale (structure claire) |\n| **Personnalité** | Impersonnel, objectif | Personnel, subjectif |\n| **Complexité** | Structure complexe | Structure simple et claire |\n\n### Exemples comparatifs complets\n\n**Contexte 1 : Document administratif**\n• **Nominalisation** : **Nach Prüfung** der eingereichten Unterlagen und **nach Erfüllung** aller notwendigen Bedingungen wurde **die Entscheidung** getroffen, **die Erhöhung** der Gebühren zu genehmigen.\n• **Verbalisation** : **Nachdem wir** die eingereichten Unterlagen **geprüft haben** und **nachdem alle** notwendigen Bedingungen **erfüllt wurden**, **haben wir entschieden**, die Gebühren zu erhöhen.\n\n**Contexte 2 : Conversation quotidienne**\n• **Nominalisation** (trop formel) : **Bei der Entscheidung** über den Urlaub... ❌\n• **Verbalisation** (approprié) : **Wenn wir** über den Urlaub **entscheiden**... ✅\n\n### Règle de choix\n\n**Utilisez la nominalisation quand** :\n- Vous écrivez un texte académique\n- Vous rédigez un document administratif\n- Vous voulez un style formel et dense\n- Vous devez être objectif et impersonnel\n\n**Utilisez la verbalisation quand** :\n- Vous parlez dans une conversation\n- Vous voulez un style accessible\n- Vous voulez mettre l'accent sur l'action\n- Vous voulez un texte dynamique et vivant\n\n### Flexibilité et variation\n\nUn bon niveau C1 maîtrise **les deux styles** et peut les alterner selon le contexte et les besoins. Parfois, un mélange des deux styles est optimal pour créer une variation et éviter la monotonie.",
+      title: "5.2.3 Comparing and Choosing the Style",
+      content: `The choice between nominalisation and verbalisation depends on register, context, and communicative goal.
+
+### Nominalisation vs verbalisation
+| Aspect | Nominalisation | Verbalisation |
+|---|---|---|
+| Style | formal, academic, dense | dynamic, accessible, direct |
+| Context | administration, research, reports | conversations, narratives, explanations |
+| Density | high | normal |
+| Tone | impersonal, objective | personal, action-oriented |
+| Structure | compact noun phrases | clear verbal clauses |
+
+### Administrative context
+Nominal style:
+- **Nach Prüfung** der eingereichten Unterlagen und **nach Erfüllung** aller notwendigen Bedingungen wurde **die Entscheidung** getroffen, **die Erhöhung** der Gebühren zu genehmigen.
+
+Verbal style:
+- **Nachdem wir** die eingereichten Unterlagen **geprüft haben** und **nachdem alle** notwendigen Bedingungen **erfüllt wurden**, **haben wir entschieden**, die Gebühren zu erhöhen.
+
+### Everyday conversation
+Too formal:
+- **Bei der Entscheidung** über den Urlaub...
+
+Natural:
+- **Wenn wir** über den Urlaub **entscheiden**...
+
+### Choice rule
+Use nominalisation when:
+- the text is academic, administrative, legal, or highly formal
+- you need a dense and objective style
+- you want to avoid naming an actor
+
+Use verbalisation when:
+- you are speaking
+- you want clarity and accessibility
+- you want to emphasise the action
+- the text should feel lively and direct
+
+At C1 level, the goal is flexibility: you can use both styles and alternate them to avoid monotony.`,
       examples: [
-        { de: "Style nominal: Nach Prüfung der Unterlagen wurde die Entscheidung getroffen.", fr: "Style nominal: Après vérification des documents, la décision a été prise.", note: "Formel et dense." },
-        { de: "Style verbal: Nachdem wir die Unterlagen geprüft haben, haben wir entschieden.", fr: "Style verbal: Après que nous ayons vérifié les documents, nous avons décidé.", note: "Plus dynamique et accessible." },
-        { de: "Mélange: Nach der Prüfung haben wir schnell entschieden.", fr: "Mélange: Après la vérification, nous avons rapidement décidé.", note: "Combinaison des deux styles." }
+        { de: "Style nominal: Nach Prüfung der Unterlagen wurde die Entscheidung getroffen.", fr: "Nominal style: After checking the documents, the decision was made.", note: "Formal and dense." },
+        { de: "Style verbal: Nachdem wir die Unterlagen geprüft haben, haben wir entschieden.", fr: "Verbal style: After we checked the documents, we made a decision.", note: "More dynamic and accessible." },
+        { de: "Mischform: Nach der Prüfung haben wir schnell entschieden.", fr: "Mixed style: After the check, we decided quickly.", note: "A balanced combination of both styles." }
       ]
     }
   ]

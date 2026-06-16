@@ -9,8 +9,8 @@ import { structuresExpertesC1 } from './structures-expertes.ts';
 
 export const c1Grammar: GrammarLevel = {
   level: LanguageLevel.C1,
-  title: "Niveau C1 : Le Perfectionnement",
-  description: "S'exprimer de façon fluide et spontanée sans trop devoir chercher ses mots. Utiliser la langue de façon flexible et efficace.",
+  title: "C1 Level: Refinement",
+  description: "Express yourself fluently and spontaneously without having to search too much for words. Use the language flexibly and effectively.",
   sections: [
     phraseComplexeC1,              // 5.1
     nominalisationVerbalisationC1, // 5.2

@@ -1,5 +1,5 @@
 
-// Ce fichier est obsolète et a été scindé en plusieurs fichiers modulaires :
+// This file is obsolete and has been split into several modular files:
 // - konjunktiv-i.ts
 // - zustandspassiv.ts
 // - passiv-alternativen.ts
