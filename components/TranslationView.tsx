@@ -9,8 +9,8 @@ export const TranslationView: React.FC = () => {
   const [selectedTip, setSelectedTip] = useState<TranslationTip | null>(null);
   const [expandedExamples, setExpandedExamples] = useState<Set<string>>(new Set());
 
-  const filteredSections = selectedLevel === 'all' 
-    ? TRANSLATION_DATA 
+  const filteredSections = selectedLevel === 'all'
+    ? TRANSLATION_DATA
     : TRANSLATION_DATA.filter(s => s.level === selectedLevel);
 
   const levelLabels: Record<Level, string> = {
@@ -58,11 +58,10 @@ export const TranslationView: React.FC = () => {
             <button
               key={level}
               onClick={() => setSelectedLevel(level)}
-              className={`px-4 py-2 rounded-xl font-semibold transition-all ${
-                selectedLevel === level
-                  ? 'text-white shadow-lg'
-                  : 'bg-white hover:bg-gray-50'
-              }`}
+              className={`px-4 py-2 rounded-xl font-semibold transition-all ${selectedLevel === level
+                ? 'text-white shadow-lg'
+                : 'bg-white hover:bg-gray-50'
+                }`}
               style={{
                 backgroundColor: selectedLevel === level ? 'var(--coral-500)' : undefined,
                 color: selectedLevel !== level ? 'var(--sand-700)' : undefined
@@ -223,7 +222,7 @@ export const TranslationView: React.FC = () => {
 
       {/* Contenu */}
       <div className="bg-white rounded-2xl p-8 border border-gray-100 mb-8">
-        <div 
+        <div
           className="prose prose-lg max-w-none"
           style={{ color: 'var(--sand-800)' }}
         >
@@ -236,6 +235,7 @@ export const TranslationView: React.FC = () => {
                 </h3>
               );
             }
+
             // Gestion des tableaux markdown simples
             if (paragraph.startsWith('|')) {
               const rows = paragraph.split('\n').filter(r => r.startsWith('|'));
@@ -311,18 +311,18 @@ export const TranslationView: React.FC = () => {
                         🇩🇪 {example.de}
                       </p>
                     </div>
-                    <svg 
-                      className={`w-5 h-5 flex-shrink-0 transition-transform ${isExpanded ? 'rotate-180' : ''}`} 
-                      style={{ color: 'var(--sand-400)' }} 
-                      fill="none" 
-                      stroke="currentColor" 
+                    <svg
+                      className={`w-5 h-5 flex-shrink-0 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                      style={{ color: 'var(--sand-400)' }}
+                      fill="none"
+                      stroke="currentColor"
                       viewBox="0 0 24 24"
                     >
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </div>
                 </button>
-                
+
                 {isExpanded && (
                   <div className="px-6 pb-6 space-y-3" style={{ backgroundColor: 'var(--sand-50)' }}>
                     {example.frBad && (
@@ -356,7 +356,7 @@ export const TranslationView: React.FC = () => {
           const currentIndex = selectedSection.tips.findIndex(t => t.id === selectedTip.id);
           const prevTip = currentIndex > 0 ? selectedSection.tips[currentIndex - 1] : null;
           const nextTip = currentIndex < selectedSection.tips.length - 1 ? selectedSection.tips[currentIndex + 1] : null;
-          
+
           return (
             <>
               {prevTip ? (
@@ -371,7 +371,7 @@ export const TranslationView: React.FC = () => {
                   <span className="font-medium">Précédent</span>
                 </button>
               ) : <div />}
-              
+
               {nextTip ? (
                 <button
                   onClick={() => setSelectedTip(nextTip)}

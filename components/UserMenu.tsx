@@ -17,10 +17,10 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onOpenAuth }) => {
     setSyncMessage('');
     try {
       await syncData();
-      setSyncMessage('✓ Synchronisé');
+      setSyncMessage('✓ Synced');
       setTimeout(() => setSyncMessage(''), 2000);
     } catch (error) {
-      setSyncMessage('Erreur de sync');
+      setSyncMessage('Sync error');
     } finally {
       setIsSyncing(false);
     }
@@ -42,7 +42,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onOpenAuth }) => {
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
         </svg>
-        Connexion
+        Sign in
       </button>
     );
   }
@@ -71,7 +71,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onOpenAuth }) => {
           <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-2xl shadow-xl overflow-hidden z-50 animate-in slide-in-from-top-2 duration-200" style={{ border: '1px solid var(--terracotta-100)' }}>
             {/* User Info */}
             <div className="p-4" style={{ backgroundColor: 'var(--sand-50)', borderBottom: '1px solid var(--terracotta-100)' }}>
-              <p className="font-bold" style={{ color: 'var(--terracotta-800)' }}>{user?.name || 'Utilisateur'}</p>
+              <p className="font-bold" style={{ color: 'var(--terracotta-800)' }}>{user?.name || 'User'}</p>
               <p className="text-sm" style={{ color: 'var(--sand-600)' }}>{user?.email}</p>
             </div>
 
@@ -89,9 +89,9 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onOpenAuth }) => {
                   </svg>
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-slate-700">Synchroniser</p>
+                  <p className="text-sm font-medium text-slate-700">Sync</p>
                   {syncMessage && (
-                    <p className={`text-xs ${syncMessage.includes('Erreur') ? 'text-red-500' : 'text-green-500'}`}>
+                    <p className={`text-xs ${syncMessage.toLowerCase().includes('error') ? 'text-red-500' : 'text-green-500'}`}>
                       {syncMessage}
                     </p>
                   )}
@@ -109,7 +109,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onOpenAuth }) => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                 </div>
-                <p className="text-sm font-medium text-slate-700">Paramètres</p>
+                <p className="text-sm font-medium text-slate-700">Settings</p>
               </button>
 
               {/* Logout */}
@@ -122,7 +122,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onOpenAuth }) => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                   </svg>
                 </div>
-                <p className="text-sm font-medium text-red-600">Déconnexion</p>
+                <p className="text-sm font-medium text-red-600">Log out</p>
               </button>
             </div>
           </div>
@@ -131,4 +131,3 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onOpenAuth }) => {
     </div>
   );
 };
-

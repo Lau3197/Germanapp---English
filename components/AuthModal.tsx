@@ -32,17 +32,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       }
 
       if (result.success) {
-        setSuccess(mode === 'login' ? 'Connexion réussie !' : 'Compte créé avec succès !');
+        setSuccess(mode === 'login' ? 'Login successful!' : 'Account created successfully!');
         setTimeout(() => {
           onClose();
-          // Recharger pour appliquer les données synchronisées
+          // Reload to apply synced data
           window.location.reload();
         }, 1500);
       } else {
-        setError(result.message || 'Une erreur est survenue');
+        setError(result.message || 'An error occurred');
       }
     } catch (err: any) {
-      setError(err.message || 'Une erreur est survenue');
+      setError(err.message || 'An error occurred');
     } finally {
       setIsLoading(false);
     }
@@ -65,12 +65,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             <span className="text-3xl">🔐</span>
           </div>
           <h2 className="text-2xl font-black">
-            {mode === 'login' ? 'Connexion' : 'Créer un compte'}
+            {mode === 'login' ? 'Sign in' : 'Create an account'}
           </h2>
           <p className="text-white/80 text-sm mt-2">
             {mode === 'login' 
-              ? 'Connectez-vous pour synchroniser vos données' 
-              : 'Créez un compte pour sauvegarder votre progression'}
+              ? 'Sign in to sync your data' 
+              : 'Create an account to save your progress'}
           </p>
         </div>
 
@@ -93,14 +93,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
           {mode === 'register' && (
             <div>
-              <label className="block text-sm font-bold text-slate-600 mb-2">Nom (optionnel)</label>
+              <label className="block text-sm font-bold text-slate-600 mb-2">Name (optional)</label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent transition-all"
                 style={{ border: '1px solid var(--terracotta-200)', '--tw-ring-color': 'var(--terracotta-400)' } as React.CSSProperties}
-                placeholder="Votre nom"
+                placeholder="Your name"
               />
             </div>
           )}
@@ -114,12 +114,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               required
               className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent transition-all"
               style={{ border: '1px solid var(--terracotta-200)', '--tw-ring-color': 'var(--terracotta-400)' } as React.CSSProperties}
-              placeholder="votre@email.com"
+              placeholder="your@email.com"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-bold mb-2" style={{ color: 'var(--terracotta-700)' }}>Mot de passe</label>
+            <label className="block text-sm font-bold mb-2" style={{ color: 'var(--terracotta-700)' }}>Password</label>
             <input
               type="password"
               value={password}
@@ -128,7 +128,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               minLength={6}
               className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent transition-all"
               style={{ border: '1px solid var(--terracotta-200)', '--tw-ring-color': 'var(--terracotta-400)' } as React.CSSProperties}
-              placeholder={mode === 'register' ? 'Min. 6 caractères' : '••••••••'}
+              placeholder={mode === 'register' ? 'Min. 6 characters' : '••••••••'}
             />
           </div>
 
@@ -148,21 +148,21 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Chargement...
+                Loading...
               </span>
-            ) : mode === 'login' ? 'Se connecter' : 'Créer mon compte'}
+            ) : mode === 'login' ? 'Sign in' : 'Create my account'}
           </button>
 
           <div className="text-center pt-4" style={{ borderTop: '1px solid var(--sand-200)' }}>
             <p className="text-sm" style={{ color: 'var(--sand-600)' }}>
-              {mode === 'login' ? 'Pas encore de compte ?' : 'Déjà un compte ?'}
+              {mode === 'login' ? "Don't have an account yet?" : 'Already have an account?'}
               <button
                 type="button"
                 onClick={switchMode}
                 className="ml-2 font-bold hover:underline"
                 style={{ color: 'var(--terracotta-600)' }}
               >
-                {mode === 'login' ? 'S\'inscrire' : 'Se connecter'}
+                {mode === 'login' ? 'Sign up' : 'Sign in'}
               </button>
             </p>
           </div>
@@ -181,4 +181,3 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     </div>
   );
 };
-

@@ -120,13 +120,13 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
               </span>
             </div>
           )}
-          
+
           <div className="text-7xl mb-6 animate-bounce">{emoji}</div>
           <h2 className="text-3xl font-black text-slate-800 mb-2">{message}</h2>
           <p className="text-slate-500 mb-6">
             {isRevisionMode ? 'Révision terminée' : 'Session terminée'}
           </p>
-          
+
           <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl p-6 mb-6">
             <div className="text-5xl font-black mb-2" style={{ color: 'var(--terracotta-600)' }}>
               {stats.correct} / {stats.total}
@@ -139,9 +139,9 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
 
           {/* Barre de progression */}
           <div className="h-4 bg-slate-200 rounded-full overflow-hidden mb-6">
-            <div 
+            <div
               className="h-full transition-all duration-1000 rounded-full"
-              style={{ 
+              style={{
                 width: `${percentage}%`,
                 background: `linear-gradient(90deg, var(--terracotta-500), var(--terracotta-600))`
               }}
@@ -156,7 +156,7 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
               </p>
               <div className="flex flex-wrap gap-2">
                 {incorrectWords.map((word, idx) => (
-                  <span 
+                  <span
                     key={idx}
                     className="px-3 py-1 bg-white border border-rose-200 rounded-lg text-sm text-slate-700"
                   >
@@ -177,19 +177,18 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
                 🔄 Réviser les {incorrectWords.length} erreur{incorrectWords.length > 1 ? 's' : ''}
               </button>
             )}
-            
+
             <button
               onClick={() => startSession(mode)}
-              className={`w-full font-bold py-4 rounded-xl transition-all ${
-                hasErrors 
-                  ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' 
+              className={`w-full font-bold py-4 rounded-xl transition-all ${hasErrors
+                  ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                   : 'text-white shadow-lg hover:shadow-xl'
-              }`}
+                }`}
               style={!hasErrors ? { backgroundColor: 'var(--terracotta-600)' } : {}}
             >
               {hasErrors ? '🔁 Nouvelle session complète' : '🔄 Recommencer'}
             </button>
-            
+
             <button
               onClick={backToMenu}
               className="w-full bg-slate-100 text-slate-700 font-bold py-4 rounded-xl hover:bg-slate-200 transition-colors"
@@ -227,7 +226,7 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
           <h3 className="font-bold text-slate-700 mb-4 flex items-center gap-2">
             <span className="text-xl">⚙️</span> Configuration
           </h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Direction */}
             <div>
@@ -235,22 +234,20 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
               <div className="flex gap-2">
                 <button
                   onClick={() => setDirection('fr-de')}
-                  className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all ${
-                    direction === 'fr-de' 
-                      ? 'text-white shadow-md' 
+                  className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all ${direction === 'fr-de'
+                      ? 'text-white shadow-md'
                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                  }`}
+                    }`}
                   style={direction === 'fr-de' ? { backgroundColor: 'var(--terracotta-600)' } : {}}
                 >
                   🇫🇷 → 🇩🇪
                 </button>
                 <button
                   onClick={() => setDirection('de-fr')}
-                  className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all ${
-                    direction === 'de-fr' 
-                      ? 'text-white shadow-md' 
+                  className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all ${direction === 'de-fr'
+                      ? 'text-white shadow-md'
                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                  }`}
+                    }`}
                   style={direction === 'de-fr' ? { backgroundColor: 'var(--terracotta-600)' } : {}}
                 >
                   🇩🇪 → 🇫🇷
@@ -268,11 +265,10 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => setWordCount('all')}
-                  className={`px-4 py-2 rounded-xl font-bold text-sm transition-all ${
-                    wordCount === 'all' 
-                      ? 'text-white shadow-md' 
+                  className={`px-4 py-2 rounded-xl font-bold text-sm transition-all ${wordCount === 'all'
+                      ? 'text-white shadow-md'
                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                  }`}
+                    }`}
                   style={wordCount === 'all' ? { backgroundColor: 'var(--terracotta-600)' } : {}}
                 >
                   Tous ({words.length})
@@ -281,11 +277,10 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
                   <button
                     key={num}
                     onClick={() => setWordCount(num)}
-                    className={`px-4 py-2 rounded-xl font-bold text-sm transition-all ${
-                      wordCount === num 
-                        ? 'text-white shadow-md' 
+                    className={`px-4 py-2 rounded-xl font-bold text-sm transition-all ${wordCount === num
+                        ? 'text-white shadow-md'
                         : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                    }`}
+                      }`}
                     style={wordCount === num ? { backgroundColor: 'var(--terracotta-600)' } : {}}
                   >
                     {num}
@@ -300,7 +295,7 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
         <h3 className="font-bold text-slate-700 mb-4 flex items-center gap-2">
           <span className="text-xl">🎮</span> Choisissez un mode
         </h3>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* QCM */}
           <button
@@ -313,7 +308,7 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
             <div className="mt-4 flex items-center gap-2 text-blue-600 font-bold text-sm">
               <span>Commencer</span>
               <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"/>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
               </svg>
             </div>
           </button>
@@ -329,7 +324,7 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
             <div className="mt-4 flex items-center gap-2 text-emerald-600 font-bold text-sm">
               <span>Commencer</span>
               <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"/>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
               </svg>
             </div>
           </button>
@@ -345,7 +340,7 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
             <div className="mt-4 flex items-center gap-2 text-purple-600 font-bold text-sm">
               <span>Commencer</span>
               <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"/>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
               </svg>
             </div>
           </button>
@@ -432,11 +427,11 @@ const QCMMode: React.FC<QCMModeProps> = ({ words, allWords, currentIndex, direct
   // Générer les options
   const options = useMemo(() => {
     if (!currentWord) return [];
-    
+
     // Obtenir 3 mauvaises réponses
     const others = allWords.filter(w => w.german !== currentWord.german);
     const wrongOptions = shuffleArray(others).slice(0, 3);
-    
+
     // Mélanger avec la bonne réponse
     return shuffleArray([...wrongOptions, currentWord]);
   }, [currentWord, allWords]);
@@ -470,7 +465,7 @@ const QCMMode: React.FC<QCMModeProps> = ({ words, allWords, currentIndex, direct
       <div className="flex justify-between items-center mb-6">
         <button onClick={onBack} className="text-slate-500 hover:text-slate-700 transition-colors flex items-center gap-2">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"/>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
           </svg>
           <span className="font-medium">Menu</span>
         </button>
@@ -485,9 +480,9 @@ const QCMMode: React.FC<QCMModeProps> = ({ words, allWords, currentIndex, direct
 
       {/* Barre de progression */}
       <div className="h-2 bg-slate-200 rounded-full overflow-hidden mb-8">
-        <div 
+        <div
           className="h-full transition-all duration-500 rounded-full"
-          style={{ 
+          style={{
             width: `${((currentIndex + 1) / words.length) * 100}%`,
             background: 'linear-gradient(90deg, var(--terracotta-500), var(--terracotta-600))'
           }}
@@ -573,12 +568,12 @@ const WritingMode: React.FC<WritingModeProps> = ({ words, currentIndex, directio
     // Comparer les réponses (avec tolérance)
     const normalizedInput = normalizeString(userInput);
     const normalizedCorrect = normalizeString(correctAnswer);
-    
+
     // Accepter aussi avec l'article pour fr->de
     const normalizedFullCorrect = normalizeString(fullCorrectAnswer);
-    
+
     const correct = normalizedInput === normalizedCorrect || normalizedInput === normalizedFullCorrect;
-    
+
     setIsCorrect(correct);
     setShowResult(true);
   };
@@ -600,7 +595,7 @@ const WritingMode: React.FC<WritingModeProps> = ({ words, currentIndex, directio
       <div className="flex justify-between items-center mb-6">
         <button onClick={onBack} className="text-slate-500 hover:text-slate-700 transition-colors flex items-center gap-2">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"/>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
           </svg>
           <span className="font-medium">Menu</span>
         </button>
@@ -615,9 +610,9 @@ const WritingMode: React.FC<WritingModeProps> = ({ words, currentIndex, directio
 
       {/* Barre de progression */}
       <div className="h-2 bg-slate-200 rounded-full overflow-hidden mb-8">
-        <div 
+        <div
           className="h-full transition-all duration-500 rounded-full"
-          style={{ 
+          style={{
             width: `${((currentIndex + 1) / words.length) * 100}%`,
             background: 'linear-gradient(90deg, var(--terracotta-500), var(--terracotta-600))'
           }}
@@ -646,11 +641,10 @@ const WritingMode: React.FC<WritingModeProps> = ({ words, currentIndex, directio
             onChange={(e) => setUserInput(e.target.value)}
             disabled={showResult}
             placeholder={direction === 'fr-de' ? 'Tapez la traduction allemande...' : 'Tapez la traduction française...'}
-            className={`w-full text-2xl font-bold p-6 rounded-2xl border-2 outline-none transition-all ${
-              showResult 
+            className={`w-full text-2xl font-bold p-6 rounded-2xl border-2 outline-none transition-all ${showResult
                 ? (isCorrect ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'bg-rose-50 border-rose-500 text-rose-700')
                 : 'border-slate-200 focus:border-blue-400 focus:ring-4 focus:ring-blue-100'
-            }`}
+              }`}
             autoFocus
             autoComplete="off"
             autoCapitalize="off"
@@ -770,7 +764,7 @@ const FlashcardsMode: React.FC<FlashcardsModeProps> = ({ words, currentIndex, di
       <div className="flex justify-between items-center mb-6">
         <button onClick={onBack} className="text-slate-500 hover:text-slate-700 transition-colors flex items-center gap-2">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"/>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
           </svg>
           <span className="font-medium">Menu</span>
         </button>
@@ -785,9 +779,9 @@ const FlashcardsMode: React.FC<FlashcardsModeProps> = ({ words, currentIndex, di
 
       {/* Barre de progression */}
       <div className="h-2 bg-slate-200 rounded-full overflow-hidden mb-8">
-        <div 
+        <div
           className="h-full transition-all duration-500 rounded-full"
-          style={{ 
+          style={{
             width: `${((currentIndex + 1) / words.length) * 100}%`,
             background: 'linear-gradient(90deg, var(--terracotta-500), var(--terracotta-600))'
           }}
@@ -796,7 +790,7 @@ const FlashcardsMode: React.FC<FlashcardsModeProps> = ({ words, currentIndex, di
 
       {/* Carte */}
       <div className="perspective-1000 mb-8">
-        <div 
+        <div
           className={`relative w-full h-80 cursor-pointer transition-all duration-500 transform-style-3d ${isFlipped ? 'rotate-y-180' : ''}`}
           onClick={!isFlipped ? handleFlip : undefined}
           style={{
@@ -805,7 +799,7 @@ const FlashcardsMode: React.FC<FlashcardsModeProps> = ({ words, currentIndex, di
           }}
         >
           {/* Face avant */}
-          <div 
+          <div
             className="absolute inset-0 bg-white rounded-3xl shadow-xl border border-slate-100 flex flex-col items-center justify-center p-8 backface-hidden"
             style={{ backfaceVisibility: 'hidden' }}
           >
@@ -822,9 +816,9 @@ const FlashcardsMode: React.FC<FlashcardsModeProps> = ({ words, currentIndex, di
           </div>
 
           {/* Face arrière */}
-          <div 
+          <div
             className="absolute inset-0 bg-gradient-to-br rounded-3xl shadow-xl flex flex-col items-center justify-center p-8"
-            style={{ 
+            style={{
               backfaceVisibility: 'hidden',
               transform: 'rotateY(180deg)',
               background: 'linear-gradient(135deg, var(--terracotta-500), var(--terracotta-600))'

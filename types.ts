@@ -10,7 +10,7 @@ export enum LanguageLevel {
 
 export interface GermanWord {
   german: string;
-  french: string;
+  english: string;
   article: 'der' | 'die' | 'das' | '';
   plural: string;
   example: string;
@@ -20,7 +20,7 @@ export interface GermanWord {
 
 export interface Phrase {
   german: string;
-  french: string;
+  english: string;
   context: string;
 }
 
@@ -32,7 +32,7 @@ export interface Theme {
   subThemes?: string[]; // Liste des sous-thèmes disponibles
 }
 
-export type MainTab = 'vocabulary' | 'nomen-verben' | 'grammar' | 'stats' | 'tables' | 'expressions' | 'translation' | 'revision';
+export type MainTab = 'vocabulary' | 'nomen-verben' | 'verben-mit-praepositionen' | 'grammar' | 'stats' | 'tables' | 'expressions' | 'revision' | 'exam';
 export type ViewMode = 'themes' | 'learn' | 'quiz' | 'phrases' | 'trainer';
 
 export interface ThemeContent {

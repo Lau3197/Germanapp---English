@@ -18,6 +18,7 @@ export const Quiz: React.FC<QuizProps> = ({ words, onComplete }) => {
 
   const options = useMemo(() => {
     if (!currentWord) return [];
+    // Generate options: correct answer (german) + 3 distractors (german)
     const others = words.filter(w => w.german !== currentWord.german);
     const shuffled = [...others].sort(() => 0.5 - Math.random()).slice(0, 3);
     return [...shuffled, currentWord].sort(() => 0.5 - Math.random());
@@ -25,7 +26,7 @@ export const Quiz: React.FC<QuizProps> = ({ words, onComplete }) => {
 
   const handleSelect = (option: GermanWord) => {
     if (selectedOption) return;
-    
+
     setSelectedOption(option.german);
     const correct = option.german === currentWord.german;
     setIsCorrect(correct);
@@ -66,8 +67,8 @@ export const Quiz: React.FC<QuizProps> = ({ words, onComplete }) => {
       <div className="mb-8 flex justify-between items-center px-4">
         <span className="text-slate-500 font-medium">Question {currentIndex + 1} sur {words.length}</span>
         <div className="h-2 w-48 bg-slate-200 rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-indigo-500 transition-all duration-300" 
+          <div
+            className="h-full bg-indigo-500 transition-all duration-300"
             style={{ width: `${((currentIndex + 1) / words.length) * 100}%` }}
           />
         </div>
@@ -86,7 +87,7 @@ export const Quiz: React.FC<QuizProps> = ({ words, onComplete }) => {
             onClick={() => handleSelect(option)}
             className={`
               p-5 text-xl font-semibold rounded-2xl border-2 transition-all text-left
-              ${selectedOption === option.german 
+              ${selectedOption === option.german
                 ? (isCorrect ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'bg-rose-50 border-rose-500 text-rose-700')
                 : (selectedOption && option.german === currentWord.german ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'bg-white border-slate-100 hover:border-indigo-200 text-slate-700')
               }

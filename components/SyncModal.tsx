@@ -21,7 +21,7 @@ export const SyncModal: React.FC<SyncModalProps> = ({ isOpen, onClose }) => {
   const [importMessage, setImportMessage] = useState('');
   const [copied, setCopied] = useState(false);
 
-  // Générer le code de synchronisation
+  // Generate the sync code
   useEffect(() => {
     if (isOpen && activeTab === 'export') {
       generateSyncCode();
@@ -37,7 +37,7 @@ export const SyncModal: React.FC<SyncModalProps> = ({ isOpen, onClose }) => {
       exportedAt: new Date().toISOString()
     };
     
-    // Encoder en base64
+    // Encode as base64
     const jsonString = JSON.stringify(data);
     const base64 = btoa(unescape(encodeURIComponent(jsonString)));
     setSyncCode(base64);
@@ -63,16 +63,16 @@ export const SyncModal: React.FC<SyncModalProps> = ({ isOpen, onClose }) => {
 
   const importData = () => {
     try {
-      // Décoder le base64
+      // Decode base64
       const jsonString = decodeURIComponent(escape(atob(importCode.trim())));
       const data: SyncData = JSON.parse(jsonString);
       
-      // Vérifier la version
+      // Check the version
       if (!data.version) {
-        throw new Error('Format de code invalide');
+        throw new Error('Invalid code format');
       }
 
-      // Importer les données
+      // Import data
       if (data.favorites && Array.isArray(data.favorites)) {
         localStorage.setItem('grammarFavorites', JSON.stringify(data.favorites));
       }
@@ -82,37 +82,37 @@ export const SyncModal: React.FC<SyncModalProps> = ({ isOpen, onClose }) => {
       }
       
       if (data.stats && typeof data.stats === 'object') {
-        // Fusionner avec les stats existantes si nécessaire
+        // Merge with existing stats if needed
         const existingStats = JSON.parse(localStorage.getItem('grammarStats') || '{}');
         const mergedStats = {
           ...existingStats,
           ...data.stats,
-          // Garder le meilleur streak
+          // Keep the best streak
           longestStreak: Math.max(existingStats.longestStreak || 0, data.stats.longestStreak || 0),
-          // Additionner le temps total
+          // Add total time
           totalTimeSpent: (existingStats.totalTimeSpent || 0) + (data.stats.totalTimeSpent || 0),
-          // Fusionner les leçons complétées
+          // Merge completed lessons
           completedLessons: [...new Set([
             ...(existingStats.completedLessons || []),
             ...(data.stats.completedLessons || [])
           ])],
-          // Fusionner l'historique quotidien
+          // Merge daily history
           dailyHistory: mergeDailyHistory(existingStats.dailyHistory || [], data.stats.dailyHistory || [])
         };
         localStorage.setItem('grammarStats', JSON.stringify(mergedStats));
       }
 
       setImportStatus('success');
-      setImportMessage(`Données importées avec succès ! (exportées le ${new Date(data.exportedAt).toLocaleDateString('fr-FR')})`);
+      setImportMessage(`Data imported successfully! (exported on ${new Date(data.exportedAt).toLocaleDateString('en-GB')})`);
       
-      // Recharger la page après 2 secondes
+      // Reload the page after 2 seconds
       setTimeout(() => {
         window.location.reload();
       }, 2000);
       
     } catch (err) {
       setImportStatus('error');
-      setImportMessage('Code invalide. Vérifiez que vous avez copié le code complet.');
+      setImportMessage('Invalid code. Check that you copied the full code.');
     }
   };
 
@@ -121,7 +121,7 @@ export const SyncModal: React.FC<SyncModalProps> = ({ isOpen, onClose }) => {
     imported.forEach(importedDay => {
       const existingIndex = merged.findIndex(d => d.date === importedDay.date);
       if (existingIndex >= 0) {
-        // Fusionner les données du même jour
+        // Merge data for the same day
         merged[existingIndex] = {
           ...merged[existingIndex],
           timeSpent: Math.max(merged[existingIndex].timeSpent || 0, importedDay.timeSpent || 0),
@@ -174,8 +174,8 @@ export const SyncModal: React.FC<SyncModalProps> = ({ isOpen, onClose }) => {
                 </svg>
               </div>
               <div>
-                <p className="text-[10px] font-black uppercase tracking-widest opacity-80">Synchronisation</p>
-                <h5 className="text-xl font-black">Transférer mes données</h5>
+                <p className="text-[10px] font-black uppercase tracking-widest opacity-80">Synchronization</p>
+                <h5 className="text-xl font-black">Transfer my data</h5>
               </div>
             </div>
             <button onClick={onClose} className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/40 transition-all">
@@ -196,7 +196,7 @@ export const SyncModal: React.FC<SyncModalProps> = ({ isOpen, onClose }) => {
                 : 'text-slate-400 hover:text-slate-600'
             }`}
           >
-            📤 Exporter
+            📤 Export
           </button>
           <button
             onClick={() => setActiveTab('import')}
@@ -206,7 +206,7 @@ export const SyncModal: React.FC<SyncModalProps> = ({ isOpen, onClose }) => {
                 : 'text-slate-400 hover:text-slate-600'
             }`}
           >
-            📥 Importer
+            📥 Import
           </button>
         </div>
 
@@ -214,13 +214,13 @@ export const SyncModal: React.FC<SyncModalProps> = ({ isOpen, onClose }) => {
         <div className="p-6">
           {activeTab === 'export' ? (
             <div className="space-y-4">
-              {/* Résumé des données */}
+              {/* Data summary */}
               <div className="bg-slate-50 rounded-xl p-4">
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Données à exporter</p>
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Data to export</p>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="flex items-center gap-2">
                     <span className="text-amber-500">⭐</span>
-                    <span className="text-sm text-slate-600"><strong>{summary.favoritesCount}</strong> favoris</span>
+                    <span className="text-sm text-slate-600"><strong>{summary.favoritesCount}</strong> favorites</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-emerald-500">📝</span>
@@ -228,18 +228,18 @@ export const SyncModal: React.FC<SyncModalProps> = ({ isOpen, onClose }) => {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-green-500">✓</span>
-                    <span className="text-sm text-slate-600"><strong>{summary.completedLessons}</strong> leçons</span>
+                    <span className="text-sm text-slate-600"><strong>{summary.completedLessons}</strong> lessons</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-orange-500">🔥</span>
-                    <span className="text-sm text-slate-600"><strong>{summary.streak}</strong> jours streak</span>
+                    <span className="text-sm text-slate-600"><strong>{summary.streak}</strong> streak days</span>
                   </div>
                 </div>
               </div>
 
               {/* Code */}
               <div>
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Code de synchronisation</label>
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Sync code</label>
                 <div className="relative">
                   <textarea
                     value={syncCode}
@@ -254,7 +254,7 @@ export const SyncModal: React.FC<SyncModalProps> = ({ isOpen, onClose }) => {
                         : 'bg-indigo-600 text-white hover:bg-indigo-700'
                     }`}
                   >
-                    {copied ? '✓ Copié !' : 'Copier'}
+                    {copied ? '✓ Copied!' : 'Copy'}
                   </button>
                 </div>
               </div>
@@ -262,10 +262,10 @@ export const SyncModal: React.FC<SyncModalProps> = ({ isOpen, onClose }) => {
               <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
                 <p className="text-sm text-blue-700">
                   <strong>💡 Instructions :</strong><br />
-                  1. Copiez ce code<br />
-                  2. Sur votre autre appareil, ouvrez l'app<br />
-                  3. Allez dans Sync → Importer<br />
-                  4. Collez le code
+                  1. Copy this code<br />
+                  2. On your other device, open the app<br />
+                  3. Go to Sync → Import<br />
+                  4. Paste the code
                 </p>
               </div>
             </div>
@@ -274,19 +274,19 @@ export const SyncModal: React.FC<SyncModalProps> = ({ isOpen, onClose }) => {
               {importStatus === 'idle' ? (
                 <>
                   <div>
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Coller le code</label>
+                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Paste the code</label>
                     <textarea
                       value={importCode}
                       onChange={(e) => setImportCode(e.target.value)}
-                      placeholder="Collez ici le code de synchronisation..."
+                      placeholder="Paste the sync code here..."
                       className="w-full h-32 p-3 border border-slate-200 rounded-xl text-xs font-mono text-slate-600 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
                   </div>
 
                   <div className="bg-amber-50 border border-amber-100 rounded-xl p-4">
                     <p className="text-sm text-amber-700">
-                      <strong>⚠️ Attention :</strong><br />
-                      L'importation fusionnera les données avec vos données actuelles. Vos leçons complétées et notes seront préservées.
+                      <strong>⚠️ Warning:</strong><br />
+                      Importing will merge the data with your current data. Completed lessons and notes will be preserved.
                     </p>
                   </div>
 
@@ -299,7 +299,7 @@ export const SyncModal: React.FC<SyncModalProps> = ({ isOpen, onClose }) => {
                         : 'bg-slate-100 text-slate-400 cursor-not-allowed'
                     }`}
                   >
-                    Importer les données
+                    Import data
                   </button>
                 </>
               ) : (
@@ -318,18 +318,18 @@ export const SyncModal: React.FC<SyncModalProps> = ({ isOpen, onClose }) => {
                     )}
                   </div>
                   <p className="font-bold text-lg mb-2">
-                    {importStatus === 'success' ? 'Importation réussie !' : 'Erreur'}
+                    {importStatus === 'success' ? 'Import successful!' : 'Error'}
                   </p>
                   <p className="text-sm opacity-80">{importMessage}</p>
                   {importStatus === 'success' && (
-                    <p className="text-xs mt-2 text-slate-400">Rechargement de la page...</p>
+                    <p className="text-xs mt-2 text-slate-400">Reloading page...</p>
                   )}
                   {importStatus === 'error' && (
                     <button
                       onClick={resetImport}
                       className="mt-4 px-4 py-2 bg-slate-100 text-slate-600 rounded-lg font-bold text-sm hover:bg-slate-200 transition-all"
                     >
-                      Réessayer
+                      Try again
                     </button>
                   )}
                 </div>

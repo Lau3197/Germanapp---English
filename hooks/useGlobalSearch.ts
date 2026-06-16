@@ -3,16 +3,16 @@ import { VOCABULARY_DATA } from '../data/vocabularyData';
 import { GRAMMAR_DATA } from '../data/grammarData';
 import { THEMES } from '../constants';
 import { NOMEN_VERBEN_LIST } from '../data/nomenVerbenData';
-import { TRANSLATION_DATA } from '../data/translationData';
+import { VERBEN_MIT_PRAEPOSITIONEN } from '../data/verbenMitPraepositionenData';
 
-// Note: EXPRESSIONS_DATA sera ajouté quand le fichier existera
+// Note: EXPRESSIONS_DATA will be added when the file exists
 
 export type SearchResultType = 
   | 'vocabulary' 
   | 'grammar' 
   | 'expression' 
   | 'nomen-verb' 
-  | 'translation'
+  | 'verb-preposition'
   | 'table';
 
 export interface SearchResult {
@@ -24,14 +24,14 @@ export interface SearchResult {
   theme?: string;
   level?: string;
   matchedText: string;
-  score: number; // Pour le tri par pertinence
+  score: number; // For relevance sorting
 }
 
 function normalizeText(text: string): string {
   return text
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Enlève les accents
+    .replace(/[\u0300-\u036f]/g, '') // Remove accents
     .replace(/ä/g, 'a')
     .replace(/ö/g, 'o')
     .replace(/ü/g, 'u')
@@ -64,11 +64,11 @@ export function useGlobalSearch() {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
 
-  // Construire l'index de recherche
+    // Build the search index
   const searchIndex = useMemo(() => {
     const index: SearchResult[] = [];
 
-    // Indexer le vocabulaire
+    // Index vocabulary
     Object.entries(VOCABULARY_DATA).forEach(([themeId, data]) => {
       const themeName = THEMES.find(t => t.id === themeId)?.name || themeId;
       
@@ -100,7 +100,7 @@ export function useGlobalSearch() {
       });
     });
 
-    // Indexer la grammaire
+    // Index grammar
     GRAMMAR_DATA.forEach(level => {
       level.sections.forEach(section => {
         section.topics.forEach(topic => {
@@ -118,42 +118,39 @@ export function useGlobalSearch() {
       });
     });
 
-    // Indexer les Nomen-Verb
+    // Index Nomen-Verb entries
     NOMEN_VERBEN_LIST.forEach((item, idx) => {
       index.push({
         id: `nv-${idx}`,
         type: 'nomen-verb',
         title: item.german,
-        subtitle: item.french,
+        subtitle: item.english,
         description: item.example,
         level: item.level,
-        matchedText: `${item.german} ${item.french} ${item.example || ''}`,
+        matchedText: `${item.german} ${item.english} ${item.example || ''}`,
         score: 0,
       });
     });
 
-    // Note: Les expressions seront indexées quand le fichier de données sera créé
-
-    // Indexer les conseils de traduction
-    TRANSLATION_DATA.forEach(section => {
-      section.tips.forEach(tip => {
-        index.push({
-          id: `trans-${tip.id}`,
-          type: 'translation',
-          title: tip.title,
-          subtitle: section.title,
-          description: tip.content.substring(0, 150) + '...',
-          level: section.level,
-          matchedText: `${tip.title} ${section.title} ${tip.content}`,
-          score: 0,
-        });
+    // Index verb-preposition patterns
+    VERBEN_MIT_PRAEPOSITIONEN.forEach((item, idx) => {
+      index.push({
+        id: `vmp-${idx}`,
+        type: 'verb-preposition',
+        title: `${item.verb} ${item.preposition}`,
+        subtitle: `${item.translation} (${item.case === 'A' ? 'Accusative' : 'Dative'})`,
+        description: item.exampleEn,
+        matchedText: `${item.verb} ${item.preposition} ${item.translation} ${item.exampleDe} ${item.exampleEn}`,
+        score: 0,
       });
     });
+
+    // Note: expressions will be indexed when the data file is created
 
     return index;
   }, []);
 
-  // Fonction de recherche
+  // Search function
   const search = useCallback((searchQuery: string): SearchResult[] => {
     if (!searchQuery || searchQuery.length < 2) return [];
 
@@ -167,24 +164,24 @@ export function useGlobalSearch() {
       })
       .filter(item => item.score > 0)
       .sort((a, b) => b.score - a.score)
-      .slice(0, 50); // Limiter à 50 résultats
+      .slice(0, 50); // Limit to 50 results
 
     return results;
   }, [searchIndex]);
 
-  // Résultats de recherche
+  // Search results
   const results = useMemo(() => {
     return search(query);
   }, [query, search]);
 
-  // Grouper les résultats par type
+  // Group results by type
   const groupedResults = useMemo(() => {
     const groups: Record<SearchResultType, SearchResult[]> = {
       vocabulary: [],
       grammar: [],
       expression: [],
       'nomen-verb': [],
-      translation: [],
+      'verb-preposition': [],
       table: [],
     };
 
