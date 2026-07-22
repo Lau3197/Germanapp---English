@@ -15,8 +15,8 @@ This pattern affects many common nouns such as Student, Kollege, Tourist, Junge,
 - Identify the four main groups of nouns affected (8.1.2)
 - Master the mixed and irregular special cases (8.1.3 and 8.1.4)`,
       examples: [
-        { de: "Der Student lernt. -> Ich sehe den Studenten.", fr: "The student is studying. -> I see the student.", note: "Nominative unchanged; accusative with -en." },
-        { de: "Der Kollege kommt. -> Ich helfe dem Kollegen.", fr: "The colleague is coming. -> I help the colleague.", note: "Nominative unchanged; dative with -en." }
+        { de: "Der Student lernt. → Ich sehe den Studenten.", fr: "The student is studying. → I see the student.", note: "Nominative unchanged; accusative with -en." },
+        { de: "Der Kollege kommt. → Ich helfe dem Kollegen.", fr: "The colleague is coming. → I help the colleague.", note: "Nominative unchanged; dative with -en." }
       ]
     },
     {
@@ -33,15 +33,15 @@ This pattern affects many common nouns such as Student, Kollege, Tourist, Junge,
 | Genitive | des | Studenten |
 
 ### -n or -en?
-- If the noun ends in **-e**, add **-n**: Kollege -> Kollegen
-- Otherwise, add **-en**: Student -> Studenten
+- If the noun ends in **-e**, add **-n**: Kollege → Kollegen
+- Otherwise, add **-en**: Student → Studenten
 
 ### Memory rule
 Only one case has no ending: the nominative. The other three cases take -en: accusative, dative, and genitive.
 
 ### Common mistakes
-- Ich sehe den Student -> Ich sehe den Studenten
-- Ich helfe dem Kollege -> Ich helfe dem Kollegen`,
+- Ich sehe den Student → Ich sehe den Studenten
+- Ich helfe dem Kollege → Ich helfe dem Kollegen`,
       examples: [
         { de: "Ich sehe den Kunden.", fr: "I see the customer.", note: "Kunde belongs to the N-Deklination." }
       ]
@@ -117,7 +117,7 @@ These nouns take **-n** in the accusative and dative, but **-ns** in the genitiv
 **Rule**: these nouns end in **-e** in the nominative, take **-n** in the accusative and dative, and take **-ns** in the genitive.`,
       examples: [
         { de: "Im Namen des Gesetzes.", fr: "In the name of the law.", note: "Genitive in -ns: des Namens." },
-        { de: "Der Name ist bekannt. -> Ich kenne den Namen. -> Im Namen des Vaters.", fr: "The name is known. -> I know the name. -> In the name of the father.", note: "Name: Namen in accusative, Namens in genitive." },
+        { de: "Der Name ist bekannt. → Ich kenne den Namen. → Im Namen des Vaters.", fr: "The name is known. → I know the name. → In the name of the father.", note: "Name: Namen in accusative, Namens in genitive." },
         { de: "Die Kraft des Gedankens.", fr: "The power of the thought.", note: "Gedanke becomes Gedankens in the genitive." },
         { de: "Die Form des Buchstabens.", fr: "The shape of the letter.", note: "Buchstabe becomes Buchstabens in the genitive." },
         { de: "Die Hoffnung des Friedens.", fr: "The hope for peace.", note: "Friede becomes Friedens in the genitive." },
@@ -149,7 +149,7 @@ This is the only common **neuter** noun in this pattern. It does not change in t
 
 This section teaches you when to use a substantivised adjective instead of an ordinary noun, and how to decline it correctly.`,
       examples: [
-        { de: "krank (Adjektiv) -> der Kranke (Nomen)", fr: "ill/sick -> the sick person", note: "The adjective becomes a noun and is capitalised." }
+        { de: "krank (Adjektiv) → der Kranke (Nomen)", fr: "ill/sick → the sick person", note: "The adjective becomes a noun and is capitalised." }
       ]
     },
     {
@@ -182,7 +182,7 @@ Counterexamples with normal nouns:
 - **der Ingenieur** = technical profession
 - **der Vater** = family role
 
-Practical rule: if you mean "a person who is..." -> substantivised adjective. If you mean a job, role, or fixed noun -> normal noun.
+Practical rule: if you mean "a person who is..." → substantivised adjective. If you mean a job, role, or fixed noun → normal noun.
 
 ### Criterion 3: Neuter abstract concepts
 After **etwas, nichts, alles, viel**, German normally uses a neuter substantivised adjective:
@@ -202,8 +202,8 @@ Some nationalities, however, are normal N-Deklination nouns: **der Franzose, der
 
 ### English test
 If English uses an adjective as a noun-like category, German often does the same:
-- "the old", "the sick", "the young", "something new" -> substantivised adjective
-- "the doctor", "the teacher", "the student" -> normal noun
+- "the old", "the sick", "the young", "something new" → substantivised adjective
+- "the doctor", "the teacher", "the student" → normal noun
 
 ### Decision checklist
 Before writing, ask:
@@ -214,13 +214,13 @@ Before writing, ask:
 
 ### Spelling test
 A substantivised adjective can usually be expanded to adjective + noun:
-- **der Alte** -> der alte Mann
-- **der Arzt** -> not "der arzt Mann"
+- **der Alte** → der alte Mann
+- **der Arzt** → not "der arzt Mann"
 
 ### Semantic test
 A substantivised adjective turns a quality into a noun:
-- **alt** -> **der Alte**
-- **krank** -> **der Kranke**
+- **alt** → **der Alte**
+- **krank** → **der Kranke**
 
 A normal noun names a specific entity or role:
 - **der Arzt** = doctor as a profession.`,
@@ -465,8 +465,8 @@ If a noun follows, the adjective is not substantivised.
 4. Which case and gender are needed?
 5. Does the ending match ordinary adjective declension?`,
       examples: [
-        { de: "Incorrect: ein Kranken -> Correct: ein Kranker", fr: "After ein, masculine nominative takes -er.", note: "Mixed declension." },
-        { de: "Incorrect: Ich sehe der Kranke -> Correct: Ich sehe den Kranken", fr: "Accusative masculine requires den Kranken.", note: "Case agreement." },
+        { de: "Incorrect: ein Kranken → Correct: ein Kranker", fr: "After ein, masculine nominative takes -er.", note: "Mixed declension." },
+        { de: "Incorrect: Ich sehe der Kranke → Correct: Ich sehe den Kranken", fr: "Accusative masculine requires den Kranken.", note: "Case agreement." },
         { de: "Alte Menschen vs Alte", fr: "Old people (with noun) vs old people/the old (without noun).", note: "Normal adjective vs substantivised adjective." }
       ]
     },
@@ -476,8 +476,8 @@ If a noun follows, the adjective is not substantivised.
       content: `Some German indefinite pronouns behave like complete determiners; others behave more like quantity words. This changes the adjective ending that follows them.
 
 The main contrast is:
-- **total determiners**: alle, beide, sämtliche -> weak declension
-- **partial determiners**: viele, einige, manche, mehrere, wenige -> strong declension
+- **total determiners**: alle, beide, sämtliche → weak declension
+- **partial determiners**: viele, einige, manche, mehrere, wenige → strong declension
 
 This distinction is especially important in the plural.`,
       examples: [
@@ -504,11 +504,11 @@ Examples:
 - mehrere **wichtige** Dokumente
 
 ### Practical shortcut
-If the word means "all/both/every single one" -> weak ending **-en** in nominative/accusative plural.
-If the word means "many/some/several/few" -> strong ending **-e** in nominative/accusative plural.`,
+If the word means "all/both/every single one" → weak ending **-en** in nominative/accusative plural.
+If the word means "many/some/several/few" → strong ending **-e** in nominative/accusative plural.`,
       examples: [
-        { de: "Alle guten Freunde kommen.", fr: "All good friends are coming.", note: "Total group -> weak declension." },
-        { de: "Viele gute Freunde kommen.", fr: "Many good friends are coming.", note: "Partial group -> strong declension." }
+        { de: "Alle guten Freunde kommen.", fr: "All good friends are coming.", note: "Total group → weak declension." },
+        { de: "Viele gute Freunde kommen.", fr: "Many good friends are coming.", note: "Partial group → strong declension." }
       ]
     },
     {
@@ -662,8 +662,8 @@ In the singular, **mancher** behaves like an indefinite article and takes **mixe
 | Genitive | manches **guten** Freundes | mancher **guten** Freundin | manches **guten** Buches |
 
 Rule:
-- singular **mancher** behaves like **ein** -> mixed declension
-- plural **manche** behaves like **viele** -> strong declension`,
+- singular **mancher** behaves like **ein** → mixed declension
+- plural **manche** behaves like **viele** → strong declension`,
       examples: [
         { de: "Wenige gute Schüler bestehen nicht.", fr: "Few good pupils fail.", note: "Strong declension after wenige." },
         { de: "Sämtliche neuen Mitarbeiter sind da.", fr: "All new employees are here.", note: "Weak declension after sämtliche." },
@@ -686,8 +686,8 @@ Rule:
 | Genitive | aller **guten** Freunde | vieler **guter** Freunde |
 
 ### Key difference
-- **alle** -> **-en** in nominative/accusative plural: weak declension
-- **viele** -> **-e** in nominative/accusative plural: strong declension
+- **alle** → **-en** in nominative/accusative plural: weak declension
+- **viele** → **-e** in nominative/accusative plural: strong declension
 - Dative plural: both take **-en**
 - Genitive plural: total determiners keep **-en**, partial determiners take **-er**
 
@@ -745,7 +745,7 @@ Incorrect: Viele **guten** Freunde
 Correct: Alle **guten** Freunde
 Correct: Viele **gute** Freunde
 
-Reason: **alle** is a total determiner -> weak declension. **viele** is a partial determiner -> strong declension.
+Reason: **alle** is a total determiner → weak declension. **viele** is a partial determiner → strong declension.
 
 ### Mistake 2: Forgetting that the dative plural always takes -en
 Incorrect: Ich helfe vielen **gute** Freunden.
@@ -794,8 +794,8 @@ Compare:
 6. Has the pronoun itself been declined?
 7. With substantivised adjectives, check the contrast: alle Deutschen vs viele Deutsche.`,
       examples: [
-        { de: "Incorrect: Alle gute Freunde -> Correct: Alle guten Freunde", fr: "Do not forget -en after alle.", note: "Weak declension after a total determiner." },
-        { de: "Incorrect: Viele guten Freunde -> Correct: Viele gute Freunde", fr: "After viele, use strong declension with -e.", note: "Strong declension after a partial determiner." },
+        { de: "Incorrect: Alle gute Freunde → Correct: Alle guten Freunde", fr: "Do not forget -en after alle.", note: "Weak declension after a total determiner." },
+        { de: "Incorrect: Viele guten Freunde → Correct: Viele gute Freunde", fr: "After viele, use strong declension with -e.", note: "Strong declension after a partial determiner." },
         { de: "Ich helfe allen guten Freunden.", fr: "I help all good friends.", note: "Correct dative plural." },
         { de: "Die Hilfe vieler guter Freunde.", fr: "The help of many good friends.", note: "Correct genitive plural after viele." },
         { de: "Alle Deutschen vs viele Deutsche", fr: "All Germans vs many Germans.", note: "Substantivised adjective contrast." }

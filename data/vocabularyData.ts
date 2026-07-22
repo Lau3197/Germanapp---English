@@ -1,5 +1,5 @@
 
-import { ThemeContent } from '../types.ts';
+import { GermanWord, Phrase, ThemeContent } from '../types.ts';
 import { presentationContent } from './vocabulary/presentation.ts';
 import { renseignementsContent } from './vocabulary/renseignements.ts';
 import { decrirePersonnesContent } from './vocabulary/decrire-personnes.ts';
@@ -21,25 +21,47 @@ import { mediasContent } from './vocabulary/medias.ts';
 import { tempsContent } from './vocabulary/temps.ts';
 import { societeContent } from './vocabulary/societe.ts';
 
+type RawThemeContent = {
+  words: GermanWord[];
+  phrases: Phrase[];
+};
+
+const withTranslations = <T extends { english?: string; french?: string }>(
+  item: T
+): T & { english: string; french: string } => {
+  const translation = item.english || item.french || '';
+
+  return {
+    ...item,
+    english: item.english || translation,
+    french: item.french || translation
+  };
+};
+
+const normalizeThemeContent = (content: RawThemeContent): ThemeContent => ({
+  words: content.words.map(withTranslations),
+  phrases: content.phrases.map(withTranslations)
+});
+
 export const VOCABULARY_DATA: Record<string, ThemeContent> = {
-  'presentation': presentationContent,
-  'renseignements': renseignementsContent,
-  'decrire-personnes': decrirePersonnesContent,
-  'decrire-objets': decrireObjetsContent,
-  'emotions': emotionsContent,
-  'corps-humain': corpsHumainContent,
-  'sante': santeContent,
-  'vie-quotidienne': vieQuotidienneContent,
-  'maison': maisonContent,
-  'travaux-menagers': travauxMenagersContent,
-  'nourriture-boisson': nourritureBoissonContent,
-  'loisirs': loisirsContent,
-  'voyages': voyagesContent,
-  'ville': villeContent,
-  'travail': travailContent,
-  'nature': natureContent,
-  'education': educationContent,
-  'medias': mediasContent,
-  'temps': tempsContent,
-  'societe': societeContent
+  'presentation': normalizeThemeContent(presentationContent),
+  'renseignements': normalizeThemeContent(renseignementsContent),
+  'decrire-personnes': normalizeThemeContent(decrirePersonnesContent),
+  'decrire-objets': normalizeThemeContent(decrireObjetsContent),
+  'emotions': normalizeThemeContent(emotionsContent),
+  'corps-humain': normalizeThemeContent(corpsHumainContent),
+  'sante': normalizeThemeContent(santeContent),
+  'vie-quotidienne': normalizeThemeContent(vieQuotidienneContent),
+  'maison': normalizeThemeContent(maisonContent),
+  'travaux-menagers': normalizeThemeContent(travauxMenagersContent),
+  'nourriture-boisson': normalizeThemeContent(nourritureBoissonContent),
+  'loisirs': normalizeThemeContent(loisirsContent),
+  'voyages': normalizeThemeContent(voyagesContent),
+  'ville': normalizeThemeContent(villeContent),
+  'travail': normalizeThemeContent(travailContent),
+  'nature': normalizeThemeContent(natureContent),
+  'education': normalizeThemeContent(educationContent),
+  'medias': normalizeThemeContent(mediasContent),
+  'temps': normalizeThemeContent(tempsContent),
+  'societe': normalizeThemeContent(societeContent)
 };

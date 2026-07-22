@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from 'react';
+import React, { FormEvent, useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   PrepositionCase,
   VERBEN_MIT_PRAEPOSITIONEN,
@@ -6,6 +7,7 @@ import {
 } from '../data/verbenMitPraepositionenData';
 
 type CaseFilter = 'all' | PrepositionCase;
+type PracticeStatus = 'idle' | 'correct' | 'incorrect' | 'revealed';
 
 const CASE_LABELS: Record<PrepositionCase, { short: string; label: string; color: string; bg: string; border: string }> = {
   A: {
@@ -34,20 +36,60 @@ const normalizeText = (value: string) =>
     .replace(/ü/g, 'u')
     .replace(/ß/g, 'ss');
 
+// Fisher-Yates shuffle of the index range [0, count) so the trainer never
+// presents items in the same fixed order twice in a row.
+const shuffledOrder = (count: number): number[] => {
+  const order = Array.from({ length: count }, (_, i) => i);
+  for (let i = order.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  return order;
+};
+
 const getEntrySearchText = (entry: VerbPrepositionEntry) =>
   [
     entry.verb,
     entry.preposition,
     entry.case,
     entry.translation,
+    entry.translationLt,
     entry.exampleDe,
     entry.exampleEn,
+    entry.exampleLt,
     CASE_LABELS[entry.case].label
   ].join(' ');
 
 export const VerbenMitPraepositionenView: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState(() => searchParams.get('q') || '');
   const [caseFilter, setCaseFilter] = useState<CaseFilter>('all');
+  const [practiceIndex, setPracticeIndex] = useState(0);
+  const [practiceAnswer, setPracticeAnswer] = useState('');
+  const [practiceStatus, setPracticeStatus] = useState<PracticeStatus>('idle');
+
+  const [order, setOrder] = useState<number[]>(() => shuffledOrder(VERBEN_MIT_PRAEPOSITIONEN.length));
+
+  const currentPracticeEntry = VERBEN_MIT_PRAEPOSITIONEN[order[practiceIndex % order.length]];
+  const currentPracticeCase = currentPracticeEntry ? CASE_LABELS[currentPracticeEntry.case] : null;
+
+  // Deep-link from the global search: seed the filter and scroll to the list.
+  useEffect(() => {
+    const term = searchParams.get('q');
+    if (!term) return;
+    setSearchQuery(term);
+    setCaseFilter('all');
+    const timer = setTimeout(() => {
+      document.getElementById('vmp-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setSearchParams(prev => {
+        const next = new URLSearchParams(prev);
+        next.delete('q');
+        return next;
+      }, { replace: true });
+    }, 250);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const caseCounts = useMemo(() => {
     return VERBEN_MIT_PRAEPOSITIONEN.reduce(
@@ -77,14 +119,44 @@ export const VerbenMitPraepositionenView: React.FC = () => {
     { id: 'D', label: 'Dative', count: caseCounts.D }
   ];
 
+  const resetPractice = (nextIndex: number) => {
+    setPracticeIndex(nextIndex);
+    setPracticeAnswer('');
+    setPracticeStatus('idle');
+  };
+
+  const goToNextExercise = () => {
+    const next = practiceIndex + 1;
+    if (next >= order.length) {
+      // Completed a full pass — reshuffle so the next cycle is a new order.
+      setOrder(shuffledOrder(VERBEN_MIT_PRAEPOSITIONEN.length));
+      resetPractice(0);
+    } else {
+      resetPractice(next);
+    }
+  };
+
+  const handlePracticeSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!practiceAnswer.trim() || !currentPracticeEntry) {
+      return;
+    }
+
+    const isCorrect = normalizeText(practiceAnswer) === normalizeText(currentPracticeEntry.preposition);
+    setPracticeStatus(isCorrect ? 'correct' : 'incorrect');
+  };
+
+  const showCorrection = practiceStatus !== 'idle' && currentPracticeEntry && currentPracticeCase;
+
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-12 text-center sm:text-left pb-10" style={{ borderBottom: '1px solid var(--terracotta-100)' }}>
         <h2 className="text-5xl sm:text-6xl font-black mb-4 tracking-tighter" style={{ color: 'var(--terracotta-800)' }}>
-          Verben mit Präpositionen
+          Prepositional Verbs
         </h2>
         <p className="text-xl sm:text-2xl font-medium max-w-3xl" style={{ color: 'var(--sand-600)' }}>
-          Fixed German verb-preposition pairs with English meanings, case patterns, and translated examples.
+          Fixed German verb-preposition pairs with English and Lithuanian meanings, case patterns, and translated examples.
         </p>
       </div>
 
@@ -107,11 +179,116 @@ export const VerbenMitPraepositionenView: React.FC = () => {
             </div>
             <div className="rounded-xl bg-slate-50 p-4">
               <p className="font-black text-slate-900 mb-2">Meaning is fixed</p>
-              <p>The English translation often uses a different preposition, so memorize the German pattern through examples.</p>
+              <p>The English or Lithuanian translation often uses a different preposition, so memorize the German pattern through examples.</p>
             </div>
           </div>
         </div>
       </section>
+
+      {currentPracticeEntry && currentPracticeCase && (
+        <section className="mb-10 rounded-2xl bg-white p-6 sm:p-8 shadow-sm" style={{ border: '1px solid var(--terracotta-100)' }}>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div>
+              <p className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: 'var(--terracotta-600)' }}>
+                Practice
+              </p>
+              <h3 className="text-2xl font-black text-slate-900">Find the missing preposition.</h3>
+              <p className="text-sm font-semibold text-slate-500 mt-2">
+                Item {practiceIndex + 1} of {VERBEN_MIT_PRAEPOSITIONEN.length}
+              </p>
+            </div>
+
+            <form onSubmit={handlePracticeSubmit} className="lg:col-span-2">
+              <div className="rounded-2xl p-5 bg-slate-50 border border-slate-100">
+                <p className="text-xs font-black uppercase tracking-widest mb-2 text-slate-400">
+                  German pattern
+                </p>
+                <div className="flex flex-wrap items-center gap-3">
+                  <p className="text-3xl font-black text-slate-900 break-words">
+                    {currentPracticeEntry.verb} <span style={{ color: 'var(--terracotta-600)' }}>___</span>
+                  </p>
+                  <span className={`px-3 py-1 rounded-lg text-sm font-black ${currentPracticeCase.bg} ${currentPracticeCase.color}`}>
+                    {currentPracticeCase.label}
+                  </span>
+                </div>
+                <p className="text-sm font-bold mt-3" style={{ color: 'var(--terracotta-700)' }}>
+                  {currentPracticeEntry.translation}
+                </p>
+                <p className="text-sm font-semibold mt-1 text-slate-500">
+                  {currentPracticeEntry.translationLt}
+                </p>
+              </div>
+
+              <div className="mt-4 flex flex-col sm:flex-row gap-3">
+                <input
+                  type="text"
+                  value={practiceAnswer}
+                  onChange={(event) => {
+                    setPracticeAnswer(event.target.value);
+                    if (practiceStatus !== 'idle') {
+                      setPracticeStatus('idle');
+                    }
+                  }}
+                  placeholder="Type the German preposition..."
+                  className="flex-1 px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                  aria-label="Missing German preposition"
+                />
+                <button
+                  type="submit"
+                  className="px-5 py-3 rounded-xl bg-indigo-600 text-white font-black shadow-indigo-200 shadow-lg"
+                >
+                  Check
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPracticeStatus('revealed')}
+                  className="px-5 py-3 rounded-xl bg-white font-black border border-slate-200"
+                  style={{ color: 'var(--sand-700)' }}
+                >
+                  Show answer
+                </button>
+                <button
+                  type="button"
+                  onClick={goToNextExercise}
+                  className="px-5 py-3 rounded-xl bg-white font-black border border-slate-200"
+                  style={{ color: 'var(--terracotta-700)' }}
+                >
+                  Next
+                </button>
+              </div>
+
+              {showCorrection && (
+                <div
+                  className={`mt-4 rounded-2xl p-5 border ${
+                    practiceStatus === 'correct'
+                      ? 'bg-emerald-50 border-emerald-100'
+                      : 'bg-rose-50 border-rose-100'
+                  }`}
+                  aria-live="polite"
+                >
+                  <p className="text-sm font-black mb-2">
+                    {practiceStatus === 'correct' ? 'Correct.' : practiceStatus === 'incorrect' ? 'Not yet.' : 'Answer shown.'}
+                  </p>
+                  <p className="text-lg font-black text-slate-900">
+                    {currentPracticeEntry.verb} {currentPracticeEntry.preposition} + {currentPracticeCase.label}
+                  </p>
+                  <p className="text-sm font-bold mt-1" style={{ color: 'var(--terracotta-700)' }}>
+                    {currentPracticeEntry.translation}
+                  </p>
+                  <p className="text-sm font-semibold mt-1 text-slate-500">
+                    {currentPracticeEntry.translationLt}
+                  </p>
+                  <div className="rounded-xl bg-white/70 p-4 mt-4">
+                    <p className="text-slate-900 font-bold leading-relaxed">{currentPracticeEntry.exampleDe}</p>
+                    <p className="text-slate-500 font-medium leading-relaxed mt-2">{currentPracticeEntry.exampleEn}</p>
+                    <p className="text-slate-600 font-medium leading-relaxed mt-2">{currentPracticeEntry.exampleLt}</p>
+                  </div>
+                </div>
+              )}
+            </form>
+          </div>
+        </section>
+      )}
 
       <div className="flex flex-col lg:flex-row lg:items-center gap-4 mb-8">
         <div className="flex flex-wrap gap-3">
@@ -151,7 +328,7 @@ export const VerbenMitPraepositionenView: React.FC = () => {
             type="text"
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
-            placeholder="Search a verb, preposition, meaning, or example..."
+            placeholder="Search a verb, preposition, meaning, or example in English or Lithuanian..."
             className="w-full pl-12 pr-4 py-4 bg-white rounded-2xl outline-none transition-all"
             style={{ border: '1px solid var(--terracotta-200)', color: 'var(--sand-800)' }}
           />
@@ -161,14 +338,14 @@ export const VerbenMitPraepositionenView: React.FC = () => {
         </div>
       </div>
 
-      <div className="mb-5 flex items-center justify-between gap-4">
+      <div id="vmp-results" className="mb-5 flex items-center justify-between gap-4 scroll-mt-24">
         <p className="text-sm font-bold" style={{ color: 'var(--sand-500)' }}>
           {filteredEntries.length} pattern{filteredEntries.length === 1 ? '' : 's'}
         </p>
         <div className="hidden sm:flex items-center gap-3 text-xs font-black uppercase tracking-widest" style={{ color: 'var(--sand-400)' }}>
           <span>German pattern</span>
-          <span>English meaning</span>
-          <span>Translated example</span>
+          <span>English/Lithuanian meaning</span>
+          <span>Translated examples</span>
         </div>
       </div>
 
@@ -208,6 +385,12 @@ export const VerbenMitPraepositionenView: React.FC = () => {
                   <p className="text-lg font-bold" style={{ color: 'var(--terracotta-700)' }}>
                     {entry.translation}
                   </p>
+                  <p className="text-xs font-black uppercase tracking-widest mt-3 mb-1" style={{ color: 'var(--sand-400)' }}>
+                    Lithuanian meaning
+                  </p>
+                  <p className="text-base font-bold text-slate-600">
+                    {entry.translationLt}
+                  </p>
                 </div>
 
                 <div className="rounded-xl bg-slate-50 p-4">
@@ -216,6 +399,7 @@ export const VerbenMitPraepositionenView: React.FC = () => {
                   </p>
                   <p className="text-slate-900 font-bold leading-relaxed">{entry.exampleDe}</p>
                   <p className="text-slate-500 font-medium leading-relaxed mt-2">{entry.exampleEn}</p>
+                  <p className="text-slate-600 font-medium leading-relaxed mt-2">{entry.exampleLt}</p>
                 </div>
               </div>
             </article>

@@ -1,49 +1,147 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { MainTab } from './types';
+import { AppTheme, MainTab } from './types';
+import { DashboardView } from './components/DashboardView';
 import { VocabularyView } from './components/VocabularyView';
+import { GenderTrainerView } from './components/GenderTrainerView';
 import { NomenVerbenView } from './components/NomenVerbenView';
 import { GrammarView } from './components/GrammarView';
-import { StatsView } from './components/StatsView';
 import { SyncModal } from './components/SyncModal';
 import { TablesView } from './components/TablesView';
 import { ExpressionsView } from './components/ExpressionsView';
 import { RevisionView } from './components/RevisionView';
 import { ExamView } from './components/ExamView';
+import { StructureComparisonView } from './components/StructureComparisonView';
 import { VerbenMitPraepositionenView } from './components/VerbenMitPraepositionenView';
 import { GlobalSearch } from './components/GlobalSearch';
 import { AuthModal } from './components/AuthModal';
+import { AuthPage } from './components/AuthPage';
 import { UserMenu } from './components/UserMenu';
-import { AuthProvider } from './contexts/AuthContext';
+import { AppThemeSwitcher } from './components/AppThemeSwitcher';
+import { PandaThemeLayer } from './components/PandaThemeLayer';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { GrammarProvider } from './contexts/GrammarContext';
+import { PandaMascotProvider } from './contexts/PandaMascotContext';
+
+const APP_THEME_STORAGE_KEY = 'deutschmeister-app-theme';
+
+type PrimarySection = 'dashboard' | 'vocabulary' | 'grammar' | 'exam';
+
+const PRIMARY_NAV: { id: PrimarySection; label: string; path: string }[] = [
+  { id: 'dashboard', label: 'Home', path: '/dashboard' },
+  { id: 'vocabulary', label: 'Vocabulary', path: '/vocabulary' },
+  { id: 'grammar', label: 'Grammar', path: '/grammar' },
+  { id: 'exam', label: 'Exam B2', path: '/exam' },
+];
+
+const VOCABULARY_NAV: { id: MainTab; label: string; path: string }[] = [
+  { id: 'vocabulary', label: 'Themes', path: '/vocabulary' },
+  { id: 'revision', label: 'Review', path: '/revision' },
+  { id: 'gender', label: 'Der/Die/Das', path: '/gender' },
+  { id: 'expressions', label: 'Expressions', path: '/expressions' },
+];
+
+const GRAMMAR_NAV: { id: MainTab; label: string; path: string }[] = [
+  { id: 'grammar', label: 'Lessons', path: '/grammar' },
+  { id: 'tables', label: 'Tables', path: '/tables' },
+  { id: 'structures', label: 'Structures', path: '/structures' },
+  { id: 'nomen-verben', label: 'Noun-Verb', path: '/nomen-verben' },
+  { id: 'verben-mit-praepositionen', label: 'Prepositional Verbs', path: '/verben-mit-praepositionen' },
+];
+
+const getPrimarySection = (tab: MainTab): PrimarySection => {
+  if (tab === 'exam') return 'exam';
+  if (VOCABULARY_NAV.some(item => item.id === tab)) return 'vocabulary';
+  if (GRAMMAR_NAV.some(item => item.id === tab)) return 'grammar';
+  return 'dashboard';
+};
 
 const AppLayout: React.FC = () => {
   const [showSyncModal, setShowSyncModal] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showPandaReward, setShowPandaReward] = useState(false);
+  const [appTheme, setAppTheme] = useState<AppTheme>(() => {
+    if (typeof window === 'undefined') {
+      return 'classic';
+    }
+
+    return window.localStorage.getItem(APP_THEME_STORAGE_KEY) === 'panda' ? 'panda' : 'classic';
+  });
   const activeTabRef = useRef<HTMLButtonElement | null>(null);
+  const previousThemeRef = useRef<AppTheme>(appTheme);
   const location = useLocation();
   const navigate = useNavigate();
 
   // Determine active tab from URL
-  const activeTab = (location.pathname.substring(1).split('/')[0] || 'vocabulary') as MainTab;
+  const activeTab = (location.pathname.substring(1).split('/')[0] || 'dashboard') as MainTab;
+  const primarySection = getPrimarySection(activeTab);
+  const secondaryNav =
+    primarySection === 'vocabulary'
+      ? VOCABULARY_NAV
+      : primarySection === 'grammar'
+        ? GRAMMAR_NAV
+        : [];
 
   useEffect(() => {
     activeTabRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
   }, [activeTab]);
 
-  // Helper to handle search navigation
-  const handleSearchNavigate = (tab: MainTab, context?: any) => {
-    if (tab === 'vocabulary' && context?.search) {
-      // Search logic might need further refinement if we want to deep link to a search result
-      // For now, we go to vocabulary root
-      navigate('/vocabulary');
-    } else if (tab === 'grammar' && context?.topicId) {
-      // We can't deep-link to topic easily without level info
-      // Assuming default level or finding level logic happens elsewhere
-      navigate('/grammar');
-    } else {
-      navigate(`/${tab}`);
+  useEffect(() => {
+    document.documentElement.setAttribute('data-app-theme', appTheme);
+    window.localStorage.setItem(APP_THEME_STORAGE_KEY, appTheme);
+
+    if (previousThemeRef.current !== appTheme && appTheme === 'panda') {
+      setShowPandaReward(true);
+      window.setTimeout(() => setShowPandaReward(false), 4200);
     }
+
+    previousThemeRef.current = appTheme;
+  }, [appTheme]);
+
+  // Helper to handle search navigation.
+  // Each result carries enough context to deep-link straight to the matching
+  // topic/word rather than dumping the user on the section root.
+  const handleSearchNavigate = (tab: MainTab, context?: any) => {
+    const withQuery = (path: string, params: Record<string, string | undefined>) => {
+      const search = new URLSearchParams();
+      Object.entries(params).forEach(([key, value]) => {
+        if (value) search.set(key, value);
+      });
+      const qs = search.toString();
+      return qs ? `${path}?${qs}` : path;
+    };
+
+    switch (tab) {
+      case 'vocabulary':
+        if (context?.themeId) {
+          navigate(withQuery(`/vocabulary/${context.themeId}`, { q: context.term, kind: context.kind }));
+          return;
+        }
+        break;
+      case 'grammar':
+        if (context?.topicId) {
+          const level = context.level || 'A1';
+          navigate(withQuery(`/grammar/${level}`, { topic: context.topicId }));
+          return;
+        }
+        break;
+      case 'structures':
+        if (context?.patternId) {
+          navigate(`/structures/${context.patternId}`);
+          return;
+        }
+        break;
+      case 'nomen-verben':
+      case 'verben-mit-praepositionen':
+      case 'expressions':
+        if (context?.term) {
+          navigate(withQuery(`/${tab}`, { q: context.term }));
+          return;
+        }
+        break;
+    }
+
+    navigate(`/${tab}`);
   };
 
   return (
@@ -54,52 +152,36 @@ const AppLayout: React.FC = () => {
       {/* Auth modal */}
       <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
 
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b" style={{ borderColor: 'var(--terracotta-100)' }}>
-        <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/vocabulary')}>
-            <div className="p-2.5 rounded-2xl text-white font-bold text-xl shadow-terracotta" style={{ backgroundColor: 'var(--terracotta-600)' }}>🇩🇪</div>
-            <h1 className="text-xl font-black" style={{ color: 'var(--terracotta-800)' }}>DeutschMeister</h1>
-          </div>
-          <div className="flex items-center gap-2 w-full sm:flex-1 min-w-0 justify-end">
-            <nav className="flex flex-1 min-w-0 p-1.5 rounded-2xl overflow-x-auto" style={{ backgroundColor: 'var(--sand-100)' }}>
-              {[
-                { id: 'vocabulary', label: 'Vocabulary', icon: '📚' },
-                { id: 'revision', label: 'Review', icon: '🧠' },
-                { id: 'grammar', label: 'Grammatik', icon: '📖' },
-                { id: 'tables', label: 'Tables', icon: '📋' },
-                { id: 'expressions', label: 'Expressions', icon: '💬' },
-                { id: 'exam', label: 'Exam B2', icon: '📝' },
-                { id: 'nomen-verben', label: 'Nomen-Verb', icon: '🔗' },
-                { id: 'verben-mit-praepositionen', label: 'Verben mit Präpositionen', icon: '🔎' },
-                { id: 'stats', label: 'Stats', icon: '📊' }
-              ].map(tab => (
-                <button
-                  key={tab.id}
-                  ref={activeTab === tab.id ? activeTabRef : undefined}
-                  onClick={() => navigate(`/${tab.id}`)}
-                  className={`flex-shrink-0 px-3 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-1 whitespace-nowrap ${activeTab === tab.id
-                    ? 'bg-white shadow-md'
-                    : 'hover:bg-white/50'
-                    }`}
-                  style={{
-                    color: activeTab === tab.id ? 'var(--terracotta-600)' : 'var(--sand-700)'
-                  }}
-                >
-                  <span className="hidden sm:inline">{tab.icon}</span>
-                  {tab.label}
-                </button>
-              ))}
-            </nav>
+      {/* Panda theme atmosphere */}
+      {appTheme === 'panda' && (
+        <PandaThemeLayer
+          showReward={showPandaReward}
+          onDismissReward={() => setShowPandaReward(false)}
+        />
+      )}
 
+      <header className="app-header">
+        <div className="app-header-shell">
+          <button type="button" className="app-brand" onClick={() => navigate('/dashboard')}>
+            <div className="app-brand-mark">
+              {appTheme === 'panda' ? '🐼' : '🇩🇪'}
+            </div>
+            <h1 className="app-brand-title">DeutschMeister</h1>
+          </button>
+
+          <div className="app-actions">
             {/* Global search */}
             <GlobalSearch onNavigate={handleSearchNavigate} />
+
+            {/* App theme */}
+            <AppThemeSwitcher theme={appTheme} onThemeChange={setAppTheme} />
 
             {/* Sync button */}
             <button
               onClick={() => setShowSyncModal(true)}
-              className="p-2.5 rounded-xl transition-all group hover:shadow-md"
+              className="w-11 h-11 rounded-xl transition-all group hover:shadow-md shrink-0 flex items-center justify-center"
               style={{ backgroundColor: 'var(--sand-100)' }}
-              title="Synchronize my data"
+              title="Export or import a backup"
             >
               <svg className="w-5 h-5 transition-colors" style={{ color: 'var(--sand-600)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
@@ -109,18 +191,62 @@ const AppLayout: React.FC = () => {
             {/* User menu */}
             <UserMenu onOpenAuth={() => setShowAuthModal(true)} />
           </div>
+
+          <nav className="app-nav" aria-label="Primary navigation">
+            {PRIMARY_NAV.map(tab => {
+              const isActive = primarySection === tab.id;
+
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  ref={isActive ? activeTabRef : undefined}
+                  onClick={() => navigate(tab.path)}
+                  className={`app-nav-tab ${isActive ? 'is-active' : ''}`}
+                  aria-current={isActive ? 'page' : undefined}
+                >
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+
+          {secondaryNav.length > 0 && (
+            <nav className="app-subnav" aria-label={`${primarySection} navigation`}>
+              {secondaryNav.map(tab => {
+                const isActive = activeTab === tab.id;
+
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => navigate(tab.path)}
+                    className={`app-subnav-tab ${isActive ? 'is-active' : ''}`}
+                    aria-current={isActive ? 'page' : undefined}
+                  >
+                    <span>{tab.label}</span>
+                  </button>
+                );
+              })}
+            </nav>
+          )}
         </div>
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-10">
         <Routes>
-          <Route path="/" element={<Navigate to="/vocabulary" replace />} />
+          <Route path="/" element={<DashboardView />} />
+          <Route path="/dashboard" element={<DashboardView />} />
 
           {/* Updated Vocabulary Routes */}
           <Route path="/vocabulary" element={<VocabularyView />} />
           <Route path="/vocabulary/:themeId" element={<VocabularyView />} />
 
+          <Route path="/gender" element={<GenderTrainerView />} />
+
           <Route path="/revision" element={<RevisionView />} />
+          <Route path="/structures" element={<StructureComparisonView />} />
+          <Route path="/structures/:patternId" element={<StructureComparisonView />} />
 
           {/* Updated Grammar Routes */}
           <Route path="/grammar" element={<GrammarView />} />
@@ -131,13 +257,36 @@ const AppLayout: React.FC = () => {
           <Route path="/exam" element={<ExamView />} />
           <Route path="/nomen-verben" element={<NomenVerbenView />} />
           <Route path="/verben-mit-praepositionen" element={<VerbenMitPraepositionenView />} />
-          <Route path="/stats" element={<StatsView />} />
+          <Route path="/stats" element={<Navigate to="/dashboard#stats" replace />} />
           {/* Fallback route */}
-          <Route path="*" element={<Navigate to="/vocabulary" replace />} />
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </main>
     </div>
   );
+};
+
+const AuthLoadingScreen: React.FC = () => (
+  <div className="min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: 'var(--sand-50)' }}>
+    <div className="text-center">
+      <div className="w-12 h-12 rounded-2xl mx-auto mb-4 animate-pulse" style={{ backgroundColor: 'var(--terracotta-600)' }} />
+      <p className="font-bold" style={{ color: 'var(--terracotta-700)' }}>Loading...</p>
+    </div>
+  </div>
+);
+
+const AuthGate: React.FC = () => {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <AuthLoadingScreen />;
+  }
+
+  if (!isAuthenticated) {
+    return <AuthPage />;
+  }
+
+  return <AppLayout />;
 };
 
 // Main app with AuthProvider and GrammarProvider
@@ -145,9 +294,11 @@ const App: React.FC = () => {
   return (
     <AuthProvider>
       <GrammarProvider>
-        <BrowserRouter>
-          <AppLayout />
-        </BrowserRouter>
+        <PandaMascotProvider>
+          <BrowserRouter>
+            <AuthGate />
+          </BrowserRouter>
+        </PandaMascotProvider>
       </GrammarProvider>
     </AuthProvider>
   );

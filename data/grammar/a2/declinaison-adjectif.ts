@@ -43,7 +43,7 @@ export const declinaisonAdjectif: GrammarSection = {
     {
       id: "a2-2-5",
       title: "V. Strategic Summary",
-      content: "To avoid mistakes, ask yourself these two questions:\n\n1. **Is there a 'rich' article?** (der/die/das/den/dem...) -> Yes? Then the adjective is 'poor' (**-e** or **-en**).\n2. **Is the article missing or 'poor'?** (ein/mein/kein in the nominative) -> Yes? Then the adjective must be 'rich' and show the gender (**-er, -es, -e**).\n\n**Note on the genitive**: In the masculine and neuter singular, the noun almost always takes **-(e)s** at the end.",
+      content: "To avoid mistakes, ask yourself these two questions:\n\n1. **Is there a 'rich' article?** (der/die/das/den/dem...) → Yes? Then the adjective is 'poor' (**-e** or **-en**).\n2. **Is the article missing or 'poor'?** (ein/mein/kein in the nominative) → Yes? Then the adjective must be 'rich' and show the gender (**-er, -es, -e**).\n\n**Note on the genitive**: In the masculine and neuter singular, the noun almost always takes **-(e)s** at the end.",
       examples: [
         { de: "Wegen des schlecht**en** Wetter**s**.", fr: "Because of the bad weather.", note: "Genitive: -en on the adjective and -s on the noun." }
       ]

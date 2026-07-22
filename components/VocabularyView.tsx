@@ -1,16 +1,18 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { Theme, ThemeContent, ViewMode, LanguageLevel } from '../types';
-import { THEMES } from '../constants';
+import { THEMES, getSubThemeLabel } from '../constants';
 import { VOCABULARY_DATA } from '../data/vocabularyData';
 import { ThemeCard } from './ThemeCard';
 import { WordCard } from './WordCard';
 import { Quiz } from './Quiz';
 import { VocabularyTrainer } from './VocabularyTrainer';
+import { getTranslation } from '../utils/translations';
 
 export const VocabularyView: React.FC = () => {
     const params = useParams<{ themeId?: string }>();
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
     const [viewMode, setViewMode] = useState<ViewMode>('learn');
     const [selectedLevel, setSelectedLevel] = useState<LanguageLevel | 'All'>('All');
     const [selectedSubTheme, setSelectedSubTheme] = useState<string | 'All'>('All');
@@ -23,6 +25,46 @@ export const VocabularyView: React.FC = () => {
         setSelectedSubTheme('All');
         setViewMode('learn');
     }, [currentTheme]);
+
+    // Deep-link from the global search: switch to the right tab, drop any filter
+    // that could hide the target, then scroll to and highlight the matching entry.
+    // Declared after the theme-reset effect so its viewMode wins on navigation.
+    useEffect(() => {
+        const term = searchParams.get('q');
+        if (!term || !content) return;
+
+        const kind = searchParams.get('kind');
+        const isPhrase = kind === 'phrase';
+        const list = isPhrase ? content.phrases : content.words;
+        const matchIndex = list.findIndex(entry => entry.german === term);
+        if (matchIndex < 0) return;
+
+        // Make sure nothing filters the target out of view.
+        setSelectedLevel('All');
+        setSelectedSubTheme('All');
+        setViewMode(isPhrase ? 'phrases' : 'learn');
+
+        const timer = setTimeout(() => {
+            const element = document.getElementById(
+                `${isPhrase ? 'vocab-phrase' : 'vocab-word'}-${matchIndex}`
+            );
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                element.classList.add('ring-4', 'ring-indigo-300', 'rounded-2xl', 'transition-all');
+                setTimeout(() => element.classList.remove('ring-4', 'ring-indigo-300'), 2000);
+            }
+            // Clear the params so re-filtering later doesn't re-scroll.
+            setSearchParams(prev => {
+                const next = new URLSearchParams(prev);
+                next.delete('q');
+                next.delete('kind');
+                return next;
+            }, { replace: true });
+        }, 250);
+
+        return () => clearTimeout(timer);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchParams, content]);
 
     const handleThemeSelect = (theme: Theme) => {
         navigate(`/vocabulary/${theme.id}`);
@@ -87,14 +129,14 @@ export const VocabularyView: React.FC = () => {
                 </div>
             </div>
 
-            {/* Sous-thèmes Selector */}
+            {/* Subtheme selector */}
             {currentTheme.subThemes && (
                 <div className="flex flex-wrap gap-2 mb-8 animate-in fade-in slide-in-from-left-4 duration-500 delay-150">
                     <button
                         onClick={() => setSelectedSubTheme('All')}
                         className={`px-4 py-2 rounded-full text-sm font-bold border transition-all ${selectedSubTheme === 'All' ? 'bg-slate-800 text-white border-slate-800 shadow-md' : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'}`}
                     >
-                        Tout ({content?.words.length})
+                        All ({content?.words.length})
                     </button>
                     {currentTheme.subThemes.map(st => {
                         const count = content?.words.filter(w => w.subTheme === st).length;
@@ -104,7 +146,7 @@ export const VocabularyView: React.FC = () => {
                                 onClick={() => setSelectedSubTheme(st)}
                                 className={`px-4 py-2 rounded-full text-sm font-bold border transition-all ${selectedSubTheme === st ? 'bg-indigo-600 text-white border-indigo-600 shadow-md' : 'bg-white text-slate-500 border-slate-200 hover:border-indigo-200'}`}
                             >
-                                {st} ({count})
+                                {getSubThemeLabel(st)} ({count})
                             </button>
                         );
                     })}
@@ -112,23 +154,25 @@ export const VocabularyView: React.FC = () => {
             )}
 
             <nav className="flex gap-4 mb-8">
-                <button onClick={() => setViewMode('learn')} className={`pb-2 border-b-2 font-bold text-sm transition-all ${viewMode === 'learn' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>📚 Liste ({filteredWords.length})</button>
+                <button onClick={() => setViewMode('learn')} className={`pb-2 border-b-2 font-bold text-sm transition-all ${viewMode === 'learn' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>📚 Word list ({filteredWords.length})</button>
                 <button onClick={() => setViewMode('phrases')} className={`pb-2 border-b-2 font-bold text-sm transition-all ${viewMode === 'phrases' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>💬 Phrases ({content?.phrases.length})</button>
-                <button onClick={() => setViewMode('trainer')} className={`pb-2 border-b-2 font-bold text-sm transition-all ${viewMode === 'trainer' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>🎯 S'entraîner</button>
-                <button onClick={() => setViewMode('quiz')} className={`pb-2 border-b-2 font-bold text-sm transition-all ${viewMode === 'quiz' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>❓ Quiz rapide</button>
+                <button onClick={() => setViewMode('trainer')} className={`pb-2 border-b-2 font-bold text-sm transition-all ${viewMode === 'trainer' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>🎯 Practice</button>
+                <button onClick={() => setViewMode('quiz')} className={`pb-2 border-b-2 font-bold text-sm transition-all ${viewMode === 'quiz' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>❓ Quick quiz</button>
             </nav>
 
             {viewMode === 'learn' && (
                 filteredWords.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                         {filteredWords.map((word, idx) => (
-                            <WordCard key={`${currentTheme.id}-${idx}-${word.german}`} word={word} />
+                            <div key={`${currentTheme.id}-${idx}-${word.german}`} id={`vocab-word-${idx}`} className="scroll-mt-24">
+                                <WordCard word={word} />
+                            </div>
                         ))}
                     </div>
                 ) : (
                     <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-200">
-                        <p className="text-slate-400 font-bold text-lg">Aucun mot disponible pour cette sélection.</p>
-                        <p className="text-slate-400 text-sm mt-2">Essayez de changer de niveau ou de sous-thème.</p>
+                        <p className="text-slate-400 font-bold text-lg">No words available for this selection.</p>
+                        <p className="text-slate-400 text-sm mt-2">Try changing the level or subtheme.</p>
                     </div>
                 )
             )}
@@ -137,12 +181,12 @@ export const VocabularyView: React.FC = () => {
                 <div className="grid grid-cols-1 gap-4 max-w-3xl mx-auto">
                     {content.phrases.length > 0 ? (
                         content.phrases.map((phrase, idx) => (
-                            <div key={idx} className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:border-indigo-200 transition-colors">
+                            <div key={idx} id={`vocab-phrase-${idx}`} className="scroll-mt-24 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:border-indigo-200 transition-colors">
                                 <div className="flex items-start gap-4">
                                     <span className="bg-indigo-50 text-indigo-600 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0">{idx + 1}</span>
                                     <div>
                                         <p className="text-slate-900 font-bold text-xl mb-1">{phrase.german}</p>
-                                        <p className="text-indigo-600 font-medium mb-3">{phrase.english}</p>
+                                        <p className="text-indigo-600 font-medium mb-3">{getTranslation(phrase)}</p>
                                         <p className="text-slate-400 text-xs italic">Context: {phrase.context}</p>
                                     </div>
                                 </div>
@@ -150,7 +194,7 @@ export const VocabularyView: React.FC = () => {
                         ))
                     ) : (
                         <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-200">
-                            <p className="text-slate-400 font-bold">Aucune phrase enregistrée pour ce thème.</p>
+                            <p className="text-slate-400 font-bold">No phrases saved for this theme.</p>
                         </div>
                     )}
                 </div>
@@ -164,8 +208,8 @@ export const VocabularyView: React.FC = () => {
                     />
                 ) : (
                     <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-200">
-                        <p className="text-slate-400 font-bold text-lg">Besoin d'au moins 4 mots pour un quiz.</p>
-                        <p className="text-slate-400 text-sm mt-2">Réduisez les filtres pour obtenir plus de mots.</p>
+                        <p className="text-slate-400 font-bold text-lg">You need at least 4 words for a quiz.</p>
+                        <p className="text-slate-400 text-sm mt-2">Loosen the filters to get more words.</p>
                     </div>
                 )
             )}
@@ -179,8 +223,8 @@ export const VocabularyView: React.FC = () => {
                     />
                 ) : (
                     <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-200">
-                        <p className="text-slate-400 font-bold text-lg">Besoin d'au moins 5 mots pour l'entraînement.</p>
-                        <p className="text-slate-400 text-sm mt-2">Réduisez les filtres pour obtenir plus de mots.</p>
+                        <p className="text-slate-400 font-bold text-lg">You need at least 5 words for practice.</p>
+                        <p className="text-slate-400 text-sm mt-2">Loosen the filters to get more words.</p>
                     </div>
                 )
             )}

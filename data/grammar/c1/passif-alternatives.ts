@@ -10,7 +10,7 @@ export const passifAlternativesC1: GrammarSection = {
 
 You already know the standard passive with **werden** and the state passive with **sein**. C1 requires you to use passive alternatives: **sich lassen**, **sein + zu**, adjectives in **-bar/-lich**, and impersonal **man**.`,
       examples: [
-        { de: "Passiv: Das Problem kann gelöst werden. -> Alternative: Das Problem lässt sich leicht lösen.", fr: "The problem can be solved easily.", note: "Alternative with sich lassen." }
+        { de: "Passiv: Das Problem kann gelöst werden. → Alternative: Das Problem lässt sich leicht lösen.", fr: "The problem can be solved easily.", note: "Alternative with sich lassen." }
       ]
     },
     {
@@ -36,13 +36,13 @@ In passive-like use, this structure is mostly used in the third person:
 
 ### Transformations
 - Diese Frage **kann beantwortet werden**.
-  -> Diese Frage **lässt sich beantworten**.
+  → Diese Frage **lässt sich beantworten**.
 
 - Das Problem **kann leicht gelöst werden**.
-  -> Das Problem **lässt sich leicht lösen**.
+  → Das Problem **lässt sich leicht lösen**.
 
 - Diese Aufgabe **kann schnell erledigt werden**.
-  -> Diese Aufgabe **lässt sich schnell erledigen**.
+  → Diese Aufgabe **lässt sich schnell erledigen**.
 
 ### Common verbs
 | Verb | Standard passive | Alternative |
@@ -110,8 +110,8 @@ Possibility:
 - Das Problem **ist zu lösen**. = can be solved
 
 The context decides the meaning:
-- deadline, rule, requirement -> necessity
-- objective feasibility -> possibility
+- deadline, rule, requirement → necessity
+- objective feasibility → possibility
 
 ### Transformations
 Necessity:
@@ -137,9 +137,9 @@ Prepositional complements:
 
 ### Separable-prefix verbs
 With separable-prefix verbs, **zu** is inserted between the prefix and the verb:
-- einreichen -> **einzureichen**
-- abgeben -> **abzugeben**
-- ausfüllen -> **auszufüllen**
+- einreichen → **einzureichen**
+- abgeben → **abzugeben**
+- ausfüllen → **auszufüllen**
 
 ### Comparison
 | Structure | Example | Style |
@@ -210,10 +210,10 @@ These forms decline like normal adjectives:
 | Dative | einem **lesbaren** Text | einer **lesbaren** Schrift | einem **lesbaren** Dokument |
 
 ### Negation with un-
-- trinkbar -> **untrinkbar**
-- lesbar -> **unlesbar**
-- lösbar -> **unlösbar**
-- vergesslich -> **unvergesslich**
+- trinkbar → **untrinkbar**
+- lesbar → **unlesbar**
+- lösbar → **unlösbar**
+- vergesslich → **unvergesslich**
 
 ### Comparison
 | Structure | Example | Style |
@@ -261,13 +261,13 @@ Alternative with man:
 
 ### Transformations
 - Es **wurde beschlossen**, die Preise zu erhöhen.
-  -> **Man beschloss**, die Preise zu erhöhen.
+  → **Man beschloss**, die Preise zu erhöhen.
 
 - Hier **wurde** ein neues Gesetz **eingeführt**.
-  -> Hier **führte man** ein neues Gesetz **ein**.
+  → Hier **führte man** ein neues Gesetz **ein**.
 
 - Es **wird oft gesagt**, dass...
-  -> **Man sagt oft**, dass...
+  → **Man sagt oft**, dass...
 
 ### Common verbs
 | Passive | With man | Meaning |

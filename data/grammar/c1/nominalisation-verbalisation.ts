@@ -10,8 +10,8 @@ export const nominalisationVerbalisationC1: GrammarSection = {
 
 Nominalisation is common in academic, administrative, legal, and formal German. Verbalisation makes a text more direct, dynamic, and accessible.`,
       examples: [
-        { de: "Nominalisierung: Die Regierung hat beschlossen -> Der Beschluss der Regierung", fr: "The government's decision.", note: "Verb -> noun." },
-        { de: "Verbalisierung: Nach Prüfung -> Nachdem wir geprüft haben", fr: "After we have checked.", note: "Noun phrase -> verbal clause." }
+        { de: "Nominalisierung: Die Regierung hat beschlossen → Der Beschluss der Regierung", fr: "The government's decision.", note: "Verb → noun." },
+        { de: "Verbalisierung: Nach Prüfung → Nachdem wir geprüft haben", fr: "After we have checked.", note: "Noun phrase → verbal clause." }
       ]
     },
     {
@@ -27,7 +27,7 @@ Nominal style:
 - **Der Beschluss** der Regierung **zur Erhöhung** der Steuern...
 
 ### Common nominalisation patterns
-#### 1. Verb -> action noun
+#### 1. Verb → action noun
 | Verb | Noun | Example |
 |---|---|---|
 | beschließen | der **Beschluss** | Der **Beschluss** ist wichtig. |
@@ -67,13 +67,13 @@ Nominal versions:
 
 ### Full transformations
 1. Wir **prüfen** die Unterlagen, dann entscheiden wir.
-   -> **Nach Prüfung** der Unterlagen treffen wir eine Entscheidung.
+   → **Nach Prüfung** der Unterlagen treffen wir eine Entscheidung.
 
 2. Er **hat viele Jahre studiert**, daher kennt er viel.
-   -> **Nach langjährigem Studium** verfügt er über großes Wissen.
+   → **Nach langjährigem Studium** verfügt er über großes Wissen.
 
 3. Sie **hat sich sehr gut entwickelt**.
-   -> Ihre **Entwicklung** ist sehr gut verlaufen.
+   → Ihre **Entwicklung** ist sehr gut verlaufen.
 
 ### Complements in nominal style
 Prepositional complements:
@@ -144,13 +144,13 @@ Verbal style:
 
 ### Full transformations
 1. C1: **Nach Prüfung** der Unterlagen treffen wir eine Entscheidung.
-   -> B2: **Nachdem wir** die Unterlagen **geprüft haben**, treffen wir eine Entscheidung.
+   → B2: **Nachdem wir** die Unterlagen **geprüft haben**, treffen wir eine Entscheidung.
 
 2. C1: **Trotz der Erhöhung** der Steuern bleibt die Nachfrage stabil.
-   -> B2: **Obwohl** die Steuern **erhöht wurden**, bleibt die Nachfrage stabil.
+   → B2: **Obwohl** die Steuern **erhöht wurden**, bleibt die Nachfrage stabil.
 
 3. C1: **Aufgrund der Entwicklung** der Technologie...
-   -> B2: **Weil** sich die Technologie **entwickelt hat**...
+   → B2: **Weil** sich die Technologie **entwickelt hat**...
 
 ### Why use verbalisation?
 - More dynamic and readable

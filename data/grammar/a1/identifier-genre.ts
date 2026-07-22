@@ -29,9 +29,9 @@ export const identifierGenre: GrammarSection = {
       title: "Memorization Tips and Pro Tips",
       content: "Learning gender is the biggest challenge. Here is how polyglots do it:\n\n• **Learn in chunks** : Never say 'Tisch'. Say **'Dertisch'** as if it were one inseparable word.\n• **Use color** : Write masculine words in blue, feminine words in red, and neuter words in green or yellow.\n• **The plural rule** : Remember that in the plural, **all nouns** take the article **die**, whatever their singular gender.\n• **Grammatical gender wins** : Even if a word refers to a human, grammar wins. **Das Mädchen** (the girl) is neuter because of its **-chen** suffix.\n• **The alcohol rule** : If you can drink it and it is strong, it is **der**. Except beer, which is **das** (because people drink a lot of it, like water!).",
       examples: [
-        { de: "die Frau -> die Frauen", fr: "The woman -> The women", note: "In the plural, it is always DIE." },
-        { de: "das Kind -> die Kinder", fr: "The child -> The children", note: "DAS becomes DIE in the plural." },
-        { de: "der Mann -> die Männer", fr: "The man -> The men", note: "DER becomes DIE in the plural." }
+        { de: "die Frau → die Frauen", fr: "The woman → The women", note: "In the plural, it is always DIE." },
+        { de: "das Kind → die Kinder", fr: "The child → The children", note: "DAS becomes DIE in the plural." },
+        { de: "der Mann → die Männer", fr: "The man → The men", note: "DER becomes DIE in the plural." }
       ]
     }
   ]

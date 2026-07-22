@@ -1,80 +1,81 @@
 # 🇩🇪 GermanApp Backend
 
-API backend pour l'application d'apprentissage de l'allemand.
+Backend API for the German learning application.
 
 ## 🚀 Installation
 
-### Prérequis
+### Prerequisites
 - Node.js 18+ 
-- MongoDB (local ou Atlas)
+- MongoDB (local or Atlas)
 
 ### Configuration
 
-1. **Copiez le fichier de configuration :**
+1. **Copy the configuration file:**
    ```bash
    cp env.sample.txt .env
    ```
 
-2. **Modifiez le fichier `.env` :**
+2. **Edit the `.env` file:**
    ```env
    PORT=5000
    MONGODB_URI=mongodb://localhost:27017/germanapp
-   JWT_SECRET=votre_cle_secrete_unique_et_longue
+   JWT_SECRET=your_unique_and_long_secret_key
    JWT_EXPIRE=7d
+   REGISTRATION_ACCESS_CODE=choose_a_private_access_code
    FRONTEND_URL=http://localhost:3000
    ```
 
-3. **Installez les dépendances :**
+3. **Install the dependencies:**
    ```bash
    npm install
    ```
 
-4. **Lancez le serveur :**
+4. **Start the server:**
    ```bash
-   # Mode développement (avec rechargement auto)
+   # Development mode (with auto-reload)
    npm run dev
    
-   # Mode production
+   # Production mode
    npm start
    ```
 
 ## 📚 API Endpoints
 
-### Authentification (`/api/auth`)
+### Authentication (`/api/auth`)
 
-| Méthode | Endpoint | Description | Auth |
+| Method | Endpoint | Description | Auth |
 |---------|----------|-------------|------|
-| POST | `/register` | Créer un compte | ❌ |
-| POST | `/login` | Se connecter | ❌ |
-| GET | `/me` | Profil utilisateur | ✅ |
-| PUT | `/updateprofile` | Modifier le profil | ✅ |
-| PUT | `/updatepassword` | Changer mot de passe | ✅ |
-| DELETE | `/deleteaccount` | Supprimer le compte | ✅ |
+| POST | `/register` | Create an account with the access code | ❌ |
+| POST | `/login` | Sign in | ❌ |
+| GET | `/me` | User profile | ✅ |
+| PUT | `/updateprofile` | Update the profile | ✅ |
+| PUT | `/updatepassword` | Change password | ✅ |
+| DELETE | `/deleteaccount` | Delete the account | ✅ |
 
-### Synchronisation (`/api/sync`)
+### Synchronization (`/api/sync`)
 
-| Méthode | Endpoint | Description | Auth |
+| Method | Endpoint | Description | Auth |
 |---------|----------|-------------|------|
-| GET | `/` | Récupérer les données | ✅ |
-| POST | `/` | Sauvegarder (remplace) | ✅ |
-| PUT | `/merge` | Fusionner les données | ✅ |
-| DELETE | `/` | Réinitialiser | ✅ |
+| GET | `/` | Retrieve the data | ✅ |
+| POST | `/` | Save (replace) | ✅ |
+| PUT | `/merge` | Merge the data | ✅ |
+| DELETE | `/` | Reset | ✅ |
 
-## 🔐 Authentification
+## 🔐 Authentication
 
-L'API utilise **JWT (JSON Web Tokens)**.
+The API uses **JWT (JSON Web Tokens)**.
 
-Incluez le token dans le header :
+Include the token in the header:
 ```
-Authorization: Bearer <votre_token>
+Authorization: Bearer <your_token>
 ```
 
-## 📦 Structure des données utilisateur
+## 📦 User data structure
 
 ```json
 {
   "email": "user@example.com",
-  "name": "Jean Dupont",
+  "name": "John Doe",
   "appData": {
     "favorites": [],
     "annotations": [],
@@ -92,25 +93,23 @@ Authorization: Bearer <votre_token>
 }
 ```
 
-## 🛠️ Déploiement
+## 🛠️ Deployment
 
 ### Heroku
 ```bash
 heroku create germanapp-api
-heroku config:set MONGODB_URI=<votre_uri>
-heroku config:set JWT_SECRET=<votre_secret>
+heroku config:set MONGODB_URI=<your_uri>
+heroku config:set JWT_SECRET=<your_secret>
 git push heroku main
 ```
 
 ### Railway / Render
-1. Connectez votre repo GitHub
-2. Configurez les variables d'environnement
-3. Déployez automatiquement
+1. Connect your GitHub repo
+2. Configure the environment variables
+3. Deploy automatically
 
 ## 📝 Notes
 
-- Les mots de passe sont hashés avec bcrypt
-- Les tokens expirent après 7 jours (configurable)
-- CORS configuré pour le frontend
-
-
+- Passwords are hashed with bcrypt
+- Tokens expire after 7 days (configurable)
+- CORS configured for the frontend

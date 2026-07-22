@@ -322,6 +322,52 @@ export function useSpacedRepetition() {
     return newList;
   }, []);
 
+  // Add one or more words to an existing custom list (quick add)
+  const addWordsToCustomList = useCallback((
+    listId: string,
+    words: { german: string; english: string; article?: string }[],
+  ): boolean => {
+    let listExists = false;
+
+    setCustomLists(prev => {
+      const list = prev.find(l => l.id === listId);
+      if (!list) return prev;
+      listExists = true;
+      return prev.map(l =>
+        l.id === listId
+          ? { ...l, words: [...l.words, ...words.map(w => ({ german: w.german, english: w.english }))] }
+          : l
+      );
+    });
+
+    setProgress(prev => {
+      const newMap = new Map(prev);
+      words.forEach(word => {
+        const wordId = `${listId}-${word.german}`.toLowerCase().replace(/\s+/g, '-');
+        if (!newMap.has(wordId)) {
+          newMap.set(wordId, {
+            wordId,
+            german: word.german,
+            english: word.english,
+            article: word.article || undefined,
+            theme: listId,
+            box: 1,
+            nextReview: Date.now(),
+            lastReview: 0,
+            correctCount: 0,
+            incorrectCount: 0,
+            streak: 0,
+            isCustom: true,
+            customListId: listId,
+          });
+        }
+      });
+      return newMap;
+    });
+
+    return listExists;
+  }, []);
+
   // Delete a custom list
   const deleteCustomList = useCallback((listId: string) => {
     setCustomLists(prev => prev.filter(l => l.id !== listId));
@@ -485,6 +531,7 @@ export function useSpacedRepetition() {
     // Custom lists
     customLists,
     createCustomList,
+    addWordsToCustomList,
     deleteCustomList,
     importListFromJSON,
     importListFromCSV,

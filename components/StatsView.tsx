@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { GRAMMAR_DATA } from '../data/grammarData';
 import { LanguageLevel } from '../types';
+import { useGrammar } from '../contexts/GrammarContext';
 
 // Types pour les statistiques
 interface DailyStats {
@@ -32,9 +33,162 @@ const defaultStats: UserStats = {
   quizResults: []
 };
 
-import { useGrammar } from '../contexts/GrammarContext';
+const getLocalDateKey = (date = new Date()) => {
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, '0');
+  const day = `${date.getDate()}`.padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
 
-export const StatsView: React.FC = () => {
+const toNumber = (value: unknown, fallback = 0) => {
+  return typeof value === 'number' && Number.isFinite(value) ? value : fallback;
+};
+
+const toStringArray = (value: unknown) => {
+  return Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
+};
+
+const normalizeDailyHistory = (value: unknown): DailyStats[] => {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .map((entry): DailyStats | null => {
+      if (!entry || typeof entry !== 'object') return null;
+
+      const day = entry as Record<string, unknown>;
+      if (typeof day.date !== 'string') return null;
+
+      const normalized: DailyStats = {
+        date: day.date,
+        timeSpent: Math.max(0, Math.floor(toNumber(day.timeSpent))),
+        lessonsCompleted: toStringArray(day.lessonsCompleted)
+      };
+
+      if (typeof day.quizScore === 'number' && Number.isFinite(day.quizScore)) {
+        normalized.quizScore = day.quizScore;
+      }
+
+      return normalized;
+    })
+    .filter((day): day is DailyStats => day !== null);
+};
+
+const normalizeQuizResults = (value: unknown): UserStats['quizResults'] => {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .map((entry): UserStats['quizResults'][number] | null => {
+      if (!entry || typeof entry !== 'object') return null;
+
+      const result = entry as Record<string, unknown>;
+      if (typeof result.topicId !== 'string' || typeof result.date !== 'string') return null;
+
+      return {
+        topicId: result.topicId,
+        score: toNumber(result.score),
+        date: result.date
+      };
+    })
+    .filter((result): result is UserStats['quizResults'][number] => result !== null);
+};
+
+const getDailyHistoryTotal = (dailyHistory: DailyStats[]) => {
+  return dailyHistory.reduce((total, day) => total + Math.max(0, day.timeSpent), 0);
+};
+
+const normalizeStats = (rawStats: Partial<UserStats> | null | undefined): UserStats => {
+  const source = rawStats || {};
+  const dailyHistory = normalizeDailyHistory(source.dailyHistory);
+  const totalFromHistory = getDailyHistoryTotal(dailyHistory);
+
+  return {
+    totalTimeSpent: Math.max(0, Math.floor(toNumber(source.totalTimeSpent)), totalFromHistory),
+    completedLessons: toStringArray(source.completedLessons),
+    dailyGoal: Math.max(1, Math.floor(toNumber(source.dailyGoal, defaultStats.dailyGoal))),
+    currentStreak: Math.max(0, Math.floor(toNumber(source.currentStreak))),
+    longestStreak: Math.max(0, Math.floor(toNumber(source.longestStreak))),
+    lastActivityDate: typeof source.lastActivityDate === 'string' ? source.lastActivityDate : '',
+    dailyHistory,
+    quizResults: normalizeQuizResults(source.quizResults)
+  };
+};
+
+const readStatsFromStorage = () => {
+  const savedStats = localStorage.getItem('grammarStats');
+  if (!savedStats) return defaultStats;
+
+  try {
+    return normalizeStats(JSON.parse(savedStats));
+  } catch {
+    return defaultStats;
+  }
+};
+
+const writeStatsToStorage = (stats: UserStats) => {
+  localStorage.setItem('grammarStats', JSON.stringify(normalizeStats(stats)));
+};
+
+const updateStreakForToday = (rawStats: UserStats) => {
+  const stats = normalizeStats(rawStats);
+  const today = getLocalDateKey();
+  const yesterdayDate = new Date();
+  yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+  const yesterday = getLocalDateKey(yesterdayDate);
+
+  if (stats.lastActivityDate === today) {
+    return stats;
+  }
+
+  const updated = { ...stats };
+  if (stats.lastActivityDate === yesterday) {
+    updated.currentStreak = stats.currentStreak + 1;
+  } else {
+    updated.currentStreak = 1;
+  }
+
+  updated.longestStreak = Math.max(updated.currentStreak, stats.longestStreak);
+  updated.lastActivityDate = today;
+  return normalizeStats(updated);
+};
+
+const addTimeToStats = (rawStats: UserStats, timeToSave: number, date: string) => {
+  const stats = normalizeStats(rawStats);
+  const dailyHistory = stats.dailyHistory.map(day => ({
+    ...day,
+    lessonsCompleted: [...day.lessonsCompleted]
+  }));
+  const todayIndex = dailyHistory.findIndex(day => day.date === date);
+
+  if (todayIndex >= 0) {
+    dailyHistory[todayIndex] = {
+      ...dailyHistory[todayIndex],
+      timeSpent: dailyHistory[todayIndex].timeSpent + timeToSave
+    };
+  } else {
+    dailyHistory.push({
+      date,
+      timeSpent: timeToSave,
+      lessonsCompleted: []
+    });
+  }
+
+  return normalizeStats({
+    ...stats,
+    totalTimeSpent: stats.totalTimeSpent + timeToSave,
+    lastActivityDate: date,
+    dailyHistory
+  });
+};
+
+const getUnsavedSessionTime = (currentSessionTime: number, lastSavedTime: number) => {
+  return Math.max(0, currentSessionTime - lastSavedTime);
+};
+
+interface StatsViewProps {
+  embedded?: boolean;
+}
+
+export const StatsView: React.FC<StatsViewProps> = ({ embedded = false }) => {
   const { completedLessons } = useGrammar(); // Utiliser le contexte pour la vérité terrain
   const [stats, setStats] = useState<UserStats>(defaultStats);
   const [showGoalModal, setShowGoalModal] = useState(false);
@@ -42,30 +196,33 @@ export const StatsView: React.FC = () => {
   const [currentSessionTime, setCurrentSessionTime] = useState(0);
   const [lastSavedTime, setLastSavedTime] = useState(0); // Pour éviter le double comptage
   const [isLoaded, setIsLoaded] = useState(false);
+  const currentSessionTimeRef = useRef(0);
+  const lastSavedTimeRef = useRef(0);
+  const isLoadedRef = useRef(false);
 
   // Charger les stats au démarrage
   useEffect(() => {
-    const savedStats = localStorage.getItem('grammarStats');
-    if (savedStats) {
-      const parsed = JSON.parse(savedStats);
-      setStats(parsed);
-      setNewGoal(parsed.dailyGoal || 15);
-    }
+    const loadedStats = updateStreakForToday(readStatsFromStorage());
+    writeStatsToStorage(loadedStats);
+    setStats(loadedStats);
+    setNewGoal(loadedStats.dailyGoal || 15);
+    isLoadedRef.current = true;
     setIsLoaded(true);
-
-    // Mettre à jour le streak au chargement
-    updateStreak();
   }, []);
 
   // Synchroniser avec le contexte
   useEffect(() => {
-    setStats(prev => ({ ...prev, completedLessons }));
+    setStats(prev => normalizeStats({ ...prev, completedLessons }));
   }, [completedLessons]);
 
   // Timer pour la session actuelle (compte chaque seconde)
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentSessionTime(prev => prev + 1);
+      setCurrentSessionTime(prev => {
+        const next = prev + 1;
+        currentSessionTimeRef.current = next;
+        return next;
+      });
     }, 1000);
 
     return () => clearInterval(interval);
@@ -77,35 +234,18 @@ export const StatsView: React.FC = () => {
 
     const saveTime = () => {
       // Calculer seulement le temps écoulé depuis la dernière sauvegarde
-      const timeToSave = currentSessionTime - lastSavedTime;
+      if (!isLoadedRef.current) return;
+
+      const timeToSave = getUnsavedSessionTime(currentSessionTimeRef.current, lastSavedTimeRef.current);
       if (timeToSave <= 0) return;
 
-      const today = new Date().toISOString().split('T')[0];
+      const updatedStats = addTimeToStats(readStatsFromStorage(), timeToSave, getLocalDateKey());
 
-      setStats(prevStats => {
-        const updatedStats = { ...prevStats };
+      writeStatsToStorage(updatedStats);
+      setStats(updatedStats);
 
-        // Ajouter seulement le nouveau temps (pas le temps cumulé)
-        updatedStats.totalTimeSpent += timeToSave;
-
-        // Mettre à jour l'historique quotidien
-        const todayIndex = updatedStats.dailyHistory.findIndex(d => d.date === today);
-        if (todayIndex >= 0) {
-          updatedStats.dailyHistory[todayIndex].timeSpent += timeToSave;
-        } else {
-          updatedStats.dailyHistory.push({
-            date: today,
-            timeSpent: timeToSave,
-            lessonsCompleted: []
-          });
-        }
-
-        updatedStats.lastActivityDate = today;
-        localStorage.setItem('grammarStats', JSON.stringify(updatedStats));
-        return updatedStats;
-      });
-
-      setLastSavedTime(currentSessionTime);
+      lastSavedTimeRef.current = currentSessionTimeRef.current;
+      setLastSavedTime(lastSavedTimeRef.current);
     };
 
     // Sauvegarder à la fermeture de la page
@@ -119,56 +259,27 @@ export const StatsView: React.FC = () => {
       clearInterval(saveInterval);
       saveTime(); // Sauvegarder au démontage du composant
     };
-  }, [isLoaded, currentSessionTime, lastSavedTime]);
-
-  // Mettre à jour le streak
-  const updateStreak = () => {
-    const today = new Date().toISOString().split('T')[0];
-    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-
-    setStats(prev => {
-      const updated = { ...prev };
-
-      if (prev.lastActivityDate === today) {
-        // Déjà actif aujourd'hui, ne rien changer
-        return prev;
-      } else if (prev.lastActivityDate === yesterday) {
-        // Continue le streak
-        updated.currentStreak = prev.currentStreak + 1;
-        updated.longestStreak = Math.max(updated.currentStreak, prev.longestStreak);
-      } else if (prev.lastActivityDate !== today) {
-        // Streak cassé (sauf si c'est le premier jour)
-        if (prev.lastActivityDate) {
-          updated.currentStreak = 1;
-        } else {
-          updated.currentStreak = 1;
-        }
-      }
-
-      updated.lastActivityDate = today;
-      localStorage.setItem('grammarStats', JSON.stringify(updated));
-      return updated;
-    });
-  };
+  }, [isLoaded]);
 
   // Calculer les statistiques
   const getTodayStats = () => {
-    const today = new Date().toISOString().split('T')[0];
+    const today = getLocalDateKey();
     const todayData = stats.dailyHistory.find(d => d.date === today);
     // Ajouter seulement le temps non encore sauvegardé de la session actuelle
-    const unsavedTime = currentSessionTime - lastSavedTime;
+    const unsavedTime = getUnsavedSessionTime(currentSessionTime, lastSavedTime);
     const timeToday = (todayData?.timeSpent || 0) + unsavedTime;
+    const dailyGoal = Math.max(1, stats.dailyGoal || defaultStats.dailyGoal);
     return {
       timeSpent: timeToday,
-      goalProgress: Math.min(100, (timeToday / 60 / stats.dailyGoal) * 100),
+      goalProgress: Math.min(100, (timeToday / 60 / dailyGoal) * 100),
       lessonsCompleted: todayData?.lessonsCompleted.length || 0
     };
   };
 
   // Calculer le temps total (sauvegardé + non sauvegardé de la session)
   const getTotalTime = () => {
-    const unsavedTime = currentSessionTime - lastSavedTime;
-    return stats.totalTimeSpent + unsavedTime;
+    const unsavedTime = getUnsavedSessionTime(currentSessionTime, lastSavedTime);
+    return Math.max(stats.totalTimeSpent, getDailyHistoryTotal(stats.dailyHistory)) + unsavedTime;
   };
 
   const getTotalLessons = () => {
@@ -204,14 +315,16 @@ export const StatsView: React.FC = () => {
   const getLast7Days = () => {
     const days = [];
     for (let i = 6; i >= 0; i--) {
-      const date = new Date(Date.now() - i * 86400000);
-      const dateStr = date.toISOString().split('T')[0];
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const dateStr = getLocalDateKey(date);
       const dayData = stats.dailyHistory.find(d => d.date === dateStr);
+      const dayTimeSpent = (dayData?.timeSpent || 0) + (i === 0 ? getUnsavedSessionTime(currentSessionTime, lastSavedTime) : 0);
       days.push({
         date: dateStr,
         dayName: date.toLocaleDateString('fr-FR', { weekday: 'short' }),
-        timeSpent: i === 0 ? (dayData?.timeSpent || 0) + currentSessionTime : (dayData?.timeSpent || 0),
-        goalReached: (dayData?.timeSpent || 0) >= stats.dailyGoal * 60
+        timeSpent: dayTimeSpent,
+        goalReached: dayTimeSpent >= stats.dailyGoal * 60
       });
     }
     return days;
@@ -232,8 +345,8 @@ export const StatsView: React.FC = () => {
 
   const saveGoal = () => {
     setStats(prev => {
-      const updated = { ...prev, dailyGoal: newGoal };
-      localStorage.setItem('grammarStats', JSON.stringify(updated));
+      const updated = normalizeStats({ ...prev, dailyGoal: newGoal });
+      writeStatsToStorage(updated);
       return updated;
     });
     setShowGoalModal(false);
@@ -243,20 +356,22 @@ export const StatsView: React.FC = () => {
   const levelCompletion = getCompletionByLevel();
   const last7Days = getLast7Days();
   const totalLessons = getTotalLessons();
+  const dailyGoalSeconds = Math.max(1, stats.dailyGoal || defaultStats.dailyGoal) * 60;
+  const remainingGoalTime = Math.max(0, dailyGoalSeconds - todayStats.timeSpent);
   const completionPercentage = Math.round((stats.completedLessons.length / totalLessons) * 100);
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      {/* Modal objectif quotidien */}
+      {/* Daily goal modal */}
       {showGoalModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm" onClick={() => setShowGoalModal(false)}>
           <div className="bg-white rounded-[2rem] shadow-2xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-300" onClick={e => e.stopPropagation()}>
             <div className="bg-violet-600 p-6 text-white">
-              <p className="text-[10px] font-black uppercase tracking-widest opacity-80 mb-1">Objectif quotidien</p>
-              <h5 className="text-2xl font-black">Définir mon objectif</h5>
+              <p className="text-[10px] font-black uppercase tracking-widest opacity-80 mb-1">Daily goal</p>
+              <h5 className="text-2xl font-black">Set my goal</h5>
             </div>
             <div className="p-6">
-              <p className="text-slate-500 text-sm mb-4">Combien de minutes souhaitez-vous étudier chaque jour ?</p>
+              <p className="text-slate-500 text-sm mb-4">How many minutes do you want to study each day?</p>
               <div className="flex items-center justify-center gap-4 mb-6">
                 <button
                   onClick={() => setNewGoal(Math.max(5, newGoal - 5))}
@@ -266,7 +381,7 @@ export const StatsView: React.FC = () => {
                 </button>
                 <div className="text-center">
                   <span className="text-5xl font-black text-violet-600">{newGoal}</span>
-                  <p className="text-slate-400 text-sm font-medium">minutes/jour</p>
+                  <p className="text-slate-400 text-sm font-medium">minutes/day</p>
                 </div>
                 <button
                   onClick={() => setNewGoal(Math.min(120, newGoal + 5))}
@@ -280,13 +395,13 @@ export const StatsView: React.FC = () => {
                   onClick={() => setShowGoalModal(false)}
                   className="flex-1 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all"
                 >
-                  Annuler
+                  Cancel
                 </button>
                 <button
                   onClick={saveGoal}
                   className="flex-1 px-4 py-3 bg-violet-600 text-white rounded-xl font-bold hover:bg-violet-700 transition-all"
                 >
-                  Enregistrer
+                  Save
                 </button>
               </div>
             </div>
@@ -294,13 +409,14 @@ export const StatsView: React.FC = () => {
         </div>
       )}
 
-      {/* En-tête */}
-      <div className="mb-12 text-center sm:text-left pb-10" style={{ borderBottom: '1px solid var(--terracotta-100)' }}>
-        <h2 className="text-6xl font-black mb-4 tracking-tighter" style={{ color: 'var(--terracotta-800)' }}>Statistiken</h2>
-        <p className="text-2xl font-medium max-w-2xl" style={{ color: 'var(--sand-600)' }}>Suivez votre progression et atteignez vos objectifs d'apprentissage.</p>
-      </div>
+      {!embedded && (
+        <div className="mb-12 text-center sm:text-left pb-10" style={{ borderBottom: '1px solid var(--terracotta-100)' }}>
+          <h2 className="text-6xl font-black mb-4 tracking-tighter" style={{ color: 'var(--terracotta-800)' }}>Stats</h2>
+          <p className="text-2xl font-medium max-w-2xl" style={{ color: 'var(--sand-600)' }}>Track your progress and reach your learning goals.</p>
+        </div>
+      )}
 
-      {/* Cartes principales */}
+      {/* Main cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
         {/* Streak */}
         <div className="p-6 rounded-[2rem] text-white relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #ea580c, #9a3412)' }}>
@@ -310,14 +426,14 @@ export const StatsView: React.FC = () => {
               <span className="text-2xl">🔥</span>
             </div>
             <div>
-              <p className="text-white/90 text-xs font-bold uppercase tracking-wider">Streak actuel</p>
+              <p className="text-white/90 text-xs font-bold uppercase tracking-wider">Current streak</p>
               <p className="text-4xl font-black text-white">{stats.currentStreak}</p>
             </div>
           </div>
-          <p className="text-white/80 text-sm">Record : {stats.longestStreak} jours</p>
+          <p className="text-white/80 text-sm">Record: {stats.longestStreak} days</p>
         </div>
 
-        {/* Temps aujourd'hui */}
+        {/* Time today */}
         <div className="p-6 rounded-[2rem] text-white relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #0d9488, #115e59)' }}>
           <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-bl-[4rem] -mr-8 -mt-8"></div>
           <div className="flex items-center gap-3 mb-4">
@@ -327,7 +443,7 @@ export const StatsView: React.FC = () => {
               </svg>
             </div>
             <div>
-              <p className="text-white/90 text-xs font-bold uppercase tracking-wider">Aujourd'hui</p>
+              <p className="text-white/90 text-xs font-bold uppercase tracking-wider">Today</p>
               <p className="text-4xl font-black text-white">{formatTime(todayStats.timeSpent)}</p>
             </div>
           </div>
@@ -342,7 +458,7 @@ export const StatsView: React.FC = () => {
           </div>
         </div>
 
-        {/* Leçons complétées */}
+        {/* Completed lessons */}
         <div className="p-6 rounded-[2rem] text-white relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #5f7343, #3d4a2d)' }}>
           <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-bl-[4rem] -mr-8 -mt-8"></div>
           <div className="flex items-center gap-3 mb-4">
@@ -352,32 +468,34 @@ export const StatsView: React.FC = () => {
               </svg>
             </div>
             <div>
-              <p className="text-white/90 text-xs font-bold uppercase tracking-wider">Leçons</p>
+              <p className="text-white/90 text-xs font-bold uppercase tracking-wider">Lessons</p>
               <p className="text-4xl font-black text-white">{stats.completedLessons.length}/{totalLessons}</p>
             </div>
           </div>
-          <p className="text-white/80 text-sm">{completionPercentage}% du programme</p>
+          <p className="text-white/80 text-sm">{completionPercentage}% of the program</p>
         </div>
 
-        {/* Temps total */}
+        {/* Daily goal remaining */}
         <div className="p-6 rounded-[2rem] text-white relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #c2410c, #7c2d12)' }}>
           <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-bl-[4rem] -mr-8 -mt-8"></div>
           <div className="flex items-center gap-3 mb-4">
             <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3v3m0 12v3m9-9h-3M6 12H3" />
               </svg>
             </div>
             <div>
-              <p className="text-white/90 text-xs font-bold uppercase tracking-wider">Temps total</p>
-              <p className="text-4xl font-black text-white">{formatTime(getTotalTime())}</p>
+              <p className="text-white/90 text-xs font-bold uppercase tracking-wider">Goal left</p>
+              <p className="text-4xl font-black text-white">{remainingGoalTime === 0 ? 'Done' : formatTime(remainingGoalTime)}</p>
             </div>
           </div>
-          <p className="text-white/80 text-sm">Session : {formatTime(currentSessionTime)}</p>
+          <p className="text-white/80 text-sm">Goal: {stats.dailyGoal} min/day</p>
         </div>
       </div>
 
-      {/* Objectif quotidien */}
+      {/* Daily goal */}
       <div className="bg-white p-8 rounded-[2rem] shadow-sm mb-8" style={{ border: '1px solid var(--terracotta-100)' }}>
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
@@ -385,19 +503,19 @@ export const StatsView: React.FC = () => {
               <span className="text-3xl">🎯</span>
             </div>
             <div>
-              <h3 className="text-2xl font-black text-slate-900">Objectif quotidien</h3>
-              <p className="text-slate-400">{stats.dailyGoal} minutes par jour</p>
+              <h3 className="text-2xl font-black text-slate-900">Daily goal</h3>
+              <p className="text-slate-400">{stats.dailyGoal} minutes per day</p>
             </div>
           </div>
           <button
             onClick={() => setShowGoalModal(true)}
             className="px-4 py-2 bg-violet-100 text-violet-600 rounded-xl font-bold text-sm hover:bg-violet-200 transition-all"
           >
-            Modifier
+            Edit
           </button>
         </div>
 
-        {/* Progression de la semaine */}
+        {/* Weekly progress */}
         <div className="grid grid-cols-7 gap-3">
           {last7Days.map((day, idx) => {
             const height = Math.min(100, (day.timeSpent / 60 / stats.dailyGoal) * 100);
@@ -432,11 +550,11 @@ export const StatsView: React.FC = () => {
         </div>
       </div>
 
-      {/* Progression par niveau */}
+      {/* Progress by level */}
       <div className="bg-white border border-slate-100 p-8 rounded-[2rem] shadow-sm mb-8">
         <h3 className="text-2xl font-black text-slate-900 mb-6 flex items-center gap-3">
           <span className="text-3xl">📊</span>
-          Progression par niveau
+          Progress by level
         </h3>
         <div className="space-y-4">
           {levelCompletion.map((level, idx) => {
@@ -457,7 +575,7 @@ export const StatsView: React.FC = () => {
                     style={{ width: `${percentage}%` }}
                   ></div>
                   <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-slate-600">
-                    {level.completed}/{level.total} leçons ({percentage}%)
+                    {level.completed}/{level.total} lessons ({percentage}%)
                   </span>
                 </div>
               </div>
@@ -466,42 +584,42 @@ export const StatsView: React.FC = () => {
         </div>
       </div>
 
-      {/* Conseils et motivation */}
+      {/* Tips and motivation */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Conseil du jour */}
+        {/* Tip of the day */}
         <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 p-8 rounded-[2rem]">
           <div className="flex items-center gap-3 mb-4">
             <span className="text-3xl">💡</span>
-            <h3 className="text-xl font-black text-amber-800">Conseil du jour</h3>
+            <h3 className="text-xl font-black text-amber-800">Tip of the day</h3>
           </div>
           <p className="text-amber-700 leading-relaxed">
             {stats.currentStreak >= 7
-              ? "Incroyable ! Vous êtes sur une série de " + stats.currentStreak + " jours ! Continuez ainsi, la régularité est la clé de l'apprentissage."
+              ? "Amazing! You are on a " + stats.currentStreak + "-day streak. Keep it up: consistency is the key to learning."
               : stats.currentStreak >= 3
-                ? "Beau travail ! " + stats.currentStreak + " jours consécutifs d'apprentissage. Essayez d'atteindre 7 jours pour une semaine complète !"
-                : "La régularité est plus importante que la durée. Essayez d'étudier un peu chaque jour pour construire votre streak !"}
+                ? "Good work! " + stats.currentStreak + " consecutive learning days. Try to reach 7 days for a full week."
+                : "Consistency matters more than duration. Try to study a little every day to build your streak."}
           </p>
         </div>
 
-        {/* Prochaine étape */}
+        {/* Next step */}
         <div className="bg-gradient-to-br from-indigo-50 to-violet-50 border border-indigo-100 p-8 rounded-[2rem]">
           <div className="flex items-center gap-3 mb-4">
             <span className="text-3xl">🚀</span>
-            <h3 className="text-xl font-black text-indigo-800">Prochaine étape</h3>
+            <h3 className="text-xl font-black text-indigo-800">Next step</h3>
           </div>
           <p className="text-indigo-700 leading-relaxed">
             {completionPercentage < 25
-              ? "Vous débutez votre apprentissage ! Commencez par le niveau A1 pour construire des bases solides."
+              ? "You are starting your learning journey. Begin with level A1 to build a solid foundation."
               : completionPercentage < 50
-                ? "Vous avez complété " + completionPercentage + "% du programme. Continuez à progresser niveau par niveau !"
+                ? "You have completed " + completionPercentage + "% of the program. Keep moving level by level."
                 : completionPercentage < 75
-                  ? "Plus de la moitié du chemin est fait ! Vous êtes sur la bonne voie vers la maîtrise de l'allemand."
-                  : "Vous êtes presque au bout ! Finissez les dernières leçons pour compléter tout le programme."}
+                  ? "You are more than halfway through. You are on the right path toward German mastery."
+                  : "You are almost there. Finish the last lessons to complete the full program."}
           </p>
         </div>
       </div>
 
-      {/* Section Synchronisation */}
+      {/* Sync section */}
       <div className="mt-8 bg-white border border-slate-100 p-8 rounded-[2rem] shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -511,33 +629,37 @@ export const StatsView: React.FC = () => {
               </svg>
             </div>
             <div>
-              <h3 className="text-2xl font-black text-slate-900">Synchronisation</h3>
-              <p className="text-slate-400">Transférez vos données vers un autre appareil</p>
+              <h3 className="text-2xl font-black text-slate-900">Synchronization</h3>
+              <p className="text-slate-400">Progress follows your account across devices</p>
             </div>
           </div>
           <div className="text-right">
-            <p className="text-xs text-slate-400 mb-1">Données sauvegardées localement</p>
+            <p className="text-xs text-slate-400 mb-1">Saved locally and in the cloud</p>
             <p className="text-sm text-slate-500">
-              {stats.completedLessons.length} leçons · {formatTime(getTotalTime())} d'étude
+              {stats.completedLessons.length} lessons · {formatTime(getTotalTime())} studied
             </p>
           </div>
         </div>
         <div className="mt-6 p-4 bg-slate-50 rounded-xl">
           <p className="text-sm text-slate-600 mb-4">
-            💡 <strong>Astuce :</strong> Utilisez le bouton de synchronisation (↔️) dans la barre de navigation pour exporter vos données et les importer sur un autre appareil.
+            <strong>Cloud sync:</strong> when you are signed in, lessons, notes, statistics, review cards, and custom lists are synced automatically. Use Sync now from the account menu if you want to force an immediate save.
           </p>
           <div className="flex items-center gap-3 text-xs text-slate-400">
             <span className="flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-green-500"></span>
-              Favoris, notes, progression
+              Favorites, notes, progress
             </span>
             <span className="flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-green-500"></span>
-              Statistiques et streaks
+              Statistics and streaks
             </span>
             <span className="flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-green-500"></span>
-              Objectifs quotidiens
+              Daily goals
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-green-500"></span>
+              Review cards and custom lists
             </span>
           </div>
         </div>
@@ -552,4 +674,3 @@ export const useCompletedLessons = () => {
   // ... (Code déplacé dans GrammarContext)
 };
 */
-

@@ -2,7 +2,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Theme, GermanWord, Phrase, LanguageLevel, ThemeContent } from "../types";
 
-// Note: On initialise l'instance à chaque appel pour s'assurer d'avoir la clé la plus récente
+// Note: We initialize the instance on each call to make sure we use the most recent key
 const getAi = () => new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export async function fetchThemeBatch(
@@ -13,15 +13,15 @@ export async function fetchThemeBatch(
   
   const isPhrases = level === 'PHRASES';
   
-  const prompt = isPhrases 
-    ? `Génère exactement 20 phrases utiles en allemand avec leur traduction française pour le thème "${theme.name}" (${theme.description}). Les phrases doivent être variées et prêtes à l'emploi.`
-    : `Génère exactement 50 mots de vocabulaire allemand de niveau ${level} pour le thème "${theme.name}". 
-       Pour chaque mot, tu DOIS fournir : 
-       - L'article (der, die, das ou null si pas applicable)
-       - Le mot en allemand
-       - La traduction française
-       - Le pluriel (si applicable, sinon 'n/a')
-       - Une phrase d'exemple courte et naturelle.`;
+  const prompt = isPhrases
+    ? `Generate exactly 20 useful German sentences with their English translation for the theme "${theme.name}" (${theme.description}). The sentences must be varied and ready to use. Return the English translation in the "french" field.`
+    : `Generate exactly 50 German vocabulary words at level ${level} for the theme "${theme.name}".
+       For each word, you MUST provide:
+       - The article (der, die, das, or null if not applicable)
+       - The word in German
+       - The English translation (in the "french" field)
+       - The plural (if applicable, otherwise 'n/a')
+       - A short, natural example sentence.`;
 
   const responseSchema = isPhrases ? {
     type: Type.OBJECT,
@@ -71,6 +71,6 @@ export async function fetchThemeBatch(
     }
   });
 
-  if (!response.text) throw new Error("Réponse vide de l'IA");
+  if (!response.text) throw new Error("Empty response from the AI");
   return JSON.parse(response.text);
 }

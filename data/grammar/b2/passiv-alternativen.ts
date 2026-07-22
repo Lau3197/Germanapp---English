@@ -16,7 +16,7 @@ export const passivAlternativenB2: GrammarSection = {
     {
       id: "b2-3-2",
       title: "3.2 The Structure 'sich lassen' + Infinitive",
-      content: "This is the most elegant alternative for expressing **possibility**. It replaces *können + passive*.\n\n• *Transformation*: Das Auto kann repariert werden -> Das Auto **lässt sich** reparieren.",
+      content: "This is the most elegant alternative for expressing **possibility**. It replaces *können + passive*.\n\n• *Transformation*: Das Auto kann repariert werden → Das Auto **lässt sich** reparieren.",
       examples: [
         { de: "Die Tür **lässt sich** nicht **öffnen**.", fr: "The door cannot be opened.", note: "Meaning of possibility." }
       ]

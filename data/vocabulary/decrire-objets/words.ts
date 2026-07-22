@@ -292,7 +292,7 @@ export const decrireObjetsWords: GermanWord[] = [
   { article: '', german: 'schrecklich', english: 'horrible', plural: 'n/a', level: LanguageLevel.B1, subTheme: 'Description générale', example: 'Schreckliche Nachrichten.' },
   { article: '', german: 'toll', english: 'great', plural: 'n/a', level: LanguageLevel.A1, subTheme: 'Description générale', example: 'Das ist toll!' },
   { article: '', german: 'super', english: 'super', plural: 'n/a', level: LanguageLevel.A1, subTheme: 'Description générale', example: 'Super Idee.' },
-  { article: '', german: 'perfekt', english: 'perfect', plural: 'n/a', level: LanguageLevel.A2, subTheme: 'Description générale', example: 'Niemand ist perfekt.' },
+  { article: '', german: 'perfekt', english: 'perfect', french: 'parfait', plural: 'n/a', level: LanguageLevel.A2, subTheme: 'Description générale', example: 'Niemand ist perfekt.' },
   { article: '', german: 'ausgezeichnet', english: 'excellent', plural: 'n/a', level: LanguageLevel.B1, subTheme: 'Description générale', example: 'Das Essen war ausgezeichnet.' },
   { article: '', german: 'fantastisch', english: 'fantastic', plural: 'n/a', level: LanguageLevel.A2, subTheme: 'Description générale', example: 'Fantastische Aussicht.' },
   { article: '', german: 'prima', english: 'great / fine', plural: 'n/a', level: LanguageLevel.A1, subTheme: 'Description générale', example: 'Prima gemacht!' },

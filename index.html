@@ -1,15 +1,20 @@
 
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DeutschMeister - Apprendre l'Allemand</title>
+    <title>DeutschMeister - Learn German</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
-        // SHIM CRITIQUE : Empêche l'application de planter à cause de process.env
+        // Runtime shim: prevents the app from failing when process.env is unavailable.
         window.process = { env: { API_KEY: "" } };
+        try {
+            if (localStorage.getItem('deutschmeister-app-theme') === 'panda') {
+                document.documentElement.setAttribute('data-app-theme', 'panda');
+            }
+        } catch (error) {}
     </script>
     <style>
         body {

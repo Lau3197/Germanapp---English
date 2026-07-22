@@ -41,8 +41,8 @@ export const tempsPasse: GrammarSection = {
       content: "Mixed verbs (Mischverben) combine features of regular and irregular verbs:\n- Ending **-t** (like regular verbs)\n- Vowel change in the stem (like irregular verbs)\n\n### Important Mixed Verbs\n\n| Infinitive | Participle II | Example |\n|---|---|---|\n| bringen | ge**brach**t | Er hat Blumen gebracht. |\n| denken | ge**dach**t | Ich habe an dich gedacht. |\n| kennen | ge**kann**t | Wir haben uns schon gekannt. |\n| nennen | ge**nann**t | Sie hat mich genannt. |\n| rennen | ge**rann**t | Er ist gerannt. |\n| wissen | ge**wuss**t | Das habe ich nicht gewusst. |\n| brennen | ge**brann**t | Das Feuer hat gebrannt. |\n| senden | ge**sand**t/gesendet | Ich habe eine E-Mail gesendet. |\n\n### Modal Verbs in the Perfekt\n\nModal verbs use **haben** and have a regular Participle II:\n\n| Infinitive | Participle II | Example |\n|---|---|---|\n| können | gekonnt | Das habe ich nicht gekonnt. |\n| müssen | gemusst | Ich habe das gemusst. |\n| wollen | gewollt | Sie hat das gewollt. |\n| dürfen | gedurft | Das hast du nicht gedurft. |\n| sollen | gesollt | Das habe ich gesollt. |\n| mögen | gemocht | Ich habe ihn gemocht. |\n\n**Careful**: When a modal verb is followed by an infinitive, German uses the infinitive form, not Participle II:\n• Ich habe nicht kommen **können**. (not \"gekonnt\")",
       examples: [
         { de: "Er hat mir Blumen gebracht.", fr: "He brought me flowers.", note: "Mixed verb: changed stem + -t ending." },
-        { de: "Ich habe an dich gedacht.", fr: "I thought of you.", note: "denken -> gedacht (mixed verb)." },
-        { de: "Das habe ich nicht gewusst.", fr: "I did not know that.", note: "wissen -> gewusst (mixed verb)." },
+        { de: "Ich habe an dich gedacht.", fr: "I thought of you.", note: "denken → gedacht (mixed verb)." },
+        { de: "Das habe ich nicht gewusst.", fr: "I did not know that.", note: "wissen → gewusst (mixed verb)." },
         { de: "Ich habe nicht kommen können.", fr: "I could not come.", note: "Modal + infinitive: infinitive at the end, no Participle II." }
       ]
     },

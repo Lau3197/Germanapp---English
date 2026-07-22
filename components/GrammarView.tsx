@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { GRAMMAR_DATA, KII_CONJUGATIONS } from '../data/grammarData';
 import { LanguageLevel } from '../types';
 import { useGrammar } from '../contexts/GrammarContext';
+import { usePandaMascot } from '../contexts/PandaMascotContext';
 
 // Type pour les favoris
 interface Favorite {
@@ -33,6 +34,7 @@ interface Annotation {
 export const GrammarView: React.FC = () => {
   const { level } = useParams<{ level?: string }>();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   // Validate level or default to A1
   const validLevel = Object.values(LanguageLevel).includes(level as LanguageLevel) ? (level as LanguageLevel) : LanguageLevel.A1;
   const [selectedLevel, setSelectedLevel] = useState<LanguageLevel>(validLevel);
@@ -56,6 +58,7 @@ export const GrammarView: React.FC = () => {
   const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [showFavorites, setShowFavorites] = useState(false);
   const { markLessonCompleted, isLessonCompleted, toggleLessonCompleted } = useGrammar();
+  const { triggerMood } = usePandaMascot();
 
   // États pour la recherche
   const [searchQuery, setSearchQuery] = useState('');
@@ -95,6 +98,41 @@ export const GrammarView: React.FC = () => {
   useEffect(() => {
     setActiveSectionIndex('all');
   }, [selectedLevel]);
+
+  // Deep-link from the global search: scroll to (and briefly highlight) the
+  // requested topic. Declared after the level-reset effect so it wins the
+  // final activeSectionIndex when both fire on navigation.
+  useEffect(() => {
+    const topicId = searchParams.get('topic');
+    if (!topicId) return;
+
+    // Open the section that owns the topic so it is actually rendered
+    // (notably on B2, where the "all" view shows a table of contents).
+    const sectionIdx = currentLevelData.sections.findIndex(section =>
+      section.topics.some(topic => topic.id === topicId)
+    );
+    setActiveSectionIndex(sectionIdx >= 0 ? sectionIdx : 'all');
+
+    const timer = setTimeout(() => {
+      const element = document.getElementById(`topic-${topicId}`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        element.classList.add('ring-4', 'ring-indigo-300', 'rounded-2xl', 'transition-all');
+        setTimeout(() => {
+          element.classList.remove('ring-4', 'ring-indigo-300');
+        }, 2000);
+      }
+      // Clear the param so re-opening the same section later doesn't re-scroll.
+      setSearchParams(prev => {
+        const next = new URLSearchParams(prev);
+        next.delete('topic');
+        return next;
+      }, { replace: true });
+    }, 250);
+
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, selectedLevel]);
 
   // Focus sur le champ de recherche quand on ouvre
   useEffect(() => {
@@ -256,6 +294,14 @@ export const GrammarView: React.FC = () => {
         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     }, 100);
+  };
+
+  const handleLessonCompletionToggle = (topicId: string, isCompleted: boolean) => {
+    toggleLessonCompleted(topicId);
+
+    if (!isCompleted) {
+      triggerMood('dancing', 3200);
+    }
   };
 
   // Fonction pour scroller vers une section
@@ -883,7 +929,7 @@ export const GrammarView: React.FC = () => {
                               {/* Barre d'outils de la leçon */}
                               <div className="flex flex-wrap gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
                                 <button
-                                  onClick={() => toggleLessonCompleted(topic.id)}
+                                  onClick={() => handleLessonCompletionToggle(topic.id, isCompleted)}
                                   className={`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-all ${isCompleted
                                     ? 'bg-green-100 text-green-700 hover:bg-green-200'
                                     : 'bg-slate-100 text-slate-600 hover:bg-green-50 hover:text-green-600'

@@ -33,7 +33,7 @@ Use KI in journalism, academic writing, administration, official reports, and fo
 | ihr | **-et** | ihr machet |
 | sie/Sie | **-en** | sie machen |
 
-Crucial point: the stem does **not** change. There is no e->i change and no Umlaut as in the present indicative.
+Crucial point: the stem does **not** change. There is no e→i change and no Umlaut as in the present indicative.
 
 ### Important third-person forms
 Regular verbs:
@@ -69,13 +69,13 @@ Solution:
 
 Examples:
 - Indicative: wir lernen
-- KI: wir lernen -> identical
-- KII: wir lernten -> looks like the preterite
+- KI: wir lernen → identical
+- KII: wir lernten → looks like the preterite
 - Final form: wir **würden lernen**
 
 - Indicative: sie kommen
-- KI: sie kommen -> identical
-- KII: sie **kämen** -> distinct
+- KI: sie kommen → identical
+- KII: sie **kämen** → distinct
 - Final form: sie **kämen** or sie **würden kommen**
 
 ### KI in different tenses
@@ -257,10 +257,10 @@ Comparison vs quotation:
 - KI: Er sagte, er **wisse**, was passiert.
 
 ### C1 decision rule
-1. Formal reported speech -> KI.
-2. Unreal conditions and comparisons -> KII.
-3. Reported speech with doubt or distance -> KII is possible.
-4. If KI is identical to the indicative -> substitute with KII or würde.`,
+1. Formal reported speech → KI.
+2. Unreal conditions and comparisons → KII.
+3. Reported speech with doubt or distance → KII is possible.
+4. If KI is identical to the indicative → substitute with KII or würde.`,
       examples: [
         { de: "KI: Er sagte, er habe kein Geld.", fr: "He said he had no money.", note: "Neutral reported speech." },
         { de: "KII: Er sagte, er hätte kein Geld.", fr: "He said he had no money.", note: "Reported speech with doubt or distance." },

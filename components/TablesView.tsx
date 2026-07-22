@@ -30,6 +30,8 @@ type CheatSheetBlock =
   | { type: 'definition'; label: string; value: string }
   | { type: 'keyValue'; label: string; value: string }
   | { type: 'paragraph'; text: string };
+type PdfDocument = import('jspdf').jsPDF;
+type PdfColor = [number, number, number];
 
 const PRONOUNS = ['ich', 'du', 'er/sie/es', 'wir', 'ihr', 'sie/Sie'];
 const HABEN_PRESENT = ['habe', 'hast', 'hat', 'haben', 'habt', 'haben'];
@@ -130,16 +132,8 @@ const buildModalRows = (modalId: ModalVerbId) => {
 
 const cleanCheatSheetTitle = (line: string) => line.replace(/\s+-\s+CHEAT SHEET$/i, '').trim();
 
-const escapeHtml = (value: string) =>
-  value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-
 const formatCheatSheetFileName = (name: string) =>
-  `${name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'cheat-sheet'}.html`;
+  `${name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'cheat-sheet'}.pdf`;
 
 const isUppercaseHeading = (line: string) => {
   const letters = line.replace(/[^A-Za-zÄÖÜäöüß]/g, '');
@@ -191,105 +185,169 @@ const parseCheatSheetContent = (content: string): CheatSheetBlock[] => {
   return blocks;
 };
 
-const renderHtmlBlock = (block: CheatSheetBlock) => {
-  switch (block.type) {
-    case 'title':
-      return `<h1>${escapeHtml(block.text)}</h1>`;
-    case 'heading':
-      return `<h2>${escapeHtml(block.text)}</h2>`;
-    case 'bullet':
-      return `<div class="bullet"><span>•</span><p>${escapeHtml(block.text)}</p></div>`;
-    case 'example':
-      return `<div class="example"><strong>Example</strong><p>${escapeHtml(block.text)}</p></div>`;
-    case 'definition':
-      return `<div class="definition"><strong>${escapeHtml(block.label)}</strong><span>${escapeHtml(block.value)}</span></div>`;
-    case 'keyValue':
-      return `<div class="key-value"><strong>${escapeHtml(block.label)}</strong><span>${escapeHtml(block.value)}</span></div>`;
-    case 'paragraph':
-    default:
-      return `<p>${escapeHtml(block.text)}</p>`;
-  }
+const PDF_COLORS = {
+  text: [47, 36, 29] as PdfColor,
+  muted: [88, 74, 63] as PdfColor,
+  title: [163, 61, 23] as PdfColor,
+  headingText: [124, 45, 18] as PdfColor,
+  headingBg: [255, 244, 232] as PdfColor,
+  exampleBg: [246, 248, 251] as PdfColor,
+  cardBg: [255, 251, 245] as PdfColor
 };
 
-const buildCheatSheetHtml = (name: string, content: string) => {
-  const blocks = parseCheatSheetContent(content);
-  const title = escapeHtml(name);
-  const body = blocks.map(renderHtmlBlock).join('\n');
+const normalizePdfText = (value: string) =>
+  value
+    .replace(/•/g, '-')
+    .replace(/[“”]/g, '"')
+    .replace(/[‘’]/g, "'");
 
-  return `<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>${title}</title>
-  <style>
-    :root {
-      color: #2f241d;
-      background: #faf7f1;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+const setPdfTextColor = (doc: PdfDocument, color: PdfColor) => {
+  doc.setTextColor(color[0], color[1], color[2]);
+};
+
+const setPdfFillColor = (doc: PdfDocument, color: PdfColor) => {
+  doc.setFillColor(color[0], color[1], color[2]);
+};
+
+const downloadCheatSheetPdf = async (name: string, content: string) => {
+  const { jsPDF } = await import('jspdf');
+  const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+  const blocks = parseCheatSheetContent(content);
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const margin = 48;
+  const contentWidth = pageWidth - margin * 2;
+  let cursorY = margin;
+
+  const addPageIfNeeded = (height: number) => {
+    if (cursorY + height <= pageHeight - margin) return;
+
+    doc.addPage();
+    cursorY = margin;
+  };
+
+  const splitText = (text: string, maxWidth: number) =>
+    doc.splitTextToSize(normalizePdfText(text), maxWidth) as string[];
+
+  const drawWrappedText = (
+    text: string,
+    {
+      x = margin,
+      maxWidth = contentWidth,
+      fontSize = 10.5,
+      lineHeight = 15,
+      fontStyle = 'normal',
+      color = PDF_COLORS.text
+    }: {
+      x?: number;
+      maxWidth?: number;
+      fontSize?: number;
+      lineHeight?: number;
+      fontStyle?: 'normal' | 'bold';
+      color?: PdfColor;
+    } = {}
+  ) => {
+    doc.setFont('helvetica', fontStyle);
+    doc.setFontSize(fontSize);
+    setPdfTextColor(doc, color);
+
+    splitText(text, maxWidth).forEach(line => {
+      addPageIfNeeded(lineHeight);
+      doc.text(line, x, cursorY);
+      cursorY += lineHeight;
+    });
+  };
+
+  doc.setProperties({
+    title: name,
+    subject: 'German cheat sheet',
+    creator: 'DeutschMeister'
+  });
+
+  blocks.forEach(block => {
+    if (block.type === 'title') {
+      drawWrappedText(block.text, {
+        fontSize: 24,
+        lineHeight: 29,
+        fontStyle: 'bold',
+        color: PDF_COLORS.title
+      });
+      cursorY += 14;
+      return;
     }
-    body { margin: 0; padding: 32px; }
-    main {
-      max-width: 860px;
-      margin: 0 auto;
-      background: #fff;
-      border: 1px solid #ead8c5;
-      border-radius: 18px;
-      padding: 34px;
-      box-shadow: 0 24px 60px rgba(80, 45, 24, 0.10);
+
+    if (block.type === 'heading') {
+      const lines = splitText(block.text.toUpperCase(), contentWidth - 24);
+      const blockHeight = lines.length * 13 + 20;
+      addPageIfNeeded(blockHeight + 10);
+      setPdfFillColor(doc, PDF_COLORS.headingBg);
+      doc.roundedRect(margin, cursorY, contentWidth, blockHeight, 5, 5, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      setPdfTextColor(doc, PDF_COLORS.headingText);
+      lines.forEach((line, index) => {
+        doc.text(line, margin + 12, cursorY + 17 + index * 13);
+      });
+      cursorY += blockHeight + 10;
+      return;
     }
-    h1 { margin: 0 0 24px; color: #a33d17; font-size: 34px; line-height: 1.05; }
-    h2 {
-      margin: 26px 0 12px;
-      padding: 10px 12px;
-      border-left: 5px solid #e85d04;
-      border-radius: 10px;
-      background: #fff4e8;
-      color: #7c2d12;
-      font-size: 17px;
-      text-transform: uppercase;
-      letter-spacing: .02em;
+
+    if (block.type === 'bullet') {
+      drawWrappedText(`- ${block.text}`, { maxWidth: contentWidth - 8, color: PDF_COLORS.muted });
+      cursorY += 2;
+      return;
     }
-    p { margin: 8px 0; line-height: 1.6; }
-    .bullet { display: flex; gap: 10px; align-items: flex-start; margin: 8px 0; }
-    .bullet span { color: #e85d04; font-weight: 900; }
-    .bullet p { margin: 0; }
-    .example {
-      margin: 10px 0;
-      padding: 12px 14px;
-      border-radius: 12px;
-      background: #f6f8fb;
-      border: 1px solid #e2e8f0;
+
+    if (block.type === 'example') {
+      const lines = splitText(block.text, contentWidth - 24);
+      const blockHeight = lines.length * 14 + 36;
+      addPageIfNeeded(blockHeight + 8);
+      setPdfFillColor(doc, PDF_COLORS.exampleBg);
+      doc.roundedRect(margin, cursorY, contentWidth, blockHeight, 6, 6, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8.5);
+      setPdfTextColor(doc, PDF_COLORS.muted);
+      doc.text('Example', margin + 12, cursorY + 16);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10.5);
+      setPdfTextColor(doc, PDF_COLORS.text);
+      lines.forEach((line, index) => {
+        doc.text(line, margin + 12, cursorY + 34 + index * 14);
+      });
+      cursorY += blockHeight + 8;
+      return;
     }
-    .example strong { color: #475569; display: block; margin-bottom: 4px; }
-    .definition, .key-value {
-      display: grid;
-      grid-template-columns: minmax(120px, 220px) 1fr;
-      gap: 12px;
-      padding: 10px 12px;
-      margin: 7px 0;
-      border-radius: 12px;
-      background: #fffbf5;
-      border: 1px solid #f0dfca;
+
+    if (block.type === 'definition' || block.type === 'keyValue') {
+      const labelWidth = 220;
+      const labelLines = splitText(block.label, labelWidth - 12);
+      const valueLines = splitText(block.value, contentWidth - labelWidth - 22);
+      const lineCount = Math.max(labelLines.length, valueLines.length);
+      const blockHeight = Math.max(34, lineCount * 14 + 16);
+      addPageIfNeeded(blockHeight + 7);
+      setPdfFillColor(doc, PDF_COLORS.cardBg);
+      doc.roundedRect(margin, cursorY, contentWidth, blockHeight, 6, 6, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      setPdfTextColor(doc, PDF_COLORS.headingText);
+      labelLines.forEach((line, index) => {
+        doc.text(line, margin + 12, cursorY + 19 + index * 14);
+      });
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      setPdfTextColor(doc, PDF_COLORS.text);
+      valueLines.forEach((line, index) => {
+        doc.text(line, margin + labelWidth + 12, cursorY + 19 + index * 14);
+      });
+      cursorY += blockHeight + 7;
+      return;
     }
-    .definition strong, .key-value strong { color: #8a3a17; }
-    @media print {
-      body { background: #fff; padding: 0; }
-      main { box-shadow: none; border: none; border-radius: 0; }
-    }
-    @media (max-width: 640px) {
-      body { padding: 16px; }
-      main { padding: 22px; }
-      .definition, .key-value { grid-template-columns: 1fr; }
-    }
-  </style>
-</head>
-<body>
-  <main>
-    ${body}
-  </main>
-</body>
-</html>`;
+
+    drawWrappedText(block.text);
+    cursorY += 4;
+  });
+
+  doc.save(formatCheatSheetFileName(name));
 };
 
 const CheatSheetPreview: React.FC<{ content: string; colors: ColorClasses }> = ({ content, colors }) => {
@@ -362,16 +420,11 @@ export const TablesView: React.FC = () => {
     setExpandedTable(expandedTable === id ? null : id);
   };
 
-  const downloadCheatSheet = (name: string, content: string) => {
-    const blob = new Blob([buildCheatSheetHtml(name, content)], { type: 'text/html;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = formatCheatSheetFileName(name);
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.setTimeout(() => URL.revokeObjectURL(url), 0);
+  const handleCheatSheetPdfDownload = (name: string, content: string) => {
+    void downloadCheatSheetPdf(name, content).catch(error => {
+      console.error('Unable to create the PDF cheat sheet.', error);
+      window.alert('Unable to create the PDF. Please try again.');
+    });
   };
 
   const declensionTables: DeclensionTable[] = [
@@ -710,6 +763,38 @@ export const TablesView: React.FC = () => {
       subtitle: 'choose a modal to see all common tenses',
       color: 'violet',
       mode: 'modal-selector'
+    },
+    {
+      id: 'konjunktiv1',
+      title: 'Konjunktiv I',
+      subtitle: 'Indirect speech / reported statements',
+      color: 'teal',
+      tables: [
+        {
+          verb: 'machen (regular KI endings)',
+          rows: makeConjugationRows(['mache', 'machest', 'mache', 'machen', 'machet', 'machen'])
+        },
+        {
+          verb: 'haben → habe',
+          rows: makeConjugationRows(['habe', 'habest', 'habe', 'haben', 'habet', 'haben'])
+        },
+        {
+          verb: 'sein → sei',
+          rows: makeConjugationRows(['sei', 'seiest', 'sei', 'seien', 'seiet', 'seien'])
+        },
+        {
+          verb: 'werden → werde',
+          rows: makeConjugationRows(['werde', 'werdest', 'werde', 'werden', 'werdet', 'werden'])
+        },
+        {
+          verb: 'wissen → wisse',
+          rows: makeConjugationRows(['wisse', 'wissest', 'wisse', 'wissen', 'wisset', 'wissen'])
+        },
+        {
+          verb: 'fahren → fahre',
+          rows: makeConjugationRows(['fahre', 'fahrest', 'fahre', 'fahren', 'fahret', 'fahren'])
+        }
+      ]
     },
     {
       id: 'konjunktiv2',
@@ -1322,15 +1407,17 @@ ich möchte, du möchtest, er möchte, wir möchten, ihr möchtet, sie möchten.
                 </div>
                 <div className="p-6 pt-4">
                   <button
-                    onClick={() => downloadCheatSheet(sheet.title, sheet.content)}
+                    type="button"
+                    onClick={() => handleCheatSheetPdfDownload(sheet.title, sheet.content)}
                     className={`w-full py-3 ${colors.bg} text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all`}
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
-                    Download HTML
+                    Download PDF
                   </button>
                   <button
+                    type="button"
                     onClick={() => toggleTable(sheet.id)}
                     className="w-full mt-2 py-2 text-slate-500 font-medium text-sm hover:text-slate-700 transition-all"
                   >

@@ -2,8 +2,9 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSpacedRepetition, WordProgress, CustomList } from '../hooks/useSpacedRepetition';
 import { VOCABULARY_DATA } from '../data/vocabularyData';
 import { THEMES } from '../constants';
+import { usePandaMascot } from '../contexts/PandaMascotContext';
 
-type RevisionMode = 'menu' | 'themes' | 'import' | 'session' | 'results' | 'manage-lists';
+type RevisionMode = 'menu' | 'themes' | 'import' | 'session' | 'results' | 'manage-lists' | 'quick-add';
 type AnswerState = 'waiting' | 'correct' | 'incorrect';
 type ExerciseType = 'flashcard' | 'writing' | 'qcm' | 'pairs' | 'fillblank' | 'chrono';
 
@@ -22,6 +23,7 @@ interface SessionItem {
 }
 
 export const RevisionView: React.FC = () => {
+  const { triggerMood } = usePandaMascot();
   const {
     addWords,
     getWordsToReview,
@@ -30,6 +32,7 @@ export const RevisionView: React.FC = () => {
     isLoaded,
     customLists,
     createCustomList,
+    addWordsToCustomList,
     deleteCustomList,
     importListFromJSON,
     importListFromCSV,
@@ -60,6 +63,16 @@ export const RevisionView: React.FC = () => {
   const [importListName, setImportListName] = useState('');
   const [importError, setImportError] = useState('');
   const [importSuccess, setImportSuccess] = useState('');
+
+  // Quick add
+  const [quickGerman, setQuickGerman] = useState('');
+  const [quickEnglish, setQuickEnglish] = useState('');
+  const [quickArticle, setQuickArticle] = useState<'' | 'der' | 'die' | 'das'>('');
+  const [quickTargetListId, setQuickTargetListId] = useState<string>('new');
+  const [quickNewListName, setQuickNewListName] = useState('My words');
+  const [quickError, setQuickError] = useState('');
+  const [quickAdded, setQuickAdded] = useState<{ german: string; english: string; article?: string }[]>([]);
+  const quickGermanRef = useRef<HTMLInputElement>(null);
 
   // QCM
   const [qcmOptions, setQcmOptions] = useState<string[]>([]);
@@ -238,6 +251,7 @@ export const RevisionView: React.FC = () => {
 
     recordAnswer(currentItem.word.wordId, isCorrect);
     setAnswerState(isCorrect ? 'correct' : 'incorrect');
+    triggerMood(isCorrect ? 'applauding' : 'encouraging');
     setSessionStats(prev => ({
       correct: prev.correct + (isCorrect ? 1 : 0),
       incorrect: prev.incorrect + (isCorrect ? 0 : 1),
@@ -330,7 +344,7 @@ export const RevisionView: React.FC = () => {
     // Longer delay for writing failure/success to see visual feedback
     const delay = (reviewType === 'writing') ? 2000 : (reviewType === 'chrono' ? 500 : 1000);
     setTimeout(goToNext, delay);
-  }, [sessionQueue, recordAnswer, reviewType, generateQcmOptions, generateFillBlank]);
+  }, [sessionQueue, recordAnswer, reviewType, generateQcmOptions, generateFillBlank, triggerMood]);
 
   // QCM Handler
   const handleQcmSelect = useCallback((option: string) => {
@@ -386,6 +400,7 @@ export const RevisionView: React.FC = () => {
 
         if (idx1 === idx2) {
           // Match!
+          triggerMood('applauding');
           setPairItems(prev => prev.map(p =>
             (p.id === selectedPair.id || p.id === item.id)
               ? { ...p, matched: true, selected: false }
@@ -420,6 +435,7 @@ export const RevisionView: React.FC = () => {
           });
         } else {
           // No match - error animation
+          triggerMood('encouraging');
           setPairItems(prev => prev.map(p =>
             (p.id === selectedPair.id || p.id === item.id)
               ? { ...p, selected: true }
@@ -432,7 +448,7 @@ export const RevisionView: React.FC = () => {
         setSelectedPair(null);
       }
     }
-  }, [selectedPair, sessionQueue, pairsTotal, recordAnswer]);
+  }, [selectedPair, sessionQueue, pairsTotal, recordAnswer, triggerMood]);
 
   // Fill Blank Handler
   const handleFillBlankCheck = useCallback(() => {
@@ -520,6 +536,39 @@ export const RevisionView: React.FC = () => {
     }
   };
 
+  const addQuickWord = () => {
+    setQuickError('');
+    const german = quickGerman.trim();
+    const english = quickEnglish.trim();
+
+    if (!german || !english) {
+      setQuickError('Please fill in both the German word and its translation.');
+      return;
+    }
+
+    const article = quickArticle || undefined;
+    let targetId = quickTargetListId;
+
+    if (targetId === 'new') {
+      const name = quickNewListName.trim() || 'My words';
+      // Create the list empty, then append through the article-aware path so we
+      // don't add the word twice (createCustomList would seed it without article).
+      const list = createCustomList(name, []);
+      addWordsToCustomList(list.id, [{ german, english, article }]);
+      // Subsequent words append to this freshly created list.
+      targetId = list.id;
+      setQuickTargetListId(list.id);
+    } else {
+      addWordsToCustomList(targetId, [{ german, english, article }]);
+    }
+
+    setQuickAdded(prev => [{ german, english, article }, ...prev]);
+    setQuickGerman('');
+    setQuickEnglish('');
+    setQuickArticle('');
+    quickGermanRef.current?.focus();
+  };
+
   const handleExport = (listId: string, format: 'json' | 'csv') => {
     const content = format === 'json' ? exportListToJSON(listId) : exportListToCSV(listId);
     if (!content) return;
@@ -554,6 +603,12 @@ export const RevisionView: React.FC = () => {
   const selectedWordsToReview = selectedThemes.length > 0
     ? getWordsToReviewByThemes(selectedThemes).length
     : stats.wordsToReview;
+
+  useEffect(() => {
+    if (mode === 'results') {
+      triggerMood('celebrating', 4200);
+    }
+  }, [mode, triggerMood]);
 
   const currentItem = sessionQueue[0];
   const currentWord = currentItem?.word;
@@ -600,7 +655,21 @@ export const RevisionView: React.FC = () => {
         </div>
 
         {/* Main Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <button
+            onClick={() => { setMode('quick-add'); setQuickError(''); }}
+            className="p-6 rounded-2xl text-left transition-all hover:shadow-lg hover:-translate-y-1 border-2"
+            style={{ borderColor: 'var(--sage-300, #c7d0b8)', backgroundColor: 'white' }}
+          >
+            <span className="text-3xl mb-3 block">➕</span>
+            <h3 className="font-bold text-lg mb-1" style={{ color: 'var(--sage-700, #4a5a34)' }}>
+              Add Words
+            </h3>
+            <p className="text-sm" style={{ color: 'var(--sand-600)' }}>
+              Quickly add words one by one
+            </p>
+          </button>
+
           <button
             onClick={() => setMode('themes')}
             className="p-6 rounded-2xl text-left transition-all hover:shadow-lg hover:-translate-y-1 border-2"
@@ -915,7 +984,7 @@ export const RevisionView: React.FC = () => {
                           {themeInfo?.name || theme.name}
                         </p>
                         <p className="text-xs" style={{ color: 'var(--sand-500)' }}>
-                          {theme.toReviewCount} à réviser / {theme.wordCount} mots
+                          {theme.toReviewCount} to review / {theme.wordCount} words
                         </p>
                       </div>
                       {isSelected && (
@@ -929,11 +998,11 @@ export const RevisionView: React.FC = () => {
           </div>
         )}
 
-        {/* Listes personnalisées */}
+        {/* Custom lists */}
         {customThemes.length > 0 && (
           <div className="mb-8">
             <h3 className="font-bold mb-4" style={{ color: 'var(--turquoise-700)' }}>
-              📥 Mes listes importées
+              📥 My imported lists
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {customThemes.map(theme => {
@@ -956,7 +1025,7 @@ export const RevisionView: React.FC = () => {
                           {theme.name}
                         </p>
                         <p className="text-xs" style={{ color: 'var(--sand-500)' }}>
-                          {theme.toReviewCount} à réviser / {theme.wordCount} mots
+                          {theme.toReviewCount} to review / {theme.wordCount} words
                         </p>
                       </div>
                       {isSelected && (
@@ -970,14 +1039,14 @@ export const RevisionView: React.FC = () => {
           </div>
         )}
 
-        {/* Bouton valider */}
+        {/* Confirm button */}
         <div className="flex justify-center">
           <button
             onClick={() => setMode('menu')}
             className="px-8 py-4 rounded-2xl font-bold text-white text-lg transition-all hover:scale-105 shadow-lg"
             style={{ backgroundColor: 'var(--coral-500)' }}
           >
-            Valider la sélection ({selectedThemes.length} catégorie{selectedThemes.length > 1 ? 's' : ''})
+            Confirm selection ({selectedThemes.length} categor{selectedThemes.length > 1 ? 'ies' : 'y'})
           </button>
         </div>
       </div>
@@ -1131,6 +1200,147 @@ Haus;house`}
         >
           Import List
         </button>
+      </div>
+    );
+  }
+
+  // ===== QUICK ADD SCREEN =====
+  if (mode === 'quick-add') {
+    const targetName = quickTargetListId === 'new'
+      ? (quickNewListName.trim() || 'My words')
+      : (customLists.find(l => l.id === quickTargetListId)?.name || 'list');
+
+    return (
+      <div className="max-w-2xl mx-auto">
+        <button
+          onClick={() => { setMode('menu'); setQuickAdded([]); setQuickError(''); }}
+          className="flex items-center gap-2 mb-6 hover:opacity-70 transition-opacity"
+          style={{ color: 'var(--coral-600)' }}
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          <span className="font-semibold">Back</span>
+        </button>
+
+        <h2 className="text-2xl font-black mb-2" style={{ color: 'var(--sage-700, #4a5a34)' }}>
+          ➕ Add words
+        </h2>
+        <p className="text-sm mb-6" style={{ color: 'var(--sand-600)' }}>
+          Type a word and its translation, then press Enter. It goes straight into your review deck.
+        </p>
+
+        {/* Destination list */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium mb-2" style={{ color: 'var(--sand-700)' }}>
+            Add to
+          </label>
+          <select
+            value={quickTargetListId}
+            onChange={(e) => setQuickTargetListId(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border-2 focus:outline-none focus:border-turquoise-400 bg-white"
+            style={{ borderColor: 'var(--sand-300)', color: 'var(--sand-800)' }}
+          >
+            <option value="new">➕ New list…</option>
+            {customLists.map(list => (
+              <option key={list.id} value={list.id}>{list.name} ({list.words.length})</option>
+            ))}
+          </select>
+          {quickTargetListId === 'new' && (
+            <input
+              type="text"
+              value={quickNewListName}
+              onChange={(e) => setQuickNewListName(e.target.value)}
+              placeholder="List name"
+              className="w-full mt-3 px-4 py-3 rounded-xl border-2 focus:outline-none focus:border-turquoise-400"
+              style={{ borderColor: 'var(--sand-300)' }}
+            />
+          )}
+        </div>
+
+        {/* Word entry form */}
+        <div className="bg-white rounded-2xl p-6 border mb-4" style={{ borderColor: 'var(--sand-200)' }}>
+          <div className="flex flex-col sm:flex-row gap-3 mb-3">
+            <select
+              value={quickArticle}
+              onChange={(e) => setQuickArticle(e.target.value as '' | 'der' | 'die' | 'das')}
+              className="px-3 py-3 rounded-xl border-2 focus:outline-none focus:border-turquoise-400 bg-white sm:w-28"
+              style={{ borderColor: 'var(--sand-300)', color: 'var(--coral-600)' }}
+            >
+              <option value="">—</option>
+              <option value="der">der</option>
+              <option value="die">die</option>
+              <option value="das">das</option>
+            </select>
+            <input
+              ref={quickGermanRef}
+              type="text"
+              value={quickGerman}
+              onChange={(e) => setQuickGerman(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && addQuickWord()}
+              placeholder="🇩🇪 German word"
+              className="flex-1 px-4 py-3 rounded-xl border-2 focus:outline-none focus:border-turquoise-400 font-medium"
+              style={{ borderColor: 'var(--sand-300)' }}
+              autoFocus
+            />
+          </div>
+          <input
+            type="text"
+            value={quickEnglish}
+            onChange={(e) => setQuickEnglish(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && addQuickWord()}
+            placeholder="🇬🇧 English translation"
+            className="w-full px-4 py-3 rounded-xl border-2 focus:outline-none focus:border-turquoise-400 font-medium mb-4"
+            style={{ borderColor: 'var(--sand-300)' }}
+          />
+
+          {quickError && (
+            <p className="text-sm text-red-600 mb-3">❌ {quickError}</p>
+          )}
+
+          <button
+            onClick={addQuickWord}
+            className="w-full py-3 rounded-xl font-bold text-white text-lg transition-all hover:scale-[1.02]"
+            style={{ backgroundColor: 'var(--sage-600, #5f7343)' }}
+          >
+            Add to “{targetName}”
+          </button>
+        </div>
+
+        {/* Added this session */}
+        {quickAdded.length > 0 && (
+          <div className="bg-white rounded-2xl p-6 border" style={{ borderColor: 'var(--sand-200)' }}>
+            <div className="flex items-center justify-between mb-3">
+              <p className="font-bold" style={{ color: 'var(--sand-700)' }}>
+                Added this session ({quickAdded.length})
+              </p>
+              <button
+                onClick={() => setMode('menu')}
+                className="text-sm font-medium underline"
+                style={{ color: 'var(--turquoise-600)' }}
+              >
+                Done
+              </button>
+            </div>
+            <div className="space-y-2 max-h-64 overflow-y-auto">
+              {quickAdded.map((w, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-center gap-3 p-3 rounded-xl"
+                  style={{ backgroundColor: 'var(--sand-50)' }}
+                >
+                  <span className="text-lg">✅</span>
+                  <span className="font-bold" style={{ color: 'var(--sand-800)' }}>
+                    {w.article && <span style={{ color: 'var(--coral-500)' }}>{w.article} </span>}
+                    {w.german}
+                  </span>
+                  <span style={{ color: 'var(--sand-400)' }}>→</span>
+                  <span style={{ color: 'var(--sand-600)' }}>{w.english}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -1633,6 +1843,20 @@ Haus;house`}
             <div>
               <p className="text-3xl font-black text-red-600">{sessionStats.incorrect}</p>
               <p className="text-sm" style={{ color: 'var(--sand-500)' }}>Incorrect</p>
+            </div>
+          </div>
+
+          <div className="panda-session-reward panda-revision-result" aria-hidden="true">
+            <div className="panda-session-reward-icon">
+              {percentage >= 80 ? '🏆' : percentage >= 50 ? '🐼' : '🎋'}
+            </div>
+            <div>
+              <p className="panda-session-reward-title">
+                {percentage >= 80 ? 'Review champion' : percentage >= 50 ? 'Pandachan is with you' : 'Steady practice'}
+              </p>
+              <p className="panda-session-reward-text">
+                {percentage >= 80 ? 'Pandachan is celebrating your session with you.' : percentage >= 50 ? 'Good session. Keep the rhythm.' : 'Take it slowly, word by word.'}
+              </p>
             </div>
           </div>
         </div>

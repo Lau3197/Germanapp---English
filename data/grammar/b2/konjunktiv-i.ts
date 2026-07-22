@@ -16,7 +16,7 @@ export const konjunktivIB2: GrammarSection = {
     {
       id: "b2-1-2",
       title: "1.2 Conjugation Table: The Ending System",
-      content: "The formation is simple: **infinitive stem + KI endings**.\n*Note: Unlike the present indicative, the stem NEVER changes. There is no e->i change and no Umlaut.*\n\n### Fixed Endings\n| Person | Ending | Example (machen) |\n|---|---|---|\n| ich | **-e** | ich mache (same as indicative -> substitution) |\n| du | **-est** | du machest |\n| er/sie/es | **-e** | **er mache** (distinct from 'macht') |\n| wir | **-en** | wir machen (same as indicative -> substitution) |\n| ihr | **-et** | ihr machet |\n| sie / Sie | **-en** | sie machen (same as indicative -> substitution) |\n\n### Special Case: SEIN (Essential)\nich **sei**, du **seiest**, er **sei**, wir **seien**, ihr **seiet**, sie **seien**.",
+      content: "The formation is simple: **infinitive stem + KI endings**.\n*Note: Unlike the present indicative, the stem NEVER changes. There is no e→i change and no Umlaut.*\n\n### Fixed Endings\n| Person | Ending | Example (machen) |\n|---|---|---|\n| ich | **-e** | ich mache (same as indicative → substitution) |\n| du | **-est** | du machest |\n| er/sie/es | **-e** | **er mache** (distinct from 'macht') |\n| wir | **-en** | wir machen (same as indicative → substitution) |\n| ihr | **-et** | ihr machet |\n| sie / Sie | **-en** | sie machen (same as indicative → substitution) |\n\n### Special Case: SEIN (Essential)\nich **sei**, du **seiest**, er **sei**, wir **seien**, ihr **seiet**, sie **seien**.",
       examples: [
         { de: "Man sagt, er **wisse** alles.", fr: "They say he knows everything.", note: "KI of 'wissen'. The stem stays the infinitive stem." }
       ]
@@ -24,7 +24,7 @@ export const konjunktivIB2: GrammarSection = {
     {
       id: "b2-1-3",
       title: "1.3 The Substitution Rule",
-      content: "When the KI form looks like the indicative, German uses a 'backup chain':\n\n1. **KI = indicative?** -> Replace it with the simple **Konjunktiv II** form (for example: *hätten, kämen*).\n2. **KII = Präteritum?** -> Replace it with **würde + infinitive**.\n\n### Example with 'lernen'\n• *Indicative*: wir lernen.\n• *KI (theoretical)*: wir lernen. -> **STOP** (identical).\n• *KII substitution*: wir lernten. -> **STOP** (identical to the past).\n• *Final form*: wir **würden lernen**.",
+      content: "When the KI form looks like the indicative, German uses a 'backup chain':\n\n1. **KI = indicative?** → Replace it with the simple **Konjunktiv II** form (for example: *hätten, kämen*).\n2. **KII = Präteritum?** → Replace it with **würde + infinitive**.\n\n### Example with 'lernen'\n• *Indicative*: wir lernen.\n• *KI (theoretical)*: wir lernen. → **STOP** (identical).\n• *KII substitution*: wir lernten. → **STOP** (identical to the past).\n• *Final form*: wir **würden lernen**.",
       examples: [
         { de: "Sie sagen, sie **hätten** Hunger.", fr: "They say they are hungry.", note: "Substitution with KII because 'haben' in KI = 'haben' in the indicative." }
       ]

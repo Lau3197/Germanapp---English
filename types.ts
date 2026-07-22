@@ -10,17 +10,19 @@ export enum LanguageLevel {
 
 export interface GermanWord {
   german: string;
-  english: string;
+  english?: string;
+  french?: string;
   article: 'der' | 'die' | 'das' | '';
   plural: string;
   example: string;
   level: LanguageLevel;
-  subTheme?: string; // Optionnel pour le filtrage par sous-thème
+  subTheme?: string; // Optional, used for filtering by sub-theme
 }
 
 export interface Phrase {
   german: string;
-  english: string;
+  english?: string;
+  french?: string;
   context: string;
 }
 
@@ -29,11 +31,12 @@ export interface Theme {
   name: string;
   icon: string;
   description: string;
-  subThemes?: string[]; // Liste des sous-thèmes disponibles
+  subThemes?: string[]; // List of available sub-themes
 }
 
-export type MainTab = 'vocabulary' | 'nomen-verben' | 'verben-mit-praepositionen' | 'grammar' | 'stats' | 'tables' | 'expressions' | 'revision' | 'exam';
+export type MainTab = 'dashboard' | 'vocabulary' | 'gender' | 'structures' | 'nomen-verben' | 'verben-mit-praepositionen' | 'grammar' | 'tables' | 'expressions' | 'revision' | 'exam';
 export type ViewMode = 'themes' | 'learn' | 'quiz' | 'phrases' | 'trainer';
+export type AppTheme = 'classic' | 'panda';
 
 export interface ThemeContent {
   words: GermanWord[];

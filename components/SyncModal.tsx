@@ -4,6 +4,9 @@ interface SyncData {
   favorites: any[];
   annotations: any[];
   stats: any;
+  spacedRepetition?: Record<string, any>;
+  spacedRepetitionToday?: any;
+  spacedRepetitionCustomLists?: any[];
   version: string;
   exportedAt: string;
 }
@@ -33,7 +36,10 @@ export const SyncModal: React.FC<SyncModalProps> = ({ isOpen, onClose }) => {
       favorites: JSON.parse(localStorage.getItem('grammarFavorites') || '[]'),
       annotations: JSON.parse(localStorage.getItem('grammarAnnotations') || '[]'),
       stats: JSON.parse(localStorage.getItem('grammarStats') || '{}'),
-      version: '1.0',
+      spacedRepetition: JSON.parse(localStorage.getItem('spacedRepetition_en') || '{}'),
+      spacedRepetitionToday: JSON.parse(localStorage.getItem('spacedRepetitionToday_en') || 'null'),
+      spacedRepetitionCustomLists: JSON.parse(localStorage.getItem('spacedRepetitionCustomLists_en') || '[]'),
+      version: '2.0',
       exportedAt: new Date().toISOString()
     };
     
@@ -102,6 +108,35 @@ export const SyncModal: React.FC<SyncModalProps> = ({ isOpen, onClose }) => {
         localStorage.setItem('grammarStats', JSON.stringify(mergedStats));
       }
 
+      if (data.spacedRepetition && typeof data.spacedRepetition === 'object') {
+        const existingProgress = JSON.parse(localStorage.getItem('spacedRepetition_en') || '{}');
+        localStorage.setItem('spacedRepetition_en', JSON.stringify({
+          ...existingProgress,
+          ...data.spacedRepetition
+        }));
+      }
+
+      if (data.spacedRepetitionToday && typeof data.spacedRepetitionToday === 'object') {
+        const existingToday = JSON.parse(localStorage.getItem('spacedRepetitionToday_en') || 'null');
+        const mergedToday = existingToday?.date === data.spacedRepetitionToday.date
+          ? {
+              date: data.spacedRepetitionToday.date,
+              count: Math.max(existingToday.count || 0, data.spacedRepetitionToday.count || 0)
+            }
+          : data.spacedRepetitionToday;
+        localStorage.setItem('spacedRepetitionToday_en', JSON.stringify(mergedToday));
+      }
+
+      if (Array.isArray(data.spacedRepetitionCustomLists)) {
+        const existingLists = JSON.parse(localStorage.getItem('spacedRepetitionCustomLists_en') || '[]');
+        const listMap = new Map<string, any>();
+        [...existingLists, ...data.spacedRepetitionCustomLists].forEach((list, index) => {
+          if (!list || typeof list !== 'object') return;
+          listMap.set(list.id || `list-${index}`, list);
+        });
+        localStorage.setItem('spacedRepetitionCustomLists_en', JSON.stringify(Array.from(listMap.values())));
+      }
+
       setImportStatus('success');
       setImportMessage(`Data imported successfully! (exported on ${new Date(data.exportedAt).toLocaleDateString('en-GB')})`);
       
@@ -147,11 +182,15 @@ export const SyncModal: React.FC<SyncModalProps> = ({ isOpen, onClose }) => {
     const favorites = JSON.parse(localStorage.getItem('grammarFavorites') || '[]');
     const annotations = JSON.parse(localStorage.getItem('grammarAnnotations') || '[]');
     const stats = JSON.parse(localStorage.getItem('grammarStats') || '{}');
+    const spacedRepetition = JSON.parse(localStorage.getItem('spacedRepetition_en') || '{}');
+    const customLists = JSON.parse(localStorage.getItem('spacedRepetitionCustomLists_en') || '[]');
     
     return {
       favoritesCount: favorites.length,
       annotationsCount: annotations.length,
       completedLessons: stats.completedLessons?.length || 0,
+      reviewCards: Object.keys(spacedRepetition).length,
+      customLists: customLists.length,
       totalTime: stats.totalTimeSpent || 0,
       streak: stats.currentStreak || 0
     };
@@ -233,6 +272,14 @@ export const SyncModal: React.FC<SyncModalProps> = ({ isOpen, onClose }) => {
                   <div className="flex items-center gap-2">
                     <span className="text-orange-500">🔥</span>
                     <span className="text-sm text-slate-600"><strong>{summary.streak}</strong> streak days</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-blue-500">Cards</span>
+                    <span className="text-sm text-slate-600"><strong>{summary.reviewCards}</strong> review cards</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-violet-500">Lists</span>
+                    <span className="text-sm text-slate-600"><strong>{summary.customLists}</strong> custom lists</span>
                   </div>
                 </div>
               </div>

@@ -5,11 +5,13 @@ export interface VerbPrepositionEntry {
   preposition: string;
   case: PrepositionCase;
   translation: string;
+  translationLt: string;
   exampleDe: string;
   exampleEn: string;
+  exampleLt: string;
 }
 
-export const VERBEN_MIT_PRAEPOSITIONEN: VerbPrepositionEntry[] = [
+const VERBEN_MIT_PRAEPOSITIONEN_BASE: Omit<VerbPrepositionEntry, 'translationLt' | 'exampleLt'>[] = [
   {
     verb: 'abhängen',
     preposition: 'von',
@@ -899,3 +901,455 @@ export const VERBEN_MIT_PRAEPOSITIONEN: VerbPrepositionEntry[] = [
     exampleEn: 'John doubts that his son told the truth.'
   }
 ];
+
+const LITHUANIAN_TRANSLATIONS: Pick<VerbPrepositionEntry, 'translationLt' | 'exampleLt'>[] = [
+  {
+    translationLt: 'priklausyti nuo',
+    exampleLt: 'Ar mes važiuosime, priklauso nuo oro.'
+  },
+  {
+    translationLt: 'kreipti dėmesį į / prižiūrėti',
+    exampleLt: 'Prašau, prižiūrėk naują paltą.'
+  },
+  {
+    translationLt: 'pradėti nuo',
+    exampleLt: 'Pradedu nuo pratimo.'
+  },
+  {
+    translationLt: 'priklausyti nuo / viskas priklauso nuo',
+    exampleLt: 'Viskas priklauso nuo tinkamos kainos.'
+  },
+  {
+    translationLt: 'atsakyti į',
+    exampleLt: 'Prašau šiandien atsakykite į laišką.'
+  },
+  {
+    translationLt: 'būti susierzinusiam dėl',
+    exampleLt: 'Mes susierzinę dėl lietaus.'
+  },
+  {
+    translationLt: 'nustoti daryti',
+    exampleLt: 'Jis nustoja dirbti 17 val.'
+  },
+  {
+    translationLt: 'prižiūrėti / saugoti',
+    exampleLt: 'Auklė prižiūri mažus vaikus.'
+  },
+  {
+    translationLt: 'susierzinti dėl',
+    exampleLt: 'Vokiečiai susierzina dėl nepunktualumo.'
+  },
+  {
+    translationLt: 'išleisti pinigus kam nors',
+    exampleLt: 'Kai kurie žmonės išleidžia daug pinigų batams.'
+  },
+  {
+    translationLt: 'padėkoti kam nors',
+    exampleLt: 'Nuoširdžiai tau dėkoju.'
+  },
+  {
+    translationLt: 'padėkoti kam nors už',
+    exampleLt: 'Martinas dėkoja už dovaną.'
+  },
+  {
+    translationLt: 'pradėti nuo',
+    exampleLt: 'Mes laiku pradedame vokiečių kalbos kursą.'
+  },
+  {
+    translationLt: 'stengtis gauti / siekti',
+    exampleLt: 'Karla stengiasi gauti darbą.'
+  },
+  {
+    translationLt: 'pranešti apie',
+    exampleLt: 'Reporteris praneša apie rinkimus.'
+  },
+  {
+    translationLt: 'užsiimti kuo nors / dirbti su',
+    exampleLt: 'Man patinka dirbti su augalais.'
+  },
+  {
+    translationLt: 'skųstis kam nors',
+    exampleLt: 'Svečias skundžiasi padavėjui.'
+  },
+  {
+    translationLt: 'susidėti iš / būti pagamintam iš',
+    exampleLt: 'Vestuviniai žiedai yra pagaminti iš aukso.'
+  },
+  {
+    translationLt: 'primygtinai reikalauti',
+    exampleLt: 'Reikalauju nedelsiant sumokėti už automobilį.'
+  },
+  {
+    translationLt: 'dalyvauti',
+    exampleLt: 'Daug studentų dalyvauja streikuose.'
+  },
+  {
+    translationLt: 'kreiptis dėl darbo į',
+    exampleLt: 'Jis kreipiasi dėl darbo į kepyklą.'
+  },
+  {
+    translationLt: 'kandidatuoti į / teikti paraišką dėl',
+    exampleLt: 'Ji kandidatuoja į sekretorės pareigas.'
+  },
+  {
+    translationLt: 'remtis / būti susijusiam su',
+    exampleLt: 'Mano klausimas susijęs su jūsų pasiūlymu.'
+  },
+  {
+    translationLt: 'prašyti ko nors',
+    exampleLt: 'Pranešėjas prašo dėmesio.'
+  },
+  {
+    translationLt: 'dėkoti už / būti dėkingam už',
+    exampleLt: 'Samas dėkingas už Ritos pagalbą.'
+  },
+  {
+    translationLt: 'galvoti apie',
+    exampleLt: 'Marija dažnai galvoja apie atostogas.'
+  },
+  {
+    translationLt: 'diskutuoti apie',
+    exampleLt: 'Kabinetas diskutuoja apie naują mokestį.'
+  },
+  {
+    translationLt: 'pakviesti į',
+    exampleLt: 'Kviečiu tave į savo gimtadienį.'
+  },
+  {
+    translationLt: 'nuspręsti dėl / pasirinkti',
+    exampleLt: 'Vaikai mielai renkasi šokoladą.'
+  },
+  {
+    translationLt: 'nuspręsti / ryžtis',
+    exampleLt: 'Karlas ryžtasi studijoms.'
+  },
+  {
+    translationLt: 'atsiprašyti ko nors',
+    exampleLt: 'Tomas atsiprašo jos vyro.'
+  },
+  {
+    translationLt: 'atsiprašyti už',
+    exampleLt: 'Atsiprašau už savo katės elgesį.'
+  },
+  {
+    translationLt: 'atsigauti po',
+    exampleLt: 'Pirmiausia turiu atsigauti po šoko.'
+  },
+  {
+    translationLt: 'prisiminti',
+    exampleLt: 'Mes mielai prisimename savo pirmuosius santuokos metus.'
+  },
+  {
+    translationLt: 'atpažinti pagal',
+    exampleLt: 'Pinokį atpažįstame pagal jo ilgą nosį.'
+  },
+  {
+    translationLt: 'teirautis apie',
+    exampleLt: 'Močiutė dažnai teiraujasi apie mano planus.'
+  },
+  {
+    translationLt: 'išsigąsti dėl / išsigąsti ko nors',
+    exampleLt: 'Virėjas išsigąsta pelės.'
+  },
+  {
+    translationLt: 'pasakoti apie',
+    exampleLt: 'Rytų Berlyno gyventojas pasakoja apie savo gyvenimą buvusioje VDR.'
+  },
+  {
+    translationLt: 'pasakoti apie',
+    exampleLt: 'Vyskupas pasakoja apie kelionę į Romą.'
+  },
+  {
+    translationLt: 'klausti apie / prašyti',
+    exampleLt: 'Žurnalistė klausia apie įstatymo pakeitimo pasekmes.'
+  },
+  {
+    translationLt: 'laukti su nekantrumu',
+    exampleLt: 'Vaikai laukia atostogų.'
+  },
+  {
+    translationLt: 'džiaugtis dėl',
+    exampleLt: 'Visi džiaugiasi atlyginimo padidinimu.'
+  },
+  {
+    translationLt: 'būti apie / būti susijusiam su',
+    exampleLt: 'Visada kalbama apie pinigus.'
+  },
+  {
+    translationLt: 'priklausyti prie / būti dalimi',
+    exampleLt: 'Elzasas priklauso Prancūzijai.'
+  },
+  {
+    translationLt: 'priprasti prie',
+    exampleLt: 'Negaliu priprasti prie laiko pakeitimo.'
+  },
+  {
+    translationLt: 'tikėti',
+    exampleLt: 'Paaugliai tiki tikra meile.'
+  },
+  {
+    translationLt: 'pasveikinti su',
+    exampleLt: 'Sveikiname tave su 18-uoju gimtadieniu.'
+  },
+  {
+    translationLt: 'laikyti kuo / manyti esant',
+    exampleLt: 'Aš to nelaikau gera idėja.'
+  },
+  {
+    translationLt: 'manyti apie / turėti nuomonę apie',
+    exampleLt: 'Vaikai menkai vertina tvarką.'
+  },
+  {
+    translationLt: 'būti kalbama apie / būti',
+    exampleLt: 'Ši kopija nėra originali programinė įranga.'
+  },
+  {
+    translationLt: 'būti apie',
+    exampleLt: 'Pasakos yra apie gėrį ir blogį.'
+  },
+  {
+    translationLt: 'padėti su / padėti ką nors darant',
+    exampleLt: 'Ar galiu tau padėti padengti stalą?'
+  },
+  {
+    translationLt: 'trukdyti / neleisti',
+    exampleLt: 'Lėtas vairuotojas trukdo Gretai lenkti.'
+  },
+  {
+    translationLt: 'tikėtis',
+    exampleLt: 'Kovo mėnesį visi tikisi šiltų pavasario dienų.'
+  },
+  {
+    translationLt: 'girdėti iš / apie',
+    exampleLt: 'Nuo sekmadienio nieko negirdėjau iš Pieto.'
+  },
+  {
+    translationLt: 'informuotis apie',
+    exampleLt: 'Mugėje galima gauti informacijos apie naują technologiją.'
+  },
+  {
+    translationLt: 'domėtis',
+    exampleLt: 'Monika domisi išmaniuoju telefonu.'
+  },
+  {
+    translationLt: 'skųstis dėl',
+    exampleLt: 'Timas dažnai skundžiasi galvos skausmais.'
+  },
+  {
+    translationLt: 'kovoti už',
+    exampleLt: 'Profesinė sąjunga kovoja už didesnius atlyginimus.'
+  },
+  {
+    translationLt: 'įvykti / kilti',
+    exampleLt: 'Susitikime kilo ginčas.'
+  },
+  {
+    translationLt: 'susikoncentruoti į',
+    exampleLt: 'Karlas susikoncentruoja į savo namų darbus.'
+  },
+  {
+    translationLt: 'rūpintis',
+    exampleLt: 'Slaugos namuose rūpinamasi senais žmonėmis, kurie serga.'
+  },
+  {
+    translationLt: 'juoktis iš / dėl',
+    exampleLt: 'Iš gero pokšto reikia garsiai juoktis.'
+  },
+  {
+    translationLt: 'kentėti nuo / sirgti',
+    exampleLt: 'Vienas iš penkių vadovų kenčia nuo perdegimo.'
+  },
+  {
+    translationLt: 'kentėti nuo / dėl',
+    exampleLt: 'Kavos mėgėjai kenčia nuo miego problemų.'
+  },
+  {
+    translationLt: 'galvoti apie / apmąstyti',
+    exampleLt: 'Valstybės tarnautojams nereikia galvoti apie savo pensiją.'
+  },
+  {
+    translationLt: 'protestuoti prieš',
+    exampleLt: 'Daug žmonių protestuoja prieš branduolinę energetiką.'
+  },
+  {
+    translationLt: 'tikėtis / skaičiuoti su',
+    exampleLt: 'Sausį reikia tikėtis sniego.'
+  },
+  {
+    translationLt: 'kalbėti apie',
+    exampleLt: 'Tavo mama mėgsta kalbėti apie ligas.'
+  },
+  {
+    translationLt: 'kalbėti apie',
+    exampleLt: 'Senelis kalba apie gerus senus laikus.'
+  },
+  {
+    translationLt: 'kvepėti / atsiduoti',
+    exampleLt: 'Čia kvepia pyragu.'
+  },
+  {
+    translationLt: 'sakyti apie',
+    exampleLt: 'Brigita sako apie Ditmarą, kad jis dažnai meluoja.'
+  },
+  {
+    translationLt: 'sakyti apie / manyti apie',
+    exampleLt: 'Ką manai apie mano naują šukuoseną?'
+  },
+  {
+    translationLt: 'siųsti kam / į',
+    exampleLt: 'Rytoj tau atsiųsiu el. laišką.'
+  },
+  {
+    translationLt: 'siųsti pas',
+    exampleLt: 'Bendrosios praktikos gydytojas siunčia pacientą pas specialistą.'
+  },
+  {
+    translationLt: 'skųstis dėl / piktintis dėl',
+    exampleLt: 'Visi skundžiasi dėl lietaus.'
+  },
+  {
+    translationLt: 'turėti skonį / būti skonio',
+    exampleLt: 'Midijos turi jūros vandens skonį.'
+  },
+  {
+    translationLt: 'rašyti kam',
+    exampleLt: 'Prašau dar šiandien parašyk savo mamai.'
+  },
+  {
+    translationLt: 'saugoti nuo',
+    exampleLt: 'Kompiuterį reikia saugoti nuo įsilaužėlių.'
+  },
+  {
+    translationLt: 'būti už / pritarti',
+    exampleLt: 'Aš pritariu vaikų darbo panaikinimui.'
+  },
+  {
+    translationLt: 'būti prieš',
+    exampleLt: 'Daugelis yra prieš mokesčių didinimą.'
+  },
+  {
+    translationLt: 'rūpintis / aprūpinti',
+    exampleLt: 'Vaikai senatvėje turi rūpintis savo tėvais.'
+  },
+  {
+    translationLt: 'kalbėti su',
+    exampleLt: 'Dar kartą pakalbėsiu su tavo tėvu.'
+  },
+  {
+    translationLt: 'kalbėti apie',
+    exampleLt: 'Pakalbėkime apie tavo ateitį.'
+  },
+  {
+    translationLt: 'mirti nuo',
+    exampleLt: 'Du vokiečiai mirė nuo gripo.'
+  },
+  {
+    translationLt: 'ginčytis su',
+    exampleLt: 'Nenoriu su tavimi ginčytis.'
+  },
+  {
+    translationLt: 'ginčytis dėl / apie',
+    exampleLt: 'JAV ir Vokietija ginčijasi dėl naujos strategijos.'
+  },
+  {
+    translationLt: 'dalyvauti',
+    exampleLt: 'Šiaurės Korėja dalyvauja pasaulio futbolo čempionate.'
+  },
+  {
+    translationLt: 'kalbėtis telefonu su / skambinti',
+    exampleLt: 'Ar jau kalbėjai telefonu su gydytoju?'
+  },
+  {
+    translationLt: 'susitikti su',
+    exampleLt: 'Kanclerė kasdien susitinka su savo atstovu spaudai.'
+  },
+  {
+    translationLt: 'susitikti dėl / susitikti trumpam pokalbiui',
+    exampleLt: 'Jie susitinka tik trumpam pokalbiui.'
+  },
+  {
+    translationLt: 'įkalbėti ką nors',
+    exampleLt: 'Ar galiu tave įkalbėti išgerti taurę vyno?'
+  },
+  {
+    translationLt: 'kalbėtis su / šnekučiuotis su',
+    exampleLt: 'Dainininkas kalbasi su bosistu.'
+  },
+  {
+    translationLt: 'kalbėtis apie / šnekučiuotis apie',
+    exampleLt: 'Mados dizaineriai kalbasi apie naujausias tendencijas.'
+  },
+  {
+    translationLt: 'susitarti susitikti su',
+    exampleLt: 'Šiandien susitariu susitikti su drauge.'
+  },
+  {
+    translationLt: 'atsisveikinti su',
+    exampleLt: 'Dabar norime su jumis atsisveikinti.'
+  },
+  {
+    translationLt: 'palyginti su',
+    exampleLt: 'Palyginkite Miuncheną su Berlynu.'
+  },
+  {
+    translationLt: 'pasikliauti',
+    exampleLt: 'Manimi galima pasikliauti.'
+  },
+  {
+    translationLt: 'įsimylėti',
+    exampleLt: 'Brita įsimylėjo seną kaimo namą.'
+  },
+  {
+    translationLt: 'sutarti su',
+    exampleLt: 'Danielius gerai sutaria su savo viršininku.'
+  },
+  {
+    translationLt: 'nusimanyti apie / suprasti ką nors apie',
+    exampleLt: 'Ar ką nors nusimanai apie elektriką?'
+  },
+  {
+    translationLt: 'ruoštis',
+    exampleLt: 'Karlas ruošiasi pristatymui.'
+  },
+  {
+    translationLt: 'įspėti apie / dėl',
+    exampleLt: 'Jis buvo įspėtas apie dideles seno automobilio išlaidas.'
+  },
+  {
+    translationLt: 'laukti',
+    exampleLt: 'Čia autobuso tenka laukti ilgai.'
+  },
+  {
+    translationLt: 'kreiptis į / susisiekti su',
+    exampleLt: 'Prašome kreiptis į buhalteriją.'
+  },
+  {
+    translationLt: 'virsti / tapti',
+    exampleLt: 'Esant žemiau nulio laipsnių, vanduo virsta ledu.'
+  },
+  {
+    translationLt: 'žinoti apie',
+    exampleLt: 'Nieko nežinau apie naujus kompiuterius mūsų komandai.'
+  },
+  {
+    translationLt: 'stebėtis dėl',
+    exampleLt: 'Daugelis vokiečių stebisi staiga taip išaugusiomis elektros kainomis.'
+  },
+  {
+    translationLt: 'žiūrėti, kaip kas nors ką nors daro',
+    exampleLt: 'Ar galiu stebėti, kaip tu taisai?'
+  },
+  {
+    translationLt: 'žiūrėti, kaip kas nors ką nors daro',
+    exampleLt: 'Ar nori žiūrėti, kaip aš gaminu?'
+  },
+  {
+    translationLt: 'abejoti',
+    exampleLt: 'Džonas abejoja, kad jo sūnus pasakė tiesą.'
+  }
+];
+
+export const VERBEN_MIT_PRAEPOSITIONEN: VerbPrepositionEntry[] = VERBEN_MIT_PRAEPOSITIONEN_BASE.map((entry, index) => ({
+  ...entry,
+  ...LITHUANIAN_TRANSLATIONS[index]
+}));

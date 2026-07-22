@@ -4,12 +4,15 @@ import { GRAMMAR_DATA } from '../data/grammarData';
 import { THEMES } from '../constants';
 import { NOMEN_VERBEN_LIST } from '../data/nomenVerbenData';
 import { VERBEN_MIT_PRAEPOSITIONEN } from '../data/verbenMitPraepositionenData';
+import { STRUCTURE_COMPARISONS, STRUCTURE_CATEGORY_LABELS } from '../data/structureComparisonData';
+import { getTranslation } from '../utils/translations';
 
 // Note: EXPRESSIONS_DATA will be added when the file exists
 
 export type SearchResultType = 
   | 'vocabulary' 
   | 'grammar' 
+  | 'structure'
   | 'expression' 
   | 'nomen-verb' 
   | 'verb-preposition'
@@ -22,6 +25,7 @@ export interface SearchResult {
   subtitle?: string;
   description?: string;
   theme?: string;
+  themeId?: string; // Used to deep-link into the correct vocabulary theme
   level?: string;
   matchedText: string;
   score: number; // For relevance sorting
@@ -73,28 +77,32 @@ export function useGlobalSearch() {
       const themeName = THEMES.find(t => t.id === themeId)?.name || themeId;
       
       data.words.forEach((word, idx) => {
+        const translation = getTranslation(word);
         index.push({
           id: `vocab-${themeId}-${idx}`,
           type: 'vocabulary',
           title: word.german,
-          subtitle: word.french,
+          subtitle: translation,
           description: word.example,
           theme: themeName,
+          themeId,
           level: word.level,
-          matchedText: `${word.german} ${word.french} ${word.example || ''}`,
+          matchedText: `${word.german} ${word.english || ''} ${word.french || ''} ${translation} ${word.example || ''}`,
           score: 0,
         });
       });
 
       data.phrases.forEach((phrase, idx) => {
+        const translation = getTranslation(phrase);
         index.push({
           id: `phrase-${themeId}-${idx}`,
           type: 'vocabulary',
           title: phrase.german,
-          subtitle: phrase.french,
+          subtitle: translation,
           description: phrase.context,
           theme: themeName,
-          matchedText: `${phrase.german} ${phrase.french} ${phrase.context || ''}`,
+          themeId,
+          matchedText: `${phrase.german} ${phrase.english || ''} ${phrase.french || ''} ${translation} ${phrase.context || ''}`,
           score: 0,
         });
       });
@@ -118,6 +126,32 @@ export function useGlobalSearch() {
       });
     });
 
+    // Index structure comparisons
+    STRUCTURE_COMPARISONS.forEach(item => {
+      index.push({
+        id: `structure-${item.id}`,
+        type: 'structure',
+        title: item.title,
+        subtitle: STRUCTURE_CATEGORY_LABELS[item.category],
+        description: item.coreAnswer,
+        level: item.level,
+        matchedText: [
+          item.title,
+          item.sourcePattern,
+          item.germanPattern,
+          item.coreAnswer,
+          item.explanation,
+          ...item.avoid,
+          ...item.examples.flatMap(example => [
+            example.english,
+            example.german,
+            example.note
+          ])
+        ].join(' '),
+        score: 0,
+      });
+    });
+
     // Index Nomen-Verb entries
     NOMEN_VERBEN_LIST.forEach((item, idx) => {
       index.push({
@@ -138,9 +172,9 @@ export function useGlobalSearch() {
         id: `vmp-${idx}`,
         type: 'verb-preposition',
         title: `${item.verb} ${item.preposition}`,
-        subtitle: `${item.translation} (${item.case === 'A' ? 'Accusative' : 'Dative'})`,
-        description: item.exampleEn,
-        matchedText: `${item.verb} ${item.preposition} ${item.translation} ${item.exampleDe} ${item.exampleEn}`,
+        subtitle: `${item.translation} / ${item.translationLt} (${item.case === 'A' ? 'Accusative' : 'Dative'})`,
+        description: `${item.exampleEn} / ${item.exampleLt}`,
+        matchedText: `${item.verb} ${item.preposition} ${item.translation} ${item.translationLt} ${item.exampleDe} ${item.exampleEn} ${item.exampleLt}`,
         score: 0,
       });
     });
@@ -179,6 +213,7 @@ export function useGlobalSearch() {
     const groups: Record<SearchResultType, SearchResult[]> = {
       vocabulary: [],
       grammar: [],
+      structure: [],
       expression: [],
       'nomen-verb': [],
       'verb-preposition': [],

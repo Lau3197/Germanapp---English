@@ -10,7 +10,7 @@ export const phraseComplexeC1: GrammarSection = {
 
 This section focuses on condensing information and using complex structures in a refined but still readable way.`,
       examples: [
-        { de: "B2: Der Mann, der am Fenster sitzt, liest ein Buch. -> C1: Der am Fenster sitzende Mann liest ein Buch.", fr: "The man sitting by the window is reading a book.", note: "The relative clause is condensed into a participial construction." }
+        { de: "B2: Der Mann, der am Fenster sitzt, liest ein Buch. → C1: Der am Fenster sitzende Mann liest ein Buch.", fr: "The man sitting by the window is reading a book.", note: "The relative clause is condensed into a participial construction." }
       ]
     },
     {
@@ -124,7 +124,7 @@ Correct: Das **reparierte** Auto.`,
 **zu + infinitive + -d + adjective ending**
 
 Example:
-- lösen -> zu lösend -> ein **zu lösendes** Problem
+- lösen → zu lösend → ein **zu lösendes** Problem
 
 ### Basic transformation
 - B2: Das ist ein Problem, **das gelöst werden muss**.
@@ -157,9 +157,9 @@ The context decides whether the meaning is "must be done" or "can be done".
 
 ### Separable-prefix verbs
 With separable verbs, **zu** goes between the prefix and the verb:
-- aufgeben -> auf**zu**gebend -> ein **aufzugebender** Plan
-- einkaufen -> ein**zu**kaufend -> die **einzukaufenden** Lebensmittel
-- abgeben -> ab**zu**gebend -> das **abzugebende** Dokument
+- aufgeben → auf**zu**gebend → ein **aufzugebender** Plan
+- einkaufen → ein**zu**kaufend → die **einzukaufenden** Lebensmittel
+- abgeben → ab**zu**gebend → das **abzugebende** Dokument
 
 ### With complements
 Complements come before the gerundive:

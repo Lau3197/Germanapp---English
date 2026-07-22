@@ -15,7 +15,7 @@ export const participialesB2: GrammarSection = {
     {
       id: "b2-5-2",
       title: "5.2 Partizip I: Active and Simultaneous",
-      content: "Partizip I describes an action that happens **at the same time** as the main verb and whose noun is the **doer**.\n\n### Formation\n**Infinitive + 'd' + adjective ending**.\n• *laufen* -> laufend- (running)\n• *arbeiten* -> arbeitend- (working)\n\n### Meaning\nAlways **active**. If the noun performs the action, use Partizip I.",
+      content: "Partizip I describes an action that happens **at the same time** as the main verb and whose noun is the **doer**.\n\n### Formation\n**Infinitive + 'd' + adjective ending**.\n• *laufen* → laufend- (running)\n• *arbeiten* → arbeitend- (working)\n\n### Meaning\nAlways **active**. If the noun performs the action, use Partizip I.",
       examples: [
         { de: "Die **singenden** Vögel begrüßen den Morgen.", fr: "The singing birds greet the morning." },
         { de: "Ein **sich schnell entwickelndes** Land.", fr: "A rapidly developing country." }
@@ -24,7 +24,7 @@ export const participialesB2: GrammarSection = {
     {
       id: "b2-5-3",
       title: "5.3 Partizip II: Passive and Completed",
-      content: "Partizip II describes an action that is **completed** or has a **passive** meaning.\n\n### Formation\n**Past participle form + adjective ending**.\n• *kaufen* -> gekauft- (bought)\n• *schreiben* -> geschrieben- (written)\n\n### Meaning\nThe noun undergoes the action, or the action is complete.",
+      content: "Partizip II describes an action that is **completed** or has a **passive** meaning.\n\n### Formation\n**Past participle form + adjective ending**.\n• *kaufen* → gekauft- (bought)\n• *schreiben* → geschrieben- (written)\n\n### Meaning\nThe noun undergoes the action, or the action is complete.",
       examples: [
         { de: "Das **gestohlene** Fahrrad wurde gefunden.", fr: "The stolen bicycle was found." },
         { de: "Die **neu eröffnete** Bibliothek ist toll.", fr: "The newly opened library is great." }
@@ -35,7 +35,7 @@ export const participialesB2: GrammarSection = {
       title: "5.4 The Extended Attribute: The B2 Sandwich",
       content: "This is the signature B2 structure. All complements are inserted between the article and the declined participle.\n\n### Construction Structure\n**[Article] + {adverb / place / time / object} + [declined participle] + [NOUN]**\n\n### Step-by-Step Example:\n1. Base: *Die Frau* (the woman).\n2. Action: *Die **arbeitende** Frau* (the working woman).\n3. Extension: Die [seit zehn Jahren in dieser Firma] **arbeitende** Frau.\n\n**Golden rule**: The participle ALWAYS goes right before the noun and takes the standard adjective ending.",
       examples: [
-        { de: "Das [von der Regierung neu verabschiedete] Gesetz.", fr: "The law newly passed by the government.", note: "Sandwich: article (Das) -> details -> participle (verabschiedete) -> noun (Gesetz)." },
+        { de: "Das [von der Regierung neu verabschiedete] Gesetz.", fr: "The law newly passed by the government.", note: "Sandwich: article (Das) → details → participle (verabschiedete) → noun (Gesetz)." },
         { de: "Die [heute Morgen gelieferten] Pakete.", fr: "The packages delivered this morning." }
       ]
     },

@@ -47,9 +47,9 @@ export const pointsSpecifiquesB2: GrammarSection = {
 
 ### IV. Focus: NACH vs NACHDEM
 This is the most frequent mistake:
-• *Nach dem Essen* (preposition + noun) -> **Correct**
-• *Nachdem ich gegessen hatte* (conjunction + subject/verb) -> **Correct**
-• *Nach ich gegessen habe* -> **INCORRECT**`,
+• *Nach dem Essen* (preposition + noun) → **Correct**
+• *Nachdem ich gegessen hatte* (conjunction + subject/verb) → **Correct**
+• *Nach ich gegessen habe* → **INCORRECT**`,
       examples: [
         { de: "**Trotz** des Regens gingen wir spazieren.", fr: "Despite the rain (preposition), we went for a walk.", note: "Nominal style." },
         { de: "**Obwohl** es regnete, gingen wir spazieren.", fr: "Although it was raining (conjunction), we went for a walk.", note: "Verbal style." },

@@ -10,7 +10,7 @@ export const structuresExpertesC1: GrammarSection = {
 
 The focus is on **Funktionsverbgefüge**, complex double conjunctions, and subtle vocabulary distinctions that matter in advanced German.`,
       examples: [
-        { de: "Funktionsverbgefüge: kritisieren -> Kritik üben an", fr: "to criticise -> to express criticism of", note: "A verb-noun construction." }
+        { de: "Funktionsverbgefüge: kritisieren → Kritik üben an", fr: "to criticise → to express criticism of", note: "A verb-noun construction." }
       ]
     },
     {
@@ -43,15 +43,15 @@ Common functional verbs:
 - treffen
 
 ### Transformations
-**kritisieren -> Kritik üben**
+**kritisieren → Kritik üben**
 - Er **kritisiert** das System.
 - Er **übt Kritik** an dem System.
 
-**anwenden -> zur Anwendung kommen**
+**anwenden → zur Anwendung kommen**
 - Wir **wenden** diese Methode **an**.
 - Diese Methode **kommt zur Anwendung**.
 
-**beeinflussen -> Einfluss nehmen**
+**beeinflussen → Einfluss nehmen**
 - Er **beeinflusst** die Entscheidung.
 - Er **nimmt Einfluss** auf die Entscheidung.
 

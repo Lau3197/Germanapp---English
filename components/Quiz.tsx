@@ -1,6 +1,8 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { GermanWord } from '../types';
+import { usePandaMascot } from '../contexts/PandaMascotContext';
+import { getTranslation } from '../utils/translations';
 
 interface QuizProps {
   words: GermanWord[];
@@ -8,6 +10,7 @@ interface QuizProps {
 }
 
 export const Quiz: React.FC<QuizProps> = ({ words, onComplete }) => {
+  const { triggerMood } = usePandaMascot();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -15,6 +18,12 @@ export const Quiz: React.FC<QuizProps> = ({ words, onComplete }) => {
   const [isFinished, setIsFinished] = useState(false);
 
   const currentWord = words[currentIndex];
+
+  useEffect(() => {
+    if (isFinished) {
+      triggerMood('celebrating', 4200);
+    }
+  }, [isFinished, triggerMood]);
 
   const options = useMemo(() => {
     if (!currentWord) return [];
@@ -30,7 +39,10 @@ export const Quiz: React.FC<QuizProps> = ({ words, onComplete }) => {
     setSelectedOption(option.german);
     const correct = option.german === currentWord.german;
     setIsCorrect(correct);
-    if (correct) setScore(s => s + 1);
+    triggerMood(correct ? 'applauding' : 'encouraging');
+    if (correct) {
+      setScore(s => s + 1);
+    }
 
     setTimeout(() => {
       if (currentIndex < words.length - 1) {
@@ -44,28 +56,42 @@ export const Quiz: React.FC<QuizProps> = ({ words, onComplete }) => {
   };
 
   if (isFinished) {
+    const percentage = Math.round((score / words.length) * 100);
+
     return (
       <div className="bg-white p-8 rounded-3xl shadow-xl text-center max-w-md mx-auto">
         <div className="text-6xl mb-6">🏆</div>
-        <h2 className="text-3xl font-bold text-slate-800 mb-2">Quiz Terminé !</h2>
-        <p className="text-slate-500 mb-6">Vous avez obtenu un score de</p>
+        <h2 className="text-3xl font-bold text-slate-800 mb-2">Quiz Complete!</h2>
+        <p className="text-slate-500 mb-6">Your score</p>
         <div className="text-5xl font-black text-indigo-600 mb-8">{score} / {words.length}</div>
+        <div className="panda-session-reward" aria-hidden="true">
+          <div className="panda-session-reward-icon">🐼</div>
+          <div>
+            <p className="panda-session-reward-title">
+              {percentage >= 80 ? 'Great quiz' : 'Good practice'}
+            </p>
+            <p className="panda-session-reward-text">
+              {percentage >= 80 ? 'Pandachan is ready for the next round.' : 'Review the missed words and try again.'}
+            </p>
+          </div>
+        </div>
         <button
           onClick={onComplete}
           className="w-full bg-indigo-600 text-white font-bold py-4 rounded-xl hover:bg-indigo-700 transition-colors"
         >
-          Retour aux thèmes
+          Back to themes
         </button>
       </div>
     );
   }
 
   if (!currentWord) return null;
+  const currentTranslation = getTranslation(currentWord);
 
   return (
     <div className="max-w-2xl mx-auto">
       <div className="mb-8 flex justify-between items-center px-4">
-        <span className="text-slate-500 font-medium">Question {currentIndex + 1} sur {words.length}</span>
+        <span className="text-slate-500 font-medium">Question {currentIndex + 1} of {words.length}</span>
         <div className="h-2 w-48 bg-slate-200 rounded-full overflow-hidden">
           <div
             className="h-full bg-indigo-500 transition-all duration-300"
@@ -75,8 +101,8 @@ export const Quiz: React.FC<QuizProps> = ({ words, onComplete }) => {
       </div>
 
       <div className="bg-white p-10 rounded-3xl shadow-lg border border-slate-100 mb-8 text-center">
-        <span className="text-indigo-600 font-bold text-sm uppercase tracking-widest mb-2 block">Comment dit-on ?</span>
-        <h2 className="text-4xl font-bold text-slate-800 mb-4">{currentWord.french}</h2>
+        <span className="text-indigo-600 font-bold text-sm uppercase tracking-widest mb-2 block">How do you say it?</span>
+        <h2 className="text-4xl font-bold text-slate-800 mb-4">{currentTranslation}</h2>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

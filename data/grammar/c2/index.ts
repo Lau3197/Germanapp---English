@@ -32,17 +32,17 @@ Features:
 - relaxed syntax
 
 Examples:
-- **haben wir** -> **ham wir**
-- **ist das** -> **is das**
-- **einmal** -> **mal**
+- **haben wir** → **ham wir**
+- **ist das** → **is das**
+- **einmal** → **mal**
 
 ### 3. Gehobene Sprache: elevated style
 Used in literature, formal speeches, essays, and refined public language.
 
 Examples:
-- **bekommen** -> **erhalten**
-- **anfangen** -> **beginnen**
-- **sagen** -> **äußern**
+- **bekommen** → **erhalten**
+- **anfangen** → **beginnen**
+- **sagen** → **äußern**
 
 ### 4. Fachsprache: specialist language
 Technical vocabulary varies by field.
@@ -153,7 +153,7 @@ Examples:
 
 ### Substitution with Konjunktiv II
 When the Konjunktiv I form is identical to the indicative, German often replaces it with Konjunktiv II:
-- Sie sagten, sie haben... -> Sie sagten, sie **hätten**...
+- Sie sagten, sie haben... → Sie sagten, sie **hätten**...
 
 At C2 level, you should recognise both the strict formal system and the stylistic choices writers make.`,
           examples: [

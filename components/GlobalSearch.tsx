@@ -9,6 +9,7 @@ interface GlobalSearchProps {
 const typeLabels: Record<SearchResultType, { label: string; icon: string; color: string }> = {
   vocabulary: { label: 'Vocabulary', icon: '📚', color: 'var(--coral-500)' },
   grammar: { label: 'Grammar', icon: '📖', color: 'var(--turquoise-500)' },
+  structure: { label: 'Structures', icon: '⇄', color: 'var(--terracotta-600)' },
   expression: { label: 'Expression', icon: '💬', color: 'var(--sage-500)' },
   'nomen-verb': { label: 'Nomen-Verb', icon: '🔗', color: 'var(--sand-600)' },
   'verb-preposition': { label: 'Verb + Preposition', icon: '🔎', color: 'var(--terracotta-600)' },
@@ -70,19 +71,29 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ onNavigate }) => {
     // Navigate to the matching tab
     switch (result.type) {
       case 'vocabulary':
-        onNavigate('vocabulary', { search: result.title });
+        onNavigate('vocabulary', {
+          themeId: result.themeId,
+          term: result.title,
+          kind: result.id.startsWith('phrase-') ? 'phrase' : 'word',
+        });
         break;
       case 'grammar':
-        onNavigate('grammar', { topicId: result.id.replace('grammar-', '') });
+        onNavigate('grammar', {
+          topicId: result.id.replace('grammar-', ''),
+          level: result.level,
+        });
+        break;
+      case 'structure':
+        onNavigate('structures', { patternId: result.id.replace('structure-', '') });
         break;
       case 'expression':
-        onNavigate('expressions', { search: result.title });
+        onNavigate('expressions', { term: result.title });
         break;
       case 'nomen-verb':
-        onNavigate('nomen-verben', { search: result.title });
+        onNavigate('nomen-verben', { term: result.title });
         break;
       case 'verb-preposition':
-        onNavigate('verben-mit-praepositionen', { search: result.title });
+        onNavigate('verben-mit-praepositionen', { term: result.title });
         break;
       case 'table':
         onNavigate('tables');
@@ -99,17 +110,17 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ onNavigate }) => {
       {/* Search button */}
       <button
         onClick={openSearch}
-        className="flex items-center gap-2 px-3 py-2 rounded-xl transition-all hover:shadow-md"
+        className="h-11 flex items-center gap-2 px-3 rounded-xl transition-all hover:shadow-md shrink-0"
         style={{ backgroundColor: 'var(--sand-100)' }}
         title="Search (Ctrl+K)"
       >
         <svg className="w-5 h-5" style={{ color: 'var(--sand-500)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
-        <span className="hidden md:inline text-sm" style={{ color: 'var(--sand-500)' }}>
+        <span className="hidden 2xl:inline text-sm" style={{ color: 'var(--sand-500)' }}>
           Search...
         </span>
-        <kbd className="hidden md:inline px-2 py-0.5 rounded text-xs font-mono" style={{
+        <kbd className="hidden 2xl:inline px-2 py-0.5 rounded text-xs font-mono" style={{
           backgroundColor: 'var(--sand-200)',
           color: 'var(--sand-600)'
         }}>

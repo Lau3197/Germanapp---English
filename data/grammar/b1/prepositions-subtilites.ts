@@ -21,17 +21,17 @@ export const prepositionsSubtilitesB1: GrammarSection = {
 **in die Schule** (movement toward the inside):
 • Ich gehe **in die Schule**, um meine Tasche zu holen.
 (I am going **into** the school to get my bag.)
--> Focus on the physical building.
+→ Focus on the physical building.
 
 **zur Schule** (general direction):
 • Ich gehe jeden Morgen **zur Schule**.
 (I go **to** school every morning.)
--> Focus on the route or the daily activity.
+→ Focus on the route or the daily activity.
 
 **auf die Schule** (attendance):
 • Mein Sohn geht **auf die** Realschule.
 (My son attends the Realschule / is enrolled there.)
--> Focus on the institution attended and the student's status.
+→ Focus on the institution attended and the student's status.
 
 ### Position (Wo? + Dative)
 
@@ -307,15 +307,15 @@ English uses broad prepositions such as "to" and "at"; German forces you to choo
 
 | Incorrect | Correct | Rule |
 |---|---|---|
-| ~~nach die Schweiz~~ | **in die** Schweiz | Countries with an article -> in |
-| ~~in Deutschland~~ (movement) | **nach** Deutschland | Countries without an article -> nach |
+| ~~nach die Schweiz~~ | **in die** Schweiz | Countries with an article → in |
+| ~~in Deutschland~~ (movement) | **nach** Deutschland | Countries without an article → nach |
 
 ### Trap 3: Confusing zu and nach
 
 | Incorrect | Correct | Rule |
 |---|---|---|
-| ~~nach meinem Freund~~ | **zu** meinem Freund | People -> zu |
-| ~~zu Berlin~~ | **nach** Berlin | Cities -> nach |
+| ~~nach meinem Freund~~ | **zu** meinem Freund | People → zu |
+| ~~zu Berlin~~ | **nach** Berlin | Cities → nach |
 
 ### Trap 4: auf vs an for Institutions
 
@@ -336,15 +336,15 @@ English uses broad prepositions such as "to" and "at"; German forces you to choo
 ### Final Memo: The Magic Questions
 
 Always ask yourself these questions:
-1. **Wo?** (position) -> dative
-2. **Wohin?** (movement) -> accusative
-3. **City or country without an article?** -> nach
-4. **Country with an article?** -> in + accusative
-5. **Person?** -> zu
-6. **Institution?** -> Check the specific preposition.`,
+1. **Wo?** (position) → dative
+2. **Wohin?** (movement) → accusative
+3. **City or country without an article?** → nach
+4. **Country with an article?** → in + accusative
+5. **Person?** → zu
+6. **Institution?** → Check the specific preposition.`,
       examples: [
         { de: "Ich gehe nach Berlin. / Ich bin in Berlin.", fr: "I am going to Berlin. / I am in Berlin.", note: "nach (movement) vs in (position)." },
-        { de: "Ich fahre in die Türkei.", fr: "I am going to Turkey.", note: "Country with an article -> in." },
+        { de: "Ich fahre in die Türkei.", fr: "I am going to Turkey.", note: "Country with an article → in." },
         { de: "Er studiert an der Freien Universität.", fr: "He studies at the Free University.", note: "an for university." },
         { de: "Sie geht auf das Goethe-Gymnasium.", fr: "She attends the Goethe Gymnasium.", note: "auf for school/Gymnasium." }
       ]

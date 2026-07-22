@@ -1,6 +1,8 @@
 
 import React, { useState } from 'react';
 import { GermanWord, LanguageLevel } from '../types';
+import { getSubThemeLabel } from '../constants';
+import { getTranslation } from '../utils/translations';
 
 interface WordCardProps {
   word: GermanWord;
@@ -18,6 +20,7 @@ const getLevelColor = (level: LanguageLevel) => {
 
 export const WordCard: React.FC<WordCardProps> = ({ word }) => {
   const [isFlipped, setIsFlipped] = useState(false);
+  const translation = getTranslation(word);
 
   return (
     <div
@@ -36,7 +39,7 @@ export const WordCard: React.FC<WordCardProps> = ({ word }) => {
         {/* Front - German side with example */}
         <div className="card-front bg-white rounded-2xl flex flex-col p-6 border-2 border-slate-50">
           <div className="flex justify-between items-start mb-2">
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{word.subTheme}</span>
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{getSubThemeLabel(word.subTheme)}</span>
             <span className={`px-2 py-1 rounded-full text-xs font-bold ${getLevelColor(word.level)}`}>
               {word.level}
             </span>
@@ -58,10 +61,10 @@ export const WordCard: React.FC<WordCardProps> = ({ word }) => {
           </div>
         </div>
 
-        {/* Back - English translation */}
+        {/* Back - translation */}
         <div className="card-back bg-indigo-600 text-white rounded-2xl flex flex-col items-center justify-center p-6">
           <p className="text-indigo-200 text-[10px] uppercase font-bold tracking-widest mb-2">Translation</p>
-          <h3 className="text-3xl font-bold text-center mb-8">{word.english}</h3>
+          <h3 className="text-3xl font-bold text-center mb-8">{translation}</h3>
 
           <div className="absolute bottom-6 text-[10px] text-indigo-300 font-bold uppercase tracking-widest">
             Click to return to the word

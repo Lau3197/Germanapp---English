@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { GermanWord } from '../types';
+import { usePandaMascot } from '../contexts/PandaMascotContext';
+import { getTranslation } from '../utils/translations';
 
 type TrainingMode = 'menu' | 'qcm' | 'writing' | 'flashcards';
 type Direction = 'fr-de' | 'de-fr';
@@ -16,7 +18,7 @@ interface SessionStats {
   total: number;
 }
 
-// Utilitaire pour mélanger un tableau
+// Utility to shuffle an array
 const shuffleArray = <T,>(array: T[]): T[] => {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
@@ -26,7 +28,7 @@ const shuffleArray = <T,>(array: T[]): T[] => {
   return shuffled;
 };
 
-// Normaliser une chaîne pour la comparaison
+// Normalize a string for comparison
 const normalizeString = (str: string): string => {
   return str.toLowerCase().trim()
     .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
@@ -34,17 +36,18 @@ const normalizeString = (str: string): string => {
 };
 
 export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onComplete, themeName }) => {
+  const { triggerMood } = usePandaMascot();
   const [mode, setMode] = useState<TrainingMode>('menu');
   const [direction, setDirection] = useState<Direction>('fr-de');
-  const [wordCount, setWordCount] = useState<number | 'all'>('all'); // Par défaut: tous les mots
+  const [wordCount, setWordCount] = useState<number | 'all'>('all'); // Default: all words
   const [sessionWords, setSessionWords] = useState<GermanWord[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [stats, setStats] = useState<SessionStats>({ correct: 0, incorrect: 0, total: 0 });
   const [isFinished, setIsFinished] = useState(false);
-  const [incorrectWords, setIncorrectWords] = useState<GermanWord[]>([]); // Mots ratés
-  const [isRevisionMode, setIsRevisionMode] = useState(false); // Mode révision
+  const [incorrectWords, setIncorrectWords] = useState<GermanWord[]>([]); // Missed words
+  const [isRevisionMode, setIsRevisionMode] = useState(false); // Review mode
 
-  // Démarrer une session d'entraînement
+  // Start a training session
   const startSession = useCallback((selectedMode: TrainingMode) => {
     const count = wordCount === 'all' ? words.length : Math.min(wordCount, words.length);
     const shuffled = shuffleArray(words).slice(0, count);
@@ -57,7 +60,7 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
     setMode(selectedMode);
   }, [words, wordCount]);
 
-  // Démarrer une session de révision (uniquement les mots ratés)
+  // Start a review session with missed words only
   const startRevisionSession = useCallback((selectedMode: TrainingMode) => {
     const shuffled = shuffleArray(incorrectWords);
     setSessionWords(shuffled);
@@ -69,7 +72,7 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
     setMode(selectedMode);
   }, [incorrectWords]);
 
-  // Passer au mot suivant
+  // Move to the next word
   const nextWord = useCallback((wasCorrect: boolean, currentWord?: GermanWord) => {
     setStats(prev => ({
       ...prev,
@@ -77,10 +80,10 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
       incorrect: prev.incorrect + (wasCorrect ? 0 : 1)
     }));
 
-    // Ajouter aux mots incorrects si raté
+    // Add to incorrect words when missed
     if (!wasCorrect && currentWord) {
       setIncorrectWords(prev => {
-        // Éviter les doublons
+        // Avoid duplicates
         if (prev.some(w => w.german === currentWord.german)) return prev;
         return [...prev, currentWord];
       });
@@ -93,7 +96,7 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
     }
   }, [currentIndex, sessionWords.length]);
 
-  // Retour au menu
+  // Back to menu
   const backToMenu = () => {
     setMode('menu');
     setIsFinished(false);
@@ -102,21 +105,27 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
     setIsRevisionMode(false);
   };
 
-  // Écran de résultats
+  useEffect(() => {
+    if (isFinished) {
+      triggerMood('celebrating', 4200);
+    }
+  }, [isFinished, triggerMood]);
+
+  // Results screen
   if (isFinished) {
     const percentage = Math.round((stats.correct / stats.total) * 100);
     const emoji = percentage >= 80 ? '🏆' : percentage >= 60 ? '👍' : percentage >= 40 ? '💪' : '📚';
-    const message = percentage >= 80 ? 'Excellent !' : percentage >= 60 ? 'Bien joué !' : percentage >= 40 ? 'Continue comme ça !' : 'Encore un peu de pratique !';
+    const message = percentage >= 80 ? 'Excellent!' : percentage >= 60 ? 'Good job!' : percentage >= 40 ? 'Keep going!' : 'A bit more practice!';
     const hasErrors = incorrectWords.length > 0;
 
     return (
       <div className="max-w-md mx-auto animate-in fade-in zoom-in-95 duration-500">
         <div className="bg-white p-8 rounded-3xl shadow-xl text-center border border-slate-100">
-          {/* Badge mode révision */}
+          {/* Review mode badge */}
           {isRevisionMode && (
             <div className="mb-4">
               <span className="inline-block px-4 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-bold">
-                🔄 Mode Révision
+                🔄 Review Mode
               </span>
             </div>
           )}
@@ -124,20 +133,32 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
           <div className="text-7xl mb-6 animate-bounce">{emoji}</div>
           <h2 className="text-3xl font-black text-slate-800 mb-2">{message}</h2>
           <p className="text-slate-500 mb-6">
-            {isRevisionMode ? 'Révision terminée' : 'Session terminée'}
+            {isRevisionMode ? 'Review finished' : 'Session finished'}
           </p>
+
+          <div className="panda-session-reward" aria-hidden="true">
+            <div className="panda-session-reward-icon">🐼</div>
+            <div>
+              <p className="panda-session-reward-title">
+                {percentage >= 80 ? 'Panda expert' : percentage >= 60 ? 'Strong practice' : 'Steady practice'}
+              </p>
+              <p className="panda-session-reward-text">
+                {percentage >= 80 ? 'Pandachan is ready for the next round.' : 'Review the missed words and keep going.'}
+              </p>
+            </div>
+          </div>
 
           <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl p-6 mb-6">
             <div className="text-5xl font-black mb-2" style={{ color: 'var(--terracotta-600)' }}>
               {stats.correct} / {stats.total}
             </div>
             <div className="flex justify-center gap-6 text-sm">
-              <span className="text-emerald-600 font-bold">✓ {stats.correct} correct{stats.correct > 1 ? 's' : ''}</span>
-              <span className="text-rose-500 font-bold">✗ {stats.incorrect} erreur{stats.incorrect > 1 ? 's' : ''}</span>
+              <span className="text-emerald-600 font-bold">✓ {stats.correct} correct</span>
+              <span className="text-rose-500 font-bold">✗ {stats.incorrect} mistake{stats.incorrect > 1 ? 's' : ''}</span>
             </div>
           </div>
 
-          {/* Barre de progression */}
+          {/* Progress bar */}
           <div className="h-4 bg-slate-200 rounded-full overflow-hidden mb-6">
             <div
               className="h-full transition-all duration-1000 rounded-full"
@@ -148,11 +169,11 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
             />
           </div>
 
-          {/* Liste des mots ratés */}
+          {/* Missed words list */}
           {hasErrors && (
             <div className="bg-rose-50 border border-rose-200 rounded-2xl p-4 mb-6 text-left">
               <p className="text-rose-700 font-bold text-sm mb-3 flex items-center gap-2">
-                <span>📝</span> Mots à réviser ({incorrectWords.length})
+                <span>📝</span> Words to review ({incorrectWords.length})
               </p>
               <div className="flex flex-wrap gap-2">
                 {incorrectWords.map((word, idx) => (
@@ -168,13 +189,13 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
           )}
 
           <div className="space-y-3">
-            {/* Bouton révision des erreurs - Prioritaire si erreurs */}
+            {/* Prioritize reviewing missed words when there are errors */}
             {hasErrors && (
               <button
                 onClick={() => startRevisionSession(mode)}
                 className="w-full font-bold py-4 rounded-xl transition-all text-white shadow-lg hover:shadow-xl bg-gradient-to-r from-amber-500 to-orange-500"
               >
-                🔄 Réviser les {incorrectWords.length} erreur{incorrectWords.length > 1 ? 's' : ''}
+                🔄 Review {incorrectWords.length} mistake{incorrectWords.length > 1 ? 's' : ''}
               </button>
             )}
 
@@ -186,20 +207,20 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
                 }`}
               style={!hasErrors ? { backgroundColor: 'var(--terracotta-600)' } : {}}
             >
-              {hasErrors ? '🔁 Nouvelle session complète' : '🔄 Recommencer'}
+              {hasErrors ? '🔁 New full session' : '🔄 Restart'}
             </button>
 
             <button
               onClick={backToMenu}
               className="w-full bg-slate-100 text-slate-700 font-bold py-4 rounded-xl hover:bg-slate-200 transition-colors"
             >
-              ← Changer de mode
+              ← Change mode
             </button>
             <button
               onClick={onComplete}
               className="w-full text-slate-500 font-medium py-3 hover:text-slate-700 transition-colors"
             >
-              Retour aux thèmes
+              Back to themes
             </button>
           </div>
         </div>
@@ -207,18 +228,18 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
     );
   }
 
-  // Menu principal
+  // Main menu
   if (mode === 'menu') {
     return (
       <div className="max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
         <div className="text-center mb-10">
           <h2 className="text-3xl font-black text-slate-800 mb-2">
-            🎯 Entraînement Vocabulaire
+            🎯 Vocabulary Training
           </h2>
           {themeName && (
-            <p className="text-slate-500">Thème : <span className="font-bold">{themeName}</span></p>
+            <p className="text-slate-500">Theme: <span className="font-bold">{themeName}</span></p>
           )}
-          <p className="text-slate-400 text-sm mt-1">{words.length} mots disponibles</p>
+          <p className="text-slate-400 text-sm mt-1">{words.length} words available</p>
         </div>
 
         {/* Configuration */}
@@ -240,7 +261,7 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
                     }`}
                   style={direction === 'fr-de' ? { backgroundColor: 'var(--terracotta-600)' } : {}}
                 >
-                  🇫🇷 → 🇩🇪
+                  🇬🇧 → 🇩🇪
                 </button>
                 <button
                   onClick={() => setDirection('de-fr')}
@@ -250,16 +271,16 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
                     }`}
                   style={direction === 'de-fr' ? { backgroundColor: 'var(--terracotta-600)' } : {}}
                 >
-                  🇩🇪 → 🇫🇷
+                  🇩🇪 → 🇬🇧
                 </button>
               </div>
             </div>
 
-            {/* Nombre de mots */}
+            {/* Number of words */}
             <div>
               <label className="block text-sm font-medium text-slate-600 mb-2">
-                Nombre de mots : <span className="font-bold" style={{ color: 'var(--terracotta-600)' }}>
-                  {wordCount === 'all' ? `Tous (${words.length})` : wordCount}
+                Number of words: <span className="font-bold" style={{ color: 'var(--terracotta-600)' }}>
+                  {wordCount === 'all' ? `All (${words.length})` : wordCount}
                 </span>
               </label>
               <div className="flex flex-wrap gap-2">
@@ -271,7 +292,7 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
                     }`}
                   style={wordCount === 'all' ? { backgroundColor: 'var(--terracotta-600)' } : {}}
                 >
-                  Tous ({words.length})
+                  All ({words.length})
                 </button>
                 {[10, 20, 30, 50].filter(n => n <= words.length).map(num => (
                   <button
@@ -291,38 +312,38 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
           </div>
         </div>
 
-        {/* Modes d'entraînement */}
+        {/* Training modes */}
         <h3 className="font-bold text-slate-700 mb-4 flex items-center gap-2">
-          <span className="text-xl">🎮</span> Choisissez un mode
+          <span className="text-xl">🎮</span> Choose a mode
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* QCM */}
+          {/* Multiple choice */}
           <button
             onClick={() => startSession('qcm')}
             className="group bg-white p-6 rounded-2xl border-2 border-slate-100 hover:border-blue-300 transition-all hover:shadow-lg text-left"
           >
             <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">📝</div>
-            <h4 className="font-black text-slate-800 text-lg mb-2">Quiz QCM</h4>
-            <p className="text-slate-500 text-sm">Choisissez la bonne réponse parmi 4 propositions</p>
+            <h4 className="font-black text-slate-800 text-lg mb-2">Multiple Choice</h4>
+            <p className="text-slate-500 text-sm">Choose the correct answer from 4 options</p>
             <div className="mt-4 flex items-center gap-2 text-blue-600 font-bold text-sm">
-              <span>Commencer</span>
+              <span>Start</span>
               <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
               </svg>
             </div>
           </button>
 
-          {/* Écriture */}
+          {/* Writing */}
           <button
             onClick={() => startSession('writing')}
             className="group bg-white p-6 rounded-2xl border-2 border-slate-100 hover:border-emerald-300 transition-all hover:shadow-lg text-left"
           >
             <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">✍️</div>
-            <h4 className="font-black text-slate-800 text-lg mb-2">Écriture</h4>
-            <p className="text-slate-500 text-sm">Tapez la traduction du mot affiché</p>
+            <h4 className="font-black text-slate-800 text-lg mb-2">Writing</h4>
+            <p className="text-slate-500 text-sm">Type the translation of the displayed word</p>
             <div className="mt-4 flex items-center gap-2 text-emerald-600 font-bold text-sm">
-              <span>Commencer</span>
+              <span>Start</span>
               <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
               </svg>
@@ -336,9 +357,9 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
           >
             <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">🃏</div>
             <h4 className="font-black text-slate-800 text-lg mb-2">Flashcards</h4>
-            <p className="text-slate-500 text-sm">Retournez les cartes et évaluez-vous</p>
+            <p className="text-slate-500 text-sm">Flip the cards and self-check</p>
             <div className="mt-4 flex items-center gap-2 text-purple-600 font-bold text-sm">
-              <span>Commencer</span>
+              <span>Start</span>
               <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
               </svg>
@@ -346,20 +367,20 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
           </button>
         </div>
 
-        {/* Bouton retour */}
+        {/* Back button */}
         <div className="mt-8 text-center">
           <button
             onClick={onComplete}
             className="text-slate-500 font-medium hover:text-slate-700 transition-colors"
           >
-            ← Retour aux thèmes
+            ← Back to themes
           </button>
         </div>
       </div>
     );
   }
 
-  // Mode QCM
+  // Multiple choice mode
   if (mode === 'qcm') {
     return (
       <QCMMode
@@ -374,7 +395,7 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
     );
   }
 
-  // Mode Écriture
+  // Writing mode
   if (mode === 'writing') {
     return (
       <WritingMode
@@ -388,7 +409,7 @@ export const VocabularyTrainer: React.FC<VocabularyTrainerProps> = ({ words, onC
     );
   }
 
-  // Mode Flashcards
+  // Flashcards mode
   if (mode === 'flashcards') {
     return (
       <FlashcardsMode
@@ -419,33 +440,34 @@ interface QCMModeProps {
 }
 
 const QCMMode: React.FC<QCMModeProps> = ({ words, allWords, currentIndex, direction, onAnswer, onBack, stats }) => {
+  const { triggerMood } = usePandaMascot();
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 
   const currentWord = words[currentIndex];
 
-  // Générer les options
+  // Generate answer options
   const options = useMemo(() => {
     if (!currentWord) return [];
 
-    // Obtenir 3 mauvaises réponses
+    // Get 3 wrong answers
     const others = allWords.filter(w => w.german !== currentWord.german);
     const wrongOptions = shuffleArray(others).slice(0, 3);
 
-    // Mélanger avec la bonne réponse
+    // Shuffle with the correct answer
     return shuffleArray([...wrongOptions, currentWord]);
   }, [currentWord, allWords]);
 
   const handleSelect = (option: GermanWord) => {
     if (selectedOption !== null) return;
 
-    const correctAnswer = direction === 'fr-de' ? currentWord.german : currentWord.french;
-    const selectedAnswer = direction === 'fr-de' ? option.german : option.french;
+    const correctAnswer = direction === 'fr-de' ? currentWord.german : getTranslation(currentWord);
+    const selectedAnswer = direction === 'fr-de' ? option.german : getTranslation(option);
     const correct = selectedAnswer === correctAnswer;
 
-    setSelectedOption(direction === 'fr-de' ? option.german : option.french);
+    setSelectedOption(direction === 'fr-de' ? option.german : getTranslation(option));
     setIsCorrect(correct);
-
+    triggerMood(correct ? 'dancing' : 'encouraging', correct ? 2800 : undefined);
     setTimeout(() => {
       onAnswer(correct, currentWord);
       setSelectedOption(null);
@@ -455,9 +477,9 @@ const QCMMode: React.FC<QCMModeProps> = ({ words, allWords, currentIndex, direct
 
   if (!currentWord) return null;
 
-  const question = direction === 'fr-de' ? currentWord.french : `${currentWord.article} ${currentWord.german}`;
-  const getOptionText = (opt: GermanWord) => direction === 'fr-de' ? `${opt.article} ${opt.german}` : opt.french;
-  const correctAnswer = direction === 'fr-de' ? `${currentWord.article} ${currentWord.german}` : currentWord.french;
+  const question = direction === 'fr-de' ? getTranslation(currentWord) : `${currentWord.article} ${currentWord.german}`;
+  const getOptionText = (opt: GermanWord) => direction === 'fr-de' ? `${opt.article} ${opt.german}` : getTranslation(opt);
+  const correctAnswer = direction === 'fr-de' ? `${currentWord.article} ${currentWord.german}` : getTranslation(currentWord);
 
   return (
     <div className="max-w-2xl mx-auto animate-in fade-in duration-300">
@@ -478,7 +500,7 @@ const QCMMode: React.FC<QCMModeProps> = ({ words, allWords, currentIndex, direct
         </div>
       </div>
 
-      {/* Barre de progression */}
+      {/* Progress bar */}
       <div className="h-2 bg-slate-200 rounded-full overflow-hidden mb-8">
         <div
           className="h-full transition-all duration-500 rounded-full"
@@ -492,7 +514,7 @@ const QCMMode: React.FC<QCMModeProps> = ({ words, allWords, currentIndex, direct
       {/* Question */}
       <div className="bg-white p-10 rounded-3xl shadow-lg border border-slate-100 mb-8 text-center">
         <span className="font-bold text-sm uppercase tracking-widest mb-3 block" style={{ color: 'var(--terracotta-600)' }}>
-          {direction === 'fr-de' ? 'Traduisez en allemand' : 'Traduisez en français'}
+          {direction === 'fr-de' ? 'Translate into German' : 'Translate into English'}
         </span>
         <h2 className="text-4xl font-black text-slate-800">{question}</h2>
         {direction === 'fr-de' && currentWord.level && (
@@ -506,8 +528,8 @@ const QCMMode: React.FC<QCMModeProps> = ({ words, allWords, currentIndex, direct
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {options.map((option, idx) => {
           const optionText = getOptionText(option);
-          const isSelected = selectedOption === (direction === 'fr-de' ? option.german : option.french);
-          const isCorrectOption = (direction === 'fr-de' ? option.german : option.french) === (direction === 'fr-de' ? currentWord.german : currentWord.french);
+          const isSelected = selectedOption === (direction === 'fr-de' ? option.german : getTranslation(option));
+          const isCorrectOption = (direction === 'fr-de' ? option.german : getTranslation(option)) === (direction === 'fr-de' ? currentWord.german : getTranslation(currentWord));
 
           let buttonClass = 'bg-white border-slate-100 text-slate-700 hover:border-blue-200';
           if (selectedOption !== null) {
@@ -538,7 +560,7 @@ const QCMMode: React.FC<QCMModeProps> = ({ words, allWords, currentIndex, direct
 };
 
 // ============================================
-// MODE ÉCRITURE
+// WRITING MODE
 // ============================================
 interface WritingModeProps {
   words: GermanWord[];
@@ -550,6 +572,7 @@ interface WritingModeProps {
 }
 
 const WritingMode: React.FC<WritingModeProps> = ({ words, currentIndex, direction, onAnswer, onBack, stats }) => {
+  const { triggerMood } = usePandaMascot();
   const [userInput, setUserInput] = useState('');
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
@@ -557,25 +580,26 @@ const WritingMode: React.FC<WritingModeProps> = ({ words, currentIndex, directio
   const currentWord = words[currentIndex];
   if (!currentWord) return null;
 
-  const question = direction === 'fr-de' ? currentWord.french : `${currentWord.article} ${currentWord.german}`;
-  const correctAnswer = direction === 'fr-de' ? currentWord.german : currentWord.french;
-  const fullCorrectAnswer = direction === 'fr-de' ? `${currentWord.article} ${currentWord.german}` : currentWord.french;
+  const question = direction === 'fr-de' ? getTranslation(currentWord) : `${currentWord.article} ${currentWord.german}`;
+  const correctAnswer = direction === 'fr-de' ? currentWord.german : getTranslation(currentWord);
+  const fullCorrectAnswer = direction === 'fr-de' ? `${currentWord.article} ${currentWord.german}` : getTranslation(currentWord);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (showResult || !userInput.trim()) return;
 
-    // Comparer les réponses (avec tolérance)
+    // Compare answers with tolerance
     const normalizedInput = normalizeString(userInput);
     const normalizedCorrect = normalizeString(correctAnswer);
 
-    // Accepter aussi avec l'article pour fr->de
+    // Also accept the article for English to German
     const normalizedFullCorrect = normalizeString(fullCorrectAnswer);
 
     const correct = normalizedInput === normalizedCorrect || normalizedInput === normalizedFullCorrect;
 
     setIsCorrect(correct);
     setShowResult(true);
+    triggerMood(correct ? 'dancing' : 'encouraging', correct ? 2800 : undefined);
   };
 
   const handleNext = () => {
@@ -587,6 +611,7 @@ const WritingMode: React.FC<WritingModeProps> = ({ words, currentIndex, directio
   const handleSkip = () => {
     setIsCorrect(false);
     setShowResult(true);
+    triggerMood('encouraging');
   };
 
   return (
@@ -608,7 +633,7 @@ const WritingMode: React.FC<WritingModeProps> = ({ words, currentIndex, directio
         </div>
       </div>
 
-      {/* Barre de progression */}
+      {/* Progress bar */}
       <div className="h-2 bg-slate-200 rounded-full overflow-hidden mb-8">
         <div
           className="h-full transition-all duration-500 rounded-full"
@@ -622,7 +647,7 @@ const WritingMode: React.FC<WritingModeProps> = ({ words, currentIndex, directio
       {/* Question */}
       <div className="bg-white p-10 rounded-3xl shadow-lg border border-slate-100 mb-8 text-center">
         <span className="font-bold text-sm uppercase tracking-widest mb-3 block" style={{ color: 'var(--terracotta-600)' }}>
-          {direction === 'fr-de' ? 'Écrivez en allemand' : 'Écrivez en français'}
+          {direction === 'fr-de' ? 'Write in German' : 'Write in English'}
         </span>
         <h2 className="text-4xl font-black text-slate-800">{question}</h2>
         {currentWord.level && (
@@ -632,7 +657,7 @@ const WritingMode: React.FC<WritingModeProps> = ({ words, currentIndex, directio
         )}
       </div>
 
-      {/* Zone de réponse */}
+      {/* Answer area */}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="relative">
           <input
@@ -640,7 +665,7 @@ const WritingMode: React.FC<WritingModeProps> = ({ words, currentIndex, directio
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
             disabled={showResult}
-            placeholder={direction === 'fr-de' ? 'Tapez la traduction allemande...' : 'Tapez la traduction française...'}
+            placeholder={direction === 'fr-de' ? 'Type the German translation...' : 'Type the English translation...'}
             className={`w-full text-2xl font-bold p-6 rounded-2xl border-2 outline-none transition-all ${showResult
                 ? (isCorrect ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'bg-rose-50 border-rose-500 text-rose-700')
                 : 'border-slate-200 focus:border-blue-400 focus:ring-4 focus:ring-blue-100'
@@ -657,23 +682,23 @@ const WritingMode: React.FC<WritingModeProps> = ({ words, currentIndex, directio
           )}
         </div>
 
-        {/* Afficher la bonne réponse si faux */}
+        {/* Show the correct answer after a miss */}
         {showResult && !isCorrect && (
           <div className="bg-emerald-50 border-2 border-emerald-200 p-4 rounded-xl animate-in fade-in slide-in-from-top-2 duration-300">
-            <p className="text-sm text-emerald-600 font-medium mb-1">Bonne réponse :</p>
+            <p className="text-sm text-emerald-600 font-medium mb-1">Correct answer:</p>
             <p className="text-2xl font-black text-emerald-700">{fullCorrectAnswer}</p>
           </div>
         )}
 
-        {/* Exemple */}
+        {/* Example */}
         {showResult && currentWord.example && (
           <div className="bg-slate-50 p-4 rounded-xl">
-            <p className="text-sm text-slate-500 font-medium mb-1">Exemple :</p>
+            <p className="text-sm text-slate-500 font-medium mb-1">Example:</p>
             <p className="text-slate-700 italic">"{currentWord.example}"</p>
           </div>
         )}
 
-        {/* Boutons */}
+        {/* Buttons */}
         <div className="flex gap-3">
           {!showResult ? (
             <>
@@ -683,14 +708,14 @@ const WritingMode: React.FC<WritingModeProps> = ({ words, currentIndex, directio
                 className="flex-1 font-bold py-4 rounded-xl transition-all text-white shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{ backgroundColor: 'var(--terracotta-600)' }}
               >
-                Vérifier
+                Check
               </button>
               <button
                 type="button"
                 onClick={handleSkip}
                 className="px-6 py-4 rounded-xl border-2 border-slate-200 text-slate-500 font-bold hover:bg-slate-50 transition-colors"
               >
-                Je ne sais pas
+                I don't know
               </button>
             </>
           ) : (
@@ -700,16 +725,16 @@ const WritingMode: React.FC<WritingModeProps> = ({ words, currentIndex, directio
               className="flex-1 font-bold py-4 rounded-xl transition-all text-white shadow-lg hover:shadow-xl"
               style={{ backgroundColor: 'var(--terracotta-600)' }}
             >
-              Continuer →
+              Continue →
             </button>
           )}
         </div>
       </form>
 
-      {/* Aide clavier */}
+      {/* Keyboard helper */}
       {!showResult && direction === 'fr-de' && (
         <div className="mt-6 text-center">
-          <p className="text-slate-400 text-sm mb-2">Caractères spéciaux :</p>
+          <p className="text-slate-400 text-sm mb-2">Special characters:</p>
           <div className="flex justify-center gap-2 flex-wrap">
             {['ä', 'ö', 'ü', 'ß', 'Ä', 'Ö', 'Ü'].map(char => (
               <button
@@ -729,7 +754,7 @@ const WritingMode: React.FC<WritingModeProps> = ({ words, currentIndex, directio
 };
 
 // ============================================
-// MODE FLASHCARDS
+// FLASHCARDS MODE
 // ============================================
 interface FlashcardsModeProps {
   words: GermanWord[];
@@ -741,19 +766,21 @@ interface FlashcardsModeProps {
 }
 
 const FlashcardsMode: React.FC<FlashcardsModeProps> = ({ words, currentIndex, direction, onAnswer, onBack, stats }) => {
+  const { triggerMood } = usePandaMascot();
   const [isFlipped, setIsFlipped] = useState(false);
 
   const currentWord = words[currentIndex];
   if (!currentWord) return null;
 
-  const frontContent = direction === 'fr-de' ? currentWord.french : `${currentWord.article} ${currentWord.german}`;
-  const backContent = direction === 'fr-de' ? `${currentWord.article} ${currentWord.german}` : currentWord.french;
+  const frontContent = direction === 'fr-de' ? getTranslation(currentWord) : `${currentWord.article} ${currentWord.german}`;
+  const backContent = direction === 'fr-de' ? `${currentWord.article} ${currentWord.german}` : getTranslation(currentWord);
 
   const handleFlip = () => {
     setIsFlipped(true);
   };
 
   const handleAnswer = (correct: boolean) => {
+    triggerMood(correct ? 'dancing' : 'encouraging', correct ? 2800 : undefined);
     onAnswer(correct, currentWord);
     setIsFlipped(false);
   };
@@ -777,7 +804,7 @@ const FlashcardsMode: React.FC<FlashcardsModeProps> = ({ words, currentIndex, di
         </div>
       </div>
 
-      {/* Barre de progression */}
+      {/* Progress bar */}
       <div className="h-2 bg-slate-200 rounded-full overflow-hidden mb-8">
         <div
           className="h-full transition-all duration-500 rounded-full"
@@ -788,7 +815,7 @@ const FlashcardsMode: React.FC<FlashcardsModeProps> = ({ words, currentIndex, di
         />
       </div>
 
-      {/* Carte */}
+      {/* Card */}
       <div className="perspective-1000 mb-8">
         <div
           className={`relative w-full h-80 cursor-pointer transition-all duration-500 transform-style-3d ${isFlipped ? 'rotate-y-180' : ''}`}
@@ -798,13 +825,13 @@ const FlashcardsMode: React.FC<FlashcardsModeProps> = ({ words, currentIndex, di
             transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'
           }}
         >
-          {/* Face avant */}
+          {/* Front side */}
           <div
             className="absolute inset-0 bg-white rounded-3xl shadow-xl border border-slate-100 flex flex-col items-center justify-center p-8 backface-hidden"
             style={{ backfaceVisibility: 'hidden' }}
           >
             <span className="font-bold text-sm uppercase tracking-widest mb-4" style={{ color: 'var(--terracotta-600)' }}>
-              {direction === 'fr-de' ? '🇫🇷 Français' : '🇩🇪 Allemand'}
+              {direction === 'fr-de' ? '🇬🇧 English' : '🇩🇪 German'}
             </span>
             <h2 className="text-4xl font-black text-slate-800 text-center mb-4">{frontContent}</h2>
             {currentWord.level && (
@@ -812,10 +839,10 @@ const FlashcardsMode: React.FC<FlashcardsModeProps> = ({ words, currentIndex, di
                 {currentWord.level}
               </span>
             )}
-            <p className="text-slate-400 mt-6 text-sm">Cliquez pour retourner</p>
+            <p className="text-slate-400 mt-6 text-sm">Click to flip</p>
           </div>
 
-          {/* Face arrière */}
+          {/* Back side */}
           <div
             className="absolute inset-0 bg-gradient-to-br rounded-3xl shadow-xl flex flex-col items-center justify-center p-8"
             style={{
@@ -825,11 +852,11 @@ const FlashcardsMode: React.FC<FlashcardsModeProps> = ({ words, currentIndex, di
             }}
           >
             <span className="font-bold text-sm uppercase tracking-widest mb-4 text-white/80">
-              {direction === 'fr-de' ? '🇩🇪 Allemand' : '🇫🇷 Français'}
+              {direction === 'fr-de' ? '🇩🇪 German' : '🇬🇧 English'}
             </span>
             <h2 className="text-4xl font-black text-white text-center mb-4">{backContent}</h2>
             {currentWord.plural && currentWord.plural !== 'n/a' && direction === 'fr-de' && (
-              <p className="text-white/80 text-sm">Pluriel : {currentWord.plural}</p>
+              <p className="text-white/80 text-sm">Plural: {currentWord.plural}</p>
             )}
             {currentWord.example && (
               <p className="text-white/70 text-sm mt-4 italic text-center">"{currentWord.example}"</p>
@@ -838,14 +865,14 @@ const FlashcardsMode: React.FC<FlashcardsModeProps> = ({ words, currentIndex, di
         </div>
       </div>
 
-      {/* Boutons de réponse */}
+      {/* Answer buttons */}
       {!isFlipped ? (
         <button
           onClick={handleFlip}
           className="w-full font-bold py-4 rounded-xl transition-all text-white shadow-lg hover:shadow-xl"
           style={{ backgroundColor: 'var(--terracotta-600)' }}
         >
-          🔄 Retourner la carte
+          🔄 Flip the card
         </button>
       ) : (
         <div className="grid grid-cols-2 gap-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
@@ -854,14 +881,14 @@ const FlashcardsMode: React.FC<FlashcardsModeProps> = ({ words, currentIndex, di
             className="flex flex-col items-center gap-2 p-6 rounded-2xl border-2 border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 hover:border-rose-300 transition-all"
           >
             <span className="text-3xl">😓</span>
-            <span className="font-bold">Je ne savais pas</span>
+            <span className="font-bold">I didn't know</span>
           </button>
           <button
             onClick={() => handleAnswer(true)}
             className="flex flex-col items-center gap-2 p-6 rounded-2xl border-2 border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:border-emerald-300 transition-all"
           >
             <span className="text-3xl">😊</span>
-            <span className="font-bold">Je savais !</span>
+            <span className="font-bold">I knew it!</span>
           </button>
         </div>
       )}
@@ -870,4 +897,3 @@ const FlashcardsMode: React.FC<FlashcardsModeProps> = ({ words, currentIndex, di
 };
 
 export default VocabularyTrainer;
-
