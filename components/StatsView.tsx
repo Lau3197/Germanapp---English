@@ -1,188 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { GRAMMAR_DATA } from '../data/grammarData';
 import { LanguageLevel } from '../types';
 import { useGrammar } from '../contexts/GrammarContext';
-
-// Types pour les statistiques
-interface DailyStats {
-  date: string;
-  timeSpent: number; // en secondes
-  lessonsCompleted: string[];
-  quizScore?: number;
-}
-
-interface UserStats {
-  totalTimeSpent: number;
-  completedLessons: string[];
-  dailyGoal: number; // en minutes
-  currentStreak: number;
-  longestStreak: number;
-  lastActivityDate: string;
-  dailyHistory: DailyStats[];
-  quizResults: { topicId: string; score: number; date: string }[];
-}
-
-const defaultStats: UserStats = {
-  totalTimeSpent: 0,
-  completedLessons: [],
-  dailyGoal: 15,
-  currentStreak: 0,
-  longestStreak: 0,
-  lastActivityDate: '',
-  dailyHistory: [],
-  quizResults: []
-};
-
-const getLocalDateKey = (date = new Date()) => {
-  const year = date.getFullYear();
-  const month = `${date.getMonth() + 1}`.padStart(2, '0');
-  const day = `${date.getDate()}`.padStart(2, '0');
-  return `${year}-${month}-${day}`;
-};
-
-const toNumber = (value: unknown, fallback = 0) => {
-  return typeof value === 'number' && Number.isFinite(value) ? value : fallback;
-};
-
-const toStringArray = (value: unknown) => {
-  return Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
-};
-
-const normalizeDailyHistory = (value: unknown): DailyStats[] => {
-  if (!Array.isArray(value)) return [];
-
-  return value
-    .map((entry): DailyStats | null => {
-      if (!entry || typeof entry !== 'object') return null;
-
-      const day = entry as Record<string, unknown>;
-      if (typeof day.date !== 'string') return null;
-
-      const normalized: DailyStats = {
-        date: day.date,
-        timeSpent: Math.max(0, Math.floor(toNumber(day.timeSpent))),
-        lessonsCompleted: toStringArray(day.lessonsCompleted)
-      };
-
-      if (typeof day.quizScore === 'number' && Number.isFinite(day.quizScore)) {
-        normalized.quizScore = day.quizScore;
-      }
-
-      return normalized;
-    })
-    .filter((day): day is DailyStats => day !== null);
-};
-
-const normalizeQuizResults = (value: unknown): UserStats['quizResults'] => {
-  if (!Array.isArray(value)) return [];
-
-  return value
-    .map((entry): UserStats['quizResults'][number] | null => {
-      if (!entry || typeof entry !== 'object') return null;
-
-      const result = entry as Record<string, unknown>;
-      if (typeof result.topicId !== 'string' || typeof result.date !== 'string') return null;
-
-      return {
-        topicId: result.topicId,
-        score: toNumber(result.score),
-        date: result.date
-      };
-    })
-    .filter((result): result is UserStats['quizResults'][number] => result !== null);
-};
-
-const getDailyHistoryTotal = (dailyHistory: DailyStats[]) => {
-  return dailyHistory.reduce((total, day) => total + Math.max(0, day.timeSpent), 0);
-};
-
-const normalizeStats = (rawStats: Partial<UserStats> | null | undefined): UserStats => {
-  const source = rawStats || {};
-  const dailyHistory = normalizeDailyHistory(source.dailyHistory);
-  const totalFromHistory = getDailyHistoryTotal(dailyHistory);
-
-  return {
-    totalTimeSpent: Math.max(0, Math.floor(toNumber(source.totalTimeSpent)), totalFromHistory),
-    completedLessons: toStringArray(source.completedLessons),
-    dailyGoal: Math.max(1, Math.floor(toNumber(source.dailyGoal, defaultStats.dailyGoal))),
-    currentStreak: Math.max(0, Math.floor(toNumber(source.currentStreak))),
-    longestStreak: Math.max(0, Math.floor(toNumber(source.longestStreak))),
-    lastActivityDate: typeof source.lastActivityDate === 'string' ? source.lastActivityDate : '',
-    dailyHistory,
-    quizResults: normalizeQuizResults(source.quizResults)
-  };
-};
-
-const readStatsFromStorage = () => {
-  const savedStats = localStorage.getItem('grammarStats');
-  if (!savedStats) return defaultStats;
-
-  try {
-    return normalizeStats(JSON.parse(savedStats));
-  } catch {
-    return defaultStats;
-  }
-};
-
-const writeStatsToStorage = (stats: UserStats) => {
-  localStorage.setItem('grammarStats', JSON.stringify(normalizeStats(stats)));
-};
-
-const updateStreakForToday = (rawStats: UserStats) => {
-  const stats = normalizeStats(rawStats);
-  const today = getLocalDateKey();
-  const yesterdayDate = new Date();
-  yesterdayDate.setDate(yesterdayDate.getDate() - 1);
-  const yesterday = getLocalDateKey(yesterdayDate);
-
-  if (stats.lastActivityDate === today) {
-    return stats;
-  }
-
-  const updated = { ...stats };
-  if (stats.lastActivityDate === yesterday) {
-    updated.currentStreak = stats.currentStreak + 1;
-  } else {
-    updated.currentStreak = 1;
-  }
-
-  updated.longestStreak = Math.max(updated.currentStreak, stats.longestStreak);
-  updated.lastActivityDate = today;
-  return normalizeStats(updated);
-};
-
-const addTimeToStats = (rawStats: UserStats, timeToSave: number, date: string) => {
-  const stats = normalizeStats(rawStats);
-  const dailyHistory = stats.dailyHistory.map(day => ({
-    ...day,
-    lessonsCompleted: [...day.lessonsCompleted]
-  }));
-  const todayIndex = dailyHistory.findIndex(day => day.date === date);
-
-  if (todayIndex >= 0) {
-    dailyHistory[todayIndex] = {
-      ...dailyHistory[todayIndex],
-      timeSpent: dailyHistory[todayIndex].timeSpent + timeToSave
-    };
-  } else {
-    dailyHistory.push({
-      date,
-      timeSpent: timeToSave,
-      lessonsCompleted: []
-    });
-  }
-
-  return normalizeStats({
-    ...stats,
-    totalTimeSpent: stats.totalTimeSpent + timeToSave,
-    lastActivityDate: date,
-    dailyHistory
-  });
-};
-
-const getUnsavedSessionTime = (currentSessionTime: number, lastSavedTime: number) => {
-  return Math.max(0, currentSessionTime - lastSavedTime);
-};
+import { useStudyTime } from '../contexts/StudyTimeContext';
+import { defaultStats, getLocalDateKey, normalizeStats } from '../utils/studyStats';
 
 interface StatsViewProps {
   embedded?: boolean;
@@ -190,97 +11,33 @@ interface StatsViewProps {
 
 export const StatsView: React.FC<StatsViewProps> = ({ embedded = false }) => {
   const { completedLessons } = useGrammar(); // Utiliser le contexte pour la vérité terrain
-  const [stats, setStats] = useState<UserStats>(defaultStats);
+  // The clock itself lives in StudyTimeProvider (app-wide), this view only reads it.
+  const { stats: trackedStats, todayTimeSpent, totalTimeSpent, updateStats } = useStudyTime();
   const [showGoalModal, setShowGoalModal] = useState(false);
-  const [newGoal, setNewGoal] = useState(15);
-  const [currentSessionTime, setCurrentSessionTime] = useState(0);
-  const [lastSavedTime, setLastSavedTime] = useState(0); // Pour éviter le double comptage
-  const [isLoaded, setIsLoaded] = useState(false);
-  const currentSessionTimeRef = useRef(0);
-  const lastSavedTimeRef = useRef(0);
-  const isLoadedRef = useRef(false);
+  const [newGoal, setNewGoal] = useState(trackedStats.dailyGoal || 15);
 
-  // Charger les stats au démarrage
+  const stats = useMemo(
+    () => normalizeStats({ ...trackedStats, completedLessons }),
+    [trackedStats, completedLessons]
+  );
+
   useEffect(() => {
-    const loadedStats = updateStreakForToday(readStatsFromStorage());
-    writeStatsToStorage(loadedStats);
-    setStats(loadedStats);
-    setNewGoal(loadedStats.dailyGoal || 15);
-    isLoadedRef.current = true;
-    setIsLoaded(true);
-  }, []);
-
-  // Synchroniser avec le contexte
-  useEffect(() => {
-    setStats(prev => normalizeStats({ ...prev, completedLessons }));
-  }, [completedLessons]);
-
-  // Timer pour la session actuelle (compte chaque seconde)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSessionTime(prev => {
-        const next = prev + 1;
-        currentSessionTimeRef.current = next;
-        return next;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  // Sauvegarder le temps périodiquement et à la fermeture
-  useEffect(() => {
-    if (!isLoaded) return;
-
-    const saveTime = () => {
-      // Calculer seulement le temps écoulé depuis la dernière sauvegarde
-      if (!isLoadedRef.current) return;
-
-      const timeToSave = getUnsavedSessionTime(currentSessionTimeRef.current, lastSavedTimeRef.current);
-      if (timeToSave <= 0) return;
-
-      const updatedStats = addTimeToStats(readStatsFromStorage(), timeToSave, getLocalDateKey());
-
-      writeStatsToStorage(updatedStats);
-      setStats(updatedStats);
-
-      lastSavedTimeRef.current = currentSessionTimeRef.current;
-      setLastSavedTime(lastSavedTimeRef.current);
-    };
-
-    // Sauvegarder à la fermeture de la page
-    window.addEventListener('beforeunload', saveTime);
-
-    // Sauvegarder toutes les 30 secondes
-    const saveInterval = setInterval(saveTime, 30000);
-
-    return () => {
-      window.removeEventListener('beforeunload', saveTime);
-      clearInterval(saveInterval);
-      saveTime(); // Sauvegarder au démontage du composant
-    };
-  }, [isLoaded]);
+    setNewGoal(trackedStats.dailyGoal || 15);
+  }, [trackedStats.dailyGoal]);
 
   // Calculer les statistiques
   const getTodayStats = () => {
     const today = getLocalDateKey();
     const todayData = stats.dailyHistory.find(d => d.date === today);
-    // Ajouter seulement le temps non encore sauvegardé de la session actuelle
-    const unsavedTime = getUnsavedSessionTime(currentSessionTime, lastSavedTime);
-    const timeToday = (todayData?.timeSpent || 0) + unsavedTime;
     const dailyGoal = Math.max(1, stats.dailyGoal || defaultStats.dailyGoal);
     return {
-      timeSpent: timeToday,
-      goalProgress: Math.min(100, (timeToday / 60 / dailyGoal) * 100),
+      timeSpent: todayTimeSpent,
+      goalProgress: Math.min(100, (todayTimeSpent / 60 / dailyGoal) * 100),
       lessonsCompleted: todayData?.lessonsCompleted.length || 0
     };
   };
 
-  // Calculer le temps total (sauvegardé + non sauvegardé de la session)
-  const getTotalTime = () => {
-    const unsavedTime = getUnsavedSessionTime(currentSessionTime, lastSavedTime);
-    return Math.max(stats.totalTimeSpent, getDailyHistoryTotal(stats.dailyHistory)) + unsavedTime;
-  };
+  const getTotalTime = () => totalTimeSpent;
 
   const getTotalLessons = () => {
     let total = 0;
@@ -319,7 +76,7 @@ export const StatsView: React.FC<StatsViewProps> = ({ embedded = false }) => {
       date.setDate(date.getDate() - i);
       const dateStr = getLocalDateKey(date);
       const dayData = stats.dailyHistory.find(d => d.date === dateStr);
-      const dayTimeSpent = (dayData?.timeSpent || 0) + (i === 0 ? getUnsavedSessionTime(currentSessionTime, lastSavedTime) : 0);
+      const dayTimeSpent = i === 0 ? todayTimeSpent : dayData?.timeSpent || 0;
       days.push({
         date: dateStr,
         dayName: date.toLocaleDateString('fr-FR', { weekday: 'short' }),
@@ -344,11 +101,7 @@ export const StatsView: React.FC<StatsViewProps> = ({ embedded = false }) => {
   };
 
   const saveGoal = () => {
-    setStats(prev => {
-      const updated = normalizeStats({ ...prev, dailyGoal: newGoal });
-      writeStatsToStorage(updated);
-      return updated;
-    });
+    updateStats(current => ({ ...current, dailyGoal: newGoal }));
     setShowGoalModal(false);
   };
 

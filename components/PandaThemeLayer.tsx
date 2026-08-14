@@ -20,10 +20,86 @@ interface BuddyDragState {
 }
 
 const PANDA_BUDDY_OFFSET_STORAGE_KEY = 'deutschmeister-panda-buddy-offset';
+const PANDA_ANIMATION_STORAGE_KEY = 'deutschmeister-panda-animation';
 const BUDDY_VIEWPORT_MARGIN = 12;
 const MOBILE_BUDDY_MEDIA_QUERY = '(max-width: 640px)';
 
+type PandaAnimationChoice = 'auto' | PandaMascotMood;
+
+const PANDA_ANIMATION_OPTIONS: { value: PandaAnimationChoice; label: string; icon: string }[] = [
+  { value: 'auto', label: 'Automatique', icon: '✨' },
+  { value: 'study', label: 'Mange', icon: '🎋' },
+  { value: 'sleeping', label: 'Dort', icon: '💤' },
+  { value: 'applauding', label: 'Applaudit', icon: '👏' },
+  { value: 'encouraging', label: 'Encourage', icon: '💚' },
+  { value: 'celebrating', label: 'Célèbre', icon: '⭐' },
+  { value: 'dancing', label: 'Danse', icon: '🎶' }
+];
+
+const loadFrames = (modules: Record<string, string>, prefix: string) => Object.keys(modules)
+  .filter(path => new RegExp(`/${prefix}-\\d{2}\\.png$`).test(path))
+  .sort()
+  .map(path => modules[path]);
+
+const EATING_FRAMES = loadFrames(import.meta.glob('../assets/panda/frames/eating-*.png', {
+  eager: true,
+  query: '?url',
+  import: 'default'
+}), 'eating');
+
+const SLEEPING_FRAMES = loadFrames(import.meta.glob('../assets/panda/frames/sleeping-*.png', {
+  eager: true,
+  query: '?url',
+  import: 'default'
+}), 'sleeping');
+
+const APPLAUDING_FRAMES = loadFrames(import.meta.glob('../assets/panda/frames/applauding-*.png', {
+  eager: true,
+  query: '?url',
+  import: 'default'
+}), 'applauding');
+
+const ENCOURAGING_FRAMES = loadFrames(import.meta.glob('../assets/panda/frames/encouraging-*.png', {
+  eager: true,
+  query: '?url',
+  import: 'default'
+}), 'encouraging');
+
+const CELEBRATING_FRAMES = loadFrames(import.meta.glob('../assets/panda/frames/celebrating-*.png', {
+  eager: true,
+  query: '?url',
+  import: 'default'
+}), 'celebrating');
+
+const DANCING_FRAMES = loadFrames(import.meta.glob('../assets/panda/frames/dancing-*.png', {
+  eager: true,
+  query: '?url',
+  import: 'default'
+}), 'dancing');
+
+const SLEEPING_FRAME_SEQUENCE = [0, 1, 2, 3, 4, 5, 6, 7, 7, 7, 7, 7] as const;
+
+const MOOD_ANIMATIONS: Record<PandaMascotMood, { frames: string[]; sequence?: readonly number[]; duration: number }> = {
+  study: { frames: EATING_FRAMES, duration: 1040 },
+  sleeping: { frames: SLEEPING_FRAMES, sequence: SLEEPING_FRAME_SEQUENCE, duration: 840 },
+  applauding: { frames: APPLAUDING_FRAMES, duration: 380 },
+  encouraging: { frames: ENCOURAGING_FRAMES, duration: 520 },
+  celebrating: { frames: CELEBRATING_FRAMES, duration: 440 },
+  dancing: { frames: DANCING_FRAMES, duration: 360 }
+};
+
 const defaultBuddyOffset: BuddyOffset = { x: 0, y: 0 };
+
+const readStoredAnimation = (): PandaAnimationChoice => {
+  if (typeof window === 'undefined') {
+    return 'auto';
+  }
+
+  const storedAnimation = window.localStorage.getItem(PANDA_ANIMATION_STORAGE_KEY);
+  return PANDA_ANIMATION_OPTIONS.some(option => option.value === storedAnimation)
+    ? storedAnimation as PandaAnimationChoice
+    : 'auto';
+};
 
 const readStoredBuddyOffset = (): BuddyOffset => {
   if (typeof window === 'undefined') {
@@ -105,11 +181,68 @@ const clampBuddyOffset = (
 
 export const PandaThemeLayer: React.FC<PandaThemeLayerProps> = ({ showReward, onDismissReward }) => {
   const { mood } = usePandaMascot();
-  const mascot = getMascotState(mood);
+  const [animationChoice, setAnimationChoice] = useState<PandaAnimationChoice>(readStoredAnimation);
+  const [isAnimationMenuOpen, setIsAnimationMenuOpen] = useState(false);
+  const effectiveMood = animationChoice === 'auto' ? mood : animationChoice;
+  const mascot = getMascotState(effectiveMood);
+  const [frameIndex, setFrameIndex] = useState(0);
   const buddyRef = useRef<HTMLDivElement | null>(null);
+  const animationMenuRef = useRef<HTMLDivElement | null>(null);
   const dragStateRef = useRef<BuddyDragState | null>(null);
   const [buddyOffset, setBuddyOffset] = useState<BuddyOffset>(readStoredBuddyOffset);
   const [isDragging, setIsDragging] = useState(false);
+
+  const animation = MOOD_ANIMATIONS[effectiveMood];
+  const sequenceLength = animation.sequence?.length ?? animation.frames.length;
+  const sequenceFrame = animation.sequence?.[frameIndex % sequenceLength] ?? frameIndex % animation.frames.length;
+  const spriteSource = animation.frames[sequenceFrame] ?? animation.frames[0];
+
+  // Decode every frame up front, otherwise the first loop stutters as each new
+  // frame is fetched on the swap.
+  useEffect(() => {
+    Object.values(MOOD_ANIMATIONS).flatMap(value => value.frames).forEach(source => {
+      const image = new Image();
+      image.src = source;
+    });
+  }, []);
+
+  useEffect(() => {
+    setFrameIndex(0);
+    const frameTimer = window.setInterval(
+      () => setFrameIndex(currentIndex => (currentIndex + 1) % sequenceLength),
+      animation.duration
+    );
+
+    return () => window.clearInterval(frameTimer);
+  }, [effectiveMood, animation.duration, sequenceLength]);
+
+  useEffect(() => {
+    window.localStorage.setItem(PANDA_ANIMATION_STORAGE_KEY, animationChoice);
+  }, [animationChoice]);
+
+  useEffect(() => {
+    if (!isAnimationMenuOpen) {
+      return;
+    }
+
+    const closeMenu = (event: PointerEvent) => {
+      if (!animationMenuRef.current?.contains(event.target as Node)) {
+        setIsAnimationMenuOpen(false);
+      }
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsAnimationMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('pointerdown', closeMenu);
+    window.addEventListener('keydown', closeOnEscape);
+    return () => {
+      window.removeEventListener('pointerdown', closeMenu);
+      window.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [isAnimationMenuOpen]);
 
   const updateBuddyDrag = (clientX: number, clientY: number, pointerId?: number) => {
     const dragState = dragStateRef.current;
@@ -246,7 +379,7 @@ export const PandaThemeLayer: React.FC<PandaThemeLayerProps> = ({ showReward, on
 
       <div
         ref={buddyRef}
-        className={`panda-study-buddy panda-study-buddy-${mood}${isDragging ? ' is-dragging' : ''}`}
+        className={`panda-study-buddy panda-study-buddy-${effectiveMood}${isDragging ? ' is-dragging' : ''}`}
         style={buddyStyle}
         tabIndex={0}
         aria-label="Pandachan study buddy"
@@ -292,36 +425,60 @@ export const PandaThemeLayer: React.FC<PandaThemeLayerProps> = ({ showReward, on
         }}
       >
         <div className="panda-study-buddy-glow" />
-        <div className="panda-study-buddy-character">
-          <span className="panda-study-buddy-sparkle panda-study-buddy-sparkle-one" />
-          <span className="panda-study-buddy-sparkle panda-study-buddy-sparkle-two" />
-          <span className="panda-study-buddy-sparkle panda-study-buddy-sparkle-three" />
-          <div className="panda-study-buddy-ear panda-study-buddy-ear-left" />
-          <div className="panda-study-buddy-ear panda-study-buddy-ear-right" />
-          <div className="panda-study-buddy-head">
-            <div className="panda-study-buddy-eye panda-study-buddy-eye-left" />
-            <div className="panda-study-buddy-eye panda-study-buddy-eye-right" />
-            <div className="panda-study-buddy-cheek panda-study-buddy-cheek-left" />
-            <div className="panda-study-buddy-cheek panda-study-buddy-cheek-right" />
-            <div className="panda-study-buddy-muzzle">
-              <span />
-            </div>
-          </div>
-          <div className="panda-study-buddy-body">
-            <div className="panda-study-buddy-arm panda-study-buddy-arm-left" />
-            <div className="panda-study-buddy-arm panda-study-buddy-arm-right" />
-            <div className="panda-study-buddy-belly" />
-            <div className="panda-study-buddy-scarf" />
-          </div>
-          <div className="panda-study-buddy-foot panda-study-buddy-foot-left" />
-          <div className="panda-study-buddy-foot panda-study-buddy-foot-right" />
-          {mood === 'sleeping' && <span className="panda-sleep-z">Zzz</span>}
+        <div
+          className="panda-study-buddy-character panda-study-buddy-sprite"
+          aria-hidden="true"
+        >
+          <img
+            src={spriteSource}
+            alt=""
+            draggable={false}
+          />
         </div>
         <div className="panda-study-buddy-panel">
           <div className="panda-study-buddy-bubble">
             <span>Pandachan is with you</span>
             <strong>{mascot.message}</strong>
             <em>{mascot.hint}</em>
+          </div>
+          <div
+            ref={animationMenuRef}
+            className="panda-animation-picker"
+            onPointerDown={event => event.stopPropagation()}
+            onKeyDown={event => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="panda-animation-picker-trigger"
+              aria-expanded={isAnimationMenuOpen}
+              aria-haspopup="menu"
+              onClick={() => setIsAnimationMenuOpen(isOpen => !isOpen)}
+            >
+              <span aria-hidden="true">🎬</span>
+              Animation
+              <span aria-hidden="true">{isAnimationMenuOpen ? '▴' : '▾'}</span>
+            </button>
+            {isAnimationMenuOpen && (
+              <div className="panda-animation-picker-menu" role="menu" aria-label="Choisir l'animation du panda">
+                {PANDA_ANIMATION_OPTIONS.map(option => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    role="menuitemradio"
+                    aria-checked={animationChoice === option.value}
+                    className={animationChoice === option.value ? 'is-selected' : ''}
+                    onClick={() => {
+                      setAnimationChoice(option.value);
+                      setIsAnimationMenuOpen(false);
+                    }}
+                  >
+                    <span aria-hidden="true">{option.icon}</span>
+                    {option.label}
+                    {animationChoice === option.value && <span aria-hidden="true">✓</span>}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

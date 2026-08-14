@@ -3,6 +3,8 @@ import { useSearchParams } from 'react-router-dom';
 import { WordCard } from './WordCard';
 import { NOMEN_VERBEN_LIST } from '../data/nomenVerbenData';
 import { GermanWord } from '../types';
+import { useExerciseProgress } from '../hooks/useExerciseProgress';
+import { useExerciseFavorites } from '../hooks/useExerciseFavorites';
 
 type PracticeStatus = 'idle' | 'correct' | 'incorrect' | 'revealed';
 
@@ -87,11 +89,14 @@ const createNomenVerbExercise = (item: GermanWord) => {
 };
 
 export const NomenVerbenView: React.FC = () => {
+    const { completedIds, recordAnswer, resetProgress } = useExerciseProgress('trainerProgress_nomenVerben_en');
+    const { favoriteIds, toggleFavorite } = useExerciseFavorites('trainerFavorites_nomenVerben_en');
     const [searchParams, setSearchParams] = useSearchParams();
     const [nvSearch, setNvSearch] = useState(() => searchParams.get('q') || '');
     const [practiceIndex, setPracticeIndex] = useState(0);
     const [practiceAnswer, setPracticeAnswer] = useState('');
     const [practiceStatus, setPracticeStatus] = useState<PracticeStatus>('idle');
+    const [favoritesOnly, setFavoritesOnly] = useState(false);
 
     const exercises = useMemo(
         () => NOMEN_VERBEN_LIST.map(createNomenVerbExercise),
@@ -100,7 +105,18 @@ export const NomenVerbenView: React.FC = () => {
 
     const [order, setOrder] = useState<number[]>(() => shuffledOrder(exercises.length));
 
-    const currentExercise = exercises[order[practiceIndex % order.length]];
+    const getExerciseId = (index: number) => exercises[index]?.item.german.toLowerCase() || String(index);
+    const favoriteOrder = useMemo(
+        () => order.filter(index => !favoritesOnly || favoriteIds.has(getExerciseId(index))),
+        [order, favoritesOnly, favoriteIds, exercises]
+    );
+    const remainingOrder = useMemo(
+        () => favoriteOrder.filter(index => !completedIds.has(getExerciseId(index))),
+        [favoriteOrder, completedIds, exercises]
+    );
+    const activeOrder = practiceStatus === 'idle' && remainingOrder.length ? remainingOrder : favoriteOrder;
+
+    const currentExercise = exercises[activeOrder[practiceIndex % activeOrder.length]];
 
     // Deep-link from the global search: seed the filter and scroll to the list.
     useEffect(() => {
@@ -133,7 +149,7 @@ export const NomenVerbenView: React.FC = () => {
 
     const goToNextExercise = () => {
         const next = practiceIndex + 1;
-        if (next >= order.length) {
+        if (next >= activeOrder.length) {
             // Completed a full pass — reshuffle so the next cycle is a new order.
             setOrder(shuffledOrder(exercises.length));
             resetPractice(0);
@@ -150,6 +166,7 @@ export const NomenVerbenView: React.FC = () => {
         }
 
         const isCorrect = normalizeAnswer(practiceAnswer) === normalizeAnswer(currentExercise.answer);
+        recordAnswer(getExerciseId(activeOrder[practiceIndex % activeOrder.length]), isCorrect);
         setPracticeStatus(isCorrect ? 'correct' : 'incorrect');
     };
 
@@ -174,6 +191,7 @@ export const NomenVerbenView: React.FC = () => {
                 </div>
             </div>
 
+            {favoritesOnly && !favoriteOrder.length && <p className="mb-6 rounded-xl bg-amber-50 p-4 text-center font-bold text-amber-800">No favorites yet. Add some with the ☆ button.</p>}
             {currentExercise && (
                 <section className="mb-10 rounded-2xl bg-white p-6 sm:p-8 shadow-sm border border-slate-100">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -183,8 +201,11 @@ export const NomenVerbenView: React.FC = () => {
                             </p>
                             <h3 className="text-2xl font-black text-slate-900">Find the missing verb.</h3>
                             <p className="text-sm font-semibold text-slate-500 mt-2">
-                                Item {practiceIndex + 1} of {exercises.length}
+                                Item {practiceIndex + 1} of {activeOrder.length} · {completedIds.size} saved
                             </p>
+                            <button type="button" onClick={() => toggleFavorite(getExerciseId(activeOrder[practiceIndex % activeOrder.length]))} className="mt-3 font-bold" style={{ color: favoriteIds.has(getExerciseId(activeOrder[practiceIndex % activeOrder.length])) ? '#d97706' : 'var(--sand-500)' }}>
+                                {favoriteIds.has(getExerciseId(activeOrder[practiceIndex % activeOrder.length])) ? '★ Favorite' : '☆ Add to favorites'}
+                            </button>
                         </div>
 
                         <form onSubmit={handlePracticeSubmit} className="lg:col-span-2">
@@ -273,8 +294,14 @@ export const NomenVerbenView: React.FC = () => {
 
             <div id="nv-results" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 scroll-mt-24">
                 {filteredNV.map((word, idx) => (
-                    <WordCard key={`nv-${idx}`} word={word} />
+                    <WordCard key={`nv-${idx}`} word={word} isFavorite={favoriteIds.has(word.german.toLowerCase())} onToggleFavorite={() => toggleFavorite(word.german.toLowerCase())} />
                 ))}
+            </div>
+            <div className="mt-6 flex justify-center gap-3 text-sm">
+                <button type="button" onClick={() => setFavoritesOnly(value => !value)} className={`rounded-xl px-4 py-2 font-bold ${favoritesOnly ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-700'}`}>★ {favoritesOnly ? 'All exercises' : `Favorites (${favoriteIds.size})`}</button>
+            </div>
+            <div className="mt-6 text-center text-sm text-slate-500">
+                <button type="button" onClick={resetProgress} className="underline font-bold">Reset practice progress</button>
             </div>
         </div>
     );

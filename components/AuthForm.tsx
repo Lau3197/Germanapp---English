@@ -124,7 +124,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({ onAuthenticated }) => {
               title={showPassword ? 'Hide password' : 'Show password'}
               onClick={() => setShowPassword((current) => !current)}
               onMouseDown={(e) => e.preventDefault()}
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center transition-all focus:outline-none focus:ring-2"
+              className="auth-password-toggle absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center transition-all focus:outline-none focus:ring-2"
               style={{ color: 'var(--terracotta-600)', '--tw-ring-color': 'var(--terracotta-400)' } as React.CSSProperties}
             >
               {showPassword ? (

@@ -152,6 +152,75 @@
   --panda-honey: #ffd166;
 }
 
+:root[data-app-theme="cane"] {
+  /* Palette Cane : #81A6C6, #AACDDC, #F3E3D0, #D2C4B4 */
+  --terracotta-50: #fbf8f4;
+  --terracotta-100: #f8eee3;
+  --terracotta-200: #f3e3d0;
+  --terracotta-300: #ead5bd;
+  --terracotta-400: #dfcbb6;
+  --terracotta-500: #d2c4b4;
+  --terracotta-600: #b9aa99;
+  --terracotta-700: #9d8d7b;
+  --terracotta-800: #7d7062;
+  --terracotta-900: #62584d;
+
+  --coral-50: #f3f8fb;
+  --coral-100: #dcebf2;
+  --coral-200: #aacddc;
+  --coral-300: #9abdd0;
+  --coral-400: #8bafc8;
+  --coral-500: #81a6c6;
+  --coral-600: #6d91b1;
+  --coral-700: #5b7d9c;
+  --coral-800: #496980;
+  --coral-900: #385467;
+
+  --sand-50: #fffdfb;
+  --sand-100: #f9f1e8;
+  --sand-200: #f3e3d0;
+  --sand-300: #e8d5c0;
+  --sand-400: #d2c4b4;
+  --sand-500: #b8aa9c;
+  --sand-600: #958779;
+  --sand-700: #75695d;
+  --sand-800: #584f47;
+  --sand-900: #403a34;
+
+  --turquoise-50: #f3f8fb;
+  --turquoise-100: #e0eff4;
+  --turquoise-200: #aacddc;
+  --turquoise-300: #9bc3d3;
+  --turquoise-400: #8bb9cc;
+  --turquoise-500: #81a6c6;
+  --turquoise-600: #6d91b1;
+  --turquoise-700: #5b7d9c;
+  --turquoise-800: #496980;
+  --turquoise-900: #385467;
+
+  --sage-50: #f3f8fb;
+  --sage-100: #e0eff4;
+  --sage-200: #c7e0e9;
+  --sage-300: #aacddc;
+  --sage-400: #97bed0;
+  --sage-500: #81a6c6;
+  --sage-600: #6d91b1;
+  --sage-700: #5b7d9c;
+  --sage-800: #496980;
+  --sage-900: #385467;
+
+  --app-surface: #fffdfb;
+  --app-body-background: linear-gradient(135deg, #f3e3d0 0%, #aacddc 52%, #fffdfb 100%);
+  --app-header-background: linear-gradient(135deg, rgba(255,253,251,0.96), rgba(243,248,251,0.96));
+  --app-header-border: linear-gradient(90deg, #81a6c6, #aacddc, #d2c4b4);
+  --app-shadow-color: rgba(73, 105, 128, 0.24);
+  --app-shadow-color-soft: rgba(73, 105, 128, 0.08);
+  --app-accent-shadow-color: rgba(129, 166, 198, 0.16);
+  --app-focus-primary: rgba(129, 166, 198, 0.24);
+  --app-focus-secondary: rgba(210, 196, 180, 0.2);
+  --app-progress-gradient: linear-gradient(90deg, #81a6c6, #aacddc, #d2c4b4);
+}
+
 /* Base styles */
 * {
   box-sizing: border-box;
@@ -922,6 +991,15 @@ button:active {
   transform: translateY(0);
 }
 
+/* The password visibility control is vertically positioned with -translate-y-1/2.
+   Keep the global button hover/active lift from making it visibly jump. */
+.auth-password-toggle,
+.auth-password-toggle:hover,
+.auth-password-toggle:active,
+.auth-password-toggle:focus {
+  transform: translateY(-50%) !important;
+}
+
 /* ===== KBD ===== */
 kbd {
   background-color: #ffedd5 !important;
@@ -1490,7 +1568,7 @@ a:hover {
     linear-gradient(135deg, rgba(255, 255, 252, 0.84), rgba(238, 249, 240, 0.72));
   box-shadow: 0 24px 60px -38px rgba(17, 23, 21, 0.46);
   backdrop-filter: blur(18px);
-  opacity: 0.84;
+  opacity: 1;
   transform: translate3d(var(--panda-buddy-x, 0), var(--panda-buddy-y, 0), 0) scale(0.9);
   transform-origin: bottom right;
   pointer-events: auto;
@@ -1516,6 +1594,176 @@ a:hover {
   z-index: 90;
   transition: opacity 120ms ease;
 }
+
+:root[data-app-theme="cane"] .cane-theme-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 65;
+  pointer-events: none;
+  visibility: visible;
+  opacity: 1;
+}
+
+:root[data-app-theme="cane"] .cane-background-pattern {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+:root[data-app-theme="cane"] .cane-background-pattern::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 18% 22%, rgba(129, 166, 198, 0.13) 0 2px, transparent 3px),
+    radial-gradient(circle at 78% 68%, rgba(210, 196, 180, 0.16) 0 2px, transparent 3px);
+  background-size: 190px 190px, 240px 240px;
+  opacity: 0.72;
+}
+
+:root[data-app-theme="cane"] .cane-background-motif {
+  position: absolute;
+  display: block;
+  color: rgba(73, 105, 128, 0.2);
+  user-select: none;
+  filter: saturate(0.8);
+  animation: caneMotifFloat 8s ease-in-out infinite;
+}
+
+:root[data-app-theme="cane"] .cane-motif-ball {
+  width: 25px;
+  height: 25px;
+  object-fit: contain;
+  font-size: 0;
+  filter: drop-shadow(0 3px 4px rgba(73, 105, 128, 0.16));
+}
+
+:root[data-app-theme="cane"] .cane-motif-paw,
+:root[data-app-theme="cane"] .cane-motif-bone {
+  font-size: 28px;
+  opacity: 0.62;
+}
+
+:root[data-app-theme="cane"] .cane-motif-one { left: 8%; top: 20%; animation-delay: -1s; }
+:root[data-app-theme="cane"] .cane-motif-two { left: 28%; top: 72%; animation-delay: -4s; }
+:root[data-app-theme="cane"] .cane-motif-three { left: 46%; top: 17%; transform: rotate(-22deg); animation-delay: -6s; }
+:root[data-app-theme="cane"] .cane-motif-four { right: 25%; top: 54%; animation-delay: -2s; }
+:root[data-app-theme="cane"] .cane-motif-five { right: 8%; top: 23%; animation-delay: -5s; }
+:root[data-app-theme="cane"] .cane-motif-six { right: 12%; bottom: 20%; transform: rotate(24deg); animation-delay: -7s; }
+
+@keyframes caneMotifFloat {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -8px; }
+}
+
+:root[data-app-theme="cane"] .cane-animation-picker {
+  display: none;
+  position: absolute;
+  right: 8px;
+  bottom: 184px;
+  display: block;
+  pointer-events: auto;
+}
+
+/* The animation selector is intentionally disabled; Adolfino is automatic. */
+.cane-animation-picker {
+  display: none !important;
+}
+
+:root[data-app-theme="cane"] .cane-animation-picker select {
+  max-width: 170px;
+  padding: 7px 28px 7px 10px;
+  border: 1px solid rgba(86, 53, 28, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 250, 244, 0.96);
+  color: #4e3425;
+  box-shadow: 0 6px 18px rgba(86, 53, 28, 0.16);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+:root[data-app-theme="cane"] .cane-animation-picker select:focus-visible {
+  outline: 3px solid rgba(129, 166, 198, 0.7);
+  outline-offset: 2px;
+}
+
+:root[data-app-theme="cane"] .cane-study-buddy-name {
+  position: absolute;
+  right: 20px;
+  bottom: 194px;
+  z-index: 3;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 250, 244, 0.96);
+  color: #4e3425;
+  box-shadow: 0 5px 14px rgba(86, 53, 28, 0.14);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+:root[data-app-theme="cane"] .cane-study-buddy {
+  position: absolute;
+  right: 18px;
+  bottom: 14px;
+  z-index: 2;
+  visibility: visible;
+  opacity: 1;
+  filter: drop-shadow(0 14px 12px rgba(86, 53, 28, 0.2));
+}
+
+:root[data-app-theme="cane"] .cane-study-buddy-frame {
+  display: block;
+  width: 190px;
+  height: 190px;
+  object-fit: contain;
+  object-position: center;
+  user-select: none;
+  pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  :root[data-app-theme="cane"] .cane-theme-layer {
+    inset: 0;
+  }
+
+  :root[data-app-theme="cane"] .cane-background-motif {
+    transform: scale(0.78);
+  }
+
+  :root[data-app-theme="cane"] .cane-motif-three,
+  :root[data-app-theme="cane"] .cane-motif-six {
+    display: none;
+  }
+
+  :root[data-app-theme="cane"] .cane-animation-picker {
+    display: none;
+    right: 0;
+    bottom: 138px;
+  }
+
+  :root[data-app-theme="cane"] .cane-study-buddy-name {
+    right: 12px;
+    bottom: 148px;
+    padding: 3px 8px;
+    font-size: 11px;
+  }
+
+  :root[data-app-theme="cane"] .cane-animation-picker select {
+    max-width: 142px;
+    font-size: 11px;
+  }
+
+  :root[data-app-theme="cane"] .cane-study-buddy-frame {
+    width: 142px;
+    height: 142px;
+  }
+}
+
 
 :root[data-app-theme="panda"] .panda-study-buddy-glow {
   position: absolute;
@@ -1901,64 +2149,37 @@ a:hover {
   box-shadow: 0 10px 18px -14px rgba(17, 23, 21, 0.38);
 }
 
-:root[data-app-theme="panda"] .panda-study-buddy-applauding .panda-study-buddy-character {
-  animation: pandaBuddyClap 0.72s ease-in-out infinite;
+/* Every state uses a normalized transparent frame with the same canvas and
+   ground anchor. The sprite box never animates: motion only exists in the art. */
+:root[data-app-theme="panda"] .panda-study-buddy-sprite {
+  width: 176px;
+  height: 176px;
+  flex: 0 0 176px;
+  margin: 0;
+  overflow: visible;
+  scale: 1;
+  background: none;
+  filter: drop-shadow(0 20px 24px rgba(17, 23, 21, 0.2));
+  animation: none !important;
+  transform: none !important;
+  translate: 0 0 !important;
+  rotate: 0deg !important;
+  scale: 1 !important;
+  will-change: contents;
 }
 
-:root[data-app-theme="panda"] .panda-study-buddy-applauding .panda-study-buddy-arm-left {
-  animation: pandaLeftArmClap 0.42s ease-in-out infinite;
+:root[data-app-theme="panda"] .panda-study-buddy-sprite img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  user-select: none;
+  pointer-events: none;
 }
 
-:root[data-app-theme="panda"] .panda-study-buddy-applauding .panda-study-buddy-arm-right {
-  animation: pandaRightArmClap 0.42s ease-in-out infinite;
-}
-
-:root[data-app-theme="panda"] .panda-study-buddy-encouraging .panda-study-buddy-character {
-  animation: pandaBuddyEncourage 0.9s ease-in-out infinite;
-}
-
-:root[data-app-theme="panda"] .panda-study-buddy-celebrating .panda-study-buddy-character {
-  animation: pandaBuddyCelebrate 0.9s ease-in-out infinite;
-}
-
-:root[data-app-theme="panda"] .panda-study-buddy-celebrating .panda-study-buddy-arm-left {
-  animation: pandaLeftArmClap 0.55s ease-in-out infinite;
-}
-
-:root[data-app-theme="panda"] .panda-study-buddy-celebrating .panda-study-buddy-arm-right {
-  animation: pandaRightArmClap 0.55s ease-in-out infinite;
-}
-
-:root[data-app-theme="panda"] .panda-study-buddy-dancing .panda-study-buddy-character {
-  animation: pandaBuddyDance 0.82s ease-in-out infinite;
-}
-
-:root[data-app-theme="panda"] .panda-study-buddy-dancing .panda-study-buddy-arm-left {
-  animation: pandaDanceLeftArm 0.48s ease-in-out infinite;
-}
-
-:root[data-app-theme="panda"] .panda-study-buddy-dancing .panda-study-buddy-arm-right {
-  animation: pandaDanceRightArm 0.48s ease-in-out infinite 0.08s;
-}
-
-:root[data-app-theme="panda"] .panda-study-buddy-dancing .panda-study-buddy-foot-left {
-  animation: pandaDanceFoot 0.48s ease-in-out infinite 0.08s;
-}
-
-:root[data-app-theme="panda"] .panda-study-buddy-dancing .panda-study-buddy-foot-right {
-  animation: pandaDanceFootRight 0.48s ease-in-out infinite;
-}
-
-:root[data-app-theme="panda"] .panda-study-buddy-dancing .panda-study-buddy-prop {
-  animation: pandaDanceProp 0.82s ease-in-out infinite;
-}
-
-:root[data-app-theme="panda"] .panda-study-buddy-dancing .panda-study-buddy-cheek {
-  animation: pandaDanceCheeks 0.42s ease-in-out infinite;
-}
-
-:root[data-app-theme="panda"] .panda-study-buddy-sleeping .panda-study-buddy-character {
-  animation: pandaSleepPulse 2.8s ease-in-out infinite;
+:root[data-app-theme="panda"] .panda-study-buddy-sprite::before {
+  display: none;
 }
 
 :root[data-app-theme="panda"] .panda-sleep-z {
@@ -2029,6 +2250,81 @@ a:hover {
   line-height: 1.25;
   font-style: normal;
   font-weight: 760;
+}
+
+:root[data-app-theme="panda"] .panda-animation-picker {
+  position: relative;
+  justify-self: end;
+  pointer-events: auto;
+}
+
+:root[data-app-theme="panda"] .panda-animation-picker-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 6px 10px;
+  border: 1px solid rgba(188, 229, 194, 0.86);
+  border-radius: 999px;
+  background: rgba(255, 255, 252, 0.94);
+  color: var(--turquoise-800);
+  box-shadow: 0 10px 20px -16px rgba(17, 23, 21, 0.48);
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+:root[data-app-theme="panda"] .panda-animation-picker-trigger:hover,
+:root[data-app-theme="panda"] .panda-animation-picker-trigger[aria-expanded="true"] {
+  border-color: var(--turquoise-300);
+  background: var(--turquoise-50);
+}
+
+:root[data-app-theme="panda"] .panda-animation-picker-trigger:focus-visible,
+:root[data-app-theme="panda"] .panda-animation-picker-menu button:focus-visible {
+  outline: 3px solid rgba(105, 201, 130, 0.38);
+  outline-offset: 2px;
+}
+
+:root[data-app-theme="panda"] .panda-animation-picker-menu {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  z-index: 12;
+  display: grid;
+  width: 172px;
+  padding: 6px;
+  border: 1px solid rgba(188, 229, 194, 0.92);
+  border-radius: 18px;
+  background: rgba(255, 255, 252, 0.98);
+  box-shadow: 0 22px 46px -24px rgba(17, 23, 21, 0.52);
+  backdrop-filter: blur(16px);
+}
+
+:root[data-app-theme="panda"] .panda-animation-picker-menu button {
+  display: grid;
+  grid-template-columns: 23px 1fr 18px;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 6px 8px;
+  border-radius: 12px;
+  color: var(--sand-700);
+  text-align: left;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+:root[data-app-theme="panda"] .panda-animation-picker-menu button:hover {
+  background: var(--turquoise-50);
+}
+
+:root[data-app-theme="panda"] .panda-animation-picker-menu button.is-selected {
+  background: rgba(188, 229, 194, 0.42);
+  color: var(--turquoise-800);
 }
 
 :root[data-app-theme="panda"] .panda-study-buddy-applauding .panda-study-buddy-bubble {
@@ -2182,7 +2478,7 @@ a:hover {
     transform: translate3d(var(--panda-buddy-x, 0), var(--panda-buddy-y, 0), 0);
     transform-origin: bottom right;
     gap: 9px;
-    opacity: 0.93;
+    opacity: 1;
   }
 
   :root[data-app-theme="panda"] .panda-study-buddy-glow {
@@ -2196,6 +2492,7 @@ a:hover {
   :root[data-app-theme="panda"] .panda-study-buddy-character {
     width: 62px;
     height: 62px;
+    flex-basis: 62px;
     margin: 0 0 2px;
     overflow: visible;
     scale: 1;
@@ -2211,6 +2508,14 @@ a:hover {
     height: 9px;
     background: rgba(17, 23, 21, 0.13);
     filter: blur(3px);
+  }
+
+  /* Match the 62px grid column the buddy switches to on small screens. */
+  :root[data-app-theme="panda"] .panda-study-buddy-sprite {
+    width: 62px;
+    height: 62px;
+    flex: 0 0 62px;
+    filter: drop-shadow(0 9px 12px rgba(17, 23, 21, 0.18));
   }
 
   :root[data-app-theme="panda"] .panda-study-buddy-sparkle,
@@ -2349,6 +2654,17 @@ a:hover {
     margin: 0;
   }
 
+  :root[data-app-theme="panda"] .panda-animation-picker-trigger {
+    min-height: 28px;
+    padding: 5px 9px;
+    font-size: 10px;
+  }
+
+  :root[data-app-theme="panda"] .panda-animation-picker-menu {
+    right: 0;
+    width: 160px;
+  }
+
   :root[data-app-theme="panda"] .panda-study-buddy-bubble {
     display: grid;
     min-height: 52px;
@@ -2385,6 +2701,157 @@ a:hover {
   :root[data-app-theme="panda"] .panda-floating {
     display: none;
   }
+}
+
+/* ===== CANE THEME COLORS ===== */
+:root[data-app-theme="cane"] body {
+  background: var(--app-body-background);
+  color: var(--sand-800);
+}
+
+:root[data-app-theme="cane"] ::-webkit-scrollbar-track {
+  background: var(--sand-100);
+}
+
+:root[data-app-theme="cane"] ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--terracotta-500), var(--turquoise-500));
+}
+
+:root[data-app-theme="cane"] ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--terracotta-600), var(--turquoise-600));
+}
+
+:root[data-app-theme="cane"] .bg-slate-50 {
+  background-color: var(--terracotta-50) !important;
+}
+
+:root[data-app-theme="cane"] .bg-slate-100,
+:root[data-app-theme="cane"] .bg-gray-50 {
+  background-color: var(--sand-100) !important;
+}
+
+:root[data-app-theme="cane"] .bg-white {
+  background-color: var(--app-surface) !important;
+}
+
+:root[data-app-theme="cane"] .text-slate-900,
+:root[data-app-theme="cane"] .text-slate-800,
+:root[data-app-theme="cane"] .text-slate-700,
+:root[data-app-theme="cane"] h1,
+:root[data-app-theme="cane"] h2,
+:root[data-app-theme="cane"] h3,
+:root[data-app-theme="cane"] h4,
+:root[data-app-theme="cane"] h5,
+:root[data-app-theme="cane"] h6 {
+  color: var(--sand-800);
+}
+
+:root[data-app-theme="cane"] .text-slate-600,
+:root[data-app-theme="cane"] .text-slate-500 {
+  color: var(--sand-600);
+}
+
+:root[data-app-theme="cane"] .text-slate-400 {
+  color: var(--sand-500);
+}
+
+:root[data-app-theme="cane"] .border-slate-100,
+:root[data-app-theme="cane"] .border-slate-200,
+:root[data-app-theme="cane"] .border-slate-300 {
+  border-color: var(--terracotta-200) !important;
+}
+
+:root[data-app-theme="cane"] .bg-indigo-600,
+:root[data-app-theme="cane"] .bg-violet-600,
+:root[data-app-theme="cane"] .bg-violet-500,
+:root[data-app-theme="cane"] .bg-purple-600,
+:root[data-app-theme="cane"] .bg-purple-500,
+:root[data-app-theme="cane"] .bg-orange-500,
+:root[data-app-theme="cane"] .bg-red-500 {
+  background: linear-gradient(135deg, var(--turquoise-600), var(--turquoise-800)) !important;
+}
+
+:root[data-app-theme="cane"] .bg-indigo-500,
+:root[data-app-theme="cane"] .bg-blue-500,
+:root[data-app-theme="cane"] .bg-blue-600,
+:root[data-app-theme="cane"] .bg-green-500,
+:root[data-app-theme="cane"] .bg-emerald-500,
+:root[data-app-theme="cane"] .bg-teal-500 {
+  background: var(--turquoise-500) !important;
+}
+
+:root[data-app-theme="cane"] .bg-indigo-700,
+:root[data-app-theme="cane"] .hover\:bg-indigo-700:hover,
+:root[data-app-theme="cane"] .bg-green-600,
+:root[data-app-theme="cane"] .bg-emerald-600,
+:root[data-app-theme="cane"] .bg-teal-600 {
+  background: var(--turquoise-700) !important;
+}
+
+:root[data-app-theme="cane"] .text-indigo-600,
+:root[data-app-theme="cane"] .text-indigo-500,
+:root[data-app-theme="cane"] .text-indigo-400,
+:root[data-app-theme="cane"] .text-indigo-700,
+:root[data-app-theme="cane"] .text-violet-600,
+:root[data-app-theme="cane"] .text-violet-500,
+:root[data-app-theme="cane"] .text-purple-600,
+:root[data-app-theme="cane"] .text-blue-500,
+:root[data-app-theme="cane"] .text-blue-600,
+:root[data-app-theme="cane"] .text-green-500,
+:root[data-app-theme="cane"] .text-green-600,
+:root[data-app-theme="cane"] .text-emerald-500,
+:root[data-app-theme="cane"] .text-teal-500 {
+  color: var(--turquoise-600) !important;
+}
+
+:root[data-app-theme="cane"] .bg-indigo-100,
+:root[data-app-theme="cane"] .bg-indigo-50,
+:root[data-app-theme="cane"] .bg-violet-100,
+:root[data-app-theme="cane"] .bg-purple-100 {
+  background-color: var(--turquoise-100) !important;
+}
+
+:root[data-app-theme="cane"] .border-indigo-600,
+:root[data-app-theme="cane"] .border-indigo-200,
+:root[data-app-theme="cane"] .hover\:border-indigo-200:hover,
+:root[data-app-theme="cane"] .focus\:border-indigo-300:focus {
+  border-color: var(--turquoise-400) !important;
+}
+
+:root[data-app-theme="cane"] .focus\:ring-indigo-500:focus,
+:root[data-app-theme="cane"] .focus\:ring-indigo-100:focus {
+  --tw-ring-color: var(--app-focus-primary) !important;
+}
+
+:root[data-app-theme="cane"] .from-orange-500,
+:root[data-app-theme="cane"] .from-indigo-600,
+:root[data-app-theme="cane"] .from-violet-500,
+:root[data-app-theme="cane"] .from-purple-600 {
+  --tw-gradient-from: var(--terracotta-500) !important;
+}
+
+:root[data-app-theme="cane"] .to-red-500,
+:root[data-app-theme="cane"] .to-violet-600,
+:root[data-app-theme="cane"] .to-violet-500,
+:root[data-app-theme="cane"] .to-purple-600,
+:root[data-app-theme="cane"] .to-indigo-600 {
+  --tw-gradient-to: var(--turquoise-600) !important;
+}
+
+:root[data-app-theme="cane"] .from-emerald-500,
+:root[data-app-theme="cane"] .from-blue-500 {
+  --tw-gradient-from: var(--turquoise-500) !important;
+}
+
+:root[data-app-theme="cane"] .to-teal-500,
+:root[data-app-theme="cane"] .to-emerald-400 {
+  --tw-gradient-to: var(--turquoise-400) !important;
+}
+
+:root[data-app-theme="cane"] .shadow-indigo-200,
+:root[data-app-theme="cane"] .shadow-lg,
+:root[data-app-theme="cane"] .shadow-xl {
+  --tw-shadow-color: var(--app-shadow-color) !important;
 }
 
 /* ===== RESPONSIVE IMPROVEMENTS ===== */

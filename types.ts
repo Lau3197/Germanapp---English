@@ -34,9 +34,9 @@ export interface Theme {
   subThemes?: string[]; // List of available sub-themes
 }
 
-export type MainTab = 'dashboard' | 'vocabulary' | 'gender' | 'structures' | 'nomen-verben' | 'verben-mit-praepositionen' | 'grammar' | 'tables' | 'expressions' | 'revision' | 'exam';
+export type MainTab = 'dashboard' | 'vocabulary' | 'gender' | 'structures' | 'nomen-verben' | 'verben-mit-praepositionen' | 'grammar' | 'tables' | 'expressions' | 'revision' | 'exam' | 'italian';
 export type ViewMode = 'themes' | 'learn' | 'quiz' | 'phrases' | 'trainer';
-export type AppTheme = 'classic' | 'panda';
+export type AppTheme = 'classic' | 'panda' | 'cane';
 
 export interface ThemeContent {
   words: GermanWord[];

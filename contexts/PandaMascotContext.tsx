@@ -4,6 +4,7 @@ export type PandaMascotMood = 'study' | 'sleeping' | 'applauding' | 'encouraging
 
 interface PandaMascotContextValue {
   mood: PandaMascotMood;
+  moodRevision: number;
   bambooCount: number;
   bambooRank: string;
   bambooNextGoal: number;
@@ -16,6 +17,7 @@ const PandaMascotContext = createContext<PandaMascotContextValue | null>(null);
 const IDLE_DELAY_MS = 18000;
 export const PandaMascotProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [mood, setMood] = useState<PandaMascotMood>('study');
+  const [moodRevision, setMoodRevision] = useState(0);
   const bambooCount = 0;
   const transientRef = useRef(false);
   const transientTimerRef = useRef<number | null>(null);
@@ -53,6 +55,7 @@ export const PandaMascotProvider: React.FC<{ children: React.ReactNode }> = ({ c
     clearTimer(idleTimerRef);
 
     transientRef.current = true;
+    setMoodRevision(revision => revision + 1);
     setMood(nextMood);
 
     transientTimerRef.current = window.setTimeout(() => {
@@ -87,6 +90,7 @@ export const PandaMascotProvider: React.FC<{ children: React.ReactNode }> = ({ c
     <PandaMascotContext.Provider
       value={{
         mood,
+        moodRevision,
         bambooCount,
         bambooRank: bambooProgress.rank,
         bambooNextGoal: bambooProgress.nextGoal,

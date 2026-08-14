@@ -4,6 +4,8 @@ import { VOCABULARY_DATA } from '../data/vocabularyData';
 import { usePandaMascot } from '../contexts/PandaMascotContext';
 import { findGenderRule } from '../data/genderRules';
 import { getTranslation } from '../utils/translations';
+import { useExerciseProgress } from '../hooks/useExerciseProgress';
+import { useExerciseFavorites } from '../hooks/useExerciseFavorites';
 
 type Article = 'der' | 'die' | 'das';
 type Phase = 'menu' | 'drill' | 'result';
@@ -74,6 +76,8 @@ const ALL_NOUNS: GermanWord[] = (() => {
 
 export const GenderTrainerView: React.FC = () => {
   const { triggerMood } = usePandaMascot();
+  const { completedIds, recordAnswer, resetProgress } = useExerciseProgress('trainerProgress_gender_en');
+  const { favoriteIds, toggleFavorite } = useExerciseFavorites('trainerFavorites_gender_en');
 
   const [phase, setPhase] = useState<Phase>('menu');
   const [selectedLevel, setSelectedLevel] = useState<LanguageLevel | 'All'>('All');
@@ -88,12 +92,23 @@ export const GenderTrainerView: React.FC = () => {
   const [missed, setMissed] = useState<GermanWord[]>([]);
   const [isRevision, setIsRevision] = useState(false);
   const [showHint, setShowHint] = useState(false);
+  const [favoritesOnly, setFavoritesOnly] = useState(false);
 
   // Nouns available for the current level filter.
   const availableNouns = useMemo(() => {
     if (selectedLevel === 'All') return ALL_NOUNS;
     return ALL_NOUNS.filter(w => w.level === selectedLevel);
   }, [selectedLevel]);
+
+  const getNounId = useCallback((word: GermanWord) => `${word.article}|${word.german}`.toLowerCase(), []);
+  const studyNouns = useMemo(
+    () => availableNouns.filter(word => !favoritesOnly || favoriteIds.has(getNounId(word))),
+    [availableNouns, favoritesOnly, favoriteIds, getNounId]
+  );
+  const remainingNouns = useMemo(
+    () => studyNouns.filter(word => !completedIds.has(getNounId(word))),
+    [studyNouns, completedIds, getNounId]
+  );
 
   const startSession = useCallback((pool: GermanWord[], revision: boolean) => {
     const count = revision || wordCount === 'all'
@@ -118,6 +133,7 @@ export const GenderTrainerView: React.FC = () => {
     if (selected !== null || !currentWord) return;
 
     const correct = choice === currentWord.article;
+    recordAnswer(getNounId(currentWord), correct);
     setSelected(choice);
     setStats(prev => ({
       ...prev,
@@ -131,13 +147,14 @@ export const GenderTrainerView: React.FC = () => {
         setBestStreak(b => Math.max(b, next));
         return next;
       });
-      triggerMood(streak >= 4 ? 'dancing' : 'celebrating', 1600);
+      triggerMood(streak >= 4 ? 'dancing' : 'celebrating', streak >= 4 ? 12000 : 16000);
     } else {
       setStreak(0);
       setMissed(prev => (prev.some(w => w.german === currentWord.german) ? prev : [...prev, currentWord]));
-      triggerMood('encouraging');
+      // Keep Adolfino in the full slow paw-raise sequence while the correction is visible.
+      triggerMood('encouraging', 16000);
     }
-  }, [selected, currentWord, streak, triggerMood]);
+  }, [selected, currentWord, streak, triggerMood, recordAnswer, getNounId]);
 
   // Manual advance only — triggered by the Next button or Enter, never automatic.
   const advanceToNext = useCallback(() => {
@@ -258,7 +275,7 @@ export const GenderTrainerView: React.FC = () => {
               </button>
             )}
             <button
-              onClick={() => startSession(availableNouns, false)}
+              onClick={() => startSession(remainingNouns.length ? remainingNouns : studyNouns, false)}
               className={`w-full font-bold py-4 rounded-xl transition-all ${hasErrors ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' : 'text-white shadow-lg hover:shadow-xl'}`}
               style={!hasErrors ? { backgroundColor: 'var(--terracotta-600)' } : {}}
             >
@@ -323,6 +340,9 @@ export const GenderTrainerView: React.FC = () => {
             Which article?
           </span>
           <h2 className="text-5xl font-black text-slate-800">{currentWord.german}</h2>
+          <button type="button" onClick={() => toggleFavorite(getNounId(currentWord))} className="mt-3 font-bold" style={{ color: favoriteIds.has(getNounId(currentWord)) ? '#d97706' : 'var(--sand-500)' }}>
+            {favoriteIds.has(getNounId(currentWord)) ? '★ Favorite' : '☆ Add to favorites'}
+          </button>
           {translation && <p className="text-slate-400 text-sm mt-3">{translation}</p>}
 
           {/* Optional pre-answer hint: general pattern only, doesn't confirm this word */}
@@ -510,13 +530,21 @@ export const GenderTrainerView: React.FC = () => {
       </div>
 
       <button
-        onClick={() => startSession(availableNouns, false)}
-        disabled={availableNouns.length === 0}
+        onClick={() => startSession(remainingNouns.length ? remainingNouns : studyNouns, false)}
+        disabled={studyNouns.length === 0}
         className="w-full font-black text-lg py-5 rounded-2xl transition-all text-white shadow-lg hover:shadow-xl hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed"
         style={{ backgroundColor: 'var(--terracotta-600)' }}
       >
-        🚀 Start drill ({availableNouns.length} nouns)
+        🚀 {remainingNouns.length ? 'Continue drill' : 'Start a new round'} ({remainingNouns.length || studyNouns.length} nouns)
       </button>
+      <div className="mt-3 flex justify-center gap-3 text-sm">
+        <button type="button" onClick={() => setFavoritesOnly(value => !value)} className={`rounded-xl px-4 py-2 font-bold ${favoritesOnly ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-700'}`}>★ {favoritesOnly ? 'All nouns' : `Favorites (${favoriteIds.size})`}</button>
+      </div>
+      {favoritesOnly && !studyNouns.length && <p className="text-center text-sm text-amber-700 mt-3">No favorites yet. Add them while studying.</p>}
+      <p className="text-center text-sm text-slate-500 mt-3">
+        {completedIds.size > 0 ? `${Math.min(completedIds.size, availableNouns.length)} noun${completedIds.size === 1 ? '' : 's'} already practiced.` : 'Your results are saved automatically.'}
+        {completedIds.size > 0 && <button type="button" onClick={resetProgress} className="ml-2 underline font-bold">Reset progress</button>}
+      </p>
     </div>
   );
 };

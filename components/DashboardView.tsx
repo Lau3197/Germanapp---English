@@ -6,33 +6,10 @@ import { LanguageLevel } from '../types';
 import { useGrammar } from '../contexts/GrammarContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useSpacedRepetition } from '../hooks/useSpacedRepetition';
+import { useStudyTime } from '../contexts/StudyTimeContext';
 import { StatsView } from './StatsView';
 
 // ---------- Helpers ----------
-
-const getLocalDateKey = (date = new Date()) => {
-  const year = date.getFullYear();
-  const month = `${date.getMonth() + 1}`.padStart(2, '0');
-  const day = `${date.getDate()}`.padStart(2, '0');
-  return `${year}-${month}-${day}`;
-};
-
-interface RawStats {
-  dailyGoal?: number;
-  currentStreak?: number;
-  longestStreak?: number;
-  dailyHistory?: { date: string; timeSpent: number }[];
-  quizResults?: { topicId: string; score: number; date: string }[];
-}
-
-const readStats = (): RawStats => {
-  try {
-    const saved = localStorage.getItem('grammarStats');
-    return saved ? JSON.parse(saved) : {};
-  } catch {
-    return {};
-  }
-};
 
 const formatTime = (seconds: number) => {
   const h = Math.floor(seconds / 3600);
@@ -68,7 +45,8 @@ export const DashboardView: React.FC = () => {
   const { isLoaded, addWords, getStats } = useSpacedRepetition();
   const statsSectionRef = useRef<HTMLElement | null>(null);
 
-  const [stats] = useState<RawStats>(() => readStats());
+  // Live stats from the app-wide study clock, so today's time keeps ticking here too.
+  const { stats, todayTimeSpent } = useStudyTime();
 
   // Seed the SRS store with the app vocabulary so the review queue is meaningful
   // even for a user who has never opened the Review tab yet.
@@ -159,8 +137,7 @@ export const DashboardView: React.FC = () => {
 
   // ----- Today's time & goal -----
   const dailyGoal = Math.max(1, stats.dailyGoal || 15);
-  const todayKey = getLocalDateKey();
-  const todayTime = (stats.dailyHistory || []).find(d => d.date === todayKey)?.timeSpent || 0;
+  const todayTime = todayTimeSpent;
   const goalProgress = Math.min(100, Math.round((todayTime / 60 / dailyGoal) * 100));
   const streak = stats.currentStreak || 0;
 
@@ -204,6 +181,7 @@ export const DashboardView: React.FC = () => {
     { id: 'expressions', label: 'Expressions', icon: '💬', color: 'var(--turquoise-500)' },
     { id: 'exam', label: 'Exam B2', icon: '📝', color: 'var(--sage-600)' },
     { id: 'tables', label: 'Tables', icon: '📋', color: 'var(--coral-500)' },
+    { id: 'italian', label: 'Italian', icon: '🇮🇹', color: 'var(--sage-600)' },
   ];
 
   const levelColors = [

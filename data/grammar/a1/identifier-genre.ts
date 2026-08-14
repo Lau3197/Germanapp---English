@@ -2,7 +2,7 @@
 import { GrammarSection } from '../../../types';
 
 export const identifierGenre: GrammarSection = {
-  title: "1.5 Identifying Gender (Der, Die, Das)",
+  title: "1.6 Identifying Gender (Der, Die, Das)",
   topics: [
     {
       id: "a1-5-1",

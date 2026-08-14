@@ -419,7 +419,12 @@ export const GrammarView: React.FC = () => {
     });
   };
 
-  const renderTable = (rows: string[]) => {
+  const renderTable = (allRows: string[]) => {
+    // Markdown separator rows (|---|---|) carry no data: without this filter they
+    // render as a visible row of dashes under every table header.
+    const rows = allRows.filter(row => !/^\|[\s:|-]+\|?$/.test(row.trim()));
+    if (rows.length === 0) return null;
+
     return (
       <div className="my-8 overflow-hidden rounded-2xl border border-slate-200 shadow-sm overflow-x-auto">
         <table className="w-full text-left border-collapse">

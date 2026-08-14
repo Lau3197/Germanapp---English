@@ -467,7 +467,7 @@ const QCMMode: React.FC<QCMModeProps> = ({ words, allWords, currentIndex, direct
 
     setSelectedOption(direction === 'fr-de' ? option.german : getTranslation(option));
     setIsCorrect(correct);
-    triggerMood(correct ? 'dancing' : 'encouraging', correct ? 2800 : undefined);
+    triggerMood(correct ? 'dancing' : 'encouraging', correct ? 12000 : undefined);
     setTimeout(() => {
       onAnswer(correct, currentWord);
       setSelectedOption(null);
@@ -599,7 +599,7 @@ const WritingMode: React.FC<WritingModeProps> = ({ words, currentIndex, directio
 
     setIsCorrect(correct);
     setShowResult(true);
-    triggerMood(correct ? 'dancing' : 'encouraging', correct ? 2800 : undefined);
+    triggerMood(correct ? 'dancing' : 'encouraging', correct ? 12000 : undefined);
   };
 
   const handleNext = () => {
@@ -780,7 +780,7 @@ const FlashcardsMode: React.FC<FlashcardsModeProps> = ({ words, currentIndex, di
   };
 
   const handleAnswer = (correct: boolean) => {
-    triggerMood(correct ? 'dancing' : 'encouraging', correct ? 2800 : undefined);
+    triggerMood(correct ? 'dancing' : 'encouraging', correct ? 12000 : undefined);
     onAnswer(correct, currentWord);
     setIsFlipped(false);
   };

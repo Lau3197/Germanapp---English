@@ -11,6 +11,7 @@ import { TablesView } from './components/TablesView';
 import { ExpressionsView } from './components/ExpressionsView';
 import { RevisionView } from './components/RevisionView';
 import { ExamView } from './components/ExamView';
+import { ItalianView } from './components/ItalianView';
 import { StructureComparisonView } from './components/StructureComparisonView';
 import { VerbenMitPraepositionenView } from './components/VerbenMitPraepositionenView';
 import { GlobalSearch } from './components/GlobalSearch';
@@ -19,19 +20,22 @@ import { AuthPage } from './components/AuthPage';
 import { UserMenu } from './components/UserMenu';
 import { AppThemeSwitcher } from './components/AppThemeSwitcher';
 import { PandaThemeLayer } from './components/PandaThemeLayer';
+import { CaneThemeLayer } from './components/CaneThemeLayer';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { GrammarProvider } from './contexts/GrammarContext';
 import { PandaMascotProvider } from './contexts/PandaMascotContext';
+import { StudyTimeProvider } from './contexts/StudyTimeContext';
 
 const APP_THEME_STORAGE_KEY = 'deutschmeister-app-theme';
 
-type PrimarySection = 'dashboard' | 'vocabulary' | 'grammar' | 'exam';
+type PrimarySection = 'dashboard' | 'vocabulary' | 'grammar' | 'exam' | 'italian';
 
 const PRIMARY_NAV: { id: PrimarySection; label: string; path: string }[] = [
   { id: 'dashboard', label: 'Home', path: '/dashboard' },
   { id: 'vocabulary', label: 'Vocabulary', path: '/vocabulary' },
   { id: 'grammar', label: 'Grammar', path: '/grammar' },
   { id: 'exam', label: 'Exam B2', path: '/exam' },
+  { id: 'italian', label: 'Italian', path: '/italian' },
 ];
 
 const VOCABULARY_NAV: { id: MainTab; label: string; path: string }[] = [
@@ -51,6 +55,7 @@ const GRAMMAR_NAV: { id: MainTab; label: string; path: string }[] = [
 
 const getPrimarySection = (tab: MainTab): PrimarySection => {
   if (tab === 'exam') return 'exam';
+  if (tab === 'italian') return 'italian';
   if (VOCABULARY_NAV.some(item => item.id === tab)) return 'vocabulary';
   if (GRAMMAR_NAV.some(item => item.id === tab)) return 'grammar';
   return 'dashboard';
@@ -65,7 +70,8 @@ const AppLayout: React.FC = () => {
       return 'classic';
     }
 
-    return window.localStorage.getItem(APP_THEME_STORAGE_KEY) === 'panda' ? 'panda' : 'classic';
+    const storedTheme = window.localStorage.getItem(APP_THEME_STORAGE_KEY);
+    return storedTheme === 'panda' || storedTheme === 'cane' ? storedTheme : 'classic';
   });
   const activeTabRef = useRef<HTMLButtonElement | null>(null);
   const previousThemeRef = useRef<AppTheme>(appTheme);
@@ -159,12 +165,13 @@ const AppLayout: React.FC = () => {
           onDismissReward={() => setShowPandaReward(false)}
         />
       )}
+      {appTheme === 'cane' && <CaneThemeLayer />}
 
       <header className="app-header">
         <div className="app-header-shell">
           <button type="button" className="app-brand" onClick={() => navigate('/dashboard')}>
             <div className="app-brand-mark">
-              {appTheme === 'panda' ? '🐼' : '🇩🇪'}
+              {appTheme === 'panda' ? '🐼' : appTheme === 'cane' ? '🐕' : '🇩🇪'}
             </div>
             <h1 className="app-brand-title">DeutschMeister</h1>
           </button>
@@ -255,6 +262,7 @@ const AppLayout: React.FC = () => {
           <Route path="/tables" element={<TablesView />} />
           <Route path="/expressions" element={<ExpressionsView />} />
           <Route path="/exam" element={<ExamView />} />
+          <Route path="/italian" element={<ItalianView />} />
           <Route path="/nomen-verben" element={<NomenVerbenView />} />
           <Route path="/verben-mit-praepositionen" element={<VerbenMitPraepositionenView />} />
           <Route path="/stats" element={<Navigate to="/dashboard#stats" replace />} />
@@ -286,7 +294,13 @@ const AuthGate: React.FC = () => {
     return <AuthPage />;
   }
 
-  return <AppLayout />;
+  // Mounted above the router so the study clock keeps running on every page,
+  // not just the dashboard.
+  return (
+    <StudyTimeProvider>
+      <AppLayout />
+    </StudyTimeProvider>
+  );
 };
 
 // Main app with AuthProvider and GrammarProvider

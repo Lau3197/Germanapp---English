@@ -6,6 +6,8 @@ import { getTranslation } from '../utils/translations';
 
 interface WordCardProps {
   word: GermanWord;
+  isFavorite?: boolean;
+  onToggleFavorite?: () => void;
 }
 
 const getLevelColor = (level: LanguageLevel) => {
@@ -18,7 +20,7 @@ const getLevelColor = (level: LanguageLevel) => {
   }
 };
 
-export const WordCard: React.FC<WordCardProps> = ({ word }) => {
+export const WordCard: React.FC<WordCardProps> = ({ word, isFavorite = false, onToggleFavorite }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const translation = getTranslation(word);
 
@@ -40,9 +42,10 @@ export const WordCard: React.FC<WordCardProps> = ({ word }) => {
         <div className="card-front bg-white rounded-2xl flex flex-col p-6 border-2 border-slate-50">
           <div className="flex justify-between items-start mb-2">
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{getSubThemeLabel(word.subTheme)}</span>
-            <span className={`px-2 py-1 rounded-full text-xs font-bold ${getLevelColor(word.level)}`}>
-              {word.level}
-            </span>
+            <div className="flex items-center gap-2">
+              {onToggleFavorite && <button type="button" onClick={(event) => { event.stopPropagation(); onToggleFavorite(); }} className="text-xl leading-none" aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}>{isFavorite ? '★' : '☆'}</button>}
+              <span className={`px-2 py-1 rounded-full text-xs font-bold ${getLevelColor(word.level)}`}>{word.level}</span>
+            </div>
           </div>
 
           <div className="flex-1 flex flex-col justify-center text-center">

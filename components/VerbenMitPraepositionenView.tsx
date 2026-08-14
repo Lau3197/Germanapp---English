@@ -5,6 +5,8 @@ import {
   VERBEN_MIT_PRAEPOSITIONEN,
   VerbPrepositionEntry
 } from '../data/verbenMitPraepositionenData';
+import { useExerciseProgress } from '../hooks/useExerciseProgress';
+import { useExerciseFavorites } from '../hooks/useExerciseFavorites';
 
 type CaseFilter = 'all' | PrepositionCase;
 type PracticeStatus = 'idle' | 'correct' | 'incorrect' | 'revealed';
@@ -61,16 +63,33 @@ const getEntrySearchText = (entry: VerbPrepositionEntry) =>
   ].join(' ');
 
 export const VerbenMitPraepositionenView: React.FC = () => {
+  const { completedIds, recordAnswer, resetProgress } = useExerciseProgress('trainerProgress_verbPrepositions_en');
+  const { favoriteIds, toggleFavorite } = useExerciseFavorites('trainerFavorites_verbPrepositions_en');
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(() => searchParams.get('q') || '');
   const [caseFilter, setCaseFilter] = useState<CaseFilter>('all');
   const [practiceIndex, setPracticeIndex] = useState(0);
   const [practiceAnswer, setPracticeAnswer] = useState('');
   const [practiceStatus, setPracticeStatus] = useState<PracticeStatus>('idle');
+  const [favoritesOnly, setFavoritesOnly] = useState(false);
 
   const [order, setOrder] = useState<number[]>(() => shuffledOrder(VERBEN_MIT_PRAEPOSITIONEN.length));
 
-  const currentPracticeEntry = VERBEN_MIT_PRAEPOSITIONEN[order[practiceIndex % order.length]];
+  const getExerciseId = (index: number) => {
+    const entry = VERBEN_MIT_PRAEPOSITIONEN[index];
+    return entry ? `${entry.verb}|${entry.preposition}`.toLowerCase() : String(index);
+  };
+  const favoriteOrder = useMemo(
+    () => order.filter(index => !favoritesOnly || favoriteIds.has(getExerciseId(index))),
+    [order, favoritesOnly, favoriteIds]
+  );
+  const remainingOrder = useMemo(
+    () => favoriteOrder.filter(index => !completedIds.has(getExerciseId(index))),
+    [favoriteOrder, completedIds]
+  );
+  const activeOrder = practiceStatus === 'idle' && remainingOrder.length ? remainingOrder : favoriteOrder;
+
+  const currentPracticeEntry = VERBEN_MIT_PRAEPOSITIONEN[activeOrder[practiceIndex % activeOrder.length]];
   const currentPracticeCase = currentPracticeEntry ? CASE_LABELS[currentPracticeEntry.case] : null;
 
   // Deep-link from the global search: seed the filter and scroll to the list.
@@ -127,7 +146,7 @@ export const VerbenMitPraepositionenView: React.FC = () => {
 
   const goToNextExercise = () => {
     const next = practiceIndex + 1;
-    if (next >= order.length) {
+    if (next >= activeOrder.length) {
       // Completed a full pass — reshuffle so the next cycle is a new order.
       setOrder(shuffledOrder(VERBEN_MIT_PRAEPOSITIONEN.length));
       resetPractice(0);
@@ -144,6 +163,7 @@ export const VerbenMitPraepositionenView: React.FC = () => {
     }
 
     const isCorrect = normalizeText(practiceAnswer) === normalizeText(currentPracticeEntry.preposition);
+    recordAnswer(getExerciseId(activeOrder[practiceIndex % activeOrder.length]), isCorrect);
     setPracticeStatus(isCorrect ? 'correct' : 'incorrect');
   };
 
@@ -194,8 +214,11 @@ export const VerbenMitPraepositionenView: React.FC = () => {
               </p>
               <h3 className="text-2xl font-black text-slate-900">Find the missing preposition.</h3>
               <p className="text-sm font-semibold text-slate-500 mt-2">
-                Item {practiceIndex + 1} of {VERBEN_MIT_PRAEPOSITIONEN.length}
+                Item {practiceIndex + 1} of {activeOrder.length} · {completedIds.size} saved
               </p>
+              <button type="button" onClick={() => toggleFavorite(getExerciseId(activeOrder[practiceIndex % activeOrder.length]))} className="mt-3 font-bold" style={{ color: favoriteIds.has(getExerciseId(activeOrder[practiceIndex % activeOrder.length])) ? '#d97706' : 'var(--sand-500)' }}>
+                {favoriteIds.has(getExerciseId(activeOrder[practiceIndex % activeOrder.length])) ? '★ Favorite' : '☆ Add to favorites'}
+              </button>
             </div>
 
             <form onSubmit={handlePracticeSubmit} className="lg:col-span-2">
@@ -413,6 +436,13 @@ export const VerbenMitPraepositionenView: React.FC = () => {
           <p className="text-slate-400 text-sm mt-1">Try another search term or change the case filter.</p>
         </div>
       )}
+      <div className="mt-6 text-center text-sm text-slate-500">
+        <button type="button" onClick={resetProgress} className="underline font-bold">Reset practice progress</button>
+      </div>
+      {favoritesOnly && !favoriteOrder.length && <p className="mb-6 rounded-xl bg-amber-50 p-4 text-center font-bold text-amber-800">No favorites yet. Add some with the ☆ button.</p>}
+      <div className="mb-6 flex justify-center">
+        <button type="button" onClick={() => setFavoritesOnly(value => !value)} className={`rounded-xl px-4 py-2 font-bold ${favoritesOnly ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-700'}`}>★ {favoritesOnly ? 'All exercises' : `Favorites (${favoriteIds.size})`}</button>
+      </div>
     </div>
   );
 };

@@ -6,6 +6,7 @@ import { passifAlternativesC1 } from './passif-alternatives.ts';
 import { subjonctifNuancesC1 } from './subjonctif-nuances.ts';
 import { connecteursAvancesC1 } from './connecteurs-avances.ts';
 import { structuresExpertesC1 } from './structures-expertes.ts';
+import { homonymesGenreC1 } from './homonymes-genre.ts';
 
 export const c1Grammar: GrammarLevel = {
   level: LanguageLevel.C1,
@@ -17,7 +18,8 @@ export const c1Grammar: GrammarLevel = {
     passifAlternativesC1,          // 5.3
     subjonctifNuancesC1,           // 5.4
     connecteursAvancesC1,          // 5.5
-    structuresExpertesC1           // 5.6
+    structuresExpertesC1,          // 5.6
+    homonymesGenreC1               // 5.7 (moved from A1: C1-level vocabulary refinement)
   ]
 };
 

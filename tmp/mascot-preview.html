@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en" data-app-theme="panda">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mascot framing preview</title>
+    <link rel="stylesheet" href="/index.css" />
+    <style>
+      body { margin: 0; min-height: 100vh; background: var(--sand-50, #f6f3ee); }
+      .toolbar { position: fixed; top: 10px; left: 10px; z-index: 200; display: flex; gap: 6px; }
+      .toolbar button { padding: 6px 10px; font: 600 12px system-ui; cursor: pointer; }
+    </style>
+  </head>
+  <body>
+    <div class="toolbar">
+      <button data-theme="panda">panda</button>
+      <button data-theme="cane">cane</button>
+      <button data-mood="eating">eating</button>
+      <button data-mood="sleeping">sleeping</button>
+      <button data-mood="applauding">applauding</button>
+      <button data-mood="encouraging">encouraging</button>
+      <button data-mood="celebrating">celebrating</button>
+      <button data-mood="dancing">dancing</button>
+    </div>
+
+    <div class="panda-study-buddy panda-study-buddy-focused" style="--panda-buddy-x:0px;--panda-buddy-y:0px">
+      <div class="panda-study-buddy-glow"></div>
+      <div class="panda-study-buddy-character panda-study-buddy-sprite" aria-hidden="true">
+        <img id="panda-frame" alt="" draggable="false" />
+      </div>
+      <div class="panda-study-buddy-panel">
+        <div class="panda-study-buddy-bubble">
+          <span>Pandachan is with you</span>
+          <strong>I'm with you.</strong>
+          <em>One word, one card, one step.</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="cane-theme-layer" aria-hidden="true">
+      <div class="cane-study-buddy" title="Adolfino">
+        <div class="cane-study-buddy-sprite"><img id="dog-frame" alt="" draggable="false" /></div>
+        <span class="sr-only">Adolfino</span>
+      </div>
+    </div>
+
+    <script type="module">
+      const pad = n => String(n).padStart(2, '0');
+      const sets = {
+        eating: Array.from({ length: 16 }, (_, i) => `/assets/panda/frames/eating-${pad(i)}.png`),
+        sleeping: Array.from({ length: 8 }, (_, i) => `/assets/panda/frames/sleeping-${pad(i)}.png`),
+        applauding: Array.from({ length: 8 }, (_, i) => `/assets/panda/frames/applauding-${pad(i)}.png`),
+        encouraging: Array.from({ length: 8 }, (_, i) => `/assets/panda/frames/encouraging-${pad(i)}.png`),
+        celebrating: Array.from({ length: 8 }, (_, i) => `/assets/panda/frames/celebrating-${pad(i)}.png`),
+        dancing: Array.from({ length: 8 }, (_, i) => `/assets/panda/frames/dancing-${pad(i)}.png`),
+        fetch: Array.from({ length: 16 }, (_, i) => `/assets/dog/frames/fetch-${pad(i)}.png`)
+      };
+
+      let mood = 'eating';
+      let pandaIndex = 0;
+      let dogIndex = 0;
+      const pandaImg = document.getElementById('panda-frame');
+      const dogImg = document.getElementById('dog-frame');
+
+      const tickPanda = () => {
+        pandaIndex = (pandaIndex + 1) % sets[mood].length;
+        pandaImg.src = sets[mood][pandaIndex];
+      };
+      const tickDog = () => {
+        dogIndex = (dogIndex + 1) % sets.fetch.length;
+        dogImg.src = sets.fetch[dogIndex];
+      };
+
+      pandaImg.src = sets[mood][0];
+      dogImg.src = sets.fetch[0];
+      const durations = { eating: 520, sleeping: 420, applauding: 190, encouraging: 260, celebrating: 220, dancing: 180 };
+      let pandaTimer = setInterval(tickPanda, durations[mood]);
+      setInterval(tickDog, 120);
+
+      document.querySelector('.toolbar').addEventListener('click', event => {
+        const { theme, mood: nextMood } = event.target.dataset;
+        if (theme) document.documentElement.dataset.appTheme = theme;
+        if (nextMood) {
+          mood = nextMood;
+          pandaIndex = 0;
+          pandaImg.src = sets[mood][0];
+          clearInterval(pandaTimer);
+          pandaTimer = setInterval(tickPanda, durations[mood]);
+        }
+      });
+    </script>
+  </body>
+</html>
