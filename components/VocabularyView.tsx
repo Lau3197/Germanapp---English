@@ -1,34 +1,35 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { Theme, ThemeContent, ViewMode, LanguageLevel } from '../types';
+import { AppTheme, Theme, ThemeContent, LanguageLevel } from '../types';
 import { THEMES, getSubThemeLabel } from '../constants';
 import { VOCABULARY_DATA } from '../data/vocabularyData';
 import { ThemeCard } from './ThemeCard';
 import { WordCard } from './WordCard';
-import { Quiz } from './Quiz';
-import { VocabularyTrainer } from './VocabularyTrainer';
-import { getTranslation } from '../utils/translations';
+import { getTranslation, getThemeLanguage } from '../utils/translations';
 
-export const VocabularyView: React.FC = () => {
+interface VocabularyViewProps {
+    appTheme?: AppTheme;
+}
+
+export const VocabularyView: React.FC<VocabularyViewProps> = ({ appTheme = 'classic' }) => {
     const params = useParams<{ themeId?: string }>();
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
-    const [viewMode, setViewMode] = useState<ViewMode>('learn');
     const [selectedLevel, setSelectedLevel] = useState<LanguageLevel | 'All'>('All');
     const [selectedSubTheme, setSelectedSubTheme] = useState<string | 'All'>('All');
 
     const currentTheme = params.themeId ? THEMES.find(t => t.id === params.themeId) : null;
     const content: ThemeContent | null = currentTheme ? (VOCABULARY_DATA[currentTheme.id] || { words: [], phrases: [] }) : null;
+    const translationLanguage = getThemeLanguage(appTheme);
 
     useEffect(() => {
         // Reset subtheme when theme changes
         setSelectedSubTheme('All');
-        setViewMode('learn');
     }, [currentTheme]);
 
-    // Deep-link from the global search: switch to the right tab, drop any filter
-    // that could hide the target, then scroll to and highlight the matching entry.
-    // Declared after the theme-reset effect so its viewMode wins on navigation.
+    // Deep-link from the global search: drop any filter that could hide the
+    // target, then scroll to and highlight the matching entry. Words and
+    // phrases live on the same page, so only the filters need clearing.
     useEffect(() => {
         const term = searchParams.get('q');
         if (!term || !content) return;
@@ -42,7 +43,6 @@ export const VocabularyView: React.FC = () => {
         // Make sure nothing filters the target out of view.
         setSelectedLevel('All');
         setSelectedSubTheme('All');
-        setViewMode(isPhrase ? 'phrases' : 'learn');
 
         const timer = setTimeout(() => {
             const element = document.getElementById(
@@ -153,80 +153,55 @@ export const VocabularyView: React.FC = () => {
                 </div>
             )}
 
-            <nav className="flex gap-4 mb-8">
-                <button onClick={() => setViewMode('learn')} className={`pb-2 border-b-2 font-bold text-sm transition-all ${viewMode === 'learn' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>📚 Word list ({filteredWords.length})</button>
-                <button onClick={() => setViewMode('phrases')} className={`pb-2 border-b-2 font-bold text-sm transition-all ${viewMode === 'phrases' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>💬 Phrases ({content?.phrases.length})</button>
-                <button onClick={() => setViewMode('trainer')} className={`pb-2 border-b-2 font-bold text-sm transition-all ${viewMode === 'trainer' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>🎯 Practice</button>
-                <button onClick={() => setViewMode('quiz')} className={`pb-2 border-b-2 font-bold text-sm transition-all ${viewMode === 'quiz' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>❓ Quick quiz</button>
-            </nav>
+            <h3 className="text-sm font-black uppercase tracking-wider text-slate-400 mb-4">
+                📚 Word list ({filteredWords.length})
+            </h3>
 
-            {viewMode === 'learn' && (
-                filteredWords.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {filteredWords.map((word, idx) => (
-                            <div key={`${currentTheme.id}-${idx}-${word.german}`} id={`vocab-word-${idx}`} className="scroll-mt-24">
-                                <WordCard word={word} />
-                            </div>
-                        ))}
-                    </div>
-                ) : (
-                    <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-200">
-                        <p className="text-slate-400 font-bold text-lg">No words available for this selection.</p>
-                        <p className="text-slate-400 text-sm mt-2">Try changing the level or subtheme.</p>
-                    </div>
-                )
+            {filteredWords.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {filteredWords.map((word, idx) => (
+                        <div key={`${currentTheme.id}-${idx}-${word.german}`} id={`vocab-word-${idx}`} className="scroll-mt-24">
+                            <WordCard word={word} translationLanguage={translationLanguage} />
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-200">
+                    <p className="text-slate-400 font-bold text-lg">No words available for this selection.</p>
+                    <p className="text-slate-400 text-sm mt-2">Try changing the level or subtheme.</p>
+                </div>
             )}
 
-            {viewMode === 'phrases' && content && (
-                <div className="grid grid-cols-1 gap-4 max-w-3xl mx-auto">
-                    {content.phrases.length > 0 ? (
-                        content.phrases.map((phrase, idx) => (
+            {/* Phrases belong to the same theme as the words above, so they read as
+                the last part of the list rather than a separate destination. */}
+            {content && content.phrases.length > 0 && (
+                <section className="mt-14">
+                    <h3 className="text-sm font-black uppercase tracking-wider text-slate-400 mb-4">
+                        💬 Phrases ({content.phrases.length})
+                    </h3>
+                    <div className="grid grid-cols-1 gap-4">
+                        {content.phrases.map((phrase, idx) => (
                             <div key={idx} id={`vocab-phrase-${idx}`} className="scroll-mt-24 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:border-indigo-200 transition-colors">
                                 <div className="flex items-start gap-4">
                                     <span className="bg-indigo-50 text-indigo-600 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0">{idx + 1}</span>
                                     <div>
                                         <p className="text-slate-900 font-bold text-xl mb-1">{phrase.german}</p>
-                                        <p className="text-indigo-600 font-medium mb-3">{getTranslation(phrase)}</p>
-                                        <p className="text-slate-400 text-xs italic">Context: {phrase.context}</p>
+                                        <p className="text-indigo-600 font-medium mb-1">{getTranslation(phrase, translationLanguage)}</p>
+                                        {/* Only figurative phrases carry a literal gloss — it is what makes
+                                            the German image stick once the idiomatic meaning is known. */}
+                                        {phrase.literal && (
+                                            <p className="text-slate-500 text-sm italic mb-1">
+                                                <span className="not-italic font-bold text-slate-400 text-xs uppercase tracking-wider mr-2">Literally</span>
+                                                "{phrase.literal}"
+                                            </p>
+                                        )}
+                                        <p className="text-slate-400 text-xs italic mt-2">Context: {phrase.context}</p>
                                     </div>
                                 </div>
                             </div>
-                        ))
-                    ) : (
-                        <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-200">
-                            <p className="text-slate-400 font-bold">No phrases saved for this theme.</p>
-                        </div>
-                    )}
-                </div>
-            )}
-
-            {viewMode === 'quiz' && (
-                filteredWords.length >= 4 ? (
-                    <Quiz
-                        words={filteredWords.sort(() => 0.5 - Math.random()).slice(0, 10)}
-                        onComplete={() => setViewMode('learn')}
-                    />
-                ) : (
-                    <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-200">
-                        <p className="text-slate-400 font-bold text-lg">You need at least 4 words for a quiz.</p>
-                        <p className="text-slate-400 text-sm mt-2">Loosen the filters to get more words.</p>
+                        ))}
                     </div>
-                )
-            )}
-
-            {viewMode === 'trainer' && (
-                filteredWords.length >= 5 ? (
-                    <VocabularyTrainer
-                        words={filteredWords}
-                        onComplete={() => setViewMode('learn')}
-                        themeName={currentTheme.name}
-                    />
-                ) : (
-                    <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-200">
-                        <p className="text-slate-400 font-bold text-lg">You need at least 5 words for practice.</p>
-                        <p className="text-slate-400 text-sm mt-2">Loosen the filters to get more words.</p>
-                    </div>
-                )
+                </section>
             )}
         </div>
     );

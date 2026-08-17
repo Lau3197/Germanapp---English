@@ -7,6 +7,8 @@ export interface WordProgress {
   wordId: string;           // Unique identifier (theme-german)
   german: string;           // German word for reference
   english: string;          // English translation
+  french?: string;          // French translation (used by the "classic" app theme)
+  italian?: string;         // Italian translation (used by the "cane" app theme)
   article?: string;         // Article for nouns (der/die/das)
   theme: string;            // Origin theme
   box: number;              // Leitner Box (1-5)
@@ -32,9 +34,83 @@ export interface SpacedRepetitionStats {
   masteredWords: number;    // Box 5
   learningWords: number;    // Boxes 2-4
   newWords: number;         // Box 1
+  missedWords: number;      // Missed at least once and not yet re-earned (3 correct in a row)
+  unseenWords: number;      // Never answered
   averageBox: number;
   todayReviewed: number;
 }
+
+/**
+ * Which slice of the due pool a session should draw from.
+ * `mistakes` is every unfixed mistake; `mistake-1|2|3` are its three stages.
+ */
+export type ReviewFocus = 'all' | 'mistakes' | 'new' | 'mistake-1' | 'mistake-2' | 'mistake-3';
+
+/** Correct answers in a row needed to get a word out of the mistakes list. */
+export const MISTAKE_RECOVERY_TARGET = 3;
+
+/**
+ * How far a missed word has climbed back:
+ * 1 = just got it wrong, 2 = one right in a row, 3 = two right in a row (last step).
+ */
+export type MistakeStage = 1 | 2 | 3;
+
+export const MISTAKE_STAGES: MistakeStage[] = [1, 2, 3];
+
+/**
+ * A word the learner actually got wrong and hasn't re-earned since.
+ * It only leaves the list after MISTAKE_RECOVERY_TARGET correct answers in a
+ * row, so one lucky answer doesn't make it disappear again.
+ */
+export const isMissedWord = (word: WordProgress): boolean => (
+  word.incorrectCount > 0 && word.streak < MISTAKE_RECOVERY_TARGET
+);
+
+/** null when the word isn't (or is no longer) a mistake. */
+export const getMistakeStage = (word: WordProgress): MistakeStage | null => (
+  isMissedWord(word)
+    ? (Math.min(word.streak, MISTAKE_RECOVERY_TARGET - 1) + 1) as MistakeStage
+    : null
+);
+
+export const mistakeStageFocus = (stage: MistakeStage): ReviewFocus => `mistake-${stage}` as ReviewFocus;
+
+/** True for the whole mistakes family, stage buttons included. */
+export const isMistakeFocus = (focus: ReviewFocus): boolean => (
+  focus === 'mistakes' || focus.startsWith('mistake-')
+);
+
+const isUnseenWord = (word: WordProgress): boolean => word.lastReview === 0;
+
+const matchesFocus = (word: WordProgress, focus: ReviewFocus): boolean => {
+  if (focus === 'mistakes') return isMissedWord(word);
+  if (focus === 'new') return isUnseenWord(word);
+  if (focus.startsWith('mistake-')) return getMistakeStage(word) === Number(focus.slice(-1));
+  return true;
+};
+
+/**
+ * A mistake drill must reach every unfixed word, not only the ones the box
+ * schedule calls due: otherwise the run of 3 correct answers can't be finished
+ * in one sitting and words sit in the list for days.
+ */
+const isAvailable = (word: WordProgress, focus: ReviewFocus, now: number): boolean => (
+  isMistakeFocus(focus) || word.nextReview <= now
+);
+
+/**
+ * Missed words outrank everything else. Without this they lose the date sort:
+ * a miss sets `nextReview` to now, while never-seen words still carry the
+ * timestamp from when the deck was seeded, so the word you just got wrong
+ * ended up behind the entire unseen pool and never came back.
+ */
+const compareForReview = (a: WordProgress, b: WordProgress): number => {
+  const missedA = isMissedWord(a) ? 0 : 1;
+  const missedB = isMissedWord(b) ? 0 : 1;
+  if (missedA !== missedB) return missedA - missedB;
+  if (a.box !== b.box) return a.box - b.box;
+  return a.nextReview - b.nextReview;
+};
 
 // Intervals in milliseconds for each box
 const BOX_INTERVALS: Record<number, number> = {
@@ -140,12 +216,12 @@ export function useSpacedRepetition() {
     });
   }, [getWordId]);
 
-  // Add multiple words (also repairs existing words missing 'english' or 'article')
-  const addWords = useCallback((words: { theme: string; german: string; english: string; article?: string }[]) => {
+  // Add multiple words (also repairs existing words missing a translation or the article)
+  const addWords = useCallback((words: { theme: string; german: string; english: string; french?: string; italian?: string; article?: string }[]) => {
     setProgress(prev => {
       const newMap = new Map<string, WordProgress>(prev);
 
-      words.forEach(({ theme, german, english, article }) => {
+      words.forEach(({ theme, german, english, french, italian, article }) => {
         const wordId = getWordId(theme, german);
         const existing = newMap.get(wordId);
 
@@ -155,6 +231,8 @@ export function useSpacedRepetition() {
             wordId,
             german,
             english,
+            french: french || undefined,
+            italian: italian || undefined,
             article: article || undefined,
             theme,
             box: 1,
@@ -164,11 +242,15 @@ export function useSpacedRepetition() {
             incorrectCount: 0,
             streak: 0,
           });
-        } else if (!existing.english || !existing.article) {
-          // Existing word missing english or article - repair it
+        } else if (!existing.english || !existing.french || !existing.italian || !existing.article) {
+          // Existing word missing a translation or the article - repair it. Decks
+          // saved before a language layer existed get backfilled here, which is why
+          // the check lists every field rather than trusting the newest one.
           newMap.set(wordId, {
             ...existing,
             english: english || existing.english,
+            french: french || existing.french,
+            italian: italian || existing.italian,
             article: article || existing.article,
           });
         }
@@ -219,34 +301,35 @@ export function useSpacedRepetition() {
   }, []);
 
   // Get words to review now
-  const getWordsToReview = useCallback((limit?: number): WordProgress[] => {
+  const getWordsToReview = useCallback((limit?: number, focus: ReviewFocus = 'all'): WordProgress[] => {
     const now = Date.now();
-    const toReview = Array.from(progress.values())
-      .filter(word => word.nextReview <= now)
-      .sort((a, b) => {
-        // Priority: low box first, then review date
-        if (a.box !== b.box) return a.box - b.box;
-        return a.nextReview - b.nextReview;
-      });
+    // Annotated because `Array.from(map.values())` widens to unknown[] under
+    // this project's tsconfig.
+    const words: WordProgress[] = Array.from(progress.values());
+    const toReview = words
+      .filter(word => isAvailable(word, focus, now) && matchesFocus(word, focus))
+      .sort(compareForReview);
 
     return limit ? toReview.slice(0, limit) : toReview;
   }, [progress]);
 
   // Get words by theme
   const getWordsByTheme = useCallback((theme: string): WordProgress[] => {
-    return Array.from(progress.values())
-      .filter(word => word.theme === theme);
+    const words: WordProgress[] = Array.from(progress.values());
+    return words.filter(word => word.theme === theme);
   }, [progress]);
 
   // Get stats
   const getStats = useCallback((): SpacedRepetitionStats => {
-    const words = Array.from(progress.values());
+    const words: WordProgress[] = Array.from(progress.values());
     const now = Date.now();
 
     const masteredWords = words.filter(w => w.box === 5).length;
     const learningWords = words.filter(w => w.box >= 2 && w.box <= 4).length;
     const newWords = words.filter(w => w.box === 1).length;
     const wordsToReview = words.filter(w => w.nextReview <= now).length;
+    const missedWords = words.filter(isMissedWord).length;
+    const unseenWords = words.filter(isUnseenWord).length;
 
     const totalBoxes = words.reduce((sum, w) => sum + w.box, 0);
     const averageBox = words.length > 0 ? totalBoxes / words.length : 0;
@@ -257,6 +340,8 @@ export function useSpacedRepetition() {
       masteredWords,
       learningWords,
       newWords,
+      missedWords,
+      unseenWords,
       averageBox,
       todayReviewed,
     };
@@ -479,7 +564,8 @@ export function useSpacedRepetition() {
     const themes: Map<string, { name: string; isCustom: boolean; wordCount: number; toReviewCount: number }> = new Map();
 
     // Browse all words to count by theme
-    Array.from(progress.values()).forEach(word => {
+    const allWords: WordProgress[] = Array.from(progress.values());
+    allWords.forEach(word => {
       const existing = themes.get(word.theme);
       const toReview = word.nextReview <= now ? 1 : 0;
 
@@ -504,14 +590,16 @@ export function useSpacedRepetition() {
   }, [progress, customLists]);
 
   // Get words to review by theme(s)
-  const getWordsToReviewByThemes = useCallback((themeIds: string[], limit?: number): WordProgress[] => {
+  const getWordsToReviewByThemes = useCallback((
+    themeIds: string[],
+    limit?: number,
+    focus: ReviewFocus = 'all',
+  ): WordProgress[] => {
     const now = Date.now();
-    const toReview = Array.from(progress.values())
-      .filter(word => themeIds.includes(word.theme) && word.nextReview <= now)
-      .sort((a, b) => {
-        if (a.box !== b.box) return a.box - b.box;
-        return a.nextReview - b.nextReview;
-      });
+    const words: WordProgress[] = Array.from(progress.values());
+    const toReview = words
+      .filter(word => themeIds.includes(word.theme) && isAvailable(word, focus, now) && matchesFocus(word, focus))
+      .sort(compareForReview);
 
     return limit ? toReview.slice(0, limit) : toReview;
   }, [progress]);

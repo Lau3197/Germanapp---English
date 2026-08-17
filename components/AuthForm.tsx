@@ -199,7 +199,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({ onAuthenticated }) => {
             <button
               type="button"
               onClick={switchMode}
-              className="ml-2 font-bold hover:underline"
+              className="ml-1 inline-block px-2 py-2.5 font-bold hover:underline"
               style={{ color: 'var(--terracotta-600)' }}
             >
               {mode === 'login' ? 'Sign up' : 'Sign in'}

@@ -106,8 +106,8 @@ export const GrammarView: React.FC = () => {
     const topicId = searchParams.get('topic');
     if (!topicId) return;
 
-    // Open the section that owns the topic so it is actually rendered
-    // (notably on B2, where the "all" view shows a table of contents).
+    // Open the section that owns the topic so it is actually rendered: the
+    // "all" view is a table of contents on every level, not the full text.
     const sectionIdx = currentLevelData.sections.findIndex(section =>
       section.topics.some(topic => topic.id === topicId)
     );
@@ -204,20 +204,14 @@ export const GrammarView: React.FC = () => {
     setSearchResults(results.slice(0, 20)); // Limiter à 20 résultats
   };
 
-  // Naviguer vers un résultat de recherche
+  // Naviguer vers un résultat de recherche. On passe par ?topic= : l'effet de
+  // deep-link ouvre la section propriétaire, sinon on retomberait sur le
+  // sommaire en cartes et le topic ne serait pas monté.
   const goToSearchResult = (result: SearchResult) => {
-    handleLevelSelect(result.level); // Use navigation instead of state
-    setActiveSectionIndex('all');
     setShowSearch(false);
     setSearchQuery('');
     setSearchResults([]);
-
-    setTimeout(() => {
-      const element = document.getElementById(`topic-${result.id}`);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }, 150);
+    navigate(`/grammar/${result.level}?topic=${result.id}`);
   };
 
   // Obtenir l'annotation d'un topic
@@ -280,20 +274,9 @@ export const GrammarView: React.FC = () => {
     }
   };
 
-  // Naviguer vers un favori
+  // Naviguer vers un favori (même mécanisme de deep-link que la recherche)
   const goToFavorite = (favorite: Favorite) => {
-    // Changer de niveau si nécessaire
-    if (selectedLevel !== favorite.level) {
-      handleLevelSelect(favorite.level); // Use navigation
-    }
-    setActiveSectionIndex('all');
-
-    setTimeout(() => {
-      const element = document.getElementById(`topic-${favorite.id}`);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }, 100);
+    navigate(`/grammar/${favorite.level}?topic=${favorite.id}`);
   };
 
   const handleLessonCompletionToggle = (topicId: string, isCompleted: boolean) => {
@@ -522,33 +505,84 @@ export const GrammarView: React.FC = () => {
     return elements;
   };
 
-  const renderB2TOC = () => (
+  // Table of contents shown for every level: one card per section, opening it
+  // renders that section on its own instead of stacking the whole level.
+  const renderLevelTOC = () => (
     <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
       <div className="mb-12">
-        <h3 className="text-4xl font-black text-slate-900 mb-4">B2 Program</h3>
-        <p className="text-slate-500 text-lg">Select a lesson to deepen your understanding.</p>
+        <h3 className="text-4xl font-black text-slate-900 mb-4">{selectedLevel} Program</h3>
+        <p className="text-slate-500 text-lg">{currentLevelData.description}</p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {currentLevelData.sections.map((section, idx) => (
-          <button
-            key={idx}
-            onClick={() => {
-              setActiveSectionIndex(idx);
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            className="group p-8 bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:border-indigo-200 transition-all text-left flex flex-col h-full"
-          >
-            <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-black text-xl mb-6 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all">
-              {idx + 1}
-            </div>
-            <h4 className="text-xl font-black text-slate-800 mb-3 group-hover:text-indigo-600 transition-colors">{section.title}</h4>
-            <p className="text-slate-400 text-sm font-medium line-clamp-3">Click to open the full lesson on this topic.</p>
-            <div className="mt-auto pt-6 flex items-center gap-2 text-indigo-600 font-black text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
-              Open lesson
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14 5l7 7-7 7"></path></svg>
-            </div>
-          </button>
-        ))}
+        {currentLevelData.sections.map((section, idx) => {
+          const totalTopics = section.topics.length;
+          const doneTopics = section.topics.filter(topic => isLessonCompleted(topic.id)).length;
+          const sectionProgress = totalTopics > 0 ? Math.round((doneTopics / totalTopics) * 100) : 0;
+          const isSectionDone = totalTopics > 0 && doneTopics === totalTopics;
+
+          return (
+            <button
+              key={idx}
+              onClick={() => {
+                setActiveSectionIndex(idx);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="group p-8 bg-white rounded-[2rem] shadow-sm hover:shadow-xl transition-all text-left flex flex-col h-full"
+              style={{ border: '1px solid var(--terracotta-100)' }}
+            >
+              <div className="flex items-start justify-between gap-4 mb-6">
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-xl transition-all group-hover:scale-110 ${isSectionDone
+                  ? 'bg-green-100 text-green-600'
+                  : 'bg-indigo-50 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white'
+                  }`}>
+                  {isSectionDone ? (
+                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                  ) : (
+                    idx + 1
+                  )}
+                </div>
+                <span className="px-3 py-1 rounded-lg bg-slate-50 text-slate-400 text-[10px] font-black uppercase tracking-widest shrink-0">
+                  {totalTopics} lesson{totalTopics > 1 ? 's' : ''}
+                </span>
+              </div>
+
+              <h4 className="text-xl font-black text-slate-800 mb-4 group-hover:text-indigo-600 transition-colors">{section.title}</h4>
+
+              <ul className="space-y-2">
+                {section.topics.slice(0, 3).map(topic => (
+                  <li key={topic.id} className="flex items-start gap-2 text-sm text-slate-400 font-medium">
+                    <span className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${isLessonCompleted(topic.id) ? 'bg-green-500' : 'bg-slate-200'}`}></span>
+                    <span className="line-clamp-1">{topic.title}</span>
+                  </li>
+                ))}
+                {totalTopics > 3 && (
+                  <li className="text-sm text-slate-300 font-bold pl-3.5">+ {totalTopics - 3} more</li>
+                )}
+              </ul>
+
+              <div className="mt-auto pt-6">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    {doneTopics}/{totalTopics} completed
+                  </span>
+                  <span className="flex items-center gap-2 text-indigo-600 font-black text-[10px] uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+                    Open lesson
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14 5l7 7-7 7"></path></svg>
+                  </span>
+                </div>
+                <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--sand-100)' }}>
+                  <div
+                    className="h-full rounded-full transition-all duration-700"
+                    style={{
+                      width: `${sectionProgress}%`,
+                      backgroundColor: isSectionDone ? 'var(--sage-600)' : 'var(--terracotta-600)'
+                    }}
+                  ></div>
+                </div>
+              </div>
+            </button>
+          );
+        })}
       </div>
     </div>
   );
@@ -876,12 +910,13 @@ export const GrammarView: React.FC = () => {
       })()}
 
       <div className="grid grid-cols-1 gap-8 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-150">
-        {selectedLevel === 'B2' && activeSectionIndex === 'all' ? (
-          renderB2TOC()
+        {activeSectionIndex === 'all' ? (
+          renderLevelTOC()
         ) : (
           <div className="space-y-16">
             {currentLevelData.sections.map((section, sectionIdx) => {
-              if (activeSectionIndex !== 'all' && activeSectionIndex !== sectionIdx) return null;
+              // Reached only from a TOC card, so exactly one section is open.
+              if (activeSectionIndex !== sectionIdx) return null;
 
               return (
                 <div key={sectionIdx} id={`section-${sectionIdx}`} className="bg-white rounded-[2.5rem] shadow-xl overflow-hidden border border-slate-100 scroll-mt-24">
@@ -895,15 +930,16 @@ export const GrammarView: React.FC = () => {
                         <h3 className="text-3xl font-black text-white tracking-tight">{section.title}</h3>
                         <p className="text-slate-400 font-medium mt-1">{section.topics.length} lessons in this module</p>
                       </div>
-                      {selectedLevel === 'B2' && (
-                        <button
-                          onClick={() => setActiveSectionIndex('all')}
-                          className="ml-auto px-4 py-2 rounded-xl bg-white/10 text-white text-sm font-bold hover:bg-white/20 transition-all flex items-center gap-2"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                          Back to summary
-                        </button>
-                      )}
+                      <button
+                        onClick={() => {
+                          setActiveSectionIndex('all');
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                        className="ml-auto px-4 py-2 rounded-xl bg-white/10 text-white text-sm font-bold hover:bg-white/20 transition-all flex items-center gap-2"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                        Back to summary
+                      </button>
                     </div>
                   </div>
 

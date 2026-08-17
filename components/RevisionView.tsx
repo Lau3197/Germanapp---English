@@ -1,8 +1,22 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useSpacedRepetition, WordProgress, CustomList } from '../hooks/useSpacedRepetition';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import {
+  useSpacedRepetition,
+  WordProgress,
+  CustomList,
+  ReviewFocus,
+  MistakeStage,
+  MISTAKE_STAGES,
+  MISTAKE_RECOVERY_TARGET,
+  getMistakeStage,
+  isMissedWord,
+  isMistakeFocus,
+  mistakeStageFocus,
+} from '../hooks/useSpacedRepetition';
 import { VOCABULARY_DATA } from '../data/vocabularyData';
 import { THEMES } from '../constants';
 import { usePandaMascot } from '../contexts/PandaMascotContext';
+import { AppTheme } from '../types';
+import { getTranslation, getThemeLanguage, TranslationLanguage } from '../utils/translations';
 
 type RevisionMode = 'menu' | 'themes' | 'import' | 'session' | 'results' | 'manage-lists' | 'quick-add';
 type AnswerState = 'waiting' | 'correct' | 'incorrect';
@@ -16,15 +30,60 @@ interface PairItem {
   selected: boolean;
 }
 
+interface RevisionViewProps {
+  appTheme?: AppTheme;
+}
+
 interface SessionItem {
   word: WordProgress;
   remainingSuccesses: number; // 1 by default, 3 if failed
   isRetry: boolean; // To know if it's a recycled word
 }
 
-export const RevisionView: React.FC = () => {
+/**
+ * What the last answer did to the word, captured *before* the deck was updated
+ * so the feedback line can say "2/3" instead of guessing from the new state.
+ */
+interface AnswerOutcome {
+  isCorrect: boolean;
+  counted: boolean;        // Retries inside a session drill but don't move the stage
+  wasMissed: boolean;      // Word was in the mistakes list before this answer
+  streakBefore: number;
+}
+
+/** One line telling the learner where the word now stands in its recovery. */
+const feedbackMessage = (outcome: AnswerOutcome | null): string => {
+  if (!outcome) return '';
+  if (!outcome.counted) {
+    return outcome.isCorrect
+      ? '✅ Right again — practice repeat, it does not move the stage'
+      : '❌ Not yet — the word stays in this drill';
+  }
+  if (!outcome.isCorrect) {
+    return outcome.wasMissed
+      ? `❌ Back to stage 1 — ${MISTAKE_RECOVERY_TARGET} correct reviews in a row to clear it`
+      : `❌ Incorrect. Added to your mistakes — ${MISTAKE_RECOVERY_TARGET} correct reviews in a row to clear it`;
+  }
+  if (!outcome.wasMissed) return '✅ Correct! Box +1';
+
+  const streak = outcome.streakBefore + 1;
+  const missing = MISTAKE_RECOVERY_TARGET - streak;
+  return missing <= 0
+    ? '🎉 Cleared! This word leaves your mistakes list'
+    : `✅ Correct! ${streak} / ${MISTAKE_RECOVERY_TARGET} in a row — ${missing} more review${missing === 1 ? '' : 's'} to clear it`;
+};
+
+/** Labels and colours for the three stages a mistake climbs through. */
+const STAGE_UI: Record<MistakeStage, { icon: string; label: string; hint: string; color: string; background: string }> = {
+  1: { icon: '🔴', label: 'Fresh mistake', hint: '0 / 3 right in a row', color: '#b91c1c', background: '#fee2e2' },
+  2: { icon: '🟠', label: 'Coming back', hint: '1 / 3 right in a row', color: '#c2410c', background: '#ffedd5' },
+  3: { icon: '🟡', label: 'Almost cleared', hint: '2 / 3 right in a row', color: '#a16207', background: '#fef3c7' },
+};
+
+export const RevisionView: React.FC<RevisionViewProps> = ({ appTheme = 'classic' }) => {
   const { triggerMood } = usePandaMascot();
   const {
+    progress,
     addWords,
     getWordsToReview,
     getStats,
@@ -52,10 +111,12 @@ export const RevisionView: React.FC = () => {
   const [showAnswer, setShowAnswer] = useState(false);
   const [answerState, setAnswerState] = useState<AnswerState>('waiting');
   const [userInput, setUserInput] = useState('');
-  const [sessionStats, setSessionStats] = useState({ correct: 0, incorrect: 0 });
+  const [sessionStats, setSessionStats] = useState({ correct: 0, incorrect: 0, cleared: 0, newMistakes: 0 });
+  const [lastOutcome, setLastOutcome] = useState<AnswerOutcome | null>(null);
   const [reviewType, setReviewType] = useState<ExerciseType>('flashcard');
   const [direction, setDirection] = useState<'de-en' | 'en-de'>('de-en');
   const [selectedThemes, setSelectedThemes] = useState<string[]>([]);
+  const [focus, setFocus] = useState<ReviewFocus>('all');
 
   // Import
   const [importType, setImportType] = useState<'json' | 'csv'>('csv');
@@ -99,18 +160,42 @@ export const RevisionView: React.FC = () => {
   const stats = getStats();
   const availableThemes = getAvailableThemes();
 
+  // Review answers, quiz distractors and labels follow the theme's language,
+  // exactly like the vocabulary cards and the Der/Die/Das drill.
+  const answerLanguage = getThemeLanguage(appTheme);
+  // Keyed off the language rather than an italian/other boolean, which used to
+  // label French answers as "🇬🇧 English".
+  const ANSWER_LANGUAGE_LABEL: Record<TranslationLanguage, { flag: string; label: string; german: string }> = {
+    english: { flag: '🇬🇧', label: 'English', german: 'Englisch' },
+    french: { flag: '🇫🇷', label: 'French', german: 'Französisch' },
+    italian: { flag: '🇮🇹', label: 'Italian', german: 'Italienisch' },
+  };
+  const answerFlag = ANSWER_LANGUAGE_LABEL[answerLanguage].flag;
+  const answerLabel = `${answerFlag} ${ANSWER_LANGUAGE_LABEL[answerLanguage].label}`;
+
+  // Imported lists carry only English, so getTranslation falls back to it.
+  const translationOf = useCallback(
+    (word: { english?: string; french?: string; italian?: string }) => getTranslation(word, answerLanguage),
+    [answerLanguage]
+  );
+
   // Initialize all vocabulary words in the system
   useEffect(() => {
     if (!isLoaded) return;
 
-    const allWords: { theme: string; german: string; english: string; article?: string }[] = [];
+    const allWords: { theme: string; german: string; english: string; french?: string; italian?: string; article?: string }[] = [];
 
     Object.entries(VOCABULARY_DATA).forEach(([themeId, data]) => {
       data.words.forEach(word => {
         allWords.push({
           theme: themeId,
           german: word.german,
+          // Every language the themes can ask for has to be copied here: the review
+          // deck is rebuilt from these objects, so a field omitted below is a field
+          // getTranslation can never find, and it silently falls back to English.
           english: word.english,
+          french: word.french || undefined,
+          italian: word.italian || undefined,
           article: word.article || undefined,
         });
       });
@@ -149,16 +234,16 @@ export const RevisionView: React.FC = () => {
 
   // Generate QCM options
   const generateQcmOptions = useCallback((correctWord: WordProgress, allWords: WordProgress[]): string[] => {
-    const correctAnswer = direction === 'de-en' ? correctWord.english : correctWord.german;
+    const correctAnswer = direction === 'de-en' ? translationOf(correctWord) : correctWord.german;
     const otherAnswers = allWords
       .filter(w => w.wordId !== correctWord.wordId)
-      .map(w => direction === 'de-en' ? w.english : w.german)
+      .map(w => direction === 'de-en' ? translationOf(w) : w.german)
       .sort(() => Math.random() - 0.5)
       .slice(0, 3);
 
     const options = [correctAnswer, ...otherAnswers].sort(() => Math.random() - 0.5);
     return options;
-  }, [direction]);
+  }, [direction, translationOf]);
 
   // Initialize Pairs game
   const initPairsGame = useCallback((words: WordProgress[]) => {
@@ -175,7 +260,7 @@ export const RevisionView: React.FC = () => {
       });
       items.push({
         id: `en-${idx}`,
-        text: word.english,
+        text: translationOf(word),
         type: 'english',
         matched: false,
         selected: false,
@@ -186,28 +271,31 @@ export const RevisionView: React.FC = () => {
     setPairItems(items.sort(() => Math.random() - 0.5));
     setPairsMatched(0);
     setPairsTotal(pairWords.length);
-  }, []);
+  }, [translationOf]);
 
   // Generate Fill Blank sentence
   const generateFillBlank = useCallback((word: WordProgress) => {
+    const translation = translationOf(word);
+    // The sentence is written in German, so the language is named in German too.
+    const targetLanguage = ANSWER_LANGUAGE_LABEL[answerLanguage].german;
     const templates = [
-      { de: `Das Wort "___" bedeutet "${word.english}" auf Englisch.`, answer: word.german },
-      { de: `"${word.german}" heißt "___" auf Englisch.`, answer: word.english },
-      { de: `Übersetzen Sie: ${word.german} = ___`, answer: word.english },
-      { de: `Wie sagt man "${word.english}" auf Deutsch? ___`, answer: word.german },
+      { de: `Das Wort "___" bedeutet "${translation}" auf ${targetLanguage}.`, answer: word.german },
+      { de: `"${word.german}" heißt "___" auf ${targetLanguage}.`, answer: translation },
+      { de: `Übersetzen Sie: ${word.german} = ___`, answer: translation },
+      { de: `Wie sagt man "${translation}" auf Deutsch? ___`, answer: word.german },
     ];
     const template = templates[Math.floor(Math.random() * templates.length)];
     setFillBlankSentence(template.de);
     setFillBlankAnswer(template.answer);
-  }, []);
+  }, [translationOf, answerLanguage]);
 
   const startSession = useCallback((wordCount: number = 20) => {
     let words: WordProgress[];
 
     if (selectedThemes.length > 0) {
-      words = getWordsToReviewByThemes(selectedThemes, wordCount);
+      words = getWordsToReviewByThemes(selectedThemes, wordCount, focus);
     } else {
-      words = getWordsToReview(wordCount);
+      words = getWordsToReview(wordCount, focus);
     }
 
     if (words.length === 0) return;
@@ -223,7 +311,8 @@ export const RevisionView: React.FC = () => {
     setSessionTotalDistinct(words.length);
     setSessionCompletedCount(0);
 
-    setSessionStats({ correct: 0, incorrect: 0 });
+    setSessionStats({ correct: 0, incorrect: 0, cleared: 0, newMistakes: 0 });
+    setLastOutcome(null);
     setShowAnswer(false);
     setAnswerState('waiting');
     setUserInput('');
@@ -243,100 +332,76 @@ export const RevisionView: React.FC = () => {
     }
 
     setMode('session');
-  }, [getWordsToReview, getWordsToReviewByThemes, selectedThemes, reviewType, generateQcmOptions, initPairsGame, generateFillBlank, chronoTime]);
+  }, [getWordsToReview, getWordsToReviewByThemes, selectedThemes, focus, reviewType, generateQcmOptions, initPairsGame, generateFillBlank, chronoTime]);
 
   const handleAnswer = useCallback((isCorrect: boolean) => {
     const currentItem = sessionQueue[0];
     if (!currentItem) return;
 
-    recordAnswer(currentItem.word.wordId, isCorrect);
+    // Live state, not the snapshot taken when the session started.
+    const before = progress.get(currentItem.word.wordId) || currentItem.word;
+    // A word repeated straight after a miss is reinforcement: it stays in the
+    // drill, but only one answer per word per session moves the mistake stage.
+    // Otherwise a single session would clear its own mistakes.
+    const counted = !currentItem.isRetry;
+    const wasMissed = isMissedWord(before);
+
+    if (counted) {
+      recordAnswer(currentItem.word.wordId, isCorrect);
+      setSessionStats(prev => ({
+        correct: prev.correct + (isCorrect ? 1 : 0),
+        incorrect: prev.incorrect + (isCorrect ? 0 : 1),
+        cleared: prev.cleared + (isCorrect && wasMissed && before.streak + 1 >= MISTAKE_RECOVERY_TARGET ? 1 : 0),
+        newMistakes: prev.newMistakes + (!isCorrect && !wasMissed ? 1 : 0),
+      }));
+    }
+
+    setLastOutcome({ isCorrect, counted, wasMissed, streakBefore: before.streak });
     setAnswerState(isCorrect ? 'correct' : 'incorrect');
     triggerMood(isCorrect ? 'applauding' : 'encouraging');
-    setSessionStats(prev => ({
-      correct: prev.correct + (isCorrect ? 1 : 0),
-      incorrect: prev.incorrect + (isCorrect ? 0 : 1),
-    }));
 
     const goToNext = () => {
-      // Logic for Writing Mode: Dynamic Queue
-      if (reviewType === 'writing') {
-        let newQueue = [...sessionQueue];
-        const processedItem = newQueue.shift(); // Remove current
+      // Writing mode drills a missed word until it has been typed right
+      // MISTAKE_RECOVERY_TARGET times; the other modes move on right away.
+      const drillMisses = reviewType === 'writing';
 
-        if (processedItem) {
-          if (isCorrect) {
-            // Success
-            if (processedItem.remainingSuccesses > 1) {
-              // Still need more successes (Reinforcement)
-              newQueue.push({
-                ...processedItem,
-                remainingSuccesses: processedItem.remainingSuccesses - 1,
-                isRetry: true
-              });
-            } else {
-              // Done with this word
-              setSessionCompletedCount(prev => prev + 1);
-            }
-          } else {
-            // Failure
-            // Must succeed 3 times total to clear
-            newQueue.push({
-              ...processedItem,
-              remainingSuccesses: 3,
-              isRetry: true
-            });
-          }
-        }
+      const newQueue = [...sessionQueue];
+      const processedItem = newQueue.shift(); // Remove current
 
-        if (newQueue.length > 0) {
-          setSessionQueue(newQueue);
-          setShowAnswer(false);
-          setAnswerState('waiting');
-          setUserInput('');
-          setSelectedQcmOption(null);
-
-          // Init next word for specific modes
-          // Note: for QCM/Chrono words might change, but for Writing we don't need special init beyond clearing input
-          // But if we unified logic, we would need it. Writing mode is simple.
+      if (processedItem) {
+        if (!drillMisses || (isCorrect && processedItem.remainingSuccesses <= 1)) {
+          // Done with this word for this session
+          setSessionCompletedCount(prev => prev + 1);
         } else {
-          setMode('results');
+          newQueue.push({
+            ...processedItem,
+            remainingSuccesses: isCorrect ? processedItem.remainingSuccesses - 1 : MISTAKE_RECOVERY_TARGET,
+            isRetry: true,
+          });
         }
+      }
 
-      } else {
-        // Standard Linear Logic (Legacy for other modes)
-        // Note: For simplicity, converting other modes to use queue as well would be better, 
-        // but let's emulate linear by just shifting.
-        // Actually, let's just use queue logic for all, but with remainingSuccesses always 1 for non-writing?
-        // No, let's keep it simple: 
+      if (newQueue.length === 0) {
+        if (reviewType === 'chrono') setChronoActive(false);
+        setMode('results');
+        return;
+      }
 
-        // For non-writing modes, we just remove the item regardless of success for now (standard behavior), 
-        // OR we could adopt "retry until correct" for all. 
-        // User asked "pour la partie writing". Let's stick to that.
+      setSessionQueue(newQueue);
+      setShowAnswer(false);
+      setAnswerState('waiting');
+      setLastOutcome(null);
+      setUserInput('');
+      setSelectedQcmOption(null);
 
-        let newQueue = [...sessionQueue];
-        newQueue.shift(); // Always remove
-        setSessionCompletedCount(prev => prev + 1);
+      // Reset for next word
+      const nextItem = newQueue[0];
+      const allQueueWords = newQueue.map(i => i.word); // Approximation for distraction generation
 
-        if (newQueue.length > 0) {
-          setSessionQueue(newQueue);
-          setShowAnswer(false);
-          setAnswerState('waiting');
-          setUserInput('');
-          setSelectedQcmOption(null);
-
-          // Reset for next word
-          const nextItem = newQueue[0];
-          const allQueueWords = newQueue.map(i => i.word); // Approximation for distraction generation
-
-          if (reviewType === 'qcm' || reviewType === 'chrono') {
-            setQcmOptions(generateQcmOptions(nextItem.word, allQueueWords));
-          } else if (reviewType === 'fillblank') {
-            generateFillBlank(nextItem.word);
-          }
-        } else {
-          if (reviewType === 'chrono') setChronoActive(false);
-          setMode('results');
-        }
+      if (reviewType === 'qcm' || reviewType === 'chrono') {
+        setQcmOptions(generateQcmOptions(nextItem.word, allQueueWords));
+      } else if (reviewType === 'fillblank') {
+        generateFillBlank(nextItem.word);
       }
     };
 
@@ -344,7 +409,7 @@ export const RevisionView: React.FC = () => {
     // Longer delay for writing failure/success to see visual feedback
     const delay = (reviewType === 'writing') ? 2000 : (reviewType === 'chrono' ? 500 : 1000);
     setTimeout(goToNext, delay);
-  }, [sessionQueue, recordAnswer, reviewType, generateQcmOptions, generateFillBlank, triggerMood]);
+  }, [sessionQueue, progress, recordAnswer, reviewType, generateQcmOptions, generateFillBlank, triggerMood]);
 
   // QCM Handler
   const handleQcmSelect = useCallback((option: string) => {
@@ -355,11 +420,11 @@ export const RevisionView: React.FC = () => {
     const currentWord = currentItem?.word;
     if (!currentWord) return;
 
-    const correctAnswer = direction === 'de-en' ? currentWord.english : currentWord.german;
+    const correctAnswer = direction === 'de-en' ? translationOf(currentWord) : currentWord.german;
     const isCorrect = option === correctAnswer;
 
     handleAnswer(isCorrect);
-  }, [selectedQcmOption, sessionQueue, direction, handleAnswer]);
+  }, [selectedQcmOption, sessionQueue, direction, translationOf, handleAnswer]);
 
   // Pairs Handler
   const handlePairSelect = useCallback((item: PairItem) => {
@@ -462,12 +527,12 @@ export const RevisionView: React.FC = () => {
     if (!currentItem) return;
     const currentWord = currentItem.word;
 
-    const correctAnswer = direction === 'de-en' ? currentWord.english : currentWord.german;
+    const correctAnswer = direction === 'de-en' ? translationOf(currentWord) : currentWord.german;
     const isCorrect = normalizeString(userInput) === normalizeString(correctAnswer);
 
     setShowAnswer(true);
     handleAnswer(isCorrect);
-  }, [sessionQueue, direction, userInput, handleAnswer]);
+  }, [sessionQueue, direction, translationOf, userInput, handleAnswer]);
 
   const normalizeString = (str: string): string => {
     return str.toLowerCase().trim()
@@ -600,9 +665,26 @@ export const RevisionView: React.FC = () => {
     return theme?.name || themeId;
   };
 
-  const selectedWordsToReview = selectedThemes.length > 0
-    ? getWordsToReviewByThemes(selectedThemes).length
-    : stats.wordsToReview;
+  // Counts follow the theme selection *and* the focus, so a button never
+  // promises more words than the session will actually draw.
+  const focusCounts = useMemo((): Record<ReviewFocus, number> => {
+    const countFor = (value: ReviewFocus) => (
+      selectedThemes.length > 0
+        ? getWordsToReviewByThemes(selectedThemes, undefined, value).length
+        : getWordsToReview(undefined, value).length
+    );
+    return {
+      all: countFor('all'),
+      mistakes: countFor('mistakes'),
+      new: countFor('new'),
+      'mistake-1': countFor('mistake-1'),
+      'mistake-2': countFor('mistake-2'),
+      'mistake-3': countFor('mistake-3'),
+    };
+  }, [selectedThemes, getWordsToReview, getWordsToReviewByThemes]);
+
+  const selectedWordsToReview = focusCounts[focus];
+  const mistakeFocusActive = isMistakeFocus(focus);
 
   useEffect(() => {
     if (mode === 'results') {
@@ -615,6 +697,26 @@ export const RevisionView: React.FC = () => {
 
   // ===== MAIN MENU SCREEN =====
   if (mode === 'menu') {
+    const emptyState = mistakeFocusActive
+      ? {
+        icon: '🎉',
+        title: focus === 'mistakes' ? 'No mistakes waiting!' : 'Nothing at this stage!',
+        hint: focus === 'mistakes'
+          ? `Everything you got wrong has been answered right ${MISTAKE_RECOVERY_TARGET} times in a row. Switch to "Everything due" to keep going.`
+          : 'Pick another stage, or "All stages" to drill every mistake you have left.',
+      }
+      : focus === 'new'
+        ? {
+          icon: '✨',
+          title: 'No new words left!',
+          hint: 'You have already seen every word here. Try "My mistakes" or import a new list.',
+        }
+        : {
+          icon: '🎉',
+          title: 'No words to review!',
+          hint: 'Come back later or import a new list.',
+        };
+
     return (
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-10">
@@ -746,6 +848,84 @@ export const RevisionView: React.FC = () => {
         <div className="bg-white rounded-2xl p-6 mb-8 border" style={{ borderColor: 'var(--sand-200)' }}>
           <h3 className="font-bold mb-4" style={{ color: 'var(--sand-800)' }}>Options</h3>
 
+          {/* What goes into the session */}
+          <div className="mb-6">
+            <label className="text-sm font-medium mb-2 block" style={{ color: 'var(--sand-600)' }}>
+              What to study
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              {([
+                { id: 'all', icon: '🎯', label: 'Everything due', count: focusCounts.all, active: focus === 'all' },
+                { id: 'mistakes', icon: '❌', label: 'My mistakes', count: focusCounts.mistakes, active: mistakeFocusActive },
+                { id: 'new', icon: '✨', label: 'New words', count: focusCounts.new, active: focus === 'new' },
+              ] as { id: ReviewFocus; icon: string; label: string; count: number; active: boolean }[]).map(option => (
+                <button
+                  key={option.id}
+                  onClick={() => setFocus(option.id)}
+                  className="py-3 px-3 rounded-xl font-medium transition-all text-sm text-left"
+                  style={{
+                    backgroundColor: option.active ? 'var(--coral-500)' : 'var(--sand-100)',
+                    color: option.active ? 'white' : 'var(--sand-700)'
+                  }}
+                >
+                  <span className="block">{option.icon} {option.label}</span>
+                  <span className="block text-xs opacity-80">{option.count} word{option.count === 1 ? '' : 's'}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* The mistakes list split into its three recovery stages */}
+            {mistakeFocusActive && (
+              <div className="mt-3 p-4 rounded-xl" style={{ backgroundColor: 'var(--sand-50)' }}>
+                <div className="flex flex-wrap items-baseline justify-between gap-2 mb-3">
+                  <p className="text-sm font-bold" style={{ color: 'var(--sand-700)' }}>
+                    Recovery stages
+                  </p>
+                  <p className="text-xs" style={{ color: 'var(--sand-500)' }}>
+                    A word leaves this list after {MISTAKE_RECOVERY_TARGET} correct reviews in a row.
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  <button
+                    onClick={() => setFocus('mistakes')}
+                    className="p-3 rounded-xl text-left transition-all border-2"
+                    style={{
+                      borderColor: focus === 'mistakes' ? 'var(--coral-400)' : 'transparent',
+                      backgroundColor: 'white',
+                      color: 'var(--sand-700)',
+                    }}
+                  >
+                    <span className="block text-sm font-bold">🧺 All stages</span>
+                    <span className="block text-xs opacity-70">{focusCounts.mistakes} word{focusCounts.mistakes === 1 ? '' : 's'}</span>
+                  </button>
+                  {MISTAKE_STAGES.map(stage => {
+                    const ui = STAGE_UI[stage];
+                    const stageFocus = mistakeStageFocus(stage);
+                    const count = focusCounts[stageFocus];
+                    const isActive = focus === stageFocus;
+                    return (
+                      <button
+                        key={stage}
+                        onClick={() => setFocus(stageFocus)}
+                        disabled={count === 0}
+                        className={`p-3 rounded-xl text-left transition-all border-2 ${count === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        style={{
+                          borderColor: isActive ? ui.color : 'transparent',
+                          backgroundColor: ui.background,
+                          color: ui.color,
+                        }}
+                      >
+                        <span className="block text-sm font-bold">{ui.icon} Stage {stage}</span>
+                        <span className="block text-xs font-medium">{ui.label}</span>
+                        <span className="block text-xs opacity-80">{ui.hint} • {count}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2">
               <label className="text-sm font-medium mb-2 block" style={{ color: 'var(--sand-600)' }}>
@@ -855,7 +1035,7 @@ export const RevisionView: React.FC = () => {
                     color: direction === 'de-en' ? 'white' : 'var(--sand-700)'
                   }}
                 >
-                  🇩🇪 → 🇬🇧
+                  🇩🇪 → {answerFlag}
                 </button>
                 <button
                   onClick={() => setDirection('en-de')}
@@ -865,7 +1045,7 @@ export const RevisionView: React.FC = () => {
                     color: direction === 'en-de' ? 'white' : 'var(--sand-700)'
                   }}
                 >
-                  🇬🇧 → 🇩🇪
+                  {answerFlag} → 🇩🇪
                 </button>
               </div>
             </div>
@@ -903,12 +1083,12 @@ export const RevisionView: React.FC = () => {
           </div>
         ) : (
           <div className="text-center p-8 rounded-2xl" style={{ backgroundColor: 'var(--turquoise-50)' }}>
-            <p className="text-4xl mb-4">🎉</p>
+            <p className="text-4xl mb-4">{emptyState.icon}</p>
             <p className="text-xl font-bold" style={{ color: 'var(--turquoise-700)' }}>
-              No words to review!
+              {emptyState.title}
             </p>
             <p style={{ color: 'var(--turquoise-600)' }}>
-              Come back later or import a new list.
+              {emptyState.hint}
             </p>
           </div>
         )}
@@ -1289,7 +1469,7 @@ Haus;house`}
             value={quickEnglish}
             onChange={(e) => setQuickEnglish(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && addQuickWord()}
-            placeholder="🇬🇧 English translation"
+            placeholder={`${answerLabel} translation`}
             className="w-full px-4 py-3 rounded-xl border-2 focus:outline-none focus:border-turquoise-400 font-medium mb-4"
             style={{ borderColor: 'var(--sand-300)' }}
           />
@@ -1490,7 +1670,7 @@ Haus;house`}
 
           {/* English Column */}
           <div className="space-y-3">
-            <p className="text-sm font-bold text-center mb-2" style={{ color: 'var(--sand-600)' }}>🇬🇧 English</p>
+            <p className="text-sm font-bold text-center mb-2" style={{ color: 'var(--sand-600)' }}>{answerLabel}</p>
             {pairItems.filter(p => p.type === 'english').map(item => (
               <button
                 key={item.id}
@@ -1525,9 +1705,13 @@ Haus;house`}
 
   // ===== SESSION SCREEN - OTHER MODES =====
   if (mode === 'session' && currentWord) {
-    const progress = (sessionCompletedCount / sessionTotalDistinct) * 100;
-    const question = direction === 'de-en' ? currentWord.german : currentWord.english;
-    const answer = direction === 'de-en' ? currentWord.english : currentWord.german;
+    const progressPercent = (sessionCompletedCount / sessionTotalDistinct) * 100;
+    const question = direction === 'de-en' ? currentWord.german : translationOf(currentWord);
+    const answer = direction === 'de-en' ? translationOf(currentWord) : currentWord.german;
+    // The queue holds a snapshot from the start of the session; the stage badge
+    // must show where the word stands right now.
+    const liveWord = progress.get(currentWord.wordId) || currentWord;
+    const stage = getMistakeStage(liveWord);
 
     return (
       <div className="max-w-2xl mx-auto">
@@ -1547,7 +1731,7 @@ Haus;house`}
             <div
               className="h-full rounded-full transition-all duration-300"
               style={{
-                width: reviewType === 'chrono' ? `${(chronoRemaining / chronoTime) * 100}%` : `${progress}%`,
+                width: reviewType === 'chrono' ? `${(chronoRemaining / chronoTime) * 100}%` : `${progressPercent}%`,
                 backgroundColor: reviewType === 'chrono'
                   ? (chronoRemaining <= 10 ? '#ef4444' : 'var(--turquoise-500)')
                   : 'var(--coral-500)'
@@ -1568,7 +1752,7 @@ Haus;house`}
         >
           <div className="mb-6">
             <p className="text-sm font-medium mb-2" style={{ color: 'var(--sand-500)' }}>
-              {direction === 'de-en' ? '🇩🇪 German' : '🇬🇧 English'}
+              {direction === 'de-en' ? '🇩🇪 German' : answerLabel}
             </p>
             <p className="text-3xl font-black" style={{ color: 'var(--sand-800)' }}>
               {direction === 'de-en' && currentWord.article ? (
@@ -1580,6 +1764,14 @@ Haus;house`}
             <p className="text-sm mt-2" style={{ color: 'var(--sand-400)' }}>
               {getThemeName(currentWord.theme)}
             </p>
+            {stage && (
+              <span
+                className="inline-block mt-3 px-3 py-1 rounded-full text-xs font-bold"
+                style={{ backgroundColor: STAGE_UI[stage].background, color: STAGE_UI[stage].color }}
+              >
+                {STAGE_UI[stage].icon} Stage {stage} · {liveWord.streak} / {MISTAKE_RECOVERY_TARGET} right in a row
+              </span>
+            )}
           </div>
 
           {/* Flashcard Mode */}
@@ -1588,7 +1780,7 @@ Haus;house`}
               {showAnswer ? (
                 <div className="pt-6 border-t" style={{ borderColor: 'var(--sand-200)' }}>
                   <p className="text-sm font-medium mb-2" style={{ color: 'var(--sand-500)' }}>
-                    {direction === 'de-en' ? '🇬🇧 English' : '🇩🇪 German'}
+                    {direction === 'de-en' ? answerLabel : '🇩🇪 German'}
                   </p>
                   <p className="text-2xl font-bold" style={{ color: 'var(--coral-600)' }}>
                     {direction === 'en-de' && currentWord.article ? (
@@ -1620,7 +1812,7 @@ Haus;house`}
                     value={userInput}
                     onChange={(e) => setUserInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && checkWritingAnswer()}
-                    placeholder={direction === 'de-en' ? 'English translation...' : 'German translation...'}
+                    placeholder={direction === 'de-en' ? `${ANSWER_LANGUAGE_LABEL[answerLanguage].label} translation...` : 'German translation...'}
                     className="w-full px-4 py-3 rounded-xl border-2 text-center text-lg font-medium focus:outline-none"
                     style={{ borderColor: 'var(--sand-300)', backgroundColor: 'var(--sand-50)' }}
                     autoFocus
@@ -1798,7 +1990,7 @@ Haus;house`}
         {answerState !== 'waiting' && reviewType !== 'chrono' && (
           <div className={`text-center p-4 rounded-xl font-bold text-lg ${answerState === 'correct' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
             }`}>
-            {answerState === 'correct' ? '✅ Correct! Box +1' : '❌ Incorrect. Back to box 1'}
+            {feedbackMessage(lastOutcome)}
           </div>
         )}
 
@@ -1815,8 +2007,11 @@ Haus;house`}
 
   // ===== RESULTS SCREEN =====
   if (mode === 'results') {
-    const percentage = sessionTotalDistinct > 0
-      ? Math.round((sessionStats.correct / sessionTotalDistinct) * 100)
+    // Answered words, not queued ones: a drilled word is asked several times
+    // but only its first answer counts, and a timed session can end early.
+    const answered = sessionStats.correct + sessionStats.incorrect;
+    const percentage = answered > 0
+      ? Math.round((sessionStats.correct / answered) * 100)
       : 0;
 
     return (
@@ -1845,6 +2040,22 @@ Haus;house`}
               <p className="text-sm" style={{ color: 'var(--sand-500)' }}>Incorrect</p>
             </div>
           </div>
+
+          {/* What the session changed in the mistakes list */}
+          {(sessionStats.cleared > 0 || sessionStats.newMistakes > 0) && (
+            <div className="flex flex-col gap-2 mb-6 max-w-sm mx-auto">
+              {sessionStats.cleared > 0 && (
+                <p className="text-sm font-bold px-4 py-2 rounded-xl" style={{ backgroundColor: '#dcfce7', color: '#15803d' }}>
+                  🎉 {sessionStats.cleared} word{sessionStats.cleared === 1 ? '' : 's'} cleared your mistakes list
+                </p>
+              )}
+              {sessionStats.newMistakes > 0 && (
+                <p className="text-sm font-bold px-4 py-2 rounded-xl" style={{ backgroundColor: STAGE_UI[1].background, color: STAGE_UI[1].color }}>
+                  📌 {sessionStats.newMistakes} new mistake{sessionStats.newMistakes === 1 ? '' : 's'} — {MISTAKE_RECOVERY_TARGET} correct reviews in a row each
+                </p>
+              )}
+            </div>
+          )}
 
           <div className="panda-session-reward panda-revision-result" aria-hidden="true">
             <div className="panda-session-reward-icon">

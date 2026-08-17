@@ -1,15 +1,22 @@
-import React, { FormEvent, useEffect, useMemo, useState } from 'react';
+import React, { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   PrepositionCase,
   VERBEN_MIT_PRAEPOSITIONEN,
   VerbPrepositionEntry
 } from '../data/verbenMitPraepositionenData';
-import { useExerciseProgress } from '../hooks/useExerciseProgress';
-import { useExerciseFavorites } from '../hooks/useExerciseFavorites';
+import { usePracticeSession } from '../hooks/usePracticeSession';
+import {
+  MemoryBadge,
+  MemoryStats,
+  ProgressFooter,
+  SessionHeader,
+  SessionResult,
+  SessionSizePicker,
+  sessionCountLabel,
+} from './PracticeSessionUI';
 
 type CaseFilter = 'all' | PrepositionCase;
-type PracticeStatus = 'idle' | 'correct' | 'incorrect' | 'revealed';
 
 const CASE_LABELS: Record<PrepositionCase, { short: string; label: string; color: string; bg: string; border: string }> = {
   A: {
@@ -32,22 +39,11 @@ const normalizeText = (value: string) =>
   value
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[̀-ͯ]/g, '')
     .replace(/ä/g, 'a')
     .replace(/ö/g, 'o')
     .replace(/ü/g, 'u')
     .replace(/ß/g, 'ss');
-
-// Fisher-Yates shuffle of the index range [0, count) so the trainer never
-// presents items in the same fixed order twice in a row.
-const shuffledOrder = (count: number): number[] => {
-  const order = Array.from({ length: count }, (_, i) => i);
-  for (let i = order.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [order[i], order[j]] = [order[j], order[i]];
-  }
-  return order;
-};
 
 const getEntrySearchText = (entry: VerbPrepositionEntry) =>
   [
@@ -62,35 +58,42 @@ const getEntrySearchText = (entry: VerbPrepositionEntry) =>
     CASE_LABELS[entry.case].label
   ].join(' ');
 
+// Module scope: the practice session keys progress off these, so they must stay
+// referentially stable across renders.
+const getEntryId = (entry: VerbPrepositionEntry) => `${entry.verb}|${entry.preposition}`.toLowerCase();
+
+const checkAnswer = (entry: VerbPrepositionEntry, answer: string) =>
+  normalizeText(answer.trim()) === normalizeText(entry.preposition);
+
 export const VerbenMitPraepositionenView: React.FC = () => {
-  const { completedIds, recordAnswer, resetProgress } = useExerciseProgress('trainerProgress_verbPrepositions_en');
-  const { favoriteIds, toggleFavorite } = useExerciseFavorites('trainerFavorites_verbPrepositions_en');
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(() => searchParams.get('q') || '');
   const [caseFilter, setCaseFilter] = useState<CaseFilter>('all');
-  const [practiceIndex, setPracticeIndex] = useState(0);
-  const [practiceAnswer, setPracticeAnswer] = useState('');
-  const [practiceStatus, setPracticeStatus] = useState<PracticeStatus>('idle');
-  const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const [practiceCase, setPracticeCase] = useState<CaseFilter>('all');
 
-  const [order, setOrder] = useState<number[]>(() => shuffledOrder(VERBEN_MIT_PRAEPOSITIONEN.length));
-
-  const getExerciseId = (index: number) => {
-    const entry = VERBEN_MIT_PRAEPOSITIONEN[index];
-    return entry ? `${entry.verb}|${entry.preposition}`.toLowerCase() : String(index);
-  };
-  const favoriteOrder = useMemo(
-    () => order.filter(index => !favoritesOnly || favoriteIds.has(getExerciseId(index))),
-    [order, favoritesOnly, favoriteIds]
+  const practiceItems = useMemo(
+    () => VERBEN_MIT_PRAEPOSITIONEN.filter(entry => practiceCase === 'all' || entry.case === practiceCase),
+    [practiceCase]
   );
-  const remainingOrder = useMemo(
-    () => favoriteOrder.filter(index => !completedIds.has(getExerciseId(index))),
-    [favoriteOrder, completedIds]
-  );
-  const activeOrder = practiceStatus === 'idle' && remainingOrder.length ? remainingOrder : favoriteOrder;
 
-  const currentPracticeEntry = VERBEN_MIT_PRAEPOSITIONEN[activeOrder[practiceIndex % activeOrder.length]];
-  const currentPracticeCase = currentPracticeEntry ? CASE_LABELS[currentPracticeEntry.case] : null;
+  const session = usePracticeSession({
+    items: practiceItems,
+    getId: getEntryId,
+    isCorrect: checkAnswer,
+    progressKey: 'trainerProgress_verbPrepositions_en',
+    favoritesKey: 'trainerFavorites_verbPrepositions_en',
+  });
+
+  const currentEntry = session.currentItem;
+  const currentCase = currentEntry ? CASE_LABELS[currentEntry.case] : null;
+  const answered = session.status !== 'idle';
+
+  // Typing trainer: the caret has to be back in the field for the next item,
+  // otherwise every card needs a click before it can be answered.
+  const answerInputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (session.phase === 'drill' && !answered) answerInputRef.current?.focus();
+  }, [session.phase, session.index, answered]);
 
   // Deep-link from the global search: seed the filter and scroll to the list.
   useEffect(() => {
@@ -138,36 +141,248 @@ export const VerbenMitPraepositionenView: React.FC = () => {
     { id: 'D', label: 'Dative', count: caseCounts.D }
   ];
 
-  const resetPractice = (nextIndex: number) => {
-    setPracticeIndex(nextIndex);
-    setPracticeAnswer('');
-    setPracticeStatus('idle');
-  };
-
-  const goToNextExercise = () => {
-    const next = practiceIndex + 1;
-    if (next >= activeOrder.length) {
-      // Completed a full pass — reshuffle so the next cycle is a new order.
-      setOrder(shuffledOrder(VERBEN_MIT_PRAEPOSITIONEN.length));
-      resetPractice(0);
-    } else {
-      resetPractice(next);
-    }
-  };
-
-  const handlePracticeSubmit = (event: FormEvent<HTMLFormElement>) => {
+  // Enter checks the answer, then Enter again moves on.
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    if (!practiceAnswer.trim() || !currentPracticeEntry) {
-      return;
-    }
-
-    const isCorrect = normalizeText(practiceAnswer) === normalizeText(currentPracticeEntry.preposition);
-    recordAnswer(getExerciseId(activeOrder[practiceIndex % activeOrder.length]), isCorrect);
-    setPracticeStatus(isCorrect ? 'correct' : 'incorrect');
+    if (answered) session.next();
+    else session.submit();
   };
 
-  const showCorrection = practiceStatus !== 'idle' && currentPracticeEntry && currentPracticeCase;
+  const renderPractice = () => {
+    if (session.phase === 'result') {
+      return (
+        <SessionResult
+          subtitle="Verb + preposition session finished"
+          correct={session.sessionStats.correct}
+          incorrect={session.sessionStats.incorrect}
+          total={session.sessionItems.length}
+          bestStreak={session.bestStreak}
+          isReview={session.isReview}
+          missed={session.missed.map(entry => ({
+            id: getEntryId(entry),
+            primary: `${entry.verb} ${entry.preposition} + ${CASE_LABELS[entry.case].label}`,
+            secondary: entry.translation,
+          }))}
+          onReviewMistakes={session.reviewMistakes}
+          onRestart={session.start}
+          onMenu={session.backToMenu}
+        />
+      );
+    }
+
+    if (session.phase === 'drill' && currentEntry && currentCase) {
+      return (
+        <section className="mb-10 rounded-2xl bg-white p-6 sm:p-8 shadow-sm" style={{ border: '1px solid var(--terracotta-100)' }}>
+          <SessionHeader
+            index={session.index}
+            total={session.sessionItems.length}
+            correct={session.sessionStats.correct}
+            incorrect={session.sessionStats.incorrect}
+            streak={session.streak}
+            onExit={session.backToMenu}
+            answered={answered}
+          />
+
+          <form onSubmit={handleSubmit}>
+            <div className="rounded-2xl p-5 bg-slate-50" style={{ border: '1px solid #e2e8f0' }}>
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+                <p className="text-xs font-black uppercase tracking-widest text-slate-400">
+                  German pattern
+                </p>
+                <MemoryBadge result={session.currentResult} />
+              </div>
+              <div className="flex flex-wrap items-center gap-3">
+                <p className="text-3xl font-black text-slate-900 break-words">
+                  {currentEntry.verb} <span style={{ color: 'var(--terracotta-600)' }}>___</span>
+                </p>
+                <span className={`px-3 py-1 rounded-lg text-sm font-black ${currentCase.bg} ${currentCase.color}`}>
+                  {currentCase.label}
+                </span>
+              </div>
+              <p className="text-sm font-bold mt-3" style={{ color: 'var(--terracotta-700)' }}>
+                {currentEntry.translation}
+              </p>
+              <p className="text-sm font-semibold mt-1 text-slate-500">
+                {currentEntry.translationLt}
+              </p>
+              <button
+                type="button"
+                onClick={() => session.toggleFavorite(session.currentId)}
+                className="mt-3 font-bold text-sm"
+                style={{ color: session.isFavorite ? '#d97706' : 'var(--sand-500)' }}
+              >
+                {session.isFavorite ? '★ Favorite' : '☆ Add to favorites'}
+              </button>
+            </div>
+
+            <div className="mt-4 flex flex-col sm:flex-row gap-3">
+              <input
+                ref={answerInputRef}
+                type="text"
+                value={session.answer}
+                onChange={(event) => session.setAnswer(event.target.value)}
+                placeholder="Type the German preposition..."
+                className="flex-1 px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                aria-label="Missing German preposition"
+                disabled={answered}
+              />
+              {answered ? (
+                <button
+                  type="submit"
+                  className="px-5 py-3 rounded-xl text-white font-black shadow-lg"
+                  style={{ backgroundColor: 'var(--terracotta-600)' }}
+                >
+                  {session.index < session.sessionItems.length - 1 ? 'Next →' : 'See results →'}
+                </button>
+              ) : (
+                <>
+                  <button
+                    type="submit"
+                    className="px-5 py-3 rounded-xl bg-indigo-600 text-white font-black shadow-indigo-200 shadow-lg"
+                  >
+                    Check
+                  </button>
+                  <button
+                    type="button"
+                    onClick={session.reveal}
+                    className="px-5 py-3 rounded-xl bg-white font-black border border-slate-200"
+                    style={{ color: 'var(--sand-700)' }}
+                  >
+                    Show answer
+                  </button>
+                </>
+              )}
+            </div>
+
+            {answered && (
+              <div
+                className="mt-4 rounded-2xl p-5"
+                style={session.status === 'correct'
+                  ? { backgroundColor: '#ecfdf5', border: '1px solid #a7f3d0' }
+                  : { backgroundColor: '#fff1f2', border: '1px solid #fecdd3' }}
+                aria-live="polite"
+              >
+                <p className="text-sm font-black mb-2">
+                  {session.status === 'correct' ? 'Correct.' : session.status === 'incorrect' ? 'Not yet.' : 'Answer shown.'}
+                </p>
+                <p className="text-lg font-black text-slate-900">
+                  {currentEntry.verb} {currentEntry.preposition} + {currentCase.label}
+                </p>
+                <p className="text-sm font-bold mt-1" style={{ color: 'var(--terracotta-700)' }}>
+                  {currentEntry.translation}
+                </p>
+                <p className="text-sm font-semibold mt-1 text-slate-500">
+                  {currentEntry.translationLt}
+                </p>
+                <div className="rounded-xl bg-white/70 p-4 mt-4">
+                  <p className="text-slate-900 font-bold leading-relaxed">{currentEntry.exampleDe}</p>
+                  <p className="text-slate-500 font-medium leading-relaxed mt-2">{currentEntry.exampleEn}</p>
+                  <p className="text-slate-600 font-medium leading-relaxed mt-2">{currentEntry.exampleLt}</p>
+                </div>
+                <p className="text-xs text-slate-400 mt-3">
+                  Press <kbd className="px-1.5 py-0.5 bg-slate-100 rounded font-bold">Enter</kbd> to continue
+                </p>
+              </div>
+            )}
+          </form>
+        </section>
+      );
+    }
+
+    // MENU
+    return (
+      <section className="mb-10 rounded-2xl bg-white p-6 sm:p-8 shadow-sm" style={{ border: '1px solid var(--terracotta-100)' }}>
+        <p className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: 'var(--terracotta-600)' }}>
+          Practice
+        </p>
+        <h3 className="text-2xl font-black text-slate-900 mb-1">Find the missing preposition.</h3>
+        <p className="text-sm font-semibold text-slate-500 mb-6">
+          Your answers are remembered between sessions: mistakes come back first, mastered patterns step aside.
+        </p>
+
+        <div className="mb-6">
+          <MemoryStats
+            total={session.scopedCounts.total}
+            mastered={session.scopedCounts.mastered}
+            weak={session.scopedCounts.weak}
+            unseen={session.scopedCounts.unseen}
+            accuracy={session.summary.accuracy}
+            attempts={session.summary.attempts}
+          />
+        </div>
+
+        <div className="mb-6">
+          <label className="block text-sm font-bold text-slate-600 mb-2">Case</label>
+          <div className="flex flex-wrap gap-2">
+            {filterOptions.map((option) => {
+              const active = practiceCase === option.id;
+              return (
+                <button
+                  key={option.id}
+                  type="button"
+                  onClick={() => setPracticeCase(option.id)}
+                  className={`px-4 py-2 rounded-xl font-bold text-sm transition-all ${active ? 'text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                  style={active ? { backgroundColor: 'var(--terracotta-600)' } : {}}
+                >
+                  {option.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <SessionSizePicker value={session.size} onChange={session.setSize} poolSize={session.duePool.length} />
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-3 mb-6 text-sm font-semibold text-slate-700">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={session.skipMastered}
+              onChange={event => session.setSkipMastered(event.target.checked)}
+              className="h-4 w-4 accent-emerald-700"
+            />
+            Skip mastered patterns ({session.scopedCounts.mastered})
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={session.favoritesOnly}
+              onChange={event => session.setFavoritesOnly(event.target.checked)}
+              className="h-4 w-4 accent-amber-600"
+            />
+            ★ Favorites only ({session.favoriteIds.size})
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={session.weakOnly}
+              onChange={event => session.setWeakOnly(event.target.checked)}
+              className="h-4 w-4 accent-rose-600"
+            />
+            🎯 Only my mistakes ({session.scopedCounts.weak})
+          </label>
+        </div>
+
+        <button
+          type="button"
+          onClick={session.start}
+          disabled={!session.duePool.length}
+          className="w-full font-black text-lg py-5 rounded-2xl transition-all text-white shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+          style={{ backgroundColor: 'var(--terracotta-600)' }}
+        >
+          {session.duePool.length
+            ? `🚀 Start session (${sessionCountLabel(session.size, session.duePool.length)})`
+            : session.weakOnly ? 'No saved mistakes here yet'
+            : session.favoritesOnly ? 'No favorites in this selection'
+            : 'Everything here is mastered'}
+        </button>
+
+        <ProgressFooter summary={session.summary} onReset={session.resetProgress} />
+      </section>
+    );
+  };
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -179,6 +394,8 @@ export const VerbenMitPraepositionenView: React.FC = () => {
           Fixed German verb-preposition pairs with English and Lithuanian meanings, case patterns, and translated examples.
         </p>
       </div>
+
+      {renderPractice()}
 
       <section className="mb-10 rounded-2xl bg-white p-6 sm:p-8 shadow-sm" style={{ border: '1px solid var(--terracotta-100)' }}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
@@ -204,114 +421,6 @@ export const VerbenMitPraepositionenView: React.FC = () => {
           </div>
         </div>
       </section>
-
-      {currentPracticeEntry && currentPracticeCase && (
-        <section className="mb-10 rounded-2xl bg-white p-6 sm:p-8 shadow-sm" style={{ border: '1px solid var(--terracotta-100)' }}>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div>
-              <p className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: 'var(--terracotta-600)' }}>
-                Practice
-              </p>
-              <h3 className="text-2xl font-black text-slate-900">Find the missing preposition.</h3>
-              <p className="text-sm font-semibold text-slate-500 mt-2">
-                Item {practiceIndex + 1} of {activeOrder.length} · {completedIds.size} saved
-              </p>
-              <button type="button" onClick={() => toggleFavorite(getExerciseId(activeOrder[practiceIndex % activeOrder.length]))} className="mt-3 font-bold" style={{ color: favoriteIds.has(getExerciseId(activeOrder[practiceIndex % activeOrder.length])) ? '#d97706' : 'var(--sand-500)' }}>
-                {favoriteIds.has(getExerciseId(activeOrder[practiceIndex % activeOrder.length])) ? '★ Favorite' : '☆ Add to favorites'}
-              </button>
-            </div>
-
-            <form onSubmit={handlePracticeSubmit} className="lg:col-span-2">
-              <div className="rounded-2xl p-5 bg-slate-50 border border-slate-100">
-                <p className="text-xs font-black uppercase tracking-widest mb-2 text-slate-400">
-                  German pattern
-                </p>
-                <div className="flex flex-wrap items-center gap-3">
-                  <p className="text-3xl font-black text-slate-900 break-words">
-                    {currentPracticeEntry.verb} <span style={{ color: 'var(--terracotta-600)' }}>___</span>
-                  </p>
-                  <span className={`px-3 py-1 rounded-lg text-sm font-black ${currentPracticeCase.bg} ${currentPracticeCase.color}`}>
-                    {currentPracticeCase.label}
-                  </span>
-                </div>
-                <p className="text-sm font-bold mt-3" style={{ color: 'var(--terracotta-700)' }}>
-                  {currentPracticeEntry.translation}
-                </p>
-                <p className="text-sm font-semibold mt-1 text-slate-500">
-                  {currentPracticeEntry.translationLt}
-                </p>
-              </div>
-
-              <div className="mt-4 flex flex-col sm:flex-row gap-3">
-                <input
-                  type="text"
-                  value={practiceAnswer}
-                  onChange={(event) => {
-                    setPracticeAnswer(event.target.value);
-                    if (practiceStatus !== 'idle') {
-                      setPracticeStatus('idle');
-                    }
-                  }}
-                  placeholder="Type the German preposition..."
-                  className="flex-1 px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
-                  aria-label="Missing German preposition"
-                />
-                <button
-                  type="submit"
-                  className="px-5 py-3 rounded-xl bg-indigo-600 text-white font-black shadow-indigo-200 shadow-lg"
-                >
-                  Check
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPracticeStatus('revealed')}
-                  className="px-5 py-3 rounded-xl bg-white font-black border border-slate-200"
-                  style={{ color: 'var(--sand-700)' }}
-                >
-                  Show answer
-                </button>
-                <button
-                  type="button"
-                  onClick={goToNextExercise}
-                  className="px-5 py-3 rounded-xl bg-white font-black border border-slate-200"
-                  style={{ color: 'var(--terracotta-700)' }}
-                >
-                  Next
-                </button>
-              </div>
-
-              {showCorrection && (
-                <div
-                  className={`mt-4 rounded-2xl p-5 border ${
-                    practiceStatus === 'correct'
-                      ? 'bg-emerald-50 border-emerald-100'
-                      : 'bg-rose-50 border-rose-100'
-                  }`}
-                  aria-live="polite"
-                >
-                  <p className="text-sm font-black mb-2">
-                    {practiceStatus === 'correct' ? 'Correct.' : practiceStatus === 'incorrect' ? 'Not yet.' : 'Answer shown.'}
-                  </p>
-                  <p className="text-lg font-black text-slate-900">
-                    {currentPracticeEntry.verb} {currentPracticeEntry.preposition} + {currentPracticeCase.label}
-                  </p>
-                  <p className="text-sm font-bold mt-1" style={{ color: 'var(--terracotta-700)' }}>
-                    {currentPracticeEntry.translation}
-                  </p>
-                  <p className="text-sm font-semibold mt-1 text-slate-500">
-                    {currentPracticeEntry.translationLt}
-                  </p>
-                  <div className="rounded-xl bg-white/70 p-4 mt-4">
-                    <p className="text-slate-900 font-bold leading-relaxed">{currentPracticeEntry.exampleDe}</p>
-                    <p className="text-slate-500 font-medium leading-relaxed mt-2">{currentPracticeEntry.exampleEn}</p>
-                    <p className="text-slate-600 font-medium leading-relaxed mt-2">{currentPracticeEntry.exampleLt}</p>
-                  </div>
-                </div>
-              )}
-            </form>
-          </div>
-        </section>
-      )}
 
       <div className="flex flex-col lg:flex-row lg:items-center gap-4 mb-8">
         <div className="flex flex-wrap gap-3">
@@ -375,6 +484,8 @@ export const VerbenMitPraepositionenView: React.FC = () => {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
         {filteredEntries.map((entry, index) => {
           const caseInfo = CASE_LABELS[entry.case];
+          const entryId = getEntryId(entry);
+          const isFavorite = session.favoriteIds.has(entryId);
 
           return (
             <article
@@ -391,6 +502,15 @@ export const VerbenMitPraepositionenView: React.FC = () => {
                       <span className={`px-2.5 py-1 rounded-lg text-xs font-black ${caseInfo.bg} ${caseInfo.color}`}>
                         {caseInfo.label}
                       </span>
+                      <button
+                        type="button"
+                        onClick={() => session.toggleFavorite(entryId)}
+                        className="text-xs font-black"
+                        style={{ color: isFavorite ? '#d97706' : 'var(--sand-400)' }}
+                        aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                      >
+                        {isFavorite ? '★' : '☆'}
+                      </button>
                     </div>
                     <h3 className="text-2xl font-black text-slate-900 break-words">
                       {entry.verb} <span style={{ color: 'var(--terracotta-600)' }}>{entry.preposition}</span>
@@ -436,13 +556,6 @@ export const VerbenMitPraepositionenView: React.FC = () => {
           <p className="text-slate-400 text-sm mt-1">Try another search term or change the case filter.</p>
         </div>
       )}
-      <div className="mt-6 text-center text-sm text-slate-500">
-        <button type="button" onClick={resetProgress} className="underline font-bold">Reset practice progress</button>
-      </div>
-      {favoritesOnly && !favoriteOrder.length && <p className="mb-6 rounded-xl bg-amber-50 p-4 text-center font-bold text-amber-800">No favorites yet. Add some with the ☆ button.</p>}
-      <div className="mb-6 flex justify-center">
-        <button type="button" onClick={() => setFavoritesOnly(value => !value)} className={`rounded-xl px-4 py-2 font-bold ${favoritesOnly ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-700'}`}>★ {favoritesOnly ? 'All exercises' : `Favorites (${favoriteIds.size})`}</button>
-      </div>
     </div>
   );
 };

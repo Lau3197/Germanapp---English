@@ -12,6 +12,7 @@ export interface GermanWord {
   german: string;
   english?: string;
   french?: string;
+  italian?: string;
   article: 'der' | 'die' | 'das' | '';
   plural: string;
   example: string;
@@ -23,6 +24,14 @@ export interface Phrase {
   german: string;
   english?: string;
   french?: string;
+  // Phrases carry their Italian inline rather than through the
+  // italianVocabularyTranslations overlay, whose keys embed the English text and
+  // therefore break whenever a translation is edited. Words still use the overlay.
+  italian?: string;
+  // Word-for-word rendering, set only on figurative phrases where the idiomatic
+  // translation hides the German image ("das Fass zum Überlaufen bringen").
+  // Literal sentences leave this undefined — the translation already is literal.
+  literal?: string;
   context: string;
 }
 
@@ -35,7 +44,6 @@ export interface Theme {
 }
 
 export type MainTab = 'dashboard' | 'vocabulary' | 'gender' | 'structures' | 'nomen-verben' | 'verben-mit-praepositionen' | 'grammar' | 'tables' | 'expressions' | 'revision' | 'exam' | 'italian';
-export type ViewMode = 'themes' | 'learn' | 'quiz' | 'phrases' | 'trainer';
 export type AppTheme = 'classic' | 'panda' | 'cane';
 
 export interface ThemeContent {

@@ -19,6 +19,14 @@ import {
   serverTimestamp,
   setDoc,
 } from 'firebase/firestore';
+import {
+  isTrainerStorageKey,
+  notifyAppDataSynced,
+  readTrainerStore,
+  TRAINER_CLEARED_KEY,
+  TRAINER_FAVORITES_PREFIX,
+  TRAINER_PROGRESS_PREFIX,
+} from '../utils/trainerStorage';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || 'AIzaSyAUjnLnLvWozmmNybnxRIH4lv6uF7FJooU',
@@ -50,12 +58,16 @@ interface SyncData {
   spacedRepetition: Record<string, any>;
   spacedRepetitionToday: any | null;
   spacedRepetitionCustomLists: any[];
+  // Per-trainer results/favorites, keyed by their localStorage key.
+  trainerProgress: Record<string, Record<string, any>>;
+  trainerFavorites: Record<string, string[]>;
+  trainerClearedAt: Record<string, number>;
   schemaVersion: number;
 }
 
 const appDataDoc = (uid: string) => doc(firestore, 'users', uid, 'appData', 'main');
 
-const SYNC_SCHEMA_VERSION = 2;
+const SYNC_SCHEMA_VERSION = 3;
 const STORAGE_KEYS = {
   favorites: 'grammarFavorites',
   annotations: 'grammarAnnotations',
@@ -68,7 +80,7 @@ const STORAGE_KEYS = {
 const SYNCED_STORAGE_KEYS = new Set<string>(Object.values(STORAGE_KEYS));
 
 export const shouldSyncLocalStorageKey = (key: string | null) => (
-  !!key && SYNCED_STORAGE_KEYS.has(key)
+  !!key && (SYNCED_STORAGE_KEYS.has(key) || isTrainerStorageKey(key))
 );
 
 const safeParse = <T,>(key: string, fallback: T): T => {
@@ -98,6 +110,12 @@ const toNumber = (value: unknown, fallback = 0) => (
   typeof value === 'number' && Number.isFinite(value) ? value : fallback
 );
 
+const asNumberRecord = (value: unknown): Record<string, number> => (
+  Object.fromEntries(
+    Object.entries(asRecord(value)).map(([key, entry]) => [key, toNumber(entry)])
+  )
+);
+
 const readLocalAppData = (): SyncData => ({
   favorites: asArray(safeParse(STORAGE_KEYS.favorites, [])),
   annotations: asArray(safeParse(STORAGE_KEYS.annotations, [])),
@@ -105,6 +123,13 @@ const readLocalAppData = (): SyncData => ({
   spacedRepetition: asRecord(safeParse(STORAGE_KEYS.spacedRepetition, {})),
   spacedRepetitionToday: safeParse(STORAGE_KEYS.spacedRepetitionToday, null),
   spacedRepetitionCustomLists: asArray(safeParse(STORAGE_KEYS.spacedRepetitionCustomLists, [])),
+  trainerProgress: readTrainerStore(TRAINER_PROGRESS_PREFIX, value => (
+    value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, any> : null
+  )),
+  trainerFavorites: readTrainerStore(TRAINER_FAVORITES_PREFIX, value => (
+    Array.isArray(value) ? value.filter((id): id is string => typeof id === 'string') : null
+  )),
+  trainerClearedAt: asNumberRecord(safeParse(TRAINER_CLEARED_KEY, {})),
   schemaVersion: SYNC_SCHEMA_VERSION,
 });
 
@@ -126,6 +151,15 @@ const writeLocalAppData = (data: Partial<SyncData>) => {
   }
   if (Array.isArray(data.spacedRepetitionCustomLists)) {
     safeWrite(STORAGE_KEYS.spacedRepetitionCustomLists, data.spacedRepetitionCustomLists);
+  }
+  Object.entries(asRecord(data.trainerProgress)).forEach(([storageKey, progress]) => {
+    if (storageKey.startsWith(TRAINER_PROGRESS_PREFIX)) safeWrite(storageKey, asRecord(progress));
+  });
+  Object.entries(asRecord(data.trainerFavorites)).forEach(([storageKey, favorites]) => {
+    if (storageKey.startsWith(TRAINER_FAVORITES_PREFIX)) safeWrite(storageKey, asArray(favorites));
+  });
+  if (data.trainerClearedAt && typeof data.trainerClearedAt === 'object') {
+    safeWrite(TRAINER_CLEARED_KEY, data.trainerClearedAt);
   }
 };
 
@@ -231,7 +265,10 @@ const mergeSpacedRepetition = (
       wordId: latest.wordId || previous.wordId || wordId,
       correctCount: Math.max(toNumber(previous.correctCount), toNumber(latest.correctCount)),
       incorrectCount: Math.max(toNumber(previous.incorrectCount), toNumber(latest.incorrectCount)),
-      streak: Math.max(toNumber(previous.streak), toNumber(latest.streak)),
+      // Not a max: the streak is live state, and it now decides whether a word
+      // is still in the mistakes list. Keeping the higher value would let a
+      // stale device erase a mistake made on another one.
+      streak: toNumber(latest.streak),
       lastReview: Math.max(toNumber(previous.lastReview), toNumber(latest.lastReview)),
       english: latest.english || previous.english,
       article: latest.article || previous.article,
@@ -292,8 +329,93 @@ const mergeCustomLists = (remoteLists: any[], localLists: any[]) => {
   return Array.from(lists.values());
 };
 
+const mergeClearedAt = (remote: Record<string, number>, local: Record<string, number>) => {
+  const merged: Record<string, number> = { ...remote };
+  Object.entries(local).forEach(([storageKey, timestamp]) => {
+    merged[storageKey] = Math.max(toNumber(merged[storageKey]), toNumber(timestamp));
+  });
+  return merged;
+};
+
+// Counters are maxed rather than summed: the same answer reaches both sides
+// through the merge, and summing would inflate the history on every sync.
+const mergeExerciseResult = (remote: any, local: any) => {
+  const latest = toNumber(local.lastAnsweredAt) >= toNumber(remote.lastAnsweredAt) ? local : remote;
+
+  return {
+    ...remote,
+    ...local,
+    attempts: Math.max(toNumber(remote.attempts), toNumber(local.attempts)),
+    correct: Math.max(toNumber(remote.correct), toNumber(local.correct)),
+    incorrect: Math.max(toNumber(remote.incorrect), toNumber(local.incorrect)),
+    lastCorrect: Boolean(latest.lastCorrect),
+    consecutiveCorrect: toNumber(latest.consecutiveCorrect),
+    lastAnsweredAt: Math.max(toNumber(remote.lastAnsweredAt), toNumber(local.lastAnsweredAt)),
+  };
+};
+
+const mergeTrainerProgress = (
+  remoteProgress: Record<string, any>,
+  localProgress: Record<string, any>,
+  clearedAt: Record<string, number>
+) => {
+  const merged: Record<string, Record<string, any>> = {};
+  const storageKeys = new Set([...Object.keys(remoteProgress), ...Object.keys(localProgress)]);
+
+  storageKeys.forEach((storageKey) => {
+    const clearedTimestamp = toNumber(clearedAt[storageKey]);
+    // A reset wipes everything answered before it, on both sides, so the cloud
+    // copy cannot resurrect results the learner deliberately cleared.
+    const isCleared = (entry: any) => clearedTimestamp > 0 && toNumber(entry.lastAnsweredAt) <= clearedTimestamp;
+
+    const remoteEntries = asRecord(remoteProgress[storageKey]);
+    const localEntries = asRecord(localProgress[storageKey]);
+    const entries: Record<string, any> = {};
+
+    new Set([...Object.keys(remoteEntries), ...Object.keys(localEntries)]).forEach((id) => {
+      const remoteEntry = remoteEntries[id] && typeof remoteEntries[id] === 'object' && !isCleared(remoteEntries[id])
+        ? asRecord(remoteEntries[id])
+        : null;
+      const localEntry = localEntries[id] && typeof localEntries[id] === 'object' && !isCleared(localEntries[id])
+        ? asRecord(localEntries[id])
+        : null;
+
+      if (remoteEntry && localEntry) {
+        entries[id] = mergeExerciseResult(remoteEntry, localEntry);
+      } else if (remoteEntry || localEntry) {
+        entries[id] = (localEntry || remoteEntry) as Record<string, any>;
+      }
+    });
+
+    merged[storageKey] = entries;
+  });
+
+  return merged;
+};
+
+const mergeTrainerFavorites = (
+  remoteFavorites: Record<string, any>,
+  localFavorites: Record<string, any>
+) => {
+  const merged: Record<string, string[]> = {};
+  const storageKeys = new Set([...Object.keys(remoteFavorites), ...Object.keys(localFavorites)]);
+
+  storageKeys.forEach((storageKey) => {
+    merged[storageKey] = Array.from(new Set([
+      ...asArray(remoteFavorites[storageKey]),
+      ...asArray(localFavorites[storageKey]),
+    ].filter((id): id is string => typeof id === 'string')));
+  });
+
+  return merged;
+};
+
 const mergeAppData = (remoteData: Partial<SyncData>, localData: SyncData): SyncData => {
   const remote = remoteData || {};
+  const trainerClearedAt = mergeClearedAt(
+    asNumberRecord(remote.trainerClearedAt),
+    localData.trainerClearedAt
+  );
 
   return {
     favorites: mergeByKey(asArray(remote.favorites), localData.favorites, (favorite) => favorite.id),
@@ -308,8 +430,44 @@ const mergeAppData = (remoteData: Partial<SyncData>, localData: SyncData): SyncD
       asArray(remote.spacedRepetitionCustomLists),
       localData.spacedRepetitionCustomLists
     ),
+    trainerProgress: mergeTrainerProgress(
+      asRecord(remote.trainerProgress),
+      localData.trainerProgress,
+      trainerClearedAt
+    ),
+    trainerFavorites: mergeTrainerFavorites(
+      asRecord(remote.trainerFavorites),
+      localData.trainerFavorites
+    ),
+    trainerClearedAt,
     schemaVersion: SYNC_SCHEMA_VERSION,
   };
+};
+
+// Trainer ids are free-form German text, which Firestore would reject as map
+// field names, so those three maps travel as JSON strings.
+const JSON_ENCODED_FIELDS = ['trainerProgress', 'trainerFavorites', 'trainerClearedAt'] as const;
+
+const toRemotePayload = (data: SyncData) => ({
+  ...data,
+  ...Object.fromEntries(JSON_ENCODED_FIELDS.map(field => [field, JSON.stringify(data[field] || {})])),
+});
+
+const fromRemotePayload = (data: Record<string, any> | undefined): Partial<SyncData> => {
+  if (!data) return {};
+
+  const decoded: Record<string, any> = { ...data };
+  JSON_ENCODED_FIELDS.forEach((field) => {
+    const value = data[field];
+    if (typeof value !== 'string') return;
+    try {
+      decoded[field] = JSON.parse(value);
+    } catch {
+      decoded[field] = {};
+    }
+  });
+
+  return decoded as Partial<SyncData>;
 };
 
 const getLocalAppDataSignature = () => JSON.stringify(readLocalAppData());
@@ -433,13 +591,14 @@ export const firebaseSyncAPI = {
   syncFromCloud: async (uid: string) => {
     const snapshot = await getDoc(appDataDoc(uid));
     if (snapshot.exists()) {
-      writeLocalAppData(snapshot.data() as Partial<SyncData>);
+      writeLocalAppData(fromRemotePayload(snapshot.data()));
+      notifyAppDataSynced();
     }
   },
 
   syncToCloud: async (uid: string) => {
     await setDoc(appDataDoc(uid), {
-      ...readLocalAppData(),
+      ...toRemotePayload(readLocalAppData()),
       updatedAt: serverTimestamp(),
     }, { merge: true });
   },
@@ -448,13 +607,16 @@ export const firebaseSyncAPI = {
     const localData = readLocalAppData();
     const snapshot = await getDoc(appDataDoc(uid));
     const mergedData = mergeAppData(
-      snapshot.exists() ? snapshot.data() as Partial<SyncData> : {},
+      snapshot.exists() ? fromRemotePayload(snapshot.data()) : {},
       localData
     );
 
     writeLocalAppData(mergedData);
+    // Let mounted trainers pick the merged results up instead of flushing their
+    // pre-sync state back over them.
+    notifyAppDataSynced();
     await setDoc(appDataDoc(uid), {
-      ...mergedData,
+      ...toRemotePayload(mergedData),
       updatedAt: serverTimestamp(),
     }, { merge: true });
   },

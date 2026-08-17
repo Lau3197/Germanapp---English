@@ -7,26 +7,9 @@ interface UserMenuProps {
 }
 
 export const UserMenu: React.FC<UserMenuProps> = ({ onOpenAuth }) => {
-  const { user, isAuthenticated, logout, syncData } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [syncMessage, setSyncMessage] = useState('');
-
-  const handleSync = async () => {
-    setIsSyncing(true);
-    setSyncMessage('');
-    try {
-      await syncData();
-      setSyncMessage('Synced now');
-      setTimeout(() => setSyncMessage(''), 2000);
-    } catch (error) {
-      setSyncMessage('Sync error');
-    } finally {
-      setIsSyncing(false);
-    }
-  };
-
   const handleLogout = () => {
     logout();
     setIsOpen(false);
@@ -37,13 +20,16 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onOpenAuth }) => {
     return (
       <button
         onClick={onOpenAuth}
-        className="h-11 flex items-center gap-2 px-4 text-white rounded-xl font-bold text-sm transition-all shadow-terracotta shrink-0"
+        className="header-signin h-11 flex items-center gap-2 px-4 text-white rounded-xl font-bold text-sm transition-all shadow-terracotta shrink-0"
         style={{ backgroundColor: 'var(--terracotta-600)' }}
+        aria-label="Sign in"
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
         </svg>
-        Sign in
+        {/* Collapses to the icon alone on narrow screens so the header row
+            never has to overflow (see index.css `.header-signin-label`). */}
+        <span className="header-signin-label">Sign in</span>
       </button>
     );
   }
@@ -54,16 +40,13 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onOpenAuth }) => {
 
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="h-11 flex items-center gap-2 px-3 rounded-xl transition-all shrink-0"
-        style={{ backgroundColor: 'var(--sand-100)' }}
+        className="user-menu-trigger"
+        aria-label="Open profile menu"
       >
         <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm" style={{ backgroundColor: 'var(--terracotta-600)' }}>
           {user?.name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || '?'}
         </div>
-        <span className="text-sm font-medium hidden sm:inline" style={{ color: 'var(--terracotta-700)' }}>
-          {user?.name || user?.email?.split('@')[0]}
-        </span>
-        <svg className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} style={{ color: 'var(--sand-500)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className={`user-menu-chevron transition-transform ${isOpen ? 'rotate-180' : ''}`} style={{ color: 'var(--sand-500)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
         </svg>
       </button>
@@ -80,27 +63,6 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onOpenAuth }) => {
 
             {/* Actions */}
             <div className="p-2">
-              {/* Sync Button */}
-              <button
-                onClick={handleSync}
-                disabled={isSyncing}
-                className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 rounded-xl transition-all"
-              >
-                <div className={`w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center ${isSyncing ? 'animate-spin' : ''}`}>
-                  <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-slate-700">Sync now</p>
-                  {syncMessage && (
-                    <p className={`text-xs ${syncMessage.toLowerCase().includes('error') ? 'text-red-500' : 'text-green-500'}`}>
-                      {syncMessage}
-                    </p>
-                  )}
-                </div>
-              </button>
-
               {/* Profile Settings */}
               <button
                 onClick={() => {

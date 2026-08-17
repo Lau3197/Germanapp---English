@@ -2,11 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { AppTheme, MainTab } from './types';
 import { DashboardView } from './components/DashboardView';
+import { StatsView } from './components/StatsView';
 import { VocabularyView } from './components/VocabularyView';
 import { GenderTrainerView } from './components/GenderTrainerView';
 import { NomenVerbenView } from './components/NomenVerbenView';
 import { GrammarView } from './components/GrammarView';
-import { SyncModal } from './components/SyncModal';
 import { TablesView } from './components/TablesView';
 import { ExpressionsView } from './components/ExpressionsView';
 import { RevisionView } from './components/RevisionView';
@@ -38,6 +38,28 @@ const PRIMARY_NAV: { id: PrimarySection; label: string; path: string }[] = [
   { id: 'italian', label: 'Italian', path: '/italian' },
 ];
 
+// Two primary sections are theme-bound. The Italian guide is written for an
+// Italian native speaker, so it only exists on the theme bound to Italian (see
+// getThemeLanguage); Exam B2 is the reverse and is hidden on that same theme.
+// Both are filtered out of the nav AND guarded on their route, otherwise a
+// bookmark or a stale URL still reaches the view.
+const SECTION_ONLY_ON_THEME: Partial<Record<PrimarySection, AppTheme>> = {
+  italian: 'cane'
+};
+
+const SECTION_HIDDEN_ON_THEME: Partial<Record<PrimarySection, AppTheme>> = {
+  exam: 'cane'
+};
+
+const isSectionVisible = (section: PrimarySection, theme: AppTheme): boolean => {
+  const onlyOn = SECTION_ONLY_ON_THEME[section];
+  if (onlyOn && onlyOn !== theme) {
+    return false;
+  }
+
+  return SECTION_HIDDEN_ON_THEME[section] !== theme;
+};
+
 const VOCABULARY_NAV: { id: MainTab; label: string; path: string }[] = [
   { id: 'vocabulary', label: 'Themes', path: '/vocabulary' },
   { id: 'revision', label: 'Review', path: '/revision' },
@@ -62,7 +84,6 @@ const getPrimarySection = (tab: MainTab): PrimarySection => {
 };
 
 const AppLayout: React.FC = () => {
-  const [showSyncModal, setShowSyncModal] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showPandaReward, setShowPandaReward] = useState(false);
   const [appTheme, setAppTheme] = useState<AppTheme>(() => {
@@ -81,6 +102,9 @@ const AppLayout: React.FC = () => {
   // Determine active tab from URL
   const activeTab = (location.pathname.substring(1).split('/')[0] || 'dashboard') as MainTab;
   const primarySection = getPrimarySection(activeTab);
+  const showItalian = isSectionVisible('italian', appTheme);
+  const showExam = isSectionVisible('exam', appTheme);
+  const primaryNav = PRIMARY_NAV.filter(tab => isSectionVisible(tab.id, appTheme));
   const secondaryNav =
     primarySection === 'vocabulary'
       ? VOCABULARY_NAV
@@ -151,10 +175,7 @@ const AppLayout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen pb-20" style={{ backgroundColor: 'var(--sand-50)' }}>
-      {/* Sync modal */}
-      <SyncModal isOpen={showSyncModal} onClose={() => setShowSyncModal(false)} />
-
+    <div className="app-shell min-h-screen pb-20" style={{ backgroundColor: 'var(--sand-50)' }}>
       {/* Auth modal */}
       <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
 
@@ -170,9 +191,6 @@ const AppLayout: React.FC = () => {
       <header className="app-header">
         <div className="app-header-shell">
           <button type="button" className="app-brand" onClick={() => navigate('/dashboard')}>
-            <div className="app-brand-mark">
-              {appTheme === 'panda' ? '🐼' : appTheme === 'cane' ? '🐕' : '🇩🇪'}
-            </div>
             <h1 className="app-brand-title">DeutschMeister</h1>
           </button>
 
@@ -183,24 +201,12 @@ const AppLayout: React.FC = () => {
             {/* App theme */}
             <AppThemeSwitcher theme={appTheme} onThemeChange={setAppTheme} />
 
-            {/* Sync button */}
-            <button
-              onClick={() => setShowSyncModal(true)}
-              className="w-11 h-11 rounded-xl transition-all group hover:shadow-md shrink-0 flex items-center justify-center"
-              style={{ backgroundColor: 'var(--sand-100)' }}
-              title="Export or import a backup"
-            >
-              <svg className="w-5 h-5 transition-colors" style={{ color: 'var(--sand-600)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-              </svg>
-            </button>
-
             {/* User menu */}
             <UserMenu onOpenAuth={() => setShowAuthModal(true)} />
           </div>
 
           <nav className="app-nav" aria-label="Primary navigation">
-            {PRIMARY_NAV.map(tab => {
+            {primaryNav.map(tab => {
               const isActive = primarySection === tab.id;
 
               return (
@@ -219,7 +225,7 @@ const AppLayout: React.FC = () => {
           </nav>
 
           {secondaryNav.length > 0 && (
-            <nav className="app-subnav" aria-label={`${primarySection} navigation`}>
+            <nav className={`app-subnav app-subnav-${primarySection}`} aria-label={`${primarySection} navigation`}>
               {secondaryNav.map(tab => {
                 const isActive = activeTab === tab.id;
 
@@ -237,21 +243,22 @@ const AppLayout: React.FC = () => {
               })}
             </nav>
           )}
+
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-10">
+      <main className="app-main max-w-6xl mx-auto px-4 py-6 sm:px-6 sm:py-10">
         <Routes>
           <Route path="/" element={<DashboardView />} />
           <Route path="/dashboard" element={<DashboardView />} />
 
           {/* Updated Vocabulary Routes */}
-          <Route path="/vocabulary" element={<VocabularyView />} />
-          <Route path="/vocabulary/:themeId" element={<VocabularyView />} />
+          <Route path="/vocabulary" element={<VocabularyView appTheme={appTheme} />} />
+          <Route path="/vocabulary/:themeId" element={<VocabularyView appTheme={appTheme} />} />
 
-          <Route path="/gender" element={<GenderTrainerView />} />
+          <Route path="/gender" element={<GenderTrainerView appTheme={appTheme} />} />
 
-          <Route path="/revision" element={<RevisionView />} />
+          <Route path="/revision" element={<RevisionView appTheme={appTheme} />} />
           <Route path="/structures" element={<StructureComparisonView />} />
           <Route path="/structures/:patternId" element={<StructureComparisonView />} />
 
@@ -261,11 +268,17 @@ const AppLayout: React.FC = () => {
 
           <Route path="/tables" element={<TablesView />} />
           <Route path="/expressions" element={<ExpressionsView />} />
-          <Route path="/exam" element={<ExamView />} />
-          <Route path="/italian" element={<ItalianView />} />
+          <Route
+            path="/exam"
+            element={showExam ? <ExamView /> : <Navigate to="/dashboard" replace />}
+          />
+          <Route
+            path="/italian"
+            element={showItalian ? <ItalianView /> : <Navigate to="/dashboard" replace />}
+          />
           <Route path="/nomen-verben" element={<NomenVerbenView />} />
           <Route path="/verben-mit-praepositionen" element={<VerbenMitPraepositionenView />} />
-          <Route path="/stats" element={<Navigate to="/dashboard#stats" replace />} />
+          <Route path="/stats" element={<StatsView />} />
           {/* Fallback route */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>

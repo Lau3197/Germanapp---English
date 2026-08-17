@@ -110,35 +110,27 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ onNavigate }) => {
       {/* Search button */}
       <button
         onClick={openSearch}
-        className="h-11 flex items-center gap-2 px-3 rounded-xl transition-all hover:shadow-md shrink-0"
+        className="header-icon-button"
         style={{ backgroundColor: 'var(--sand-100)' }}
         title="Search (Ctrl+K)"
       >
         <svg className="w-5 h-5" style={{ color: 'var(--sand-500)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
-        <span className="hidden 2xl:inline text-sm" style={{ color: 'var(--sand-500)' }}>
-          Search...
-        </span>
-        <kbd className="hidden 2xl:inline px-2 py-0.5 rounded text-xs font-mono" style={{
-          backgroundColor: 'var(--sand-200)',
-          color: 'var(--sand-600)'
-        }}>
-          ⌘K
-        </kbd>
+        <span className="sr-only">Search</span>
       </button>
 
-      {/* Search modal */}
+      {/* Search modal. On a phone the panel sits near the top and takes most of
+          the height, since the on-screen keyboard claims the bottom half. */}
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[10vh] px-4">
+        <div className="fixed inset-0 z-[100] flex items-start justify-center pt-3 px-3 sm:pt-[10vh] sm:px-4">
           {/* Overlay */}
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
 
           {/* Content */}
           <div
             ref={modalRef}
-            className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden"
-            style={{ maxHeight: '70vh' }}
+            className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden max-h-[88vh] sm:max-h-[70vh]"
           >
             {/* Search bar */}
             <div className="flex items-center gap-3 p-4 border-b" style={{ borderColor: 'var(--sand-200)' }}>
@@ -157,24 +149,31 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ onNavigate }) => {
               {query && (
                 <button
                   onClick={() => setQuery('')}
-                  className="p-1 rounded-full hover:bg-gray-100"
+                  className="w-10 h-10 shrink-0 flex items-center justify-center rounded-full hover:bg-gray-100"
+                  aria-label="Clear the search"
                 >
                   <svg className="w-5 h-5" style={{ color: 'var(--sand-400)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
               )}
+              {/* "ESC" is a keyboard hint, so on touch it becomes a real
+                  close button sized for a thumb. */}
               <button
                 onClick={closeSearch}
-                className="px-2 py-1 rounded text-xs font-medium"
+                className="shrink-0 flex items-center justify-center rounded-lg text-xs font-medium w-10 h-10 sm:w-auto sm:h-auto sm:px-2 sm:py-1"
                 style={{ backgroundColor: 'var(--sand-100)', color: 'var(--sand-600)' }}
+                aria-label="Close the search"
               >
-                ESC
+                <span className="hidden sm:inline">ESC</span>
+                <svg className="w-5 h-5 sm:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             </div>
 
             {/* Results */}
-            <div className="overflow-y-auto" style={{ maxHeight: 'calc(70vh - 80px)' }}>
+            <div className="overflow-y-auto max-h-[calc(88vh-80px)] sm:max-h-[calc(70vh-80px)]">
               {/* Initial message */}
               {query.length < 2 && (
                 <div className="p-8 text-center" style={{ color: 'var(--sand-500)' }}>
@@ -276,7 +275,8 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ onNavigate }) => {
                 style={{ borderColor: 'var(--sand-200)', color: 'var(--sand-500)' }}
               >
                 <span>{totalResults} result{totalResults > 1 ? 's' : ''}</span>
-                <div className="flex items-center gap-4">
+                {/* Keyboard hints are noise on a touch device */}
+                <div className="hidden sm:flex items-center gap-4">
                   <span>↑↓ navigate</span>
                   <span>↵ select</span>
                 </div>

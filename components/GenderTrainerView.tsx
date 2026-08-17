@@ -1,9 +1,9 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
-import { GermanWord, LanguageLevel } from '../types';
+import { AppTheme, GermanWord, LanguageLevel } from '../types';
 import { VOCABULARY_DATA } from '../data/vocabularyData';
 import { usePandaMascot } from '../contexts/PandaMascotContext';
 import { findGenderRule } from '../data/genderRules';
-import { getTranslation } from '../utils/translations';
+import { getTranslation, getThemeLanguage } from '../utils/translations';
 import { useExerciseProgress } from '../hooks/useExerciseProgress';
 import { useExerciseFavorites } from '../hooks/useExerciseFavorites';
 
@@ -74,9 +74,13 @@ const ALL_NOUNS: GermanWord[] = (() => {
   return nouns;
 })();
 
-export const GenderTrainerView: React.FC = () => {
+interface GenderTrainerViewProps {
+  appTheme?: AppTheme;
+}
+
+export const GenderTrainerView: React.FC<GenderTrainerViewProps> = ({ appTheme = 'classic' }) => {
   const { triggerMood } = usePandaMascot();
-  const { completedIds, recordAnswer, resetProgress } = useExerciseProgress('trainerProgress_gender_en');
+  const { results, completedIds, practicedIds, recordAnswer, resetProgress } = useExerciseProgress('trainerProgress_gender_en');
   const { favoriteIds, toggleFavorite } = useExerciseFavorites('trainerFavorites_gender_en');
 
   const [phase, setPhase] = useState<Phase>('menu');
@@ -93,6 +97,7 @@ export const GenderTrainerView: React.FC = () => {
   const [isRevision, setIsRevision] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const [includePreviousErrors, setIncludePreviousErrors] = useState(true);
 
   // Nouns available for the current level filter.
   const availableNouns = useMemo(() => {
@@ -105,16 +110,33 @@ export const GenderTrainerView: React.FC = () => {
     () => availableNouns.filter(word => !favoritesOnly || favoriteIds.has(getNounId(word))),
     [availableNouns, favoritesOnly, favoriteIds, getNounId]
   );
-  const remainingNouns = useMemo(
+  const unmasteredNouns = useMemo(
     () => studyNouns.filter(word => !completedIds.has(getNounId(word))),
     [studyNouns, completedIds, getNounId]
+  );
+  const hasPastError = useCallback(
+    (word: GermanWord) => (results[getNounId(word)]?.incorrect || 0) > 0,
+    [results, getNounId]
+  );
+  const drillNouns = useMemo(
+    () => includePreviousErrors
+      ? unmasteredNouns
+      : unmasteredNouns.filter(word => !hasPastError(word)),
+    [includePreviousErrors, unmasteredNouns, hasPastError]
   );
 
   const startSession = useCallback((pool: GermanWord[], revision: boolean) => {
     const count = revision || wordCount === 'all'
       ? pool.length
       : Math.min(wordCount, pool.length);
-    const words = shuffleArray(pool).slice(0, count);
+    // Past mistakes go to the front of the queue before slicing: the pool holds
+    // hundreds of nouns, so a plain shuffle would almost never draw the few the
+    // learner actually got wrong. Reshuffled afterwards so they aren't bunched
+    // at the start of the drill.
+    const ordered = revision || !includePreviousErrors
+      ? shuffleArray(pool)
+      : [...shuffleArray(pool.filter(hasPastError)), ...shuffleArray(pool.filter(word => !hasPastError(word)))];
+    const words = shuffleArray(ordered.slice(0, count));
     setSessionWords(words);
     setCurrentIndex(0);
     setSelected(null);
@@ -125,7 +147,7 @@ export const GenderTrainerView: React.FC = () => {
     setIsRevision(revision);
     setShowHint(false);
     setPhase('drill');
-  }, [wordCount]);
+  }, [wordCount, includePreviousErrors, hasPastError]);
 
   const currentWord = sessionWords[currentIndex];
 
@@ -275,7 +297,7 @@ export const GenderTrainerView: React.FC = () => {
               </button>
             )}
             <button
-              onClick={() => startSession(remainingNouns.length ? remainingNouns : studyNouns, false)}
+              onClick={() => startSession(drillNouns, false)}
               className={`w-full font-bold py-4 rounded-xl transition-all ${hasErrors ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' : 'text-white shadow-lg hover:shadow-xl'}`}
               style={!hasErrors ? { backgroundColor: 'var(--terracotta-600)' } : {}}
             >
@@ -302,7 +324,7 @@ export const GenderTrainerView: React.FC = () => {
     const rule = findGenderRule(currentWord.german);
     const ruleMatches = rule ? rule.article === currentWord.article : false;
     const ruleColor = rule ? GENDER_BY_KEY[rule.article]?.text : undefined;
-    const translation = getTranslation(currentWord);
+    const translation = getTranslation(currentWord, getThemeLanguage(appTheme));
 
     return (
       <div className="max-w-2xl mx-auto animate-in fade-in duration-300">
@@ -343,7 +365,7 @@ export const GenderTrainerView: React.FC = () => {
           <button type="button" onClick={() => toggleFavorite(getNounId(currentWord))} className="mt-3 font-bold" style={{ color: favoriteIds.has(getNounId(currentWord)) ? '#d97706' : 'var(--sand-500)' }}>
             {favoriteIds.has(getNounId(currentWord)) ? '★ Favorite' : '☆ Add to favorites'}
           </button>
-          {translation && <p className="text-slate-400 text-sm mt-3">{translation}</p>}
+          {translation && <p className="gender-card-translation">{translation}</p>}
 
           {/* Optional pre-answer hint: general pattern only, doesn't confirm this word */}
           {!answered && rule && (
@@ -372,10 +394,10 @@ export const GenderTrainerView: React.FC = () => {
                 <span className="text-slate-800">{currentWord.german}</span>
               </p>
               {currentWord.plural && currentWord.plural !== 'n/a' && (
-                <p className="text-slate-500 text-sm mt-1">Plural: die {currentWord.plural}</p>
+                <p className="gender-card-plural">Plural: die {currentWord.plural}</p>
               )}
               {currentWord.example && (
-                <p className="text-slate-500 text-sm italic mt-3">
+                <p className="gender-card-example">
                   "{highlightWordInExample(currentWord.example, currentWord.german)}"
                 </p>
               )}
@@ -530,20 +552,32 @@ export const GenderTrainerView: React.FC = () => {
       </div>
 
       <button
-        onClick={() => startSession(remainingNouns.length ? remainingNouns : studyNouns, false)}
-        disabled={studyNouns.length === 0}
+        onClick={() => startSession(drillNouns, false)}
+        disabled={drillNouns.length === 0}
         className="w-full font-black text-lg py-5 rounded-2xl transition-all text-white shadow-lg hover:shadow-xl hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed"
         style={{ backgroundColor: 'var(--terracotta-600)' }}
       >
-        🚀 {remainingNouns.length ? 'Continue drill' : 'Start a new round'} ({remainingNouns.length || studyNouns.length} nouns)
+        🚀 {drillNouns.length ? 'Continue drill' : 'All selected nouns mastered'} ({drillNouns.length} nouns)
       </button>
+      <label className="mt-4 flex items-center justify-center gap-3 text-sm font-semibold text-slate-700 cursor-pointer">
+        <input
+          type="checkbox"
+          checked={includePreviousErrors}
+          onChange={event => setIncludePreviousErrors(event.target.checked)}
+          className="h-4 w-4 accent-emerald-700"
+        />
+        Include mistakes from previous sessions
+        <span className="font-normal text-slate-500">
+          ({unmasteredNouns.filter(hasPastError).length} first)
+        </span>
+      </label>
       <div className="mt-3 flex justify-center gap-3 text-sm">
         <button type="button" onClick={() => setFavoritesOnly(value => !value)} className={`rounded-xl px-4 py-2 font-bold ${favoritesOnly ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-700'}`}>★ {favoritesOnly ? 'All nouns' : `Favorites (${favoriteIds.size})`}</button>
       </div>
       {favoritesOnly && !studyNouns.length && <p className="text-center text-sm text-amber-700 mt-3">No favorites yet. Add them while studying.</p>}
       <p className="text-center text-sm text-slate-500 mt-3">
-        {completedIds.size > 0 ? `${Math.min(completedIds.size, availableNouns.length)} noun${completedIds.size === 1 ? '' : 's'} already practiced.` : 'Your results are saved automatically.'}
-        {completedIds.size > 0 && <button type="button" onClick={resetProgress} className="ml-2 underline font-bold">Reset progress</button>}
+        {practicedIds.size > 0 ? `${Math.min(completedIds.size, availableNouns.length)} mastered · ${Math.min(unmasteredNouns.length, availableNouns.length)} to reinforce.` : 'Your results are saved automatically.'}
+        {practicedIds.size > 0 && <button type="button" onClick={resetProgress} className="ml-2 underline font-bold">Reset progress</button>}
       </p>
     </div>
   );

@@ -87,9 +87,39 @@
   --app-focus-secondary: rgba(20, 184, 166, 0.1);
   --app-progress-gradient: linear-gradient(90deg, #f97316, #fb923c, #14b8a6, #2dd4bf);
   --app-header-sticky-height: 196px;
+
+  /* Semantic tokens used by Home + Stats. Each theme redefines them, so those
+     views never need a literal hex. */
+  --app-overlay: rgba(61, 50, 37, 0.55);
+  --app-track: var(--sand-100);
+  --app-success: #5f7343;
+  --app-success-soft: #96ab78;
+  --app-card-1: linear-gradient(135deg, var(--coral-600), var(--coral-800));
+  --app-card-2: linear-gradient(135deg, var(--turquoise-600), var(--turquoise-800));
+  --app-card-3: linear-gradient(135deg, var(--sage-600), var(--sage-800));
+  --app-card-4: linear-gradient(135deg, var(--terracotta-700), var(--terracotta-900));
+  --level-1: linear-gradient(90deg, var(--turquoise-300), var(--turquoise-200));
+  --level-2: linear-gradient(90deg, var(--turquoise-500), var(--turquoise-400));
+  --level-3: linear-gradient(90deg, var(--sage-500), var(--sage-400));
+  --level-4: linear-gradient(90deg, var(--coral-400), var(--coral-300));
+  --level-5: linear-gradient(90deg, var(--coral-600), var(--coral-500));
+  --level-6: linear-gradient(90deg, var(--terracotta-800), var(--terracotta-600));
 }
 
 :root[data-app-theme="panda"] {
+  /* Coral mirrors terracotta here, exactly like the :root aliases, so views that
+     reach for --coral-* stay in the panda palette instead of falling back to orange. */
+  --coral-50: #f8faf8;
+  --coral-100: #e6ebe6;
+  --coral-200: #cfd8cf;
+  --coral-300: #aab9aa;
+  --coral-400: #7c8d7e;
+  --coral-500: #566259;
+  --coral-600: #2f3a34;
+  --coral-700: #222a26;
+  --coral-800: #161c19;
+  --coral-900: #0d1110;
+
   --terracotta-50: #f8faf8;
   --terracotta-100: #e6ebe6;
   --terracotta-200: #cfd8cf;
@@ -150,6 +180,20 @@
   --panda-leaf: #247f3b;
   --panda-blush: #ff86ad;
   --panda-honey: #ffd166;
+
+  --app-overlay: rgba(17, 23, 21, 0.55);
+  --app-success: #247f3b;
+  --app-success-soft: #58b86c;
+  --app-card-1: linear-gradient(135deg, #ef5386, #98224c);
+  --app-card-2: linear-gradient(135deg, #247f3b, #143f21);
+  --app-card-3: linear-gradient(135deg, #3f4a3d, #111715);
+  --app-card-4: linear-gradient(135deg, #b8811c, #7d5712);
+  --level-1: linear-gradient(90deg, #8bd29a, #bce5c2);
+  --level-2: linear-gradient(90deg, #58b86c, #8bd29a);
+  --level-3: linear-gradient(90deg, #329d4d, #58b86c);
+  --level-4: linear-gradient(90deg, #ff86ad, #ffacc6);
+  --level-5: linear-gradient(90deg, #ef5386, #fb7ca5);
+  --level-6: linear-gradient(90deg, #2f3a34, #566259);
 }
 
 :root[data-app-theme="cane"] {
@@ -219,6 +263,20 @@
   --app-focus-primary: rgba(129, 166, 198, 0.24);
   --app-focus-secondary: rgba(210, 196, 180, 0.2);
   --app-progress-gradient: linear-gradient(90deg, #81a6c6, #aacddc, #d2c4b4);
+
+  --app-overlay: rgba(64, 58, 52, 0.5);
+  --app-success: #5b7d9c;
+  --app-success-soft: #8bb9cc;
+  --app-card-1: linear-gradient(135deg, #7d7062, #4a423b);
+  --app-card-2: linear-gradient(135deg, #5b7d9c, #385467);
+  --app-card-3: linear-gradient(135deg, #8f7f6d, #62584d);
+  --app-card-4: linear-gradient(135deg, #496980, #2f4657);
+  --level-1: linear-gradient(90deg, #c7e0e9, #e0eff4);
+  --level-2: linear-gradient(90deg, #aacddc, #c7e0e9);
+  --level-3: linear-gradient(90deg, #81a6c6, #9abdd0);
+  --level-4: linear-gradient(90deg, #e8d5c0, #f3e3d0);
+  --level-5: linear-gradient(90deg, #d2c4b4, #e8d5c0);
+  --level-6: linear-gradient(90deg, #958779, #b8aa9c);
 }
 
 /* Base styles */
@@ -650,15 +708,16 @@ h1, h2, h3, h4, h5, h6 {
 .app-header-shell {
   width: min(100%, 1500px);
   margin: 0 auto;
-  padding: 12px clamp(16px, 3vw, 32px) 11px;
+  padding: 10px clamp(16px, 3vw, 32px);
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: auto minmax(0, 1fr) auto;
   grid-template-areas:
-    "brand actions"
-    "nav nav"
-    "subnav subnav";
+    "brand nav actions"
+    "subnav subnav subnav";
   align-items: center;
-  gap: 9px 24px;
+  column-gap: clamp(18px, 3vw, 42px);
+  row-gap: 2px;
+  position: relative;
 }
 
 .app-brand {
@@ -668,10 +727,10 @@ h1, h2, h3, h4, h5, h6 {
   background: transparent;
   color: inherit;
   font: inherit;
-  padding: 4px 10px 4px 4px;
+  padding: 4px 0;
   display: inline-flex;
   align-items: center;
-  gap: 13px;
+  gap: 0;
   border-radius: 18px;
   cursor: pointer;
   min-width: max-content;
@@ -690,21 +749,6 @@ h1, h2, h3, h4, h5, h6 {
   outline-offset: 3px;
 }
 
-.app-brand-mark {
-  width: 48px;
-  height: 48px;
-  border-radius: 16px;
-  color: #ffffff;
-  font-size: 22px;
-  font-weight: 800;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--terracotta-600);
-  box-shadow: 0 14px 30px -18px var(--app-shadow-color);
-}
-
 .app-brand-title {
   color: var(--terracotta-800);
   font-size: clamp(22px, 1.8vw, 28px);
@@ -717,30 +761,50 @@ h1, h2, h3, h4, h5, h6 {
   grid-area: actions;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: 10px;
+  justify-content: flex-start;
+  gap: 8px;
   min-width: 0;
+  margin-left: auto;
 }
 
 .app-actions > * {
   flex: 0 0 auto;
 }
 
+.header-icon-button {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--sand-100);
+  cursor: pointer;
+  transition: box-shadow 160ms ease, transform 160ms ease;
+}
+
+.header-icon-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px -14px var(--app-shadow-color);
+}
+
 .app-nav {
   grid-area: nav;
-  width: 100%;
+  width: auto;
   min-width: 0;
-  min-height: 54px;
-  padding: 7px;
+  min-height: 42px;
+  padding: 0;
   display: flex;
   align-items: center;
   gap: 6px;
   overflow-x: auto;
   scrollbar-width: none;
   border-radius: 18px;
-  background: var(--sand-100);
-  border: 1px solid var(--terracotta-100);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  background: transparent;
+  border: 0;
+  box-shadow: none;
 }
 
 .app-nav::-webkit-scrollbar,
@@ -749,29 +813,21 @@ h1, h2, h3, h4, h5, h6 {
   display: none;
 }
 
-.structures-filter-scroll {
-  scrollbar-width: none;
-}
-
-.structures-filter-scroll::-webkit-scrollbar {
-  display: none;
-}
-
 .app-nav-tab {
   appearance: none;
   border: 0;
   background: transparent;
   color: var(--sand-700);
-  min-height: 40px;
-  padding: 0 15px;
-  border-radius: 13px;
+  min-height: 42px;
+  padding: 0 13px;
+  border-radius: 8px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   white-space: nowrap;
   cursor: pointer;
-  font-size: 14px;
+  font-size: clamp(16px, 1.25vw, 20px);
   font-weight: 800;
   letter-spacing: 0;
   transition:
@@ -787,17 +843,19 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .app-nav-tab.is-active {
-  background: var(--app-surface);
+  background: transparent;
   color: var(--terracotta-600);
-  box-shadow: 0 12px 26px -18px var(--app-shadow-color);
+  box-shadow: inset 0 -2px 0 var(--terracotta-600);
 }
 
 .app-subnav {
   grid-area: subnav;
+  grid-column: 2;
+  position: static;
   width: 100%;
   min-width: 0;
-  min-height: 42px;
-  padding: 3px;
+  min-height: 40px;
+  padding: 2px 0 0;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -805,10 +863,40 @@ h1, h2, h3, h4, h5, h6 {
   scrollbar-width: none;
 }
 
+.app-subnav-vocabulary {
+  padding-left: 92px;
+}
+
+.app-subnav-grammar {
+  padding-left: 278px;
+}
+
+.gender-card-translation,
+.gender-card-plural,
+.gender-card-example {
+  color: #566653;
+  font-size: 1.15rem;
+  line-height: 1.55;
+  font-weight: 650;
+}
+
+.gender-card-translation {
+  margin-top: 0.75rem;
+}
+
+.gender-card-plural {
+  margin-top: 0.45rem;
+}
+
+.gender-card-example {
+  margin-top: 0.9rem;
+  font-style: italic;
+}
+
 .app-subnav-tab {
   appearance: none;
   border: 1px solid transparent;
-  background: rgba(255, 255, 255, 0.58);
+  background: transparent;
   color: var(--sand-600);
   min-height: 34px;
   padding: 0 13px;
@@ -818,8 +906,8 @@ h1, h2, h3, h4, h5, h6 {
   justify-content: center;
   white-space: nowrap;
   cursor: pointer;
-  font-size: 13px;
-  font-weight: 800;
+  font-size: clamp(15px, 1.05vw, 17px);
+  font-weight: 700;
   letter-spacing: 0;
   transition:
     background-color 160ms ease,
@@ -835,74 +923,277 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .app-subnav-tab.is-active {
-  background: var(--terracotta-600);
-  color: #ffffff;
-  border-color: var(--terracotta-600);
-  box-shadow: 0 10px 24px -18px var(--app-shadow-color);
+  background: transparent;
+  color: var(--terracotta-700);
+  border-color: transparent;
+  box-shadow: inset 0 -2px 0 var(--terracotta-600);
+}
+
+.app-theme-switcher {
+  height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  background: var(--sand-100);
+  border: 1px solid var(--terracotta-100);
+}
+
+.app-theme-option {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 160ms ease, transform 160ms ease;
+}
+
+.app-theme-option:hover {
+  transform: translateY(-1px);
+}
+
+.user-menu-trigger {
+  width: 36px;
+  height: 36px;
+  padding: 2px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--sand-100);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: box-shadow 160ms ease, transform 160ms ease;
+}
+
+.user-menu-trigger:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px -14px var(--app-shadow-color);
+}
+
+.user-menu-trigger .w-8 {
+  width: 30px;
+  height: 30px;
+}
+
+.user-menu-chevron {
+  display: none;
 }
 
 @media (max-width: 900px) {
   :root {
-    --app-header-sticky-height: 240px;
+    --app-header-sticky-height: 128px;
   }
 
+  /* Identity + actions share row 1, then each nav rail owns a full-width row.
+     The shell itself must never scroll horizontally: it used to, which dragged
+     the brand and the avatar off-screen along with the tabs. */
   .app-header-shell {
-    grid-template-columns: 1fr;
+    padding: 7px clamp(12px, 3.5vw, 20px) 5px;
+    grid-template-columns: minmax(0, auto) auto;
     grid-template-areas:
-      "brand"
-      "actions"
-      "nav"
-      "subnav";
-    padding: 10px 14px;
-    gap: 10px;
+      "brand actions"
+      "nav nav"
+      "subnav subnav";
+    column-gap: 10px;
+    row-gap: 3px;
+    overflow-x: visible;
   }
 
   .app-brand {
-    width: 100%;
-  }
-
-  .app-brand-mark {
-    width: 44px;
-    height: 44px;
-    border-radius: 14px;
+    flex: 0 0 auto;
+    min-width: 0;
+    padding: 2px 0;
   }
 
   .app-brand-title {
-    font-size: 22px;
+    font-size: clamp(19px, 5.6vw, 24px);
+    white-space: nowrap;
   }
 
   .app-actions {
-    justify-content: flex-start;
-    overflow-x: auto;
-    padding-bottom: 2px;
+    flex: 0 0 auto;
+    margin-left: auto;
+    gap: 6px;
+  }
+
+  .app-nav,
+  .app-subnav {
+    grid-column: 1 / -1;
+    width: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
   }
 
   .app-nav {
-    min-height: 50px;
-    padding: 6px;
+    flex: 0 0 auto;
+    min-height: 40px;
+    padding: 0;
+    gap: 1px;
   }
 
   .app-nav-tab {
-    min-height: 38px;
-    padding: 0 12px;
-    font-size: 13px;
+    min-height: 40px;
+    padding: 0 8px;
+    font-size: 15px;
   }
 
   .app-subnav {
-    min-height: 40px;
-    padding: 2px;
+    min-height: 36px;
+    padding: 0 0 2px;
+    gap: 1px;
+  }
+
+  /* Desktop indents the sub-tabs so they sit under their parent tab. On a
+     phone the nav starts at the left edge, so that indent would only push the
+     first sub-tab out of view. */
+  .app-subnav-vocabulary,
+  .app-subnav-grammar {
+    padding-left: 0;
   }
 
   .app-subnav-tab {
-    min-height: 34px;
-    padding: 0 11px;
-    font-size: 12px;
+    min-height: 36px;
+    padding: 0 9px;
+    font-size: 14px;
+  }
+}
+
+/* Below ~420px the five primary tabs stop fitting; trim the type instead of
+   forcing every visit to start with a horizontal drag. */
+@media (max-width: 420px) {
+  .app-nav-tab {
+    padding: 0 6px;
+    font-size: 13.5px;
+  }
+
+  .app-subnav-tab {
+    padding: 0 8px;
+    font-size: 13px;
+  }
+
+  .app-theme-switcher {
+    height: 34px;
+    gap: 0;
+    padding: 2px;
+  }
+
+  .app-theme-option {
+    width: 27px;
+    height: 27px;
+  }
+
+  .header-signin-label {
+    display: none;
+  }
+
+  .header-signin {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    justify-content: center;
+    gap: 0;
+  }
+}
+
+/* 320px (iPhone SE) is the floor we support: the brand plus the three action
+   controls no longer fit at the sizes above, so everything on row 1 steps down
+   one notch rather than letting the page scroll sideways. */
+@media (max-width: 360px) {
+  .app-header-shell {
+    padding-left: 10px;
+    padding-right: 10px;
+    column-gap: 8px;
+  }
+
+  .app-brand-title {
+    font-size: 17px;
+  }
+
+  .app-actions {
+    gap: 4px;
+  }
+
+  .app-theme-switcher {
+    height: 32px;
+  }
+
+  .app-theme-option {
+    width: 24px;
+    height: 24px;
+  }
+
+  .header-icon-button,
+  .user-menu-trigger {
+    width: 34px;
+    height: 34px;
+  }
+
+  .header-signin {
+    width: 36px;
+    height: 36px;
+  }
+
+  .app-nav-tab {
+    padding: 0 5px;
+    font-size: 13px;
   }
 }
 
 /* ===== CARDS ===== */
 .rounded-2xl, .rounded-\[2rem\], .rounded-\[3rem\] {
-  border-color: #fed7aa;
+  border-color: var(--terracotta-200);
+}
+
+/* ===== HOME + STATS (theme-driven surfaces) ===== */
+.app-surface-card {
+  background: var(--app-surface);
+  border: 1px solid var(--terracotta-100);
+}
+
+.app-soft-button {
+  background-color: var(--sand-100);
+  color: var(--sand-700);
+  transition: background-color 160ms ease;
+}
+
+.app-soft-button:hover {
+  background-color: var(--sand-200);
+}
+
+.app-accent-button {
+  background: linear-gradient(135deg, var(--coral-600), var(--terracotta-700));
+  color: #ffffff;
+  transition: filter 160ms ease;
+}
+
+.app-accent-button:hover {
+  filter: brightness(1.08);
+}
+
+.app-accent-chip {
+  background-color: var(--terracotta-100);
+  color: var(--terracotta-700);
+  transition: background-color 160ms ease;
+}
+
+.app-accent-chip:hover {
+  background-color: var(--terracotta-200);
+}
+
+.app-ghost-button {
+  color: var(--sand-600);
+  transition: background-color 160ms ease;
+}
+
+.app-ghost-button:hover {
+  background-color: var(--sand-100);
 }
 
 /* ===== SIDEBAR ACTIVE STATES ===== */
@@ -2262,7 +2553,7 @@ a:hover {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 2px;
   min-height: 30px;
   padding: 6px 10px;
   border: 1px solid rgba(188, 229, 194, 0.86);
@@ -2297,7 +2588,7 @@ a:hover {
   width: 172px;
   padding: 6px;
   border: 1px solid rgba(188, 229, 194, 0.92);
-  border-radius: 18px;
+  border-radius: 0;
   background: rgba(255, 255, 252, 0.98);
   box-shadow: 0 22px 46px -24px rgba(17, 23, 21, 0.52);
   backdrop-filter: blur(16px);
@@ -2859,5 +3150,754 @@ a:hover {
   * {
     animation: none !important;
     transition: none !important;
+  }
+}
+
+/* ===== STRUCTURE LIBRARY ===== */
+/* The page lives inside `main.max-w-6xl.px-6`, so the usable width is ~1104px
+   whatever the viewport. Everything below is sized for that box, not for 1280+. */
+.structure-page {
+  padding-bottom: 40px;
+}
+
+/* --- Hero: one compact band, no stat tiles --- */
+.structure-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+  align-items: end;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--terracotta-100);
+}
+
+@media (min-width: 900px) {
+  .structure-hero {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 300px);
+    gap: 32px;
+  }
+}
+
+.structure-hero-title {
+  font-size: clamp(26px, 3.2vw, 34px);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+}
+
+.structure-hero-sub {
+  margin-top: 8px;
+  max-width: 620px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.55;
+}
+
+.structure-hero-meta {
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.structure-hero-motto {
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.45;
+  font-style: italic;
+}
+
+.structure-hero-motto > span {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: 800;
+  font-style: normal;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media (min-width: 900px) {
+  .structure-hero-motto {
+    text-align: right;
+  }
+}
+
+/* --- Workspace: rail + detail --- */
+.structure-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .structure-workspace {
+    grid-template-columns: 296px minmax(0, 1fr);
+  }
+}
+
+/* --- Rail: search + filters + list, all in one column --- */
+.structure-rail {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: white;
+  border: 1px solid var(--terracotta-100);
+  border-radius: 18px;
+  box-shadow: 0 18px 36px -30px var(--app-shadow-color);
+}
+
+@media (min-width: 1024px) {
+  .structure-rail {
+    position: sticky;
+    top: calc(var(--app-header-sticky-height) + 20px);
+    max-height: calc(100vh - var(--app-header-sticky-height) - 44px);
+  }
+}
+
+.structure-rail-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: var(--sand-50);
+  border-bottom: 1px solid var(--terracotta-100);
+}
+
+.structure-search {
+  position: relative;
+  display: block;
+}
+
+.structure-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  width: 17px;
+  height: 17px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.structure-search input {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px 0 36px;
+  font-size: 14px;
+  font-weight: 600;
+  background: white;
+  border: 1px solid var(--sand-200);
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.structure-search input:focus {
+  border-color: var(--turquoise-400);
+  box-shadow: 0 0 0 3px var(--turquoise-50);
+}
+
+.structure-levels {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.structure-levels button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 32px;
+  padding: 0 4px;
+  font-size: 12px;
+  font-weight: 900;
+  border: 1px solid var(--terracotta-100);
+  border-radius: 9px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.structure-levels button > span {
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.structure-select {
+  position: relative;
+}
+
+.structure-select select {
+  width: 100%;
+  height: 40px;
+  padding: 0 34px 0 12px;
+  font-size: 13px;
+  font-weight: 800;
+  background: white;
+  border: 1px solid var(--sand-200);
+  border-radius: 10px;
+  appearance: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.structure-select select:focus {
+  border-color: var(--turquoise-400);
+  box-shadow: 0 0 0 3px var(--turquoise-50);
+}
+
+.structure-select-icon {
+  position: absolute;
+  right: 11px;
+  top: 50%;
+  width: 15px;
+  height: 15px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.structure-rail-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--terracotta-100);
+}
+
+.structure-rail-status p {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.structure-rail-status button {
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 900;
+  border-radius: 8px;
+}
+
+.structure-rail-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.structure-rail-empty {
+  padding: 16px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.structure-rail-item {
+  display: block;
+  width: 100%;
+  padding: 10px 11px;
+  text-align: left;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  transition: background-color 0.15s ease;
+}
+
+.structure-rail-item + .structure-rail-item {
+  margin-top: 2px;
+}
+
+.structure-rail-item:hover:not(.is-active) {
+  background: var(--turquoise-50) !important;
+}
+
+.structure-rail-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 5px;
+  min-width: 0;
+}
+
+.structure-rail-item-meta > span {
+  flex-shrink: 0;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: 900;
+  border-radius: 6px;
+}
+
+.structure-rail-item-meta > em {
+  overflow: hidden;
+  font-size: 10px;
+  font-weight: 900;
+  font-style: normal;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.structure-rail-item-title {
+  display: block;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+/* --- Detail --- */
+.structure-detail {
+  overflow: hidden;
+  background: white;
+  border: 1px solid var(--terracotta-100);
+  border-radius: 18px;
+  box-shadow: 0 18px 36px -30px var(--app-shadow-color);
+}
+
+.structure-detail-head {
+  padding: 24px 28px;
+  background: linear-gradient(180deg, var(--sand-50), white 78%);
+  border-bottom: 1px solid var(--terracotta-100);
+}
+
+.structure-detail-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.structure-detail-badges span {
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 900;
+  border-radius: 8px;
+}
+
+.structure-detail-head h3 {
+  font-size: clamp(22px, 2.6vw, 28px);
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.structure-detail-core {
+  margin-top: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.structure-detail-explain {
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.structure-detail-body {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  padding: 24px 28px 28px;
+}
+
+/* Cue -> structure, with the arrow overlapping the gap instead of eating a column */
+.structure-shift {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+
+@media (min-width: 720px) {
+  .structure-shift {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 26px;
+  }
+}
+
+.structure-shift > div {
+  padding: 14px 16px;
+  border: 1px solid;
+  border-radius: 13px;
+}
+
+.structure-shift > div > p:first-child {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.structure-shift > div > p:last-child {
+  margin-top: 6px;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.structure-shift-arrow {
+  display: none;
+}
+
+@media (min-width: 720px) {
+  .structure-shift-arrow {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    font-size: 13px;
+    font-weight: 900;
+    color: white;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.structure-section-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.structure-section-head h4 {
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.structure-section-head span {
+  padding: 3px 9px;
+  font-size: 11px;
+  font-weight: 900;
+  border-radius: 7px;
+}
+
+/* Examples: EN | DE on one row, the reflex note gets the full width underneath */
+.structure-examples {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.structure-example {
+  padding: 14px 16px;
+  background: white;
+  border: 1px solid;
+  border-radius: 13px;
+}
+
+.structure-example-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+
+@media (min-width: 720px) {
+  .structure-example-pair {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+}
+
+.structure-example-pair p:first-child {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.structure-example-pair p:last-child {
+  margin-top: 4px;
+  font-size: 14.5px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.structure-example-pair > div:last-child p:last-child {
+  font-weight: 900;
+}
+
+.structure-example-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+  border-top: 1px dashed;
+}
+
+.structure-example-note > span {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.structure-avoid {
+  padding: 16px 18px;
+  border: 1px solid;
+  border-radius: 14px;
+}
+
+.structure-avoid h4 {
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.structure-avoid ul {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+
+@media (min-width: 720px) {
+  .structure-avoid ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.structure-avoid li {
+  padding: 9px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5;
+  background: white;
+  border: 1px solid;
+  border-radius: 10px;
+}
+
+.structure-empty {
+  padding: 40px 24px;
+  text-align: center;
+  background: white;
+  border: 1px solid;
+  border-radius: 18px;
+}
+
+.structure-empty h3 {
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.structure-empty p {
+  max-width: 420px;
+  margin: 10px auto 0;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.structure-empty button {
+  margin-top: 18px;
+  padding: 11px 18px;
+  font-size: 13px;
+  font-weight: 900;
+  border-radius: 11px;
+}
+
+@media (max-width: 1023px) {
+  .structure-rail-list {
+    max-height: 380px;
+  }
+}
+
+@media (max-width: 640px) {
+  .structure-page {
+    padding-bottom: 24px;
+  }
+
+  .structure-hero {
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+  }
+
+  .structure-hero-motto {
+    display: none;
+  }
+
+  .structure-detail-head {
+    padding: 20px;
+  }
+
+  .structure-detail-body {
+    gap: 22px;
+    padding: 20px 20px 24px;
+  }
+}
+
+/* ==========================================================================
+   MOBILE PASS
+   The views are written desktop-first, so cards nest three or four deep and
+   each level carries its own 24-32px padding. Measured on a 375px viewport, a
+   grammar example ended up with 135px of usable width. The utility overrides
+   below claw that space back in one place instead of adding `sm:` variants to
+   the same handful of classes across ~30 files.
+   ========================================================================== */
+
+.app-shell {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+@media (max-width: 640px) {
+  /* --- Density: shrink the paddings that stack up when cards nest --- */
+  .p-6 { padding: 1rem !important; }
+  .p-8 { padding: 1.15rem !important; }
+  .p-10 { padding: 1.2rem !important; }
+  .p-12 { padding: 1.25rem !important; }
+  .px-6 { padding-left: 1rem !important; padding-right: 1rem !important; }
+  .px-8 { padding-left: 1.15rem !important; padding-right: 1.15rem !important; }
+  .px-10 { padding-left: 1.2rem !important; padding-right: 1.2rem !important; }
+  .py-8 { padding-top: 1.35rem !important; padding-bottom: 1.35rem !important; }
+  .py-10 { padding-top: 1.4rem !important; padding-bottom: 1.4rem !important; }
+
+  /* Softer corners: a 2.5rem radius eats the corners of a full-bleed card */
+  .rounded-\[2\.5rem\], .rounded-\[3rem\] { border-radius: 1.5rem !important; }
+  .rounded-\[2rem\], .rounded-3xl { border-radius: 1.25rem !important; }
+
+  /* Vertical rhythm built for a 1280px canvas leaves phones scrolling past air */
+  .space-y-16 > :not([hidden]) ~ :not([hidden]) { margin-top: 2.5rem !important; }
+  .space-y-12 > :not([hidden]) ~ :not([hidden]) { margin-top: 2rem !important; }
+  .mb-12 { margin-bottom: 1.75rem !important; }
+  .mb-8 { margin-bottom: 1.25rem !important; }
+  .gap-8 { gap: 1.25rem !important; }
+  .gap-6 { gap: 1rem !important; }
+
+  /* --- Display type: caps so long German compounds cannot force a
+         page-level horizontal scroll (the Expressions title did: 477px
+         of content in a 375px viewport) --- */
+  .text-7xl { font-size: 2.5rem !important; line-height: 1.05 !important; }
+  .text-6xl { font-size: 2.05rem !important; line-height: 1.1 !important; }
+  .text-5xl { font-size: 1.85rem !important; line-height: 1.12 !important; }
+  .text-4xl { font-size: 1.6rem !important; line-height: 1.15 !important; }
+  .text-3xl { font-size: 1.4rem !important; line-height: 1.2 !important; }
+  .tracking-tighter { letter-spacing: -0.02em !important; }
+
+  /* Nothing on a phone is wide enough for Zusammengesetzte Hauptwörter */
+  h1, h2, h3, h4, p, li, td, th, dd, dt, label, span, .prose {
+    overflow-wrap: break-word;
+  }
+
+  /* ...and a flex child's automatic minimum size is its longest word, so a row
+     containing "1999 = neunzehnhundertneunundneunzig" pushed itself past the
+     screen edge. `anywhere` (unlike `break-word`) also lowers the min-content
+     width, which lets the item shrink — without `min-width: 0`, which would
+     also crush the sibling bullet glyph down to 2px. */
+  main .flex > p,
+  main .flex > span,
+  main .flex > div,
+  main .flex > h1,
+  main .flex > h2,
+  main .flex > h3,
+  main .flex > h4,
+  main .flex > li,
+  main .flex > td {
+    overflow-wrap: anywhere;
+  }
+
+  /* Micro-labels below 11px are unreadable at arm's length */
+  .text-\[10px\] { font-size: 11px !important; }
+  .text-\[11px\] { font-size: 11.5px !important; }
+
+  /* --- Touch targets: 44px is the smallest reliably tappable control.
+         Buttons rendered inline (a "reset" link inside a sentence) are not
+         affected, since min-height does not apply to inline boxes. --- */
+  main button,
+  main select,
+  main summary,
+  main a[role="button"] {
+    min-height: 44px;
+  }
+
+  main input[type="checkbox"],
+  main input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  /* A 20px box is still a small target, so give the whole label the height */
+  main label:has(> input[type="checkbox"]),
+  main label:has(> input[type="radio"]) {
+    min-height: 44px;
+  }
+
+  /* iOS zooms the whole page in when a focused field is under 16px */
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  /* The sign-in screen renders outside <main>, so it needs its own bump */
+  .auth-password-toggle {
+    width: 40px;
+    height: 40px;
+  }
+
+  /* Wide content (conjugation tables, code) stays inside its own scroller
+     instead of stretching the page */
+  .overflow-x-auto,
+  .overflow-auto,
+  pre {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+  }
+
+  /* Rows of pills, filters and card actions must wrap rather than push their
+     container wider than the screen. Scoped to rows that actually hold
+     controls so text rows keep their single-line/truncate behaviour. */
+  main .flex:not(.flex-col):not(.flex-nowrap):has(> button) {
+    flex-wrap: wrap;
+  }
+
+  /* Flashcards sized for a desktop column are taller than they need to be */
+  .card-flip.h-96 {
+    height: 21rem;
+  }
+
+  /* Modal panels carry `overflow-hidden` (to clip their rounded header) but no
+     max-height, so on a short viewport a tall one — the full declension table,
+     the register form — is silently clipped with no way to reach the rest.
+     Scroll the backdrop instead, and let auto margins keep the panel centred
+     for as long as it still fits. */
+  .fixed.inset-0.flex.items-center.justify-center {
+    align-items: flex-start;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .fixed.inset-0.flex.items-center.justify-center > :not(.absolute) {
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  /* Keep the last action clear of the home indicator */
+  .app-shell.pb-20 {
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom));
+  }
+}
+
+/* Grammar lessons nest four levels deep (page > lesson card > prose > tinted
+   sub-section > example card). Each level's padding compounds, so on the
+   narrowest phones they step down again — otherwise a German example sentence
+   is laid out in a ~130px column. */
+@media (max-width: 480px) {
+  .p-6 { padding: 0.85rem !important; }
+  .p-8, .p-10, .p-12 { padding: 0.9rem !important; }
+  .px-6 { padding-left: 0.85rem !important; padding-right: 0.85rem !important; }
+  .px-8, .px-10 { padding-left: 0.9rem !important; padding-right: 0.9rem !important; }
+
+  /* The lesson card already provides the horizontal inset */
+  main .prose {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 }

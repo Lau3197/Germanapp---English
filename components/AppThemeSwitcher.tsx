@@ -7,14 +7,14 @@ interface AppThemeSwitcherProps {
 }
 
 const themeOptions: { id: AppTheme; label: string; icon: string; title: string }[] = [
-  { id: 'classic', label: 'Classic', icon: '🇩🇪', title: 'Use the classic theme' },
+  { id: 'classic', label: 'Classic', icon: '🐱', title: 'Use the classic theme' },
   { id: 'panda', label: 'Panda', icon: '🐼', title: 'Use the panda theme' },
-  { id: 'cane', label: 'Cane', icon: '🐕', title: 'Use the Cane dog theme' }
+  { id: 'cane', label: 'Cane', icon: '🐶', title: 'Use the Cane dog theme' }
 ];
 
 export const AppThemeSwitcher: React.FC<AppThemeSwitcherProps> = ({ theme, onThemeChange }) => (
   <div
-    className="h-11 flex items-center gap-1 p-1 rounded-xl shrink-0"
+    className="app-theme-switcher"
     style={{ backgroundColor: 'var(--sand-100)', border: '1px solid var(--terracotta-100)' }}
     aria-label="Theme selector"
   >
@@ -27,7 +27,7 @@ export const AppThemeSwitcher: React.FC<AppThemeSwitcherProps> = ({ theme, onThe
           onClick={() => onThemeChange(option.id)}
           aria-pressed={isActive}
           title={option.title}
-          className="h-9 px-2.5 sm:px-3 rounded-lg text-xs font-black flex items-center gap-1.5 transition-all"
+          className="app-theme-option"
           style={{
             backgroundColor: isActive ? 'var(--app-surface)' : 'transparent',
             color: isActive ? 'var(--terracotta-700)' : 'var(--sand-600)',
@@ -35,7 +35,7 @@ export const AppThemeSwitcher: React.FC<AppThemeSwitcherProps> = ({ theme, onThe
           }}
         >
           <span aria-hidden="true" className="text-base leading-none">{option.icon}</span>
-          <span className="hidden 2xl:inline">{option.label}</span>
+          <span className="sr-only">{option.label}</span>
         </button>
       );
     })}

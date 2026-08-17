@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GRAMMAR_DATA } from '../data/grammarData';
 import { VOCABULARY_DATA } from '../data/vocabularyData';
@@ -7,7 +7,6 @@ import { useGrammar } from '../contexts/GrammarContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useSpacedRepetition } from '../hooks/useSpacedRepetition';
 import { useStudyTime } from '../contexts/StudyTimeContext';
-import { StatsView } from './StatsView';
 
 // ---------- Helpers ----------
 
@@ -26,15 +25,13 @@ interface NextLesson {
   topicTitle: string;
 }
 
-const getTopicTitle = (topicId: string): { title: string; level: LanguageLevel } | null => {
-  for (const lvl of GRAMMAR_DATA) {
-    for (const section of lvl.sections) {
-      const topic = section.topics.find(t => t.id === topicId);
-      if (topic) return { title: topic.title, level: lvl.level };
-    }
-  }
-  return null;
-};
+interface EntryPoint {
+  icon: string;
+  title: string;
+  detail: string;
+  done: boolean;
+  go: () => void;
+}
 
 // ---------- Component ----------
 
@@ -43,7 +40,6 @@ export const DashboardView: React.FC = () => {
   const { user } = useAuth();
   const { completedLessons } = useGrammar();
   const { isLoaded, addWords, getStats } = useSpacedRepetition();
-  const statsSectionRef = useRef<HTMLElement | null>(null);
 
   // Live stats from the app-wide study clock, so today's time keeps ticking here too.
   const { stats, todayTimeSpent } = useStudyTime();
@@ -65,16 +61,6 @@ export const DashboardView: React.FC = () => {
     });
     if (allWords.length > 0) addWords(allWords);
   }, [isLoaded, addWords]);
-
-  useEffect(() => {
-    if (window.location.hash !== '#stats') return;
-
-    const timer = window.setTimeout(() => {
-      statsSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 0);
-
-    return () => window.clearTimeout(timer);
-  }, []);
 
   const srs = getStats();
 
@@ -108,39 +94,13 @@ export const DashboardView: React.FC = () => {
       byLevel.push({ level: lvl.level, completed: lCompleted, total: lTotal });
     });
 
-    return { total, completed, nextLesson, byLevel };
+    return { total, completed, nextLesson: nextLesson as NextLesson | null, byLevel };
   }, [completedLessons]);
-
-  // ----- Weaknesses from quiz results -----
-  const weaknesses = useMemo(() => {
-    const results = stats.quizResults || [];
-    if (results.length === 0) return [];
-
-    const grouped: Record<string, { sum: number; count: number }> = {};
-    results.forEach(r => {
-      if (!grouped[r.topicId]) grouped[r.topicId] = { sum: 0, count: 0 };
-      grouped[r.topicId].sum += r.score;
-      grouped[r.topicId].count += 1;
-    });
-
-    return Object.entries(grouped)
-      .map(([topicId, { sum, count }]) => {
-        const avg = sum / count;
-        const info = getTopicTitle(topicId);
-        return info ? { topicId, avg, title: info.title, level: info.level } : null;
-      })
-      .filter((x): x is { topicId: string; avg: number; title: string; level: LanguageLevel } => x !== null)
-      .filter(x => x.avg < 80)
-      .sort((a, b) => a.avg - b.avg)
-      .slice(0, 3);
-  }, [stats.quizResults]);
 
   // ----- Today's time & goal -----
   const dailyGoal = Math.max(1, stats.dailyGoal || 15);
-  const todayTime = todayTimeSpent;
-  const goalProgress = Math.min(100, Math.round((todayTime / 60 / dailyGoal) * 100));
+  const goalProgress = Math.min(100, Math.round((todayTimeSpent / 60 / dailyGoal) * 100));
   const streak = stats.currentStreak || 0;
-
   const completionPct = grammar.total > 0 ? Math.round((grammar.completed / grammar.total) * 100) : 0;
 
   // ----- Greeting -----
@@ -148,49 +108,51 @@ export const DashboardView: React.FC = () => {
   const timeGreeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
   const name = user?.name || (user?.email ? user.email.split('@')[0] : '');
 
-  // ----- Session plan -----
+  // ----- Entry points: current state of each area, not a generated study plan -----
   const wordsDue = srs.wordsToReview;
-  const sessionSteps = [
+  const nextLesson = grammar.nextLesson;
+
+  const entryPoints: EntryPoint[] = [
     wordsDue > 0
-      ? { icon: '🧠', label: `Review ${Math.min(wordsDue, 20)} vocabulary card${wordsDue > 1 ? 's' : ''}`, done: false }
-      : { icon: '🧠', label: 'Vocabulary reviews all caught up', done: true },
-    grammar.nextLesson
-      ? { icon: '📖', label: `Grammar lesson · ${grammar.nextLesson.topicTitle}`, done: false }
-      : { icon: '📖', label: 'All grammar lessons completed', done: true },
-    weaknesses.length > 0
-      ? { icon: '🎯', label: `Revisit a weak spot · ${weaknesses[0].title}`, done: false }
-      : { icon: '🎯', label: 'No weak spots detected yet', done: true },
+      ? {
+          icon: '🧠',
+          title: `Review ${Math.min(wordsDue, 20)} vocabulary card${wordsDue > 1 ? 's' : ''}`,
+          detail: `${wordsDue} due · ${srs.masteredWords} mastered · ${srs.todayReviewed} done today`,
+          done: false,
+          go: () => navigate('/revision'),
+        }
+      : {
+          icon: '🧠',
+          title: 'Vocabulary reviews all caught up',
+          detail: `${srs.masteredWords} words mastered`,
+          done: true,
+          go: () => navigate('/revision'),
+        },
+    nextLesson
+      ? {
+          icon: '📖',
+          title: nextLesson.topicTitle,
+          detail: `Next lesson · ${nextLesson.level} · ${nextLesson.sectionTitle}`,
+          done: false,
+          go: () => navigate(`/grammar/${nextLesson.level}`),
+        }
+      : {
+          icon: '📖',
+          title: 'All grammar lessons completed',
+          detail: `${grammar.total} lessons done`,
+          done: true,
+          go: () => navigate('/grammar'),
+        },
   ];
 
-  const primaryAction = () => {
-    if (wordsDue > 0) navigate('/revision');
-    else if (grammar.nextLesson) navigate(`/grammar/${grammar.nextLesson.level}`);
-    else navigate('/vocabulary');
-  };
-
-  const scrollToStats = () => {
-    statsSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
-
-  const quickLinks = [
-    { id: 'vocabulary', label: 'Vocabulary', icon: '📚', color: 'var(--coral-500)' },
-    { id: 'gender', label: 'Der/Die/Das', icon: '🎨', color: 'var(--turquoise-500)' },
-    { id: 'revision', label: 'Review', icon: '🧠', color: 'var(--turquoise-500)' },
-    { id: 'grammar', label: 'Grammar', icon: '📖', color: 'var(--sage-600)' },
-    { id: 'structures', label: 'Structures', icon: '⇄', color: 'var(--coral-500)' },
-    { id: 'expressions', label: 'Expressions', icon: '💬', color: 'var(--turquoise-500)' },
-    { id: 'exam', label: 'Exam B2', icon: '📝', color: 'var(--sage-600)' },
-    { id: 'tables', label: 'Tables', icon: '📋', color: 'var(--coral-500)' },
-    { id: 'italian', label: 'Italian', icon: '🇮🇹', color: 'var(--sage-600)' },
-  ];
-
-  const levelColors = [
-    'from-emerald-500 to-emerald-400',
-    'from-blue-500 to-blue-400',
-    'from-violet-500 to-violet-400',
-    'from-orange-500 to-orange-400',
-    'from-red-500 to-red-400',
-    'from-fuchsia-500 to-fuchsia-400',
+  // Level bars follow the active theme: each token is redefined per palette in index.css.
+  const levelGradients = [
+    'var(--level-1)',
+    'var(--level-2)',
+    'var(--level-3)',
+    'var(--level-4)',
+    'var(--level-5)',
+    'var(--level-6)',
   ];
 
   return (
@@ -207,17 +169,17 @@ export const DashboardView: React.FC = () => {
         </div>
 
         <div className="flex gap-3">
-          <div className="px-5 py-3 rounded-2xl text-white flex items-center gap-3" style={{ background: 'linear-gradient(135deg, #ea580c, #9a3412)' }}>
+          <div className="px-5 py-3 rounded-2xl text-white flex items-center gap-3" style={{ background: 'var(--app-card-1)' }}>
             <span className="text-2xl">🔥</span>
             <div>
               <p className="text-3xl font-black leading-none">{streak}</p>
               <p className="text-[11px] font-bold uppercase tracking-wider opacity-90">day streak</p>
             </div>
           </div>
-          <div className="px-5 py-3 rounded-2xl flex items-center gap-3" style={{ backgroundColor: 'white', border: '1px solid var(--terracotta-100)' }}>
+          <div className="px-5 py-3 rounded-2xl flex items-center gap-3" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--terracotta-100)' }}>
             <div className="relative w-11 h-11 shrink-0">
               <svg viewBox="0 0 36 36" className="w-11 h-11 -rotate-90">
-                <circle cx="18" cy="18" r="15" fill="none" stroke="var(--sand-100)" strokeWidth="4" />
+                <circle cx="18" cy="18" r="15" fill="none" stroke="var(--app-track)" strokeWidth="4" />
                 <circle
                   cx="18" cy="18" r="15" fill="none"
                   stroke="var(--turquoise-500)" strokeWidth="4" strokeLinecap="round"
@@ -229,114 +191,52 @@ export const DashboardView: React.FC = () => {
               </span>
             </div>
             <div>
-              <p className="text-sm font-black" style={{ color: 'var(--sand-800)' }}>{formatTime(todayTime)}</p>
+              <p className="text-sm font-black" style={{ color: 'var(--sand-800)' }}>{formatTime(todayTimeSpent)}</p>
               <p className="text-[11px] font-bold uppercase tracking-wider" style={{ color: 'var(--sand-500)' }}>of {dailyGoal}m goal</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ---------- Today's session (primary CTA) ---------- */}
-      <div className="rounded-[2rem] p-8 mb-8 text-white relative overflow-hidden" style={{ background: 'linear-gradient(135deg, var(--coral-600), var(--terracotta-800))' }}>
+      {/* ---------- Where to pick up: real state, no invented plan ---------- */}
+      <div className="rounded-[2rem] p-6 sm:p-8 mb-8 text-white relative overflow-hidden" style={{ background: 'linear-gradient(135deg, var(--coral-600), var(--terracotta-800))' }}>
         <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-bl-[6rem] -mr-12 -mt-12"></div>
-        <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-          <div className="flex-1">
-            <p className="text-[11px] font-black uppercase tracking-widest opacity-80 mb-2">Your session today</p>
-            <h3 className="text-3xl font-black mb-5">A focused plan, built for you</h3>
-            <div className="space-y-2.5">
-              {sessionSteps.map((step, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <span className={`w-8 h-8 rounded-xl flex items-center justify-center text-lg shrink-0 ${step.done ? 'bg-white/15' : 'bg-white/25'}`}>
-                    {step.done ? '✓' : step.icon}
-                  </span>
-                  <span className={`font-medium ${step.done ? 'opacity-60 line-through' : ''}`}>{step.label}</span>
-                </div>
-              ))}
-            </div>
+        <div className="relative">
+          <p className="text-[11px] font-black uppercase tracking-widest opacity-80 mb-4">Pick up where you left off</p>
+
+          <div className="space-y-2">
+            {entryPoints.map((entry, i) => (
+              <button
+                key={i}
+                onClick={entry.go}
+                className={`w-full flex items-center gap-4 text-left rounded-2xl px-4 py-3 transition-all hover:bg-white/15 ${entry.done ? 'opacity-60' : ''}`}
+              >
+                <span className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0 ${entry.done ? 'bg-white/15' : 'bg-white/25'}`}>
+                  {entry.done ? '✓' : entry.icon}
+                </span>
+                <span className="flex-1 min-w-0">
+                  <span className="block font-bold truncate">{entry.title}</span>
+                  <span className="block text-sm opacity-80 truncate">{entry.detail}</span>
+                </span>
+                <span className="opacity-70 shrink-0">→</span>
+              </button>
+            ))}
           </div>
-          <button
-            onClick={primaryAction}
-            className="px-8 py-5 rounded-2xl font-black text-lg bg-white transition-all hover:scale-105 shadow-xl shrink-0"
-            style={{ color: 'var(--coral-700)' }}
-          >
-            {wordsDue > 0 || grammar.nextLesson ? 'Start now →' : 'Explore →'}
-          </button>
         </div>
       </div>
 
-      {/* ---------- Three action cards ---------- */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        {/* Resume / next lesson */}
-        <button
-          onClick={() => grammar.nextLesson ? navigate(`/grammar/${grammar.nextLesson.level}`) : navigate('/grammar')}
-          className="bg-white p-6 rounded-[2rem] shadow-sm text-left transition-all hover:shadow-lg hover:-translate-y-1"
-          style={{ border: '1px solid var(--terracotta-100)' }}
-        >
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: 'var(--sage-100)' }}>
-            <span className="text-2xl">📖</span>
-          </div>
-          <p className="text-[11px] font-black uppercase tracking-wider mb-1" style={{ color: 'var(--sand-500)' }}>Continue learning</p>
-          {grammar.nextLesson ? (
-            <>
-              <p className="text-lg font-black leading-tight mb-1" style={{ color: 'var(--sand-800)' }}>{grammar.nextLesson.topicTitle}</p>
-              <p className="text-sm" style={{ color: 'var(--sand-500)' }}>{grammar.nextLesson.level} · {grammar.nextLesson.sectionTitle}</p>
-            </>
-          ) : (
-            <p className="text-lg font-black" style={{ color: 'var(--sage-700)' }}>All lessons done 🎉</p>
-          )}
-        </button>
-
-        {/* Review queue */}
-        <button
-          onClick={() => navigate('/revision')}
-          className="bg-white p-6 rounded-[2rem] shadow-sm text-left transition-all hover:shadow-lg hover:-translate-y-1"
-          style={{ border: '1px solid var(--terracotta-100)' }}
-        >
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: 'var(--turquoise-100)' }}>
-            <span className="text-2xl">🧠</span>
-          </div>
-          <p className="text-[11px] font-black uppercase tracking-wider mb-1" style={{ color: 'var(--sand-500)' }}>Due for review</p>
-          <p className="text-3xl font-black leading-tight" style={{ color: 'var(--turquoise-700)' }}>
-            {wordsDue} <span className="text-lg">card{wordsDue !== 1 ? 's' : ''}</span>
-          </p>
-          <p className="text-sm" style={{ color: 'var(--sand-500)' }}>
-            {srs.masteredWords} mastered · {srs.todayReviewed} reviewed today
-          </p>
-        </button>
-
-        {/* Weakness / focus */}
-        <button
-          onClick={() => weaknesses.length > 0 ? navigate(`/grammar/${weaknesses[0].level}`) : navigate('/exam')}
-          className="bg-white p-6 rounded-[2rem] shadow-sm text-left transition-all hover:shadow-lg hover:-translate-y-1"
-          style={{ border: '1px solid var(--terracotta-100)' }}
-        >
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: 'var(--coral-100)' }}>
-            <span className="text-2xl">🎯</span>
-          </div>
-          <p className="text-[11px] font-black uppercase tracking-wider mb-1" style={{ color: 'var(--sand-500)' }}>Focus area</p>
-          {weaknesses.length > 0 ? (
-            <>
-              <p className="text-lg font-black leading-tight mb-1" style={{ color: 'var(--sand-800)' }}>{weaknesses[0].title}</p>
-              <p className="text-sm" style={{ color: 'var(--coral-600)' }}>{Math.round(weaknesses[0].avg)}% avg · needs practice</p>
-            </>
-          ) : (
-            <p className="text-sm font-medium" style={{ color: 'var(--sand-500)' }}>Take a quiz to reveal your weak spots.</p>
-          )}
-        </button>
-      </div>
-
       {/* ---------- Program progress ---------- */}
-      <div className="bg-white p-8 rounded-[2rem] shadow-sm mb-8" style={{ border: '1px solid var(--terracotta-100)' }}>
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <span className="text-3xl">📊</span>
-            <div>
-              <h3 className="text-2xl font-black" style={{ color: 'var(--sand-800)' }}>Program progress</h3>
-              <p className="text-sm" style={{ color: 'var(--sand-500)' }}>{grammar.completed}/{grammar.total} lessons · {completionPct}% complete</p>
-            </div>
+      <div className="app-surface-card p-8 rounded-[2rem] shadow-sm">
+        <div className="flex items-center justify-between gap-4 mb-6">
+          <div>
+            <h3 className="text-2xl font-black" style={{ color: 'var(--sand-800)' }}>Program progress</h3>
+            <p className="text-sm" style={{ color: 'var(--sand-500)' }}>{grammar.completed}/{grammar.total} lessons · {completionPct}% complete</p>
           </div>
-          <button onClick={scrollToStats} className="px-4 py-2 rounded-xl font-bold text-sm transition-all" style={{ backgroundColor: 'var(--sand-100)', color: 'var(--sand-700)' }}>
-            Stats
+          <button
+            onClick={() => navigate('/stats')}
+            className="app-soft-button px-4 py-2 rounded-xl font-bold text-sm shrink-0"
+          >
+            Full stats →
           </button>
         </div>
         <div className="space-y-3">
@@ -345,8 +245,11 @@ export const DashboardView: React.FC = () => {
             return (
               <button key={lvl.level} onClick={() => navigate(`/grammar/${lvl.level}`)} className="w-full flex items-center gap-4 group">
                 <span className="w-10 text-base font-black text-left" style={{ color: 'var(--sand-400)' }}>{lvl.level}</span>
-                <div className="flex-1 h-7 rounded-xl overflow-hidden relative" style={{ backgroundColor: 'var(--sand-100)' }}>
-                  <div className={`h-full bg-gradient-to-r ${levelColors[idx]} transition-all duration-700 rounded-xl`} style={{ width: `${pct}%` }}></div>
+                <div className="flex-1 h-7 rounded-xl overflow-hidden relative" style={{ backgroundColor: 'var(--app-track)' }}>
+                  <div
+                    className="h-full transition-all duration-700 rounded-xl"
+                    style={{ width: `${pct}%`, background: levelGradients[idx % levelGradients.length] }}
+                  ></div>
                   <span className="absolute inset-0 flex items-center justify-center text-xs font-bold" style={{ color: 'var(--sand-600)' }}>
                     {lvl.completed}/{lvl.total} ({pct}%)
                   </span>
@@ -356,38 +259,6 @@ export const DashboardView: React.FC = () => {
           })}
         </div>
       </div>
-
-      {/* ---------- Quick access ---------- */}
-      <div>
-        <h3 className="text-sm font-black uppercase tracking-wider mb-4" style={{ color: 'var(--sand-500)' }}>Jump back in</h3>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {quickLinks.map(link => (
-            <button
-              key={link.id}
-              onClick={() => navigate(`/${link.id}`)}
-              className="bg-white p-5 rounded-2xl shadow-sm text-left transition-all hover:shadow-lg hover:-translate-y-1 flex items-center gap-3"
-              style={{ border: '1px solid var(--terracotta-100)' }}
-            >
-              <span className="text-2xl">{link.icon}</span>
-              <span className="font-bold" style={{ color: 'var(--sand-800)' }}>{link.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* ---------- Statistics ---------- */}
-      <section ref={statsSectionRef} id="stats" className="mt-12 scroll-mt-40">
-        <div className="mb-6 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
-          <div>
-            <p className="text-sm font-black uppercase tracking-wider mb-2" style={{ color: 'var(--sand-500)' }}>Stats</p>
-            <h3 className="text-4xl font-black tracking-tighter" style={{ color: 'var(--terracotta-800)' }}>Your progress</h3>
-          </div>
-          <p className="text-base font-medium max-w-xl" style={{ color: 'var(--sand-600)' }}>
-            Track your streak, daily goal, study time, and level completion from the Home page.
-          </p>
-        </div>
-        <StatsView embedded />
-      </section>
     </div>
   );
 };

@@ -2,12 +2,13 @@
 import React, { useState } from 'react';
 import { GermanWord, LanguageLevel } from '../types';
 import { getSubThemeLabel } from '../constants';
-import { getTranslation } from '../utils/translations';
+import { getTranslation, TranslationLanguage } from '../utils/translations';
 
 interface WordCardProps {
   word: GermanWord;
   isFavorite?: boolean;
   onToggleFavorite?: () => void;
+  translationLanguage?: TranslationLanguage;
 }
 
 const getLevelColor = (level: LanguageLevel) => {
@@ -20,9 +21,16 @@ const getLevelColor = (level: LanguageLevel) => {
   }
 };
 
-export const WordCard: React.FC<WordCardProps> = ({ word, isFavorite = false, onToggleFavorite }) => {
+export const WordCard: React.FC<WordCardProps> = ({
+  word,
+  isFavorite = false,
+  onToggleFavorite,
+  // Annotated because @types/react is absent, so React.FC gives the destructured
+  // props no contextual type and this default would widen to `string`.
+  translationLanguage = 'english' as TranslationLanguage
+}) => {
   const [isFlipped, setIsFlipped] = useState(false);
-  const translation = getTranslation(word);
+  const translation = getTranslation(word, translationLanguage);
 
   return (
     <div
