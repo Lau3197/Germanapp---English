@@ -9,6 +9,7 @@ import { negation } from './negation';
 import { imperatif } from './imperatif';
 import { nombresHeureDate } from './nombres-heure-date';
 import { structuresEssentielles } from './structures-essentielles';
+import { complementsA1 } from './complements-a1';
 
 export const a1Grammar: GrammarLevel = {
   level: LanguageLevel.A1,
@@ -24,6 +25,7 @@ export const a1Grammar: GrammarLevel = {
     negation,                 // 1.7
     imperatif,                // 1.8
     nombresHeureDate,         // 1.9
-    structuresEssentielles    // 1.10
+    structuresEssentielles,   // 1.10
+    complementsA1             // 1.11
   ]
 };

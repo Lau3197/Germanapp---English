@@ -9,6 +9,7 @@ import { connecteursComplexesB2 } from './connecteurs-complexes.ts';
 import { modauxSubjectifsB2 } from './modaux-subjectifs.ts';
 import { declinaisonsComplexesB2 } from './declinaisons-complexes.ts';
 import { prepositionsConjonctionsB2 } from './prepositions-conjonctions.ts';
+import { structuresAvanceesB2 } from './structures-avancees.ts';
 
 export const b2Grammar: GrammarLevel = {
   level: LanguageLevel.B2,
@@ -23,6 +24,7 @@ export const b2Grammar: GrammarLevel = {
     connecteursComplexesB2,    // 6
     modauxSubjectifsB2,        // 7
     declinaisonsComplexesB2,   // 8
-    prepositionsConjonctionsB2 // 9
+    prepositionsConjonctionsB2, // 9
+    structuresAvanceesB2        // 10
   ]
 };

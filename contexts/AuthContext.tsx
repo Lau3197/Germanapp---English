@@ -164,9 +164,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('pagehide', handlePageHide);
     intervalTimer = window.setInterval(() => scheduleSync(0), 30000);
+    const unsubscribeCloud = firebaseSyncAPI.watchCloud(userId);
 
     return () => {
       isDisposed = true;
+      unsubscribeCloud();
 
       if (debounceTimer) {
         window.clearTimeout(debounceTimer);

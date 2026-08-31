@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 interface AccountSettingsModalProps {
@@ -111,7 +112,11 @@ export const AccountSettingsModal: React.FC<AccountSettingsModalProps> = ({ isOp
     setIsDeleting(false);
   };
 
-  return (
+  // Rendered through a portal on <body>: this modal lives inside <UserMenu>,
+  // which sits in `.app-header`. That header carries `backdrop-filter`, which
+  // makes it the containing block for fixed-position descendants — so without
+  // the portal, `fixed inset-0` snaps to the header instead of the viewport.
+  return createPortal(
     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" onClick={onClose}>
       <div
         className="bg-white w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl animate-in zoom-in-95 duration-200"
@@ -292,6 +297,7 @@ export const AccountSettingsModal: React.FC<AccountSettingsModalProps> = ({ isOp
           </section>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

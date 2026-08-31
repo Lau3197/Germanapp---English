@@ -1,5 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { APP_DATA_SYNCED_EVENT } from '../utils/trainerStorage';
 
 interface GrammarContextType {
     completedLessons: string[];
@@ -18,10 +19,14 @@ export const GrammarProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     useEffect(() => {
         const loadStats = () => {
-            const savedStats = localStorage.getItem('grammarStats');
-            if (savedStats) {
-                const parsed = JSON.parse(savedStats);
-                setCompletedLessons(parsed.completedLessons || []);
+            try {
+                const savedStats = localStorage.getItem('grammarStats');
+                if (savedStats) {
+                    const parsed = JSON.parse(savedStats);
+                    setCompletedLessons(Array.isArray(parsed.completedLessons) ? parsed.completedLessons : []);
+                }
+            } catch {
+                setCompletedLessons([]);
             }
         };
 
@@ -29,7 +34,11 @@ export const GrammarProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
         // Écouter les changements de localStorage (si modifiés par StatsView dans un autre onglet/composant)
         window.addEventListener('storage', loadStats);
-        return () => window.removeEventListener('storage', loadStats);
+        window.addEventListener(APP_DATA_SYNCED_EVENT, loadStats);
+        return () => {
+            window.removeEventListener('storage', loadStats);
+            window.removeEventListener(APP_DATA_SYNCED_EVENT, loadStats);
+        };
     }, []);
 
     const updateLocalStorage = (newCompleted: string[]) => {

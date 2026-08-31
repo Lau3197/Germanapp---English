@@ -103,6 +103,7 @@ export function useExerciseProgress(storageKey: string) {
 
     try {
       localStorage.setItem(storageKey, JSON.stringify(results));
+      window.dispatchEvent(new Event(APP_DATA_SYNCED_EVENT));
     } catch (error) {
       console.error(`Could not save exercise progress (${storageKey})`, error);
     }

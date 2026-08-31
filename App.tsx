@@ -7,6 +7,7 @@ import { VocabularyView } from './components/VocabularyView';
 import { GenderTrainerView } from './components/GenderTrainerView';
 import { NomenVerbenView } from './components/NomenVerbenView';
 import { GrammarView } from './components/GrammarView';
+import { GrammarExercisesView } from './components/GrammarExercisesView';
 import { TablesView } from './components/TablesView';
 import { ExpressionsView } from './components/ExpressionsView';
 import { RevisionView } from './components/RevisionView';
@@ -69,6 +70,7 @@ const VOCABULARY_NAV: { id: MainTab; label: string; path: string }[] = [
 
 const GRAMMAR_NAV: { id: MainTab; label: string; path: string }[] = [
   { id: 'grammar', label: 'Lessons', path: '/grammar' },
+  { id: 'grammar-exercises', label: 'Practice', path: '/grammar/exercises' },
   { id: 'tables', label: 'Tables', path: '/tables' },
   { id: 'structures', label: 'Structures', path: '/structures' },
   { id: 'nomen-verben', label: 'Noun-Verb', path: '/nomen-verben' },
@@ -100,7 +102,9 @@ const AppLayout: React.FC = () => {
   const navigate = useNavigate();
 
   // Determine active tab from URL
-  const activeTab = (location.pathname.substring(1).split('/')[0] || 'dashboard') as MainTab;
+  const activeTab = (location.pathname === '/grammar/exercises'
+    ? 'grammar-exercises'
+    : (location.pathname.substring(1).split('/')[0] || 'dashboard')) as MainTab;
   const primarySection = getPrimarySection(activeTab);
   const showItalian = isSectionVisible('italian', appTheme);
   const showExam = isSectionVisible('exam', appTheme);
@@ -264,6 +268,7 @@ const AppLayout: React.FC = () => {
 
           {/* Updated Grammar Routes */}
           <Route path="/grammar" element={<GrammarView />} />
+          <Route path="/grammar/exercises" element={<GrammarExercisesView />} />
           <Route path="/grammar/:level" element={<GrammarView />} />
 
           <Route path="/tables" element={<TablesView />} />

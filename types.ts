@@ -43,7 +43,7 @@ export interface Theme {
   subThemes?: string[]; // List of available sub-themes
 }
 
-export type MainTab = 'dashboard' | 'vocabulary' | 'gender' | 'structures' | 'nomen-verben' | 'verben-mit-praepositionen' | 'grammar' | 'tables' | 'expressions' | 'revision' | 'exam' | 'italian';
+export type MainTab = 'dashboard' | 'vocabulary' | 'gender' | 'structures' | 'nomen-verben' | 'verben-mit-praepositionen' | 'grammar' | 'grammar-exercises' | 'tables' | 'expressions' | 'revision' | 'exam' | 'italian';
 export type AppTheme = 'classic' | 'panda' | 'cane';
 
 export interface ThemeContent {
@@ -59,6 +59,17 @@ export interface GrammarSection {
     content: string;
     examples?: { de: string; fr: string; note?: string }[];
   }[];
+}
+
+export interface GrammarExercise {
+  id: string;
+  topicId: string;
+  level: LanguageLevel;
+  prompt: string;
+  answer: string;
+  acceptedAnswers?: string[];
+  explanation: string;
+  stage?: 'guided' | 'controlled' | 'independent' | 'contrast' | 'challenge';
 }
 
 export interface GrammarLevel {

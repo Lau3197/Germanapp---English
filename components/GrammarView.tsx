@@ -4,6 +4,7 @@ import { GRAMMAR_DATA, KII_CONJUGATIONS } from '../data/grammarData';
 import { LanguageLevel } from '../types';
 import { useGrammar } from '../contexts/GrammarContext';
 import { usePandaMascot } from '../contexts/PandaMascotContext';
+import { getExercisesForTopic } from '../data/grammarExercises';
 
 // Type pour les favoris
 interface Favorite {
@@ -49,6 +50,8 @@ export const GrammarView: React.FC = () => {
   }, [level, navigate]);
 
   const handleLevelSelect = (lvl: LanguageLevel) => {
+    // Clicking the already selected level is an explicit way back to that
+    // level's home/summary, even when a section is currently open.
     navigate(`/grammar/${lvl}`);
   };
 
@@ -98,6 +101,23 @@ export const GrammarView: React.FC = () => {
   useEffect(() => {
     setActiveSectionIndex('all');
   }, [selectedLevel]);
+
+  // Keep the opened section in the URL so browser Back works after opening a
+  // card, and so the view can be restored when a grammar link is revisited.
+  useEffect(() => {
+    const sectionParam = searchParams.get('section');
+    if (sectionParam === null) {
+      setActiveSectionIndex('all');
+      return;
+    }
+
+    const sectionIndex = Number(sectionParam);
+    if (Number.isInteger(sectionIndex) && sectionIndex >= 0 && sectionIndex < currentLevelData.sections.length) {
+      setActiveSectionIndex(sectionIndex);
+    } else {
+      setActiveSectionIndex('all');
+    }
+  }, [searchParams, currentLevelData.sections.length]);
 
   // Deep-link from the global search: scroll to (and briefly highlight) the
   // requested topic. Declared after the level-reset effect so it wins the
@@ -524,7 +544,7 @@ export const GrammarView: React.FC = () => {
             <button
               key={idx}
               onClick={() => {
-                setActiveSectionIndex(idx);
+                navigate(`/grammar/${selectedLevel}?section=${idx}`);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
               className="group p-8 bg-white rounded-[2rem] shadow-sm hover:shadow-xl transition-all text-left flex flex-col h-full"
@@ -932,7 +952,7 @@ export const GrammarView: React.FC = () => {
                       </div>
                       <button
                         onClick={() => {
-                          setActiveSectionIndex('all');
+                          navigate(`/grammar/${selectedLevel}`);
                           window.scrollTo({ top: 0, behavior: 'smooth' });
                         }}
                         className="ml-auto px-4 py-2 rounded-xl bg-white/10 text-white text-sm font-bold hover:bg-white/20 transition-all flex items-center gap-2"
@@ -1035,6 +1055,18 @@ export const GrammarView: React.FC = () => {
                                     </div>
                                   ))}
                                 </div>
+                              </div>
+                            )}
+
+                            {getExercisesForTopic(topic.id).length > 0 && (
+                              <div className="mt-10 flex flex-col gap-4 rounded-2xl border border-[var(--terracotta-100)] bg-[var(--terracotta-50)] p-5 sm:flex-row sm:items-center sm:justify-between">
+                                <div>
+                                  <p className="font-black text-[var(--terracotta-800)]">Ready to apply this lesson?</p>
+                                  <p className="mt-1 text-sm font-medium text-[var(--sand-600)]">Open a short, focused practice session.</p>
+                                </div>
+                                <button type="button" onClick={() => navigate(`/grammar/exercises?topic=${topic.id}`)} className="shrink-0 rounded-xl bg-[var(--terracotta-600)] px-5 py-3 font-black text-white hover:bg-[var(--terracotta-700)]">
+                                  Practice this lesson
+                                </button>
                               </div>
                             )}
                           </div>

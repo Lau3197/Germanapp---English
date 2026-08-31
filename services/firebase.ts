@@ -16,6 +16,7 @@ import {
   doc,
   getDoc,
   getFirestore,
+  onSnapshot,
   serverTimestamp,
   setDoc,
 } from 'firebase/firestore';
@@ -587,6 +588,24 @@ export const firebaseAuthAPI = {
 
 export const firebaseSyncAPI = {
   getLocalAppDataSignature,
+
+  watchCloud: (uid: string) => onSnapshot(appDataDoc(uid), (snapshot) => {
+    if (!snapshot.exists()) return;
+
+    const signatureBeforeMerge = getLocalAppDataSignature();
+    const mergedData = mergeAppData(
+      fromRemotePayload(snapshot.data()),
+      readLocalAppData()
+    );
+
+    writeLocalAppData(mergedData);
+
+    if (getLocalAppDataSignature() !== signatureBeforeMerge) {
+      notifyAppDataSynced();
+    }
+  }, (error) => {
+    console.warn('Firebase live sync failed:', error);
+  }),
 
   syncFromCloud: async (uid: string) => {
     const snapshot = await getDoc(appDataDoc(uid));
