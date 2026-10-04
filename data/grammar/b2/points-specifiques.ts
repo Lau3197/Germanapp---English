@@ -1,61 +1,60 @@
-
 import { GrammarSection } from '../../../types';
 
 export const pointsSpecifiquesB2: GrammarSection = {
-  title: "Points de grammaire spécifiques",
+  title: "Specific Grammar Points",
   topics: [
     {
       id: "b2-3-1",
-      title: "1. Verbes à modalité avec un sens subjectif",
-      content: "Les modaux expriment ici une supposition ou une rumeur.\n\n• **sollen** : On dit que... (rumeur).\n• **wollen** : Il prétend que... (affirmation du sujet).",
+      title: "1. Modal Verbs with Subjective Meaning",
+      content: "Here, modal verbs express an assumption or a rumor.\n\n• **sollen**: people say that... (rumor).\n• **wollen**: he/she claims that... (the subject's own statement).",
       examples: [
-        { de: "Er **soll** sehr reich sein.", fr: "On dit qu'il est très riche." },
-        { de: "Er **will** den Chef gesehen haben.", fr: "Il prétend avoir vu le chef." }
+        { de: "Er **soll** sehr reich sein.", fr: "People say he is very rich." },
+        { de: "Er **will** den Chef gesehen haben.", fr: "He claims to have seen the boss." }
       ]
     },
     {
       id: "b2-3-2",
-      title: "2. Maîtrise des déclinaisons complexes",
-      content: "Au niveau B2, on maîtrise les adjectifs substantivés (Ein Deutscher, der Deutsche).",
+      title: "2. Mastering Complex Declensions",
+      content: "At B2 level, you master substantivized adjectives such as Ein Deutscher and der Deutsche.",
       examples: [
-        { de: "Ich habe **etwas Gutes** getan.", fr: "J'ai fait quelque chose de bien." },
-        { de: "Herzliche Grüße an alle **Anwesenden**.", fr: "Salutations cordiales à tous les présents." }
+        { de: "Ich habe **etwas Gutes** getan.", fr: "I did something good." },
+        { de: "Herzliche Grüße an alle **Anwesenden**.", fr: "Warm greetings to everyone present." }
       ]
     },
     {
       id: "b2-3-3",
-      title: "3. Prépositions vs Conjonctions : Le guide B2",
-      content: `Pour réussir le niveau B2, vous devez savoir transformer une subordonnée (**Style Verbal**) en groupe nominal (**Style Nominal**).
+      title: "3. Prepositions vs Conjunctions: The B2 Guide",
+      content: `To succeed at B2 level, you need to know how to transform a subordinate clause (**verbal style**) into a noun group (**nominal style**).
 
-### I. La Différence Fondamentale
-• **La Conjonction** : Introduit une subordonnée. Le **verbe est à la fin**.
-• **La Préposition** : Introduit un groupe nominal. Elle impose un **cas** (Génitif ou Datif).
+### I. The Fundamental Difference
+• **The conjunction**: Introduces a subordinate clause. The **verb is at the end**.
+• **The preposition**: Introduces a noun group. It imposes a **case** (genitive or dative).
 
-### II. Tableau de correspondance (Logik-Tabelle)
+### II. Correspondence Table (Logik-Tabelle)
 
-| Intention | Conjonction (Verbal) | Préposition (Nominal) |
+| Intention | Conjunction (verbal) | Preposition (nominal) |
 |---|---|---|
-| **Cause** | **weil / da** (+ verbe fin) | **wegen / aufgrund** (+ Gén.) |
-| **Concession** | **obwohl** (+ verbe fin) | **trotz** (+ Gén.) |
-| **Condition** | **wenn / falls** (+ verbe fin) | **bei** (+ Datif) |
-| **Temps (pendant)** | **während** (+ verbe fin) | **während** (+ Gén.) |
-| **Temps (après)** | **nachdem** (+ verbe fin) | **nach** (+ Datif) |
-| **Temps (avant)** | **bevor** (+ verbe fin) | **vor** (+ Datif) |
+| **Cause** | **weil / da** (+ final verb) | **wegen / aufgrund** (+ gen.) |
+| **Concession** | **obwohl** (+ final verb) | **trotz** (+ gen.) |
+| **Condition** | **wenn / falls** (+ final verb) | **bei** (+ dat.) |
+| **Time (during)** | **während** (+ final verb) | **während** (+ gen.) |
+| **Time (after)** | **nachdem** (+ final verb) | **nach** (+ dat.) |
+| **Time (before)** | **bevor** (+ final verb) | **vor** (+ dat.) |
 
-### III. Focus : ALS vs WENN (Le piège temporel)
-• **ALS** : Action **unique** et **terminée** dans le passé.
-• **WENN** : Action **répétée** dans le passé OU action au **présent/futur**.
+### III. Focus: ALS vs WENN (The Time Trap)
+• **ALS**: **One-time** and **completed** action in the past.
+• **WENN**: **Repeated** action in the past OR action in the **present/future**.
 
-### IV. Focus : NACH vs NACHDEM
-C'est l'erreur la plus fréquente :
-• *Nach dem Essen* (Préposition + Nom) -> **Correct**
-• *Nachdem ich gegessen hatte* (Conjonction + Sujet/Verbe) -> **Correct**
-• *Nach ich gegessen habe* -> **FAUX**`,
+### IV. Focus: NACH vs NACHDEM
+This is the most frequent mistake:
+• *Nach dem Essen* (preposition + noun) → **Correct**
+• *Nachdem ich gegessen hatte* (conjunction + subject/verb) → **Correct**
+• *Nach ich gegessen habe* → **INCORRECT**`,
       examples: [
-        { de: "**Trotz** des Regens gingen wir spazieren.", fr: "Malgré la pluie (Préposition), nous sommes allés nous promener.", note: "Style Nominal." },
-        { de: "**Obwohl** es regnete, gingen wir spazieren.", fr: "Bien qu'il plût (Conjonction), nous sommes allés nous promener.", note: "Style Verbal." },
-        { de: "**Nachdem** er die Prüfung bestanden hatte, feierte er.", fr: "Après avoir réussi l'examen (Conjonction), il a fêté ça.", note: "Antériorité : PQP dans la subordonnée." },
-        { de: "**Bei** Ankunft des Zuges rufen Sie mich bitte an.", fr: "À l'arrivée du train, appelez-moi s'il vous plaît.", note: "Transformation nominale de 'Wenn der Zug ankommt'." }
+        { de: "**Trotz** des Regens gingen wir spazieren.", fr: "Despite the rain (preposition), we went for a walk.", note: "Nominal style." },
+        { de: "**Obwohl** es regnete, gingen wir spazieren.", fr: "Although it was raining (conjunction), we went for a walk.", note: "Verbal style." },
+        { de: "**Nachdem** er die Prüfung bestanden hatte, feierte er.", fr: "After he had passed the exam (conjunction), he celebrated.", note: "Anteriority: pluperfect in the subordinate clause." },
+        { de: "**Bei** Ankunft des Zuges rufen Sie mich bitte an.", fr: "Upon the train's arrival, please call me.", note: "Nominal transformation of 'Wenn der Zug ankommt'." }
       ]
     }
   ]

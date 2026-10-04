@@ -10,17 +10,28 @@ export enum LanguageLevel {
 
 export interface GermanWord {
   german: string;
-  french: string;
+  english?: string;
+  french?: string;
+  italian?: string;
   article: 'der' | 'die' | 'das' | '';
   plural: string;
   example: string;
   level: LanguageLevel;
-  subTheme?: string; // Optionnel pour le filtrage par sous-thème
+  subTheme?: string; // Optional, used for filtering by sub-theme
 }
 
 export interface Phrase {
   german: string;
-  french: string;
+  english?: string;
+  french?: string;
+  // Phrases carry their Italian inline rather than through the
+  // italianVocabularyTranslations overlay, whose keys embed the English text and
+  // therefore break whenever a translation is edited. Words still use the overlay.
+  italian?: string;
+  // Word-for-word rendering, set only on figurative phrases where the idiomatic
+  // translation hides the German image ("das Fass zum Überlaufen bringen").
+  // Literal sentences leave this undefined — the translation already is literal.
+  literal?: string;
   context: string;
 }
 
@@ -29,11 +40,11 @@ export interface Theme {
   name: string;
   icon: string;
   description: string;
-  subThemes?: string[]; // Liste des sous-thèmes disponibles
+  subThemes?: string[]; // List of available sub-themes
 }
 
-export type MainTab = 'vocabulary' | 'nomen-verben' | 'grammar' | 'stats' | 'tables' | 'expressions' | 'translation' | 'revision';
-export type ViewMode = 'themes' | 'learn' | 'quiz' | 'phrases' | 'trainer';
+export type MainTab = 'dashboard' | 'vocabulary' | 'gender' | 'structures' | 'nomen-verben' | 'verben-mit-praepositionen' | 'grammar' | 'grammar-exercises' | 'tables' | 'expressions' | 'revision' | 'exam' | 'italian';
+export type AppTheme = 'classic' | 'panda' | 'cane';
 
 export interface ThemeContent {
   words: GermanWord[];
@@ -48,6 +59,17 @@ export interface GrammarSection {
     content: string;
     examples?: { de: string; fr: string; note?: string }[];
   }[];
+}
+
+export interface GrammarExercise {
+  id: string;
+  topicId: string;
+  level: LanguageLevel;
+  prompt: string;
+  answer: string;
+  acceptedAnswers?: string[];
+  explanation: string;
+  stage?: 'guided' | 'controlled' | 'independent' | 'contrast' | 'challenge';
 }
 
 export interface GrammarLevel {

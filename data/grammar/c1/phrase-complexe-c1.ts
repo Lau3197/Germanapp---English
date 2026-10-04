@@ -1,60 +1,273 @@
-
 import { GrammarSection } from '../../../types';
 
 export const phraseComplexeC1: GrammarSection = {
-  title: "5.1 Le Perfectionnement de la Phrase Complexe (Satzbau für Fortgeschrittene)",
+  title: "5.1 Refining Complex Sentences (Satzbau für Fortgeschrittene)",
   topics: [
     {
       id: "c1-5-1",
       title: "5.1 Introduction",
-      content: "Le niveau C1 exige de dépasser la simple juxtaposition de propositions subordonnées pour créer des phrases plus denses et élégantes, typiques du langage écrit et formel.\n\nCette section vous apprendra à condenser l'information et à utiliser des structures complexes pour un style plus raffiné et plus naturel en allemand.",
+      content: `At C1 level, you move beyond simply joining subordinate clauses. You learn to build denser, more elegant sentences that are typical of formal written German.
+
+This section focuses on condensing information and using complex structures in a refined but still readable way.`,
       examples: [
-        { de: "B2: Der Mann, der am Fenster sitzt, liest ein Buch. → C1: Der am Fenster sitzende Mann liest ein Buch.", fr: "L'homme assis à la fenêtre lit un livre.", note: "Passage de la proposition relative à la proposition participiale." }
+        { de: "B2: Der Mann, der am Fenster sitzt, liest ein Buch. → C1: Der am Fenster sitzende Mann liest ein Buch.", fr: "The man sitting by the window is reading a book.", note: "The relative clause is condensed into a participial construction." }
       ]
     },
     {
       id: "c1-5-1-1",
-      title: "5.1.1 Les Propositions Participiales (Partizipialsätze)",
-      content: "Les propositions participiales permettent de condenser des propositions relatives ou circonstancielles pour créer un style plus concis et élégant.\n\n### Principe fondamental\n\nAu lieu d'utiliser une proposition relative complète, on utilise un participe qui remplace cette proposition. Le participe se place **avant** le nom qu'il qualifie (comme un adjectif).\n\n**Structure** : Participle + Nom (pas de virgule)\n\n### Participe Présent (Partizip I) : Remplace une proposition relative ACTIVE\n\nLe Participe I exprime une action **active** et **simultanée**.\n\n**Transformation** :\n• B2 : Der Mann, **der** am Fenster **sitzt**, liest ein Buch.\n• C1 : Der am Fenster **sitzende** Mann liest ein Buch.\n\n**Règle** :\n1. On retire le pronom relatif (der/die/das)\n2. On transforme le verbe en Partizip I (Infinitif + -d)\n3. Le participe se place **avant** le nom\n4. Le participe s'accorde en genre, nombre et cas avec le nom\n\n### Déclinaison du Participe I\n\nLe Participe I se décline **exactement comme un adjectif**.\n\n| Cas | Masculin | Féminin | Neutre | Pluriel |\n|---|---|---|---|---|\n| Nominatif | der **sitzende** Mann | die **sitzende** Frau | das **sitzende** Kind | die **sitzenden** Menschen |\n| Accusatif | den **sitzenden** Mann | die **sitzende** Frau | das **sitzende** Kind | die **sitzenden** Menschen |\n| Datif | dem **sitzenden** Mann | der **sitzenden** Frau | dem **sitzenden** Kind | den **sitzenden** Menschen |\n| Génitif | des **sitzenden** Mannes | der **sitzenden** Frau | des **sitzenden** Kindes | der **sitzenden** Menschen |\n\n### Exemples de transformation\n\n**Exemple 1** :\n• B2 : Die Studenten, **die** die Bibliothek **besuchen**, studieren viel.\n• C1 : Die die Bibliothek **besuchenden** Studenten studieren viel.\n(Les étudiants qui visitent la bibliothèque étudient beaucoup.)\n\n**Exemple 2** :\n• B2 : Das Kind, **das** auf der Straße **spielt**, ist gefährdet.\n• C1 : Das auf der Straße **spielende** Kind ist gefährdet.\n(L'enfant qui joue dans la rue est en danger.)\n\n**Exemple 3** :\n• B2 : Die Frau, **die** in Berlin **wohnt**, arbeitet hier.\n• C1 : Die in Berlin **wohnende** Frau arbeitet hier.\n(La femme qui habite à Berlin travaille ici.)\n\n### Participe Passé (Partizip II) : Remplace une proposition relative PASSIVE\n\nLe Participe II exprime une action **passive** et **antérieure**.\n\n**Transformation** :\n• B2 : Das Auto, **das** in Deutschland **repariert wurde**, ist teuer.\n• C1 : Das in Deutschland **reparierte** Auto ist teuer.\n(La voiture réparée en Allemagne est chère.)\n\n**Règle** :\n1. On retire le pronom relatif (der/die/das)\n2. On retire l'auxiliaire (wurde/wurden)\n3. On garde le Partizip II du verbe\n4. Le participe se place **avant** le nom et se décline\n\n### Déclinaison du Participe II\n\n| Cas | Masculin | Féminin | Neutre | Pluriel |\n|---|---|---|---|---|\n| Nominatif | der **reparierte** Wagen | die **reparierte** Tür | das **reparierte** Auto | die **reparierten** Autos |\n| Accusatif | den **reparierten** Wagen | die **reparierte** Tür | das **reparierte** Auto | die **reparierten** Autos |\n| Datif | dem **reparierten** Wagen | der **reparierten** Tür | dem **reparierten** Auto | den **reparierten** Autos |\n| Génitif | des **reparierten** Wagens | der **reparierten** Tür | des **reparierten** Autos | der **reparierten** Autos |\n\n### Exemples de transformation avec Partizip II\n\n**Exemple 1** :\n• B2 : Die Briefe, **die** gestern **geschrieben wurden**, sind wichtig.\n• C1 : Die gestern **geschriebenen** Briefe sind wichtig.\n(Les lettres écrites hier sont importantes.)\n\n**Exemple 2** :\n• B2 : Das Buch, **das** von Goethe **geschrieben wurde**, ist bekannt.\n• C1 : Das von Goethe **geschriebene** Buch ist bekannt.\n(Le livre écrit par Goethe est connu.)\n\n**Exemple 3** :\n• B2 : Die Entscheidung, **die** gestern **getroffen wurde**, ist wichtig.\n• C1 : Die gestern **getroffene** Entscheidung ist wichtig.\n(La décision prise hier est importante.)\n\n### Règles importantes\n\n1. **Accord** : Le participe s'accorde en genre, nombre et cas avec le nom qu'il qualifie\n2. **Placement** : Toujours **avant** le nom (pas de virgule)\n3. **Compléments** : Les compléments (prépositionnels, adverbes) se placent **avant** le participe\n4. **Style** : Plus formel et plus élégant que la proposition relative\n\n### Quand utiliser les propositions participiales ?\n\n**Avantages** :\n- Style plus concis\n- Langage écrit et formel\n- Évite les répétitions\n- Densité d'information\n\n**Limitations** :\n- Moins courant à l'oral\n- Peut rendre la phrase difficile à comprendre si trop longue\n- Impossible si la proposition relative contient plusieurs verbes ou structures complexes\n\n### Pièges à éviter\n\n**Erreur 1** : Oublier l'accord\n• Faux : Der **sitzende** Männer ❌\n• Correct : Die **sitzenden** Männer ✅\n\n**Erreur 2** : Mettre une virgule\n• Faux : Der, am Fenster sitzende, Mann ❌\n• Correct : Der am Fenster **sitzende** Mann ✅\n\n**Erreur 3** : Mélanger actif et passif\n• Faux : Der **repariert** Auto (actif) ❌\n• Correct : Das **reparierte** Auto (passif) ✅",
+      title: "5.1.1 Participial Constructions (Partizipialsätze)",
+      content: `Participial constructions condense relative or circumstantial clauses. They create a concise, formal, and information-rich style.
+
+### Basic principle
+Instead of using a full relative clause, German can use a participle before the noun it describes. The participle behaves like an adjective and is declined like one.
+
+**Structure**: modifiers + participle + noun. There is normally no comma inside this noun phrase.
+
+### Present participle: Partizip I
+The **Partizip I** expresses an **active** and usually **simultaneous** action.
+
+Transformation:
+- B2: Der Mann, **der** am Fenster **sitzt**, liest ein Buch.
+- C1: Der am Fenster **sitzende** Mann liest ein Buch.
+
+Rule:
+1. Remove the relative pronoun.
+2. Change the verb into Partizip I: infinitive + **-d**.
+3. Put the participle before the noun.
+4. Decline the participle for gender, number, and case.
+
+### Declension of Partizip I
+| Case | Masculine | Feminine | Neuter | Plural |
+|---|---|---|---|---|
+| Nominative | der **sitzende** Mann | die **sitzende** Frau | das **sitzende** Kind | die **sitzenden** Menschen |
+| Accusative | den **sitzenden** Mann | die **sitzende** Frau | das **sitzende** Kind | die **sitzenden** Menschen |
+| Dative | dem **sitzenden** Mann | der **sitzenden** Frau | dem **sitzenden** Kind | den **sitzenden** Menschen |
+| Genitive | des **sitzenden** Mannes | der **sitzenden** Frau | des **sitzenden** Kindes | der **sitzenden** Menschen |
+
+### Transformation examples
+- Die Studenten, **die** die Bibliothek **besuchen**, studieren viel.
+- Die die Bibliothek **besuchenden** Studenten studieren viel.
+
+- Das Kind, **das** auf der Straße **spielt**, ist gefährdet.
+- Das auf der Straße **spielende** Kind ist gefährdet.
+
+- Die Frau, **die** in Berlin **wohnt**, arbeitet hier.
+- Die in Berlin **wohnende** Frau arbeitet hier.
+
+### Past participle: Partizip II
+The **Partizip II** replaces a passive relative clause. It normally expresses a **passive** and often **prior** action.
+
+Transformation:
+- B2: Das Auto, **das** in Deutschland **repariert wurde**, ist teuer.
+- C1: Das in Deutschland **reparierte** Auto ist teuer.
+
+Rule:
+1. Remove the relative pronoun.
+2. Remove the passive auxiliary.
+3. Keep the Partizip II.
+4. Put it before the noun and decline it.
+
+### Declension of Partizip II
+| Case | Masculine | Feminine | Neuter | Plural |
+|---|---|---|---|---|
+| Nominative | der **reparierte** Wagen | die **reparierte** Tür | das **reparierte** Auto | die **reparierten** Autos |
+| Accusative | den **reparierten** Wagen | die **reparierte** Tür | das **reparierte** Auto | die **reparierten** Autos |
+| Dative | dem **reparierten** Wagen | der **reparierten** Tür | dem **reparierten** Auto | den **reparierten** Autos |
+| Genitive | des **reparierten** Wagens | der **reparierten** Tür | des **reparierten** Autos | der **reparierten** Autos |
+
+### Partizip II transformations
+- Die Briefe, **die** gestern **geschrieben wurden**, sind wichtig.
+- Die gestern **geschriebenen** Briefe sind wichtig.
+
+- Das Buch, **das** von Goethe **geschrieben wurde**, ist bekannt.
+- Das von Goethe **geschriebene** Buch ist bekannt.
+
+- Die Entscheidung, **die** gestern **getroffen wurde**, ist wichtig.
+- Die gestern **getroffene** Entscheidung ist wichtig.
+
+### Important rules
+1. The participle agrees with the noun in gender, number, and case.
+2. It comes before the noun.
+3. Complements and adverbs come before the participle.
+4. This style is more formal than a relative clause.
+
+### When to use participial constructions
+Use them in formal writing, reports, academic texts, and compact written summaries.
+
+Avoid them in everyday spoken German when the group becomes too long or hard to process. If the relative clause contains several verbs or complex logic, a full relative clause is often clearer.
+
+### Common traps
+Incorrect: Der **sitzende** Männer.
+Correct: Die **sitzenden** Männer.
+
+Incorrect: Der, am Fenster sitzende, Mann.
+Correct: Der am Fenster **sitzende** Mann.
+
+Incorrect: Der **repariert** Auto.
+Correct: Das **reparierte** Auto.`,
       examples: [
-        { de: "Der am Fenster sitzende Mann liest ein Buch.", fr: "L'homme assis à la fenêtre lit un livre.", note: "Partizip I - proposition relative active transformée." },
-        { de: "Das in Deutschland reparierte Auto ist teuer.", fr: "La voiture réparée en Allemagne est chère.", note: "Partizip II - proposition relative passive transformée." },
-        { de: "Die die Bibliothek besuchenden Studenten studieren viel.", fr: "Les étudiants qui visitent la bibliothèque étudient beaucoup.", note: "Partizip I avec complément." },
-        { de: "Die gestern geschriebenen Briefe sind wichtig.", fr: "Les lettres écrites hier sont importantes.", note: "Partizip II avec adverbe de temps." },
-        { de: "Das von Goethe geschriebene Buch ist bekannt.", fr: "Le livre écrit par Goethe est connu.", note: "Partizip II avec agent (von + Datif)." },
-        { de: "Ich kenne den am Fenster sitzenden Mann.", fr: "Je connais l'homme assis à la fenêtre.", note: "Accusatif - participe décliné." },
-        { de: "Ich helfe den in Berlin wohnenden Studenten.", fr: "J'aide les étudiants qui habitent à Berlin.", note: "Datif pluriel - participe décliné." }
+        { de: "Der am Fenster sitzende Mann liest ein Buch.", fr: "The man sitting by the window is reading a book.", note: "Partizip I: active relative clause transformed." },
+        { de: "Das in Deutschland reparierte Auto ist teuer.", fr: "The car repaired in Germany is expensive.", note: "Partizip II: passive relative clause transformed." },
+        { de: "Die die Bibliothek besuchenden Studenten studieren viel.", fr: "The students who visit the library study a lot.", note: "Partizip I with a complement." },
+        { de: "Die gestern geschriebenen Briefe sind wichtig.", fr: "The letters written yesterday are important.", note: "Partizip II with a time adverb." },
+        { de: "Das von Goethe geschriebene Buch ist bekannt.", fr: "The book written by Goethe is well known.", note: "Partizip II with an agent introduced by von + dative." },
+        { de: "Ich kenne den am Fenster sitzenden Mann.", fr: "I know the man sitting by the window.", note: "Accusative masculine: sitzenden." },
+        { de: "Ich helfe den in Berlin wohnenden Studenten.", fr: "I help the students who live in Berlin.", note: "Dative plural: wohnenden." }
       ]
     },
     {
       id: "c1-5-1-2",
-      title: "5.1.2 L'Adjectif Verbal ou Gérondif (das Gerundivum)",
-      content: "Le gérondif (zu + Partizip I) exprime une **nécessité** ou une **possibilité** passive. C'est une structure très formelle et élégante qui remplace souvent une proposition avec \"müssen\" ou \"können\" au passif.\n\n### Structure du Gérondif\n\n**Formation** : zu + Infinitif + -d + déclinaison\n\n**Exemple** : lösen → zu lösend → zu lösende (masculin/féminin) / zu lösendes (neutre)\n\n### Transformation de base\n\n**B2** : Das ist ein Problem, **das gelöst werden muss**.\n**C1** : Das ist ein **zu lösendes** Problem.\n(C'est un problème à résoudre.)\n\n**Règle** :\n1. On retire la proposition relative\n2. On transforme : gelöst werden muss → zu lösend\n3. Le gérondif se place **avant** le nom\n4. Il se décline comme un adjectif\n\n### Déclinaison du Gérondif\n\n| Cas | Masculin | Féminin | Neutre | Pluriel |\n|---|---|---|---|---|\n| Nominatif | der **zu lösende** Konflikt | die **zu lösende** Frage | das **zu lösende** Problem | die **zu lösenden** Probleme |\n| Accusatif | den **zu lösenden** Konflikt | die **zu lösende** Frage | das **zu lösende** Problem | die **zu lösenden** Probleme |\n| Datif | dem **zu lösenden** Konflikt | der **zu lösenden** Frage | dem **zu lösenden** Problem | den **zu lösenden** Problemen |\n| Génitif | des **zu lösenden** Konflikts | der **zu lösenden** Frage | des **zu lösenden** Problems | der **zu lösenden** Probleme |\n\n### Sens : Nécessité (müssen) ou Possibilité (können)\n\n**Nécessité (müssen)** :\n• B2 : Das ist eine Aufgabe, **die erledigt werden muss**.\n• C1 : Das ist eine **zu erledigende** Aufgabe.\n(C'est une tâche à accomplir.)\n\n**Possibilité (können)** :\n• B2 : Das ist ein Problem, **das gelöst werden kann**.\n• C1 : Das ist ein **zu lösendes** Problem.\n(C'est un problème soluble / qui peut être résolu.)\n\n### Verbes avec préfixe séparable\n\nAvec les verbes à préfixe séparable, \"zu\" se place **entre** le préfixe et le verbe.\n\n**Exemples** :\n• aufgeben → auf**zu**gebend → ein **aufzugebender** Plan\n• einkaufen → ein**zu**kaufend → die **einzukaufenden** Lebensmittel\n• abgeben → ab**zu**gebend → das **abzugebende** Dokument\n\n### Exemples pratiques\n\n**Nécessité** :\n• Die **zu erledigende** Arbeit (le travail à faire)\n• Der **zu prüfende** Bericht (le rapport à vérifier)\n• Das **zu bezahlende** Geld (l'argent à payer)\n• Die **zu lesenden** Bücher (les livres à lire)\n\n**Possibilité** :\n• Ein **zu vermeidender** Fehler (une erreur évitable)\n• Eine **zu überwindende** Schwierigkeit (une difficulté surmontable)\n• Ein **zu akzeptierendes** Angebot (une offre acceptable)\n\n### Avec compléments\n\nSi le verbe a des compléments, ils se placent **avant** le gérondif.\n\n**Exemples** :\n• Eine **von allen zu akzeptierende** Entscheidung\n(Une décision à accepter par tous)\n\n• Das **bis morgen zu erledigende** Projekt\n(Le projet à terminer pour demain)\n\n• Die **in dieser Woche zu besprechenden** Themen\n(Les sujets à discuter cette semaine)\n\n### Comparaison : Gérondif vs Autres structures\n\n**Gérondif (C1 - formel)** :\n• Das ist ein **zu lösendes** Problem.\n\n**Proposition relative (B2 - courant)** :\n• Das ist ein Problem, **das gelöst werden muss**.\n\n**Adjectif en -bar (B2 - possible)** :\n• Das ist ein **lösbares** Problem. (soluble)\n\n**sein + zu + Infinitif (C1 - alternatif)** :\n• Das Problem **ist zu lösen**.\n\n### Règles importantes\n\n1. **Toujours passif** : Le gérondif exprime toujours un sens passif\n2. **Placement** : Toujours **avant** le nom\n3. **Déclinaison** : Obligatoire, comme un adjectif\n4. **Style** : Très formel, surtout écrit\n5. **\"zu\" inséparable** : Fait partie du mot (zu lösend, pas lösend zu)\n\n### Quand utiliser le gérondif ?\n\n**Contexte approprié** :\n- Langage académique\n- Textes administratifs\n- Documents formels\n- Style écrit élégant\n\n**À éviter** :\n- Langage oral familier\n- Conversations quotidiennes\n- Style simple et direct",
+      title: "5.1.2 The Gerundive (das Gerundivum)",
+      content: `The German gerundive, **zu + Partizip I**, expresses passive **necessity** or **possibility**. It is formal and compact, and often replaces a relative clause with passive **müssen** or **können**.
+
+### Formation
+**zu + infinitive + -d + adjective ending**
+
+Example:
+- lösen → zu lösend → ein **zu lösendes** Problem
+
+### Basic transformation
+- B2: Das ist ein Problem, **das gelöst werden muss**.
+- C1: Das ist ein **zu lösendes** Problem.
+
+Rule:
+1. Remove the relative clause.
+2. Transform the passive modal idea into **zu + Partizip I**.
+3. Put the gerundive before the noun.
+4. Decline it like an adjective.
+
+### Declension
+| Case | Masculine | Feminine | Neuter | Plural |
+|---|---|---|---|---|
+| Nominative | der **zu lösende** Konflikt | die **zu lösende** Frage | das **zu lösende** Problem | die **zu lösenden** Probleme |
+| Accusative | den **zu lösenden** Konflikt | die **zu lösende** Frage | das **zu lösende** Problem | die **zu lösenden** Probleme |
+| Dative | dem **zu lösenden** Konflikt | der **zu lösenden** Frage | dem **zu lösenden** Problem | den **zu lösenden** Problemen |
+| Genitive | des **zu lösenden** Konflikts | der **zu lösenden** Frage | des **zu lösenden** Problems | der **zu lösenden** Probleme |
+
+### Meaning: necessity or possibility
+Necessity:
+- Das ist eine Aufgabe, **die erledigt werden muss**.
+- Das ist eine **zu erledigende** Aufgabe.
+
+Possibility:
+- Das ist ein Problem, **das gelöst werden kann**.
+- Das ist ein **zu lösendes** Problem.
+
+The context decides whether the meaning is "must be done" or "can be done".
+
+### Separable-prefix verbs
+With separable verbs, **zu** goes between the prefix and the verb:
+- aufgeben → auf**zu**gebend → ein **aufzugebender** Plan
+- einkaufen → ein**zu**kaufend → die **einzukaufenden** Lebensmittel
+- abgeben → ab**zu**gebend → das **abzugebende** Dokument
+
+### With complements
+Complements come before the gerundive:
+- Eine **von allen zu akzeptierende** Entscheidung.
+- Das **bis morgen zu erledigende** Projekt.
+- Die **in dieser Woche zu besprechenden** Themen.
+
+### Comparison with other structures
+| Structure | Example | Style |
+|---|---|---|
+| Gerundive | Das ist ein **zu lösendes** Problem. | C1, formal |
+| Relative clause | Das ist ein Problem, **das gelöst werden muss**. | clearer, more neutral |
+| -bar adjective | Das ist ein **lösbares** Problem. | concise |
+| sein + zu | Das Problem **ist zu lösen**. | formal alternative |
+
+### Usage
+Use the gerundive in academic, administrative, legal, and formal written style. Avoid it in casual conversation when a relative clause is clearer.`,
       examples: [
-        { de: "Das ist ein zu lösendes Problem.", fr: "C'est un problème à résoudre.", note: "Gérondif - nécessité passive." },
-        { de: "Die zu erledigende Aufgabe ist wichtig.", fr: "La tâche à accomplir est importante.", note: "Féminin - déclinaison correcte." },
-        { de: "Ich sehe das zu prüfende Dokument.", fr: "Je vois le document à vérifier.", note: "Accusatif neutre." },
-        { de: "Die aufzugebende Wohnung ist groß.", fr: "L'appartement à louer est grand.", note: "Verbe à préfixe séparable - zu entre le préfixe et le verbe." },
-        { de: "Die einzukaufenden Lebensmittel sind teuer.", fr: "Les provisions à acheter sont chères.", note: "Préfixe séparable." },
-        { de: "Eine von allen zu akzeptierende Entscheidung.", fr: "Une décision à accepter par tous.", note: "Avec complément (von + Datif)." },
-        { de: "Das bis morgen zu erledigende Projekt.", fr: "Le projet à terminer pour demain.", note: "Avec complément temporel." }
+        { de: "Das ist ein zu lösendes Problem.", fr: "This is a problem to be solved.", note: "Gerundive with passive necessity or possibility." },
+        { de: "Die zu erledigende Aufgabe ist wichtig.", fr: "The task to be completed is important.", note: "Feminine nominative." },
+        { de: "Ich sehe das zu prüfende Dokument.", fr: "I see the document to be checked.", note: "Neuter accusative." },
+        { de: "Die aufzugebende Wohnung ist groß.", fr: "The apartment to be given up is large.", note: "Separable prefix: zu is inserted after the prefix." },
+        { de: "Die einzukaufenden Lebensmittel sind teuer.", fr: "The groceries to be bought are expensive.", note: "Separable-prefix verb." },
+        { de: "Eine von allen zu akzeptierende Entscheidung.", fr: "A decision to be accepted by everyone.", note: "With a complement introduced by von + dative." },
+        { de: "Das bis morgen zu erledigende Projekt.", fr: "The project to be completed by tomorrow.", note: "With a time complement." }
       ]
     },
     {
       id: "c1-5-1-3",
-      title: "5.1.3 Les Propositions Infinitives Étendues",
-      content: "Les propositions infinitives avec \"zu\" peuvent devenir très complexes au niveau C1, avec plusieurs éléments (compléments, négation, adverbes) insérés entre \"zu\" et l'infinitif.\n\n### Structure de base vs Structure complexe\n\n**Structure simple (B2)** :\n• Er hat die Absicht, **das Land zu verlassen**.\n(Il a l'intention de quitter le pays.)\n\n**Structure complexe (C1)** :\n• Er hat die Absicht, **ohne sich von jemandem zu verabschieden, das Land zu verlassen**.\n(Il a l'intention de quitter le pays sans dire au revoir à personne.)\n\n### Éléments qui peuvent être insérés\n\nEntre \"zu\" et l'infinitif, on peut insérer :\n1. **Des compléments prépositionnels** : von jemandem, mit ihm, auf etwas\n2. **Des adverbes** : schnell, langsam, gern\n3. **Des négations** : nicht, kein\n4. **Des pronoms** : sich, es, ihn\n5. **Des compléments circonstanciels** : heute, morgen, hier\n\n### Exemples de constructions complexes\n\n**Exemple 1 - Avec complément prépositionnel** :\n• Es ist schwierig, **sich von seiner Familie zu trennen**.\n(Il est difficile de se séparer de sa famille.)\n\n**Exemple 2 - Avec adverbe** :\n• Er versucht, **langsam und vorsichtig zu fahren**.\n(Il essaie de conduire lentement et prudemment.)\n\n**Exemple 3 - Avec négation** :\n• Er beschloss, **niemals wieder zurückzukommen**.\n(Il décida de ne jamais revenir.)\n\n**Exemple 4 - Structure très complexe** :\n• Er hat die Absicht, **ohne sich von jemandem zu verabschieden, das Land heimlich zu verlassen**.\n(Il a l'intention de quitter le pays secrètement sans dire au revoir à personne.)\n\n### Verbes à préfixe séparable\n\nAvec les verbes séparables, \"zu\" se place **entre** le préfixe et le verbe, même dans les constructions complexes.\n\n**Exemples** :\n• Es ist wichtig, **rechtzeitig abzureisen**.\n(Il est important de partir à temps.)\n\n• Er plant, **ohne Erlaubnis einzutreten**.\n(Il prévoit d'entrer sans permission.)\n\n### Position des compléments\n\n**Règle générale** : Les compléments se placent **avant** l'infinitif avec \"zu\", mais peuvent précéder ou suivre le groupe verbal selon la longueur.\n\n**Ordre typique** :\nzu + (préfixe) + compléments + verbe\n\n**Exemples** :\n• **sich von jemandem zu verabschieden**\n• **ohne Erlaubnis einzutreten**\n• **langsam und sicher zu fahren**\n• **mit ihm zusammen zu arbeiten**\n\n### Groupes de verbes qui régissent les infinitives\n\n**Verbes d'intention/volonté** :\n• haben vor, zu + Infinitiv (avoir l'intention de)\n• sich entscheiden, zu + Infinitiv (décider de)\n• planen, zu + Infinitiv (prévoir de)\n• versuchen, zu + Infinitiv (essayer de)\n\n**Verbes d'opinion** :\n• glauben, zu + Infinitiv (croire + infinitif)\n• hoffen, zu + Infinitiv (espérer + infinitif)\n• erwarten, zu + Infinitiv (s'attendre à)\n\n**Verbes de perception** :\n• scheinen, zu + Infinitiv (sembler + infinitif)\n• drohen, zu + Infinitiv (menacer de)\n\n**Adjectifs + sein** :\n• Es ist wichtig, zu + Infinitiv\n• Es ist schwierig, zu + Infinitiv\n• Es ist möglich, zu + Infinitiv\n\n### Construction avec plusieurs infinitives\n\nOn peut avoir plusieurs infinitives coordonnées :\n\n• Er hat vor, **zu studieren und später zu arbeiten**.\n(Il a l'intention d'étudier et de travailler plus tard.)\n\n• Es ist wichtig, **zu lernen und sich zu verbessern**.\n(Il est important d'apprendre et de s'améliorer.)\n\n### Pièges et erreurs courantes\n\n**Erreur 1** : Oublier \"zu\"\n• Faux : Er versucht, **langsam fahren** ❌\n• Correct : Er versucht, **langsam zu fahren** ✅\n\n**Erreur 2** : Mauvais placement de \"zu\" avec préfixe séparable\n• Faux : Er plant, **zu eintreten** ❌\n• Correct : Er plant, **einzutreten** ✅\n\n**Erreur 3** : Oublier \"sich\" dans les verbes réfléchis\n• Faux : Es ist schwierig, **von seiner Familie zu trennen** ❌\n• Correct : Es ist schwierig, **sich von seiner Familie zu trennen** ✅",
+      title: "5.1.3 Expanded Infinitive Clauses",
+      content: `Infinitive clauses with **zu** can become very dense at C1 level. Several elements can be inserted before the infinitive: complements, negation, adverbs, reflexive pronouns, and time expressions.
+
+### Simple vs complex structure
+Simple:
+- Er hat die Absicht, **das Land zu verlassen**.
+
+Complex:
+- Er hat die Absicht, **ohne sich von jemandem zu verabschieden, das Land heimlich zu verlassen**.
+
+### What can appear inside the infinitive group?
+1. Prepositional complements: von jemandem, mit ihm, auf etwas
+2. Adverbs: langsam, vorsichtig, gern
+3. Negation: nicht, kein, niemals
+4. Pronouns: sich, es, ihn
+5. Circumstantial elements: heute, morgen, hier
+
+### Examples
+- Es ist schwierig, **sich von seiner Familie zu trennen**.
+- Er versucht, **langsam und vorsichtig zu fahren**.
+- Er beschloss, **niemals wieder zurückzukommen**.
+- Er hat die Absicht, **ohne sich von jemandem zu verabschieden, das Land heimlich zu verlassen**.
+
+### Separable-prefix verbs
+With separable verbs, **zu** goes between prefix and verb even in long infinitive clauses:
+- Es ist wichtig, **rechtzeitig abzureisen**.
+- Er plant, **ohne Erlaubnis einzutreten**.
+- Er beschloss, **niemals wieder zurückzukommen**.
+
+### Word order
+Complements normally come before the infinitive with **zu**:
+- **sich von jemandem zu verabschieden**
+- **ohne Erlaubnis einzutreten**
+- **langsam und sicher zu fahren**
+- **mit ihm zusammenzuarbeiten**
+
+### Common triggers
+Verbs of intention or will:
+- vorhaben, zu...
+- sich entscheiden, zu...
+- planen, zu...
+- versuchen, zu...
+
+Verbs of opinion or expectation:
+- glauben, zu...
+- hoffen, zu...
+- erwarten, zu...
+
+Verbs of appearance or risk:
+- scheinen, zu...
+- drohen, zu...
+
+Adjective + sein:
+- Es ist wichtig, zu...
+- Es ist schwierig, zu...
+- Es ist möglich, zu...
+
+### Several coordinated infinitives
+- Er hat vor, **zu studieren und später zu arbeiten**.
+- Es ist wichtig, **zu lernen und sich zu verbessern**.
+
+### Common mistakes
+Incorrect: Er versucht, **langsam fahren**.
+Correct: Er versucht, **langsam zu fahren**.
+
+Incorrect: Er plant, **zu eintreten**.
+Correct: Er plant, **einzutreten**.
+
+Incorrect: Es ist schwierig, **von seiner Familie zu trennen**.
+Correct: Es ist schwierig, **sich von seiner Familie zu trennen**.`,
       examples: [
-        { de: "Er hat die Absicht, ohne sich von jemandem zu verabschieden, das Land zu verlassen.", fr: "Il a l'intention de quitter le pays sans dire au revoir à personne.", note: "Proposition infinitive très complexe avec plusieurs éléments." },
-        { de: "Es ist schwierig, sich von seiner Familie zu trennen.", fr: "Il est difficile de se séparer de sa famille.", note: "Avec verbe réfléchi et complément prépositionnel." },
-        { de: "Er versucht, langsam und vorsichtig zu fahren.", fr: "Il essaie de conduire lentement et prudemment.", note: "Avec adverbes." },
-        { de: "Er beschloss, niemals wieder zurückzukommen.", fr: "Il décida de ne jamais revenir.", note: "Avec négation et préfixe séparable." },
-        { de: "Es ist wichtig, rechtzeitig abzureisen.", fr: "Il est important de partir à temps.", note: "Avec adverbe et préfixe séparable." },
-        { de: "Er plant, ohne Erlaubnis einzutreten.", fr: "Il prévoit d'entrer sans permission.", note: "Avec complément prépositionnel et préfixe séparable." },
-        { de: "Er hat vor, zu studieren und später zu arbeiten.", fr: "Il a l'intention d'étudier et de travailler plus tard.", note: "Plusieurs infinitives coordonnées." }
+        { de: "Er hat die Absicht, ohne sich von jemandem zu verabschieden, das Land zu verlassen.", fr: "He intends to leave the country without saying goodbye to anyone.", note: "Complex infinitive clause with several elements." },
+        { de: "Es ist schwierig, sich von seiner Familie zu trennen.", fr: "It is difficult to separate from one's family.", note: "Reflexive verb with a prepositional complement." },
+        { de: "Er versucht, langsam und vorsichtig zu fahren.", fr: "He tries to drive slowly and carefully.", note: "With adverbs." },
+        { de: "Er beschloss, niemals wieder zurückzukommen.", fr: "He decided never to come back again.", note: "Negation with a separable-prefix verb." },
+        { de: "Es ist wichtig, rechtzeitig abzureisen.", fr: "It is important to leave on time.", note: "Time adverb with a separable-prefix verb." },
+        { de: "Er plant, ohne Erlaubnis einzutreten.", fr: "He plans to enter without permission.", note: "Prepositional complement with a separable-prefix verb." },
+        { de: "Er hat vor, zu studieren und später zu arbeiten.", fr: "He intends to study and work later.", note: "Two coordinated infinitive clauses." }
       ]
     }
   ]
 };
-
-

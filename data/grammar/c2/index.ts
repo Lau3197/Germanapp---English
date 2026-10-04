@@ -2,111 +2,126 @@ import { GrammarLevel, LanguageLevel } from '../../../types';
 
 export const c2Grammar: GrammarLevel = {
   level: LanguageLevel.C2,
-  title: "Niveau C2 : La Maîtrise",
-  description: "Perfectionner sa maîtrise de l'allemand à un niveau quasi-natif.",
+  title: "C2 Level: Mastery",
+  description: "Refine your command of German to a near-native level.",
   sections: [
     {
-      title: "6.1 Les Registres de Langue et le Style",
+      title: "6.1 Registers and Style",
       topics: [
         {
           id: "c2-6-1-1",
-          title: "6.1.1 Les différents registres",
-          content: `**Les registres de langue en allemand**
+          title: "6.1.1 Different Registers",
+          content: `**Registers in German**
 
-L'allemand distingue plusieurs registres qu'il est essentiel de maîtriser au niveau C2 :
+At C2 level, you need to recognise and use several registers accurately.
 
-**1. Hochdeutsch (Allemand standard)**
-La langue officielle, utilisée dans les médias, l'administration et l'enseignement.
-• Caractéristiques : grammaire stricte, vocabulaire neutre
-• Usage : contextes formels, écrits officiels
+### 1. Hochdeutsch: standard German
+The official standard used in education, administration, national media, and formal writing.
 
-**2. Umgangssprache (Langue courante)**
-Le registre du quotidien, entre amis et famille.
-• Caractéristiques : contractions, expressions familières
-• Exemples de contractions :
-  - "haben wir" → "ham wir"
-  - "ist das" → "is das"
-  - "einmal" → "mal"
+Features:
+- precise grammar
+- neutral vocabulary
+- expected in official or professional contexts
 
-**3. Gehobene Sprache (Langue soutenue)**
-Utilisée dans la littérature, les discours officiels.
-• Caractéristiques : vocabulaire recherché, structures complexes
-• Exemples :
-  - "bekommen" → "erhalten" (recevoir)
-  - "anfangen" → "beginnen" (commencer)
-  - "sagen" → "äußern" (dire/exprimer)
+### 2. Umgangssprache: everyday spoken German
+The everyday register used with friends, family, colleagues, and in informal speech.
 
-**4. Fachsprache (Langue technique)**
-Vocabulaire spécialisé par domaine.
-• Juridique : "Rechtsbehelfsbelehrung" (instruction sur les voies de recours)
-• Médical : "Differentialdiagnose" (diagnostic différentiel)
-• Économique : "Kapitalflussrechnung" (tableau des flux de trésorerie)
+Features:
+- contractions
+- colloquial expressions
+- relaxed syntax
 
-**5. Jugendsprache (Langage des jeunes)**
-En constante évolution, fortement influencé par l'anglais.
-• "cringe" (gênant)
-• "lost" (perdu/confus)
-• "flexen" (se vanter)`,
+Examples:
+- **haben wir** → **ham wir**
+- **ist das** → **is das**
+- **einmal** → **mal**
+
+### 3. Gehobene Sprache: elevated style
+Used in literature, formal speeches, essays, and refined public language.
+
+Examples:
+- **bekommen** → **erhalten**
+- **anfangen** → **beginnen**
+- **sagen** → **äußern**
+
+### 4. Fachsprache: specialist language
+Technical vocabulary varies by field.
+
+Examples:
+- legal: **Rechtsbehelfsbelehrung**
+- medical: **Differentialdiagnose**
+- economics/accounting: **Kapitalflussrechnung**
+
+### 5. Jugendsprache: youth language
+This register changes quickly and is often influenced by English.
+
+Examples:
+- **cringe**
+- **lost**
+- **flexen**
+
+At C2, the goal is not to imitate every register, but to recognise it and choose your own register deliberately.`,
           examples: [
-            { de: "Könntest du mir bitte behilflich sein?", fr: "Pourrais-tu m'aider ? (soutenu)", note: "Gehobene Sprache" },
-            { de: "Kannste mir mal helfen?", fr: "Tu peux m'aider ? (familier)", note: "Umgangssprache" },
-            { de: "Ich ersuche Sie um Unterstützung.", fr: "Je sollicite votre soutien. (formel)", note: "Amtssprache" }
+            { de: "Könntest du mir bitte behilflich sein?", fr: "Could you please assist me?", note: "Elevated or very polite style." },
+            { de: "Kannste mir mal helfen?", fr: "Can you help me for a sec?", note: "Colloquial spoken German." },
+            { de: "Ich ersuche Sie um Unterstützung.", fr: "I request your support.", note: "Administrative or very formal style." }
           ]
         },
         {
           id: "c2-6-1-2",
-          title: "6.1.2 Nuances stylistiques avancées",
-          content: `**Les subtilités stylistiques**
+          title: "6.1.2 Advanced Stylistic Nuance",
+          content: `**Stylistic subtlety**
 
-**Particules modales avancées**
+### Advanced modal particles
+Modal particles subtly change the tone of a sentence.
 
-Les particules modales nuancent subtilement le sens :
+| Particle | Nuance | Example |
+|---|---|---|
+| schon | reassurance | Das wird **schon** klappen. |
+| eben | resignation | Das ist **eben** so. |
+| halt | fatalistic acceptance | Das ist **halt** das Leben. |
+| wohl | assumption | Er wird **wohl** kommen. |
+| etwa | doubt or surprise | Ist das **etwa** wahr? |
+| bloß | insistence/warning | Vergiss das **bloß** nicht! |
+| ruhig | encouragement/permission | Komm **ruhig** rein! |
 
-| Particule | Nuance | Exemple |
-|-----------|--------|---------|
-| schon | rassurance | "Das wird schon klappen." |
-| eben | résignation | "Das ist eben so." |
-| halt | fatalisme | "Das ist halt das Leben." |
-| wohl | supposition | "Er wird wohl kommen." |
-| etwa | doute/surprise | "Ist das etwa wahr?" |
-| bloß | insistance | "Vergiss das bloß nicht!" |
-| ruhig | encouragement | "Komm ruhig rein!" |
+### Particle combinations
+- **doch mal**: insistent but friendly invitation: Komm doch mal vorbei!
+- **ja wohl**: obviousness or strong judgement: Das ist ja wohl klar!
+- **denn eigentlich**: curious follow-up: Was machst du denn eigentlich?
 
-**Combinaisons de particules**
-• "doch mal" → invitation pressante : "Komm doch mal vorbei!"
-• "ja wohl" → évidence : "Das ist ja wohl klar!"
-• "denn eigentlich" → curiosité : "Was machst du denn eigentlich?"
+### Irony and implication
+Tone can reverse the apparent meaning:
+- Na, das kann ja heiter werden!
+- Das hast du ja toll hingekriegt!
 
-**L'ironie et le sous-entendu**
-• "Na, das kann ja heiter werden!" (Ça promet ! - ironique)
-• "Das hast du ja toll hingekriegt!" (selon le ton : compliment ou reproche)
+Depending on intonation, the second sentence can be praise or criticism.
 
-**Le hedging (atténuation)**
-Techniques pour nuancer ses propos :
-• "gewissermaßen" (en quelque sorte)
-• "sozusagen" (pour ainsi dire)
-• "im Grunde genommen" (au fond)
-• "wenn ich mich nicht irre" (si je ne m'abuse)`,
+### Hedging
+Hedging softens or qualifies a statement:
+- **gewissermaßen**: in a sense
+- **sozusagen**: so to speak
+- **im Grunde genommen**: basically / at bottom
+- **wenn ich mich nicht irre**: if I am not mistaken`,
           examples: [
-            { de: "Das ist wohl kaum zu glauben.", fr: "C'est à peine croyable.", note: "'wohl' atténue l'affirmation" },
-            { de: "Du könntest ruhig mal anrufen.", fr: "Tu pourrais appeler de temps en temps.", note: "Reproche atténué" },
-            { de: "Das war ja wohl nichts!", fr: "C'était nul !", note: "Critique renforcée" }
+            { de: "Das ist wohl kaum zu glauben.", fr: "That is hardly believable.", note: "wohl softens and frames the judgement." },
+            { de: "Du könntest ruhig mal anrufen.", fr: "You could call once in a while.", note: "A softened reproach." },
+            { de: "Das war ja wohl nichts!", fr: "That was no good at all.", note: "Strong criticism reinforced by particles." }
           ]
         }
       ]
     },
     {
-      title: "6.2 Structures Littéraires et Archaïques",
+      title: "6.2 Literary and Archaic Structures",
       topics: [
         {
           id: "c2-6-2-1",
-          title: "6.2.1 Le Konjunktiv I - Maîtrise complète",
-          content: `**Le Konjunktiv I : usage avancé**
+          title: "6.2.1 Konjunktiv I: Full Mastery",
+          content: `**Advanced use of Konjunktiv I**
 
-**Formation complète**
-
-| Personne | sein | haben | werden | können |
-|----------|------|-------|--------|--------|
+### Complete formation
+| Person | sein | haben | werden | können |
+|---|---|---|---|---|
 | ich | sei | habe | werde | könne |
 | du | seiest | habest | werdest | könnest |
 | er/sie/es | sei | habe | werde | könne |
@@ -114,487 +129,497 @@ Techniques pour nuancer ses propos :
 | ihr | seiet | habet | werdet | könnet |
 | sie/Sie | seien | haben | werden | können |
 
-**Usages au niveau C2**
+### C2 uses
+#### 1. Formal reported speech
+Used in journalism, academic writing, official reports, and formal summaries.
 
-**1. Discours indirect formel (presse, académique)**
-• Er sagte, er **sei** müde. (Il a dit qu'il était fatigué.)
-• Sie behauptet, sie **habe** nichts gewusst.
+Examples:
+- Er sagte, er **sei** müde.
+- Sie behauptet, sie **habe** nichts gewusst.
 
-**2. Souhaits et formules figées**
-• "Es **lebe** der König!" (Vive le roi !)
-• "**Möge** er in Frieden ruhen."
-• "**Gott sei Dank**!" (Dieu merci !)
-• "**Wie dem auch sei**..." (Quoi qu'il en soit...)
+#### 2. Wishes and fixed formulas
+- Es **lebe** der König!
+- **Möge** er in Frieden ruhen.
+- **Gott sei Dank**!
+- **Wie dem auch sei**...
 
-**3. Instructions (recettes, notices)**
-• "Man **nehme** zwei Eier..." (Prenez deux œufs...)
-• "Man **beachte** die Sicherheitshinweise."
+#### 3. Instructions and recipes
+- Man **nehme** zwei Eier...
+- Man **beachte** die Sicherheitshinweise.
 
-**4. Concession avec "sei"**
-• "**Sei** es nun richtig oder falsch..." (Que ce soit vrai ou faux...)
-• "**Sei** es, wie es **wolle**..." (Quoi qu'il advienne...)
+#### 4. Concessive formulas with sei
+- **Sei** es nun richtig oder falsch...
+- **Sei** es, wie es **wolle**...
 
-**Remplacement par Konjunktiv II**
-Quand le Konjunktiv I est identique à l'indicatif :
-• "Sie sagten, sie haben..." → "Sie sagten, sie **hätten**..."`,
+### Substitution with Konjunktiv II
+When the Konjunktiv I form is identical to the indicative, German often replaces it with Konjunktiv II:
+- Sie sagten, sie haben... → Sie sagten, sie **hätten**...
+
+At C2 level, you should recognise both the strict formal system and the stylistic choices writers make.`,
           examples: [
-            { de: "Der Minister erklärte, die Lage sei unter Kontrolle.", fr: "Le ministre a déclaré que la situation était sous contrôle.", note: "Style journalistique" },
-            { de: "Man bedenke, dass Rom nicht an einem Tag erbaut wurde.", fr: "Considérons que Rome ne s'est pas construite en un jour.", note: "Style littéraire" },
-            { de: "Seien wir ehrlich: Das ist ein Problem.", fr: "Soyons honnêtes : c'est un problème.", note: "Formule rhétorique" }
+            { de: "Der Minister erklärte, die Lage sei unter Kontrolle.", fr: "The minister stated that the situation was under control.", note: "Journalistic style." },
+            { de: "Man bedenke, dass Rom nicht an einem Tag erbaut wurde.", fr: "Consider that Rome was not built in a day.", note: "Literary or rhetorical style." },
+            { de: "Seien wir ehrlich: Das ist ein Problem.", fr: "Let us be honest: this is a problem.", note: "Rhetorical formula." }
           ]
         },
         {
           id: "c2-6-2-2",
-          title: "6.2.2 Constructions littéraires et poétiques",
-          content: `**Structures de la langue littéraire**
+          title: "6.2.2 Literary and Poetic Constructions",
+          content: `**Structures of literary German**
 
-**1. Le génitif antéposé (littéraire/archaïque)**
-Structure : Génitif + Nom
-• "**Des Menschen** Wille" (La volonté de l'homme)
-• "**Gottes** Wege sind unergründlich" (Les voies de Dieu sont impénétrables)
-• "**Der Liebe** Macht" (Le pouvoir de l'amour)
+### 1. Preposed genitive
+Structure: genitive + noun. This is literary or archaic.
 
-**2. Inversion stylistique**
-Placer l'élément important en première position :
-• "Schön **war** die Zeit." (au lieu de "Die Zeit war schön.")
-• "Groß **ist** seine Güte."
-• "Vergessen **werde** ich das nie."
+Examples:
+- **Des Menschen** Wille
+- **Gottes** Wege sind unergründlich.
+- **Der Liebe** Macht
 
-**3. Participe I étendu (Partizipialattribut)**
-Structure : article + [participe + compléments] + nom
-• "der **im Garten spielende** Junge"
-  (le garçon jouant dans le jardin)
-• "die **von allen geliebte** Großmutter"
-  (la grand-mère aimée de tous)
-• "ein **seit Jahren nicht mehr gefahrener** Zug"
-  (un train qui n'a plus circulé depuis des années)
+### 2. Stylistic inversion
+An important element is placed first:
+- Schön **war** die Zeit.
+- Groß **ist** seine Güte.
+- Vergessen **werde** ich das nie.
 
-**4. Le passif impersonnel étendu**
-• "Es wurde getanzt und gelacht."
-  (On a dansé et ri.)
-• "Hier wird nicht geraucht!"
-  (On ne fume pas ici !)
+### 3. Extended participial attribute
+Structure: article + [participle + complements] + noun
 
-**5. Formules archaïques encore utilisées**
-• "dessen ungeachtet" (nonobstant cela)
-• "nichtsdestotrotz" / "nichtsdestoweniger" (néanmoins)
-• "meines Erachtens" (à mon avis - formel)
-• "kraft meines Amtes" (en vertu de ma fonction)`,
+Examples:
+- der **im Garten spielende** Junge
+- die **von allen geliebte** Großmutter
+- ein **seit Jahren nicht mehr gefahrener** Zug
+
+### 4. Extended impersonal passive
+- Es wurde getanzt und gelacht.
+- Hier wird nicht geraucht!
+
+### 5. Archaic or elevated formulas still used
+- **dessen ungeachtet**: notwithstanding that
+- **nichtsdestotrotz / nichtsdestoweniger**: nevertheless
+- **meines Erachtens**: in my opinion, formally
+- **kraft meines Amtes**: by virtue of my office`,
           examples: [
-            { de: "Des Lebens Mühen sind vergessen.", fr: "Les peines de la vie sont oubliées.", note: "Génitif antéposé" },
-            { de: "Die seit Wochen auf eine Antwort wartenden Kunden wurden informiert.", fr: "Les clients attendant une réponse depuis des semaines ont été informés.", note: "Partizipialattribut étendu" },
-            { de: "Dessen ungeachtet müssen wir weitermachen.", fr: "Nonobstant cela, nous devons continuer.", note: "Style administratif/juridique" }
+            { de: "Des Lebens Mühen sind vergessen.", fr: "Life's hardships are forgotten.", note: "Preposed genitive." },
+            { de: "Die seit Wochen auf eine Antwort wartenden Kunden wurden informiert.", fr: "The customers who had been waiting for an answer for weeks were informed.", note: "Extended participial attribute." },
+            { de: "Dessen ungeachtet müssen wir weitermachen.", fr: "Notwithstanding that, we must continue.", note: "Administrative or legal style." }
           ]
         }
       ]
     },
     {
-      title: "6.3 Variations Régionales et Dialectes",
+      title: "6.3 Regional Variation and Dialects",
       topics: [
         {
           id: "c2-6-3-1",
-          title: "6.3.1 L'allemand standard vs les dialectes",
-          content: `**La diversité linguistique de l'espace germanophone**
+          title: "6.3.1 Standard German vs Dialects",
+          content: `**Linguistic diversity in the German-speaking world**
 
-**Hochdeutsch vs Dialekte**
+Standard German coexists with many regional varieties and dialects. At C2 level, you should be able to recognise major regional markers and adjust your own register.
 
-L'allemand standard (Hochdeutsch) coexiste avec de nombreux dialectes :
+### 1. Northern varieties: Niederdeutsch / Plattdeutsch
+Associated with northern Germany, including areas such as Hamburg, Bremen, and Lower Saxony.
 
-**1. Dialectes du Nord (Niederdeutsch/Plattdeutsch)**
-• Hambourg, Brême, Basse-Saxe
-• Caractéristiques :
-  - Absence de la mutation consonantique
-  - "ik" au lieu de "ich"
-  - "Water" au lieu de "Wasser"
+Typical markers:
+- forms such as **ik** instead of **ich**
+- forms such as **Water** instead of **Wasser**
+- historically different sound shifts from High German
 
-**2. Dialectes du Centre (Mitteldeutsch)**
-• Berlin, Saxe, Thuringe
-• Berlinerisch : "Ick bin een Berliner"
-• Sächsisch : prononciation douce des consonnes
+### 2. Central German varieties: Mitteldeutsch
+Includes varieties associated with Berlin, Saxony, and Thuringia.
 
-**3. Dialectes du Sud (Oberdeutsch)**
-• **Bairisch** (Bavière, Autriche)
-  - "Grüß Gott" (Bonjour)
-  - "Servus" (Salut)
-  - "I mog di" (Je t'aime bien)
-  
-• **Alemannisch** (Suisse, Alsace, Bade-Wurtemberg)
-  - "Grüezi" (Bonjour - Suisse)
-  - "Sali" (Salut)
+Examples:
+- Berlinerisch: **Ick bin een Berliner**
+- Saxon varieties often have characteristic softer consonant realisations.
 
-**Différences grammaticales notables**
+### 3. Southern varieties: Oberdeutsch
+**Bairisch**: Bavaria and Austria
+- **Grüß Gott**
+- **Servus**
+- **I mog di**
 
-| Standard | Bavière | Suisse | Signification |
-|----------|---------|--------|---------------|
-| nicht | ned/net | nöd | pas |
-| ich bin | i bin | ich bi | je suis |
-| es gibt | es gibt | es git | il y a |
-| wir haben | mir ham | mir händ | nous avons |
+**Alemannisch**: Switzerland, Alsace, Baden-Württemberg and neighbouring areas
+- **Grüezi**
+- **Sali**
 
-**L'allemand autrichien (Österreichisches Deutsch)**
-Vocabulaire officiel différent :
-• Kartoffel → Erdapfel (pomme de terre)
-• Tomate → Paradeiser (tomate)
-• Schlagsahne → Schlagobers (crème fouettée)
-• Januar → Jänner (janvier)`,
+### Broad comparison
+| Standard | Bavarian/Austrian examples | Swiss German examples | Meaning |
+|---|---|---|---|
+| nicht | ned / net | nöd | not |
+| ich bin | i bin | ich bi | I am |
+| es gibt | es gibt | es git | there is/are |
+| wir haben | mir ham | mir händ | we have |
+
+These examples are orientation points, not a full dialect map. Actual usage varies strongly by region and speaker.
+
+### Austrian German
+Some standard Austrian words differ from standard German usage in Germany:
+- **Erdapfel** for potato
+- **Paradeiser** for tomato
+- **Schlagobers** for whipped cream
+- **Jänner** for January`,
           examples: [
-            { de: "Mia san mia! (Bairisch)", fr: "Nous sommes ce que nous sommes !", note: "Devise bavaroise célèbre" },
-            { de: "Grüezi mitenand! (Schweizerdeutsch)", fr: "Bonjour à tous !", note: "Salutation suisse" },
-            { de: "Dit is ja janz toll! (Berlinerisch)", fr: "C'est vraiment super !", note: "Dialecte berlinois" }
+            { de: "Mia san mia! (Bairisch)", fr: "We are who we are.", note: "Well-known Bavarian expression." },
+            { de: "Grüezi mitenand! (Schweizerdeutsch)", fr: "Hello everyone.", note: "Swiss greeting." },
+            { de: "Dit is ja janz toll! (Berlinerisch)", fr: "That is really great.", note: "Berlin dialect colouring." }
           ]
         },
         {
           id: "c2-6-3-2",
-          title: "6.3.2 Comprendre et adapter son registre",
-          content: `**S'adapter aux contextes régionaux**
+          title: "6.3.2 Understanding and Adapting Your Register",
+          content: `**Adapting to regional contexts**
 
-**Expressions régionales courantes**
+### Common regional expressions
+Northern Germany:
+- **Moin! / Moin moin!**: greeting used beyond the morning
+- **plietsch**: clever, sharp
+- **Tschüs**: goodbye, strongly associated with northern usage historically but now widespread
 
-**Allemagne du Nord**
-• "Moin!" / "Moin moin!" - Salutation universelle (matin/soir)
-• "plietsch" - intelligent, malin
-• "Tschüs" - Au revoir (origine du Nord)
+Southern Germany and Austria:
+- **Grüß Gott!**: formal greeting
+- **Pfiat di!**: goodbye, literally a blessing formula
+- **Bussi**: kiss
+- **leiwand**: great, excellent, especially Austrian colloquial usage
 
-**Allemagne du Sud / Autriche**
-• "Grüß Gott!" - Bonjour (littéralement "Salue Dieu")
-• "Pfiat di!" - Au revoir (que Dieu te protège)
-• "Bussi" - Bisou
-• "leiwand" (autrichien) - super, génial
+Switzerland:
+- **Grüezi**: formal hello
+- **Merci vilmal**: thank you very much
+- **Es freut mich**: pleased to meet you
+- **Chrüsimüsi**: mess, jumble
 
-**Suisse**
-• "Grüezi" - Bonjour formel
-• "Merci vilmal" - Merci beaucoup
-• "Es freut mich" - Enchanté
-• "Chrüsimüsi" - Désordre, bazar
+### Denglisch
+Denglisch mixes German and English and is common in business, technology, youth speech, and advertising.
 
-**Le phénomène du "Denglisch"**
-Mélange allemand-anglais, très répandu :
-• "Ich habe das gedownloadet."
-• "Das ist very important."
-• "Wir müssen das asap machen."
-• "Lass uns das Thema mal pitchen."
+Examples:
+- Ich habe das gedownloadet.
+- Das ist very important.
+- Wir müssen das asap machen.
+- Lass uns das Thema mal pitchen.
 
-**Faux amis régionaux**
+### Regional vocabulary
+Some words are regionally marked, and their status depends on country, region, and register.
 
-| Mot | Allemagne | Autriche/Suisse |
-|-----|-----------|-----------------|
-| Paradeiser | ? | Tomate |
-| Trottoir | trottoir | Bürgersteig |
-| Velo | ? | Fahrrad |
-| heuer | jadis | cette année |`,
+Examples:
+- **Velo** is common in Switzerland for bicycle.
+- **Paradeiser** is common in Austria for tomato.
+- **heuer** means "this year" in Austrian and southern usage, and can sound regional or literary elsewhere.
+- **Trottoir** is used in Swiss and some regional/formal contexts for pavement/sidewalk.
+
+At C2, the key skill is not using dialect randomly, but recognising it and deciding whether standard German, regional language, or colloquial language is appropriate.`,
           examples: [
-            { de: "In Bayern sagt man 'Servus' zur Begrüßung und zum Abschied.", fr: "En Bavière, on dit 'Servus' pour dire bonjour et au revoir.", note: "Polyvalence régionale" },
-            { de: "Das Wort 'geil' war früher vulgär, ist heute umgangssprachlich normal.", fr: "Le mot 'geil' était autrefois vulgaire, aujourd'hui c'est familier.", note: "Évolution du registre" }
+            { de: "In Bayern sagt man 'Servus' zur Begrüßung und zum Abschied.", fr: "In Bavaria, 'Servus' can be used both as a greeting and as a farewell.", note: "Regional flexibility." },
+            { de: "Das Wort 'geil' war früher vulgär, ist heute umgangssprachlich normal.", fr: "The word 'geil' used to be vulgar; today it is normal colloquial usage in many contexts.", note: "Register change over time." }
           ]
         }
       ]
     },
     {
-      title: "6.4 Rhétorique et Argumentation Avancée",
+      title: "6.4 Rhetoric and Advanced Argumentation",
       topics: [
         {
           id: "c2-6-4-1",
-          title: "6.4.1 Techniques rhétoriques",
-          content: `**L'art de la rhétorique en allemand**
+          title: "6.4.1 Rhetorical Techniques",
+          content: `**The art of rhetoric in German**
 
-**Connecteurs argumentatifs avancés**
+### Advanced argumentative connectors
+To introduce:
+- **Zunächst einmal...**
+- **An erster Stelle...**
+- **Vorweg sei gesagt...**
 
-**Pour introduire**
-• "Zunächst einmal..." (Tout d'abord...)
-• "An erster Stelle..." (En premier lieu...)
-• "Vorweg sei gesagt..." (Disons d'emblée...)
+To develop:
+- **Darüber hinaus...**
+- **Hinzu kommt, dass...**
+- **Ferner ist zu beachten...**
+- **In diesem Zusammenhang...**
 
-**Pour développer**
-• "Darüber hinaus..." (En outre...)
-• "Hinzu kommt, dass..." (À cela s'ajoute que...)
-• "Ferner ist zu beachten..." (Il faut également noter...)
-• "In diesem Zusammenhang..." (Dans ce contexte...)
+To nuance:
+- **Zwar... aber...**
+- **Einerseits... andererseits...**
+- **Wenngleich... so...**
+- **Unbeschadet dessen...**
 
-**Pour nuancer**
-• "Zwar... aber..." (Certes... mais...)
-• "Einerseits... andererseits..." (D'une part... d'autre part...)
-• "Wenngleich... so..." (Bien que... cependant...)
-• "Unbeschadet dessen..." (Sans préjudice de cela...)
+To conclude:
+- **Zusammenfassend lässt sich sagen...**
+- **Alles in allem...**
+- **Im Endeffekt...**
+- **Schlussendlich...**
 
-**Pour conclure**
-• "Zusammenfassend lässt sich sagen..." (En résumé, on peut dire...)
-• "Alles in allem..." (Tout compte fait...)
-• "Im Endeffekt..." (En fin de compte...)
-• "Schlussendlich..." (Finalement...)
+### Common rhetorical figures
+| Figure | German term | Example |
+|---|---|---|
+| antithesis | Antithese | Klein, aber fein. |
+| metaphor | Metapher | Das Leben ist eine Reise. |
+| hyperbole | Hyperbel | Ich sterbe vor Hunger. |
+| litotes | Litotes | nicht uninteressant |
+| euphemism | Euphemismus | von uns gehen |
 
-**Figures de style courantes**
-
-| Figure | Allemand | Exemple |
-|--------|----------|---------|
-| Antithèse | Antithese | "Klein, aber fein." |
-| Métaphore | Metapher | "Das Leben ist eine Reise." |
-| Hyperbole | Hyperbel | "Ich sterbe vor Hunger." |
-| Litote | Litotes | "nicht uninteressant" (= intéressant) |
-| Euphémisme | Euphemismus | "von uns gehen" (= mourir) |`,
+At C2, rhetorical structures should support clarity. A text becomes stronger when the rhetorical device fits the argument, not when it is merely decorative.`,
           examples: [
-            { de: "Zwar mag diese Lösung kurzfristig teuer erscheinen, langfristig jedoch wird sie sich auszahlen.", fr: "Certes, cette solution peut sembler coûteuse à court terme, mais à long terme, elle sera rentable.", note: "Structure concessive" },
-            { de: "Zusammenfassend lässt sich festhalten, dass die Vorteile die Nachteile bei Weitem überwiegen.", fr: "En résumé, on peut constater que les avantages l'emportent largement sur les inconvénients.", note: "Conclusion argumentée" }
+            { de: "Zwar mag diese Lösung kurzfristig teuer erscheinen, langfristig jedoch wird sie sich auszahlen.", fr: "Admittedly, this solution may seem expensive in the short term, but in the long term it will pay off.", note: "Concessive structure." },
+            { de: "Zusammenfassend lässt sich festhalten, dass die Vorteile die Nachteile bei Weitem überwiegen.", fr: "In summary, it can be stated that the advantages far outweigh the disadvantages.", note: "Argumentative conclusion." }
           ]
         },
         {
           id: "c2-6-4-2",
-          title: "6.4.2 Expression des opinions nuancées",
-          content: `**Exprimer des opinions avec finesse**
+          title: "6.4.2 Expressing Nuanced Opinions",
+          content: `**Expressing opinions with precision**
 
-**Degrés de certitude**
+### Degrees of certainty
+Absolute certainty:
+- **Es steht fest, dass...**
+- **Zweifellos... / Ohne Zweifel...**
+- **Es ist unbestritten, dass...**
 
-**Certitude absolue**
-• "Es steht fest, dass..." (Il est établi que...)
-• "Zweifellos..." / "Ohne Zweifel..." (Sans aucun doute...)
-• "Es ist unbestritten, dass..." (Il est incontestable que...)
+Strong probability:
+- **Es ist sehr wahrscheinlich, dass...**
+- **Allem Anschein nach...**
+- **Es deutet alles darauf hin, dass...**
 
-**Forte probabilité**
-• "Es ist sehr wahrscheinlich, dass..." (Il est très probable que...)
-• "Allem Anschein nach..." (Selon toute apparence...)
-• "Es deutet alles darauf hin, dass..." (Tout indique que...)
+Moderate probability:
+- **Es könnte sein, dass...**
+- **Möglicherweise...**
+- **Es ist nicht auszuschließen, dass...**
 
-**Probabilité modérée**
-• "Es könnte sein, dass..." (Il se pourrait que...)
-• "Möglicherweise..." (Possiblement...)
-• "Es ist nicht auszuschließen, dass..." (On ne peut exclure que...)
+Uncertainty or doubt:
+- **Es bleibt fraglich, ob...**
+- **Es ist zweifelhaft, ob...**
+- **Man darf bezweifeln, dass...**
 
-**Incertitude/Doute**
-• "Es bleibt fraglich, ob..." (Il reste à savoir si...)
-• "Es ist zweifelhaft, ob..." (Il est douteux que...)
-• "Man darf bezweifeln, dass..." (On peut douter que...)
+### Distancing formulas
+Use these to report without committing yourself:
+- **angeblich**: allegedly
+- **vermeintlich**: supposedly, purported
+- **den Aussagen zufolge**: according to the statements
+- **wie verlautet**: as is being reported
 
-**Formules de distanciation**
-Pour rapporter sans s'engager :
-• "angeblich" (prétendument)
-• "vermeintlich" (supposément)
-• "den Aussagen zufolge" (selon les déclarations)
-• "wie verlautet" (selon ce qui se dit)
-
-**Exprimer le désaccord poliment**
-• "Da muss ich Ihnen leider widersprechen."
-• "Mit Verlaub, das sehe ich anders."
-• "Erlauben Sie mir, eine andere Sichtweise einzubringen."
-• "Bei allem Respekt, ich bin anderer Meinung."`,
+### Polite disagreement
+- Da muss ich Ihnen leider widersprechen.
+- Mit Verlaub, das sehe ich anders.
+- Erlauben Sie mir, eine andere Sichtweise einzubringen.
+- Bei allem Respekt, ich bin anderer Meinung.`,
           examples: [
-            { de: "Es ist nicht von der Hand zu weisen, dass diese Entwicklung besorgniserregend ist.", fr: "On ne peut nier que cette évolution est préoccupante.", note: "Concession élégante" },
-            { de: "Mit Verlaub gesagt, diese Argumentation greift meines Erachtens zu kurz.", fr: "Permettez-moi de dire que cette argumentation me semble insuffisante.", note: "Critique respectueuse" }
+            { de: "Es ist nicht von der Hand zu weisen, dass diese Entwicklung besorgniserregend ist.", fr: "It cannot be denied that this development is worrying.", note: "Elegant concession." },
+            { de: "Mit Verlaub gesagt, diese Argumentation greift meines Erachtens zu kurz.", fr: "With all due respect, this argument does not go far enough in my view.", note: "Respectful criticism." }
           ]
         }
       ]
     },
     {
-      title: "6.5 Subtilités Grammaticales Avancées",
+      title: "6.5 Advanced Grammatical Subtleties",
       topics: [
         {
           id: "c2-6-5-1",
-          title: "6.5.1 Constructions complexes",
-          content: `**Structures grammaticales de haut niveau**
+          title: "6.5.1 Complex Constructions",
+          content: `**High-level grammatical structures**
 
-**1. Double infinitif au passé**
-Avec les verbes modaux et certains verbes de perception :
-• "Er hat das nicht machen **können**." (Il n'a pas pu faire ça.)
-• "Sie hat ihn kommen **sehen**." (Elle l'a vu venir.)
-• "Ich habe es dir sagen **wollen**." (J'ai voulu te le dire.)
+### 1. Double infinitive in the perfect
+With modal verbs and some perception verbs, the expected past participle is replaced by an infinitive.
 
-**Ordre dans la subordonnée :**
-• "..., weil er es nicht hat machen **können**."
-  (Le verbe conjugué passe AVANT les infinitifs)
+Examples:
+- Er hat das nicht machen **können**.
+- Sie hat ihn kommen **sehen**.
+- Ich habe es dir sagen **wollen**.
 
-**2. Le "Genitivus partitivus"**
-Expression de la quantité avec le génitif (style soutenu) :
-• "ein Glas **guten Weines**" (un verre de bon vin)
-• "eine Tasse **heißen Kaffees**" (une tasse de café chaud)
-• "voll **des Lobes**" (plein de louanges)
+In subordinate clauses, the finite auxiliary moves before the infinitive group:
+- ..., weil er es nicht **hat machen können**.
 
-**3. Relatives au génitif avec "dessen/deren"**
-• "Der Mann, **dessen** Auto gestohlen wurde..."
-• "Die Frau, **deren** Kinder hier spielen..."
-• "Das Haus, **dessen** Dach beschädigt ist..."
+### 2. Genitivus partitivus
+This is a genitive of quantity, typical of elevated style.
 
-**4. Constructions avec "zu + Infinitiv" avancées**
+Examples:
+- ein Glas **guten Weines**
+- eine Tasse **heißen Kaffees**
+- voll **des Lobes**
 
-**anstatt... zu + Inf.** (au lieu de)
-• "Anstatt zu arbeiten, spielte er."
+### 3. Genitive relative pronouns: dessen / deren
+Examples:
+- Der Mann, **dessen** Auto gestohlen wurde...
+- Die Frau, **deren** Kinder hier spielen...
+- Das Haus, **dessen** Dach beschädigt ist...
 
-**ohne... zu + Inf.** (sans)
-• "Er ging, ohne sich zu verabschieden."
+### 4. Advanced zu-infinitive constructions
+**anstatt... zu + infinitive**
+- Anstatt zu arbeiten, spielte er.
 
-**um... zu + Inf.** (pour/afin de)
-• "Ich lerne Deutsch, um in Deutschland zu studieren."
+**ohne... zu + infinitive**
+- Er ging, ohne sich zu verabschieden.
 
-**5. Le "es" explétif**
-• "Es wird erzählt, dass..." (On raconte que...)
-• "Es heißt, dass..." (On dit que...)
-• "Es gilt als sicher, dass..." (Il est considéré comme certain que...)`,
+**um... zu + infinitive**
+- Ich lerne Deutsch, um in Deutschland zu studieren.
+
+### 5. Expletive es
+German often uses **es** as a formal placeholder.
+
+Examples:
+- **Es** wird erzählt, dass...
+- **Es** heißt, dass...
+- **Es** gilt als sicher, dass...`,
           examples: [
-            { de: "Das ist der Autor, dessen letztes Buch zum Bestseller wurde.", fr: "C'est l'auteur dont le dernier livre est devenu un best-seller.", note: "Relative au génitif" },
-            { de: "Er behauptete, das Problem gelöst zu haben.", fr: "Il prétendait avoir résolu le problème.", note: "Infinitif passé" },
-            { de: "Sie hat das Buch lesen wollen, aber nicht können.", fr: "Elle a voulu lire le livre mais n'a pas pu.", note: "Double infinitif" }
+            { de: "Das ist der Autor, dessen letztes Buch zum Bestseller wurde.", fr: "That is the author whose latest book became a bestseller.", note: "Genitive relative pronoun." },
+            { de: "Er behauptete, das Problem gelöst zu haben.", fr: "He claimed to have solved the problem.", note: "Past infinitive." },
+            { de: "Sie hat das Buch lesen wollen, aber nicht können.", fr: "She wanted to read the book but could not.", note: "Double infinitive." }
           ]
         },
         {
           id: "c2-6-5-2",
-          title: "6.5.2 Nuances du passif et alternatives",
-          content: `**Maîtrise complète du passif**
+          title: "6.5.2 Passive Nuances and Alternatives",
+          content: `**Full command of passive meaning**
 
-**1. Passif avec verbes à complément datif**
-Le complément datif devient sujet sans changer de cas :
-• "Mir wurde geholfen." (On m'a aidé.)
-• "Ihm wird gratuliert." (On le félicite.)
-• "Ihr wurde gekündigt." (Elle a été licenciée.)
+### 1. Passive with dative verbs
+With verbs that govern a dative complement, the dative remains dative. It does not become a nominative subject.
 
-**2. Passif impersonnel**
-Quand il n'y a pas de sujet logique :
-• "Es wurde viel gelacht." (On a beaucoup ri.)
-• "Hier wird nicht geraucht." (On ne fume pas ici.)
-• "Es wurde bis spät in die Nacht gefeiert."
+Examples:
+- **Mir** wurde geholfen.
+- **Ihm** wird gratuliert.
+- **Ihr** wurde gekündigt.
 
-**3. Alternatives au passif (niveau C2)**
+### 2. Impersonal passive
+Used when there is no logical subject or when the action itself matters.
 
-**"sich lassen + Infinitiv"** (possibilité)
-• "Das lässt sich machen." (Ça peut se faire.)
-• "Das Problem lässt sich lösen."
+Examples:
+- Es wurde viel gelacht.
+- Hier wird nicht geraucht.
+- Es wurde bis spät in die Nacht gefeiert.
 
-**"sein + zu + Infinitiv"** (nécessité/possibilité)
-• "Das ist zu beachten." (C'est à noter.)
-• "Die Arbeit ist bis morgen abzugeben."
+### 3. Passive alternatives at C2 level
+**sich lassen + infinitive**: possibility
+- Das lässt sich machen.
+- Das Problem lässt sich lösen.
 
-**"bleiben + zu + Infinitiv"** (reste à faire)
-• "Es bleibt abzuwarten." (Il reste à voir.)
-• "Das bleibt noch zu klären."
+**sein + zu + infinitive**: necessity or possibility
+- Das ist zu beachten.
+- Die Arbeit ist bis morgen abzugeben.
 
-**"bekommen/kriegen + Partizip II"** (Rezipientenpassiv)
-• "Er bekam das Buch geschenkt." (On lui a offert le livre.)
-• "Sie kriegt den Kaffee gebracht."
+**bleiben + zu + infinitive**: remains to be done
+- Es bleibt abzuwarten.
+- Das bleibt noch zu klären.
 
-**"gehören + Partizip II"** (mérite d'être)
-• "Das gehört bestraft." (Ça mérite punition.)
-• "Er gehört gelobt." (Il mérite d'être loué.)`,
+**bekommen/kriegen + Partizip II**: recipient passive
+- Er bekam das Buch geschenkt.
+- Sie kriegt den Kaffee gebracht.
+
+**gehören + Partizip II**: deserves to be
+- Das gehört bestraft.
+- Er gehört gelobt.
+
+Some of these alternatives are colloquial or register-sensitive. At C2, the important skill is choosing them deliberately.`,
           examples: [
-            { de: "Dieses Verhalten lässt sich nicht rechtfertigen.", fr: "Ce comportement ne peut se justifier.", note: "Alternative au passif avec 'lassen'" },
-            { de: "Die Frist ist unbedingt einzuhalten.", fr: "Le délai doit absolument être respecté.", note: "'sein + zu + Inf.' = obligation" },
-            { de: "Er bekam die Stelle angeboten.", fr: "On lui a proposé le poste.", note: "Rezipientenpassiv" }
+            { de: "Dieses Verhalten lässt sich nicht rechtfertigen.", fr: "This behaviour cannot be justified.", note: "Passive alternative with lassen." },
+            { de: "Die Frist ist unbedingt einzuhalten.", fr: "The deadline must absolutely be observed.", note: "sein + zu + infinitive expresses obligation." },
+            { de: "Er bekam die Stelle angeboten.", fr: "He was offered the position.", note: "Recipient passive." }
           ]
         }
       ]
     },
     {
-      title: "6.6 Compétences Textuelles Avancées",
+      title: "6.6 Advanced Textual Skills",
       topics: [
         {
           id: "c2-6-6-1",
-          title: "6.6.1 Rédaction académique et professionnelle",
-          content: `**Conventions de l'écriture formelle**
+          title: "6.6.1 Academic and Professional Writing",
+          content: `**Conventions of formal writing**
 
-**Structure d'un texte argumentatif**
+### Structure of an argumentative text
+1. **Einleitung**
+- introduce the topic
+- present the central question or thesis
+- outline the structure
 
-**1. Einleitung (Introduction)**
-• Présentation du sujet
-• Thèse ou question centrale
-• Annonce du plan
+2. **Hauptteil**
+- develop structured arguments
+- give examples and evidence
+- address counterarguments
 
-**2. Hauptteil (Développement)**
-• Arguments structurés
-• Exemples et preuves
-• Contre-arguments et réfutation
+3. **Schluss**
+- summarise the argument
+- give an outlook, recommendation, or final judgement
 
-**3. Schluss (Conclusion)**
-• Synthèse
-• Ouverture ou recommandation
+### Essential academic formulas
+To define:
+- **Unter X versteht man...**
+- **X wird definiert als...**
+- **Im Sinne dieser Arbeit bedeutet X...**
 
-**Formules académiques essentielles**
+To cite:
+- **Laut + dative / Nach + dative**
+- **Wie X (Jahr) feststellt,...**
+- **X zufolge...**
 
-**Pour définir**
-• "Unter X versteht man..." (Par X, on entend...)
-• "X wird definiert als..." (X est défini comme...)
-• "Im Sinne dieser Arbeit bedeutet X..."
+To analyse:
+- **Es fällt auf, dass...**
+- **Bei näherer Betrachtung zeigt sich...**
+- **Aus X ergibt sich...**
 
-**Pour citer**
-• "Laut + Dat. / Nach + Dat." (Selon...)
-• "Wie X (Jahr) feststellt,..." (Comme X (année) le constate,...)
-• "X zufolge..." (Selon X...)
+To compare:
+- **Im Vergleich zu...**
+- **Im Gegensatz zu...**
+- **Analog zu...**
 
-**Pour analyser**
-• "Es fällt auf, dass..." (On remarque que...)
-• "Bei näherer Betrachtung zeigt sich..." (À y regarder de plus près...)
-• "Aus X ergibt sich..." (De X, il résulte...)
-
-**Pour comparer**
-• "Im Vergleich zu..." (En comparaison avec...)
-• "Im Gegensatz zu..." (Contrairement à...)
-• "Analog zu..." (De manière analogue à...)
-
-**Connecteurs de haut niveau**
-
-| Fonction | Connecteur |
-|----------|------------|
-| Cause | aufgrund + Gen., infolge + Gen. |
-| Conséquence | demzufolge, folglich, infolgedessen |
-| Concession | wenngleich, obschon, ungeachtet + Gen. |
-| But | zwecks + Gen., behufs + Gen. (archaïque) |`,
+### High-level connectors
+| Function | Connector |
+|---|---|
+| Cause | aufgrund + genitive, infolge + genitive |
+| Consequence | demzufolge, folglich, infolgedessen |
+| Concession | wenngleich, obschon, ungeachtet + genitive |
+| Purpose | zwecks + genitive, behufs + genitive (archaic) |`,
           examples: [
-            { de: "Aufgrund der vorliegenden Daten lässt sich schlussfolgern, dass...", fr: "Sur la base des données disponibles, on peut conclure que...", note: "Style académique" },
-            { de: "Wenngleich diese These plausibel erscheint, so weist sie doch erhebliche Schwächen auf.", fr: "Bien que cette thèse paraisse plausible, elle présente néanmoins des faiblesses considérables.", note: "Critique nuancée" }
+            { de: "Aufgrund der vorliegenden Daten lässt sich schlussfolgern, dass...", fr: "On the basis of the available data, it can be concluded that...", note: "Academic style." },
+            { de: "Wenngleich diese These plausibel erscheint, so weist sie doch erhebliche Schwächen auf.", fr: "Although this thesis appears plausible, it nevertheless has considerable weaknesses.", note: "Nuanced criticism." }
           ]
         },
         {
           id: "c2-6-6-2",
-          title: "6.6.2 Compréhension de textes complexes",
-          content: `**Analyser des textes littéraires et spécialisés**
+          title: "6.6.2 Understanding Complex Texts",
+          content: `**Analysing literary and specialist texts**
 
-**Repérer les marqueurs de style**
+### Recognising style markers
+#### 1. Irony and sarcasm
+Clues:
+- obvious exaggeration
+- mismatch between tone and content
+- distancing quotation marks, for example **sogenannt**
 
-**1. Ironie et sarcasme**
-Indices :
-• Exagération manifeste
-• Décalage entre le ton et le contenu
-• Guillemets de distanciation ("sogenannt")
+#### 2. Implicit meaning and presuppositions
+- **wieder** implies repetition
+- **sogar** implies a scale or unexpected degree
+- **schon** can imply obviousness, reassurance, or reproach
 
-**2. Implicite et présupposés**
-• "wieder" implique une répétition
-• "sogar" implique une gradation
-• "schon" peut impliquer l'évidence ou le reproche
+#### 3. Cultural references
+Texts may refer to:
+- literature: Goethe, Schiller, Kafka
+- history: Nazi-Zeit, Wende
+- philosophy: Kant, Hegel, Nietzsche
 
-**3. Références culturelles**
-Allusions fréquentes à :
-• La littérature (Goethe, Schiller, Kafka)
-• L'histoire (Nazi-Zeit, Wende)
-• La philosophie (Kant, Hegel, Nietzsche)
+### Register analysis
+Journalistic text:
+- apparent objectivity
+- Konjunktiv I for reported speech
+- frequent passive
 
-**Analyse des registres dans un texte**
+Literary text:
+- explicit subjectivity
+- elaborate figures of speech
+- play with registers
 
-**Texte journalistique**
-• Objectivité apparente
-• Konjunktiv I pour les citations
-• Passif fréquent
+Legal or administrative text:
+- heavy nominalisation
+- long and complex sentences
+- technical vocabulary
 
-**Texte littéraire**
-• Subjectivité assumée
-• Figures de style élaborées
-• Jeux sur les registres
-
-**Texte juridique/administratif**
-• Nominalisation excessive
-• Phrases longues et complexes
-• Vocabulaire technique
-
-**Comprendre les nuances**
-
+### Understanding nuance
 | Expression | Nuance |
-|------------|--------|
-| nicht unbedingt | pas forcément |
-| gewissermaßen | en quelque sorte |
-| im Grunde genommen | au fond |
-| streng genommen | à strictement parler |
-| wohlgemerkt | notez bien |`,
+|---|---|
+| nicht unbedingt | not necessarily |
+| gewissermaßen | in a sense |
+| im Grunde genommen | basically / at bottom |
+| streng genommen | strictly speaking |
+| wohlgemerkt | mind you / note carefully |`,
           examples: [
-            { de: "Seine 'Hilfe' hat das Problem nur verschlimmert.", fr: "Son 'aide' n'a fait qu'aggraver le problème.", note: "Guillemets ironiques" },
-            { de: "Er hat es wieder nicht geschafft.", fr: "Il n'y est encore pas arrivé.", note: "'wieder' implique répétition/reproche" }
+            { de: "Seine 'Hilfe' hat das Problem nur verschlimmert.", fr: "His 'help' only made the problem worse.", note: "Ironic quotation marks." },
+            { de: "Er hat es wieder nicht geschafft.", fr: "He failed again.", note: "wieder implies repetition and possibly reproach." }
           ]
         }
       ]
     }
   ]
 };
-
-

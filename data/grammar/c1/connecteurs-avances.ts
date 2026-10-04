@@ -1,80 +1,327 @@
-
 import { GrammarSection } from '../../../types';
 
 export const connecteursAvancesC1: GrammarSection = {
-  title: "5.5 Le Style et les Connecteurs Avancés",
+  title: "5.5 Style and Advanced Connectors",
   topics: [
     {
       id: "c1-5-5",
       title: "5.5 Introduction",
-      content: "Pour structurer un discours complexe au niveau C1, il faut un arsenal de connecteurs logiques bien plus riche que celui du niveau B2. Cette section vous présente tous les connecteurs avancés nécessaires pour créer des textes élégants et bien structurés.",
+      content: `To structure complex discourse at C1 level, you need a richer set of logical connectors than at B2. These connectors help you build elegant, precise, and well-organised texts.`,
       examples: [
-        { de: "Einerseits möchte ich bleiben, andererseits muss ich gehen.", fr: "D'une part je veux rester, d'autre part je dois partir.", note: "Connecteur à deux parties." }
+        { de: "Einerseits möchte ich bleiben, andererseits muss ich gehen.", fr: "On the one hand, I would like to stay; on the other hand, I have to leave.", note: "Two-part connector." }
       ]
     },
     {
       id: "c1-5-5-1",
-      title: "5.5.1 Connecteurs à Deux Parties (Doppelkonjunktionen)",
-      content: "Les connecteurs à deux parties permettent d'exprimer des relations logiques complexes de manière élégante et structurée.\n\n### einerseits... andererseits (D'une part... d'autre part)\n\n**Usage** : Opposition, contraste, présentation de deux aspects\n\n**Structure** : einerseits + Proposition 1, andererseits + Proposition 2\n\n**Exemples** :\n• **Einerseits** möchte ich bleiben, **andererseits** muss ich gehen.\n(D'une part je veux rester, d'autre part je dois partir.)\n\n• **Einerseits** ist es teuer, **andererseits** ist es qualitativ.\n(D'une part c'est cher, d'autre part c'est de qualité.)\n\n### sowohl... als auch (Tant... que / À la fois... et)\n\n**Usage** : Addition positive, énumération de deux éléments positifs\n\n**Structure** : sowohl + Element 1 + als auch + Element 2\n\n**Exemples** :\n• Ich will **sowohl** Berlin **als auch** München besuchen.\n(Je veux visiter tant Berlin que Munich.)\n\n• Er spricht **sowohl** Deutsch **als auch** Französisch.\n(Il parle à la fois allemand et français.)\n\n• **Sowohl** der Preis **als auch** die Qualität sind wichtig.\n(Tant le prix que la qualité sont importants.)\n\n**Règle** : Les deux éléments doivent avoir la **même structure grammaticale**.\n\n### weder... noch (Ni... ni)\n\n**Usage** : Addition négative, exclusion totale\n\n**Structure** : weder + Element 1 + noch + Element 2\n\n**Exemples** :\n• Ich trinke **weder** Kaffee **noch** Tee.\n(Je ne bois ni café ni thé.)\n\n• Er mag **weder** das eine **noch** das andere.\n(Il n'aime ni l'un ni l'autre.)\n\n• **Weder** der Preis **noch** die Qualität sind akzeptabel.\n(Ni le prix ni la qualité ne sont acceptables.)\n\n### zwar... aber (Certes... mais)\n\n**Usage** : Concession, reconnaissance d'un point mais affirmation d'un autre\n\n**Structure** : zwar + Proposition 1, aber + Proposition 2\n\n**Exemples** :\n• Es ist **zwar** teuer, **aber** es ist qualitativ.\n(C'est certes cher, mais c'est de qualité.)\n\n• Er kommt **zwar** heute, **aber** er kann nicht lange bleiben.\n(Il vient certes aujourd'hui, mais il ne peut pas rester longtemps.)\n\n**Nuance** : \"zwar\" reconnaît le premier point, \"aber\" introduit une objection.\n\n### je... desto / umso (Plus... plus)\n\n**Usage** : Proportion, corrélation entre deux éléments\n\n**Structure** : je + Comparatif 1, desto/umso + Comparatif 2\n\n**Exemples** :\n• **Je** mehr ich lerne, **desto** besser wird mein Deutsch.\n(Plus j'apprends, meilleur devient mon allemand.)\n\n• **Je** schneller wir fahren, **umso** gefährlicher wird es.\n(Plus nous roulons vite, plus c'est dangereux.)\n\n• **Je** früher, **desto** besser.\n(Plus tôt, mieux c'est.)\n\n**Règle** : \"je\" et \"desto/umso\" sont **toujours utilisés ensemble**.\n\n**Variante** : \"je... je\" (plus rare, plus formel)\n• **Je** mehr, **je** besser. (Plus, mieux c'est.)\n\n### Tableau récapitulatif\n\n| Connecteur | Usage | Exemple |\n|---|---|---|\n| einerseits... andererseits | Opposition | Einerseits X, andererseits Y. |\n| sowohl... als auch | Addition positive | Sowohl X als auch Y. |\n| weder... noch | Addition négative | Weder X noch Y. |\n| zwar... aber | Concession | Zwar X, aber Y. |\n| je... desto/umso | Proportion | Je mehr X, desto besser Y. |",
+      title: "5.5.1 Two-Part Connectors (Doppelkonjunktionen)",
+      content: `Two-part connectors express complex logical relations in a clear and elegant way.
+
+### einerseits... andererseits
+Meaning: on the one hand... on the other hand
+
+Use: contrast, balanced argument, two aspects of a question.
+
+Examples:
+- **Einerseits** möchte ich bleiben, **andererseits** muss ich gehen.
+- **Einerseits** ist es teuer, **andererseits** ist es qualitativ hochwertig.
+
+### sowohl... als auch
+Meaning: both... and
+
+Use: positive addition of two elements.
+
+Examples:
+- Ich will **sowohl** Berlin **als auch** München besuchen.
+- Er spricht **sowohl** Deutsch **als auch** Französisch.
+- **Sowohl** der Preis **als auch** die Qualität sind wichtig.
+
+Rule: the two elements should have the same grammatical structure.
+
+### weder... noch
+Meaning: neither... nor
+
+Use: negative addition, complete exclusion.
+
+Examples:
+- Ich trinke **weder** Kaffee **noch** Tee.
+- Er mag **weder** das eine **noch** das andere.
+- **Weder** der Preis **noch** die Qualität sind akzeptabel.
+
+Do not add an extra **nicht**.
+
+### zwar... aber
+Meaning: admittedly... but / it is true that... but
+
+Use: concession. The first point is acknowledged; the second point limits or opposes it.
+
+Examples:
+- Es ist **zwar** teuer, **aber** es ist qualitativ hochwertig.
+- Er kommt **zwar** heute, **aber** er kann nicht lange bleiben.
+
+### je... desto / je... umso
+Meaning: the more..., the more...
+
+Use: proportional relation.
+
+Examples:
+- **Je** mehr ich lerne, **desto** besser wird mein Deutsch.
+- **Je** schneller wir fahren, **umso** gefährlicher wird es.
+- **Je** früher, **desto** besser.
+
+Rule: **je** and **desto/umso** belong together.
+
+More formal variant:
+- **Je** mehr, **je** besser.
+
+### Summary
+| Connector | Use | Example |
+|---|---|---|
+| einerseits... andererseits | contrast | Einerseits X, andererseits Y. |
+| sowohl... als auch | positive addition | Sowohl X als auch Y. |
+| weder... noch | negative addition | Weder X noch Y. |
+| zwar... aber | concession | Zwar X, aber Y. |
+| je... desto/umso | proportion | Je mehr X, desto besser Y. |`,
       examples: [
-        { de: "Einerseits möchte ich bleiben, andererseits muss ich gehen.", fr: "D'une part je veux rester, d'autre part je dois partir.", note: "Opposition avec einerseits... andererseits." },
-        { de: "Ich will sowohl Berlin als auch München besuchen.", fr: "Je veux visiter tant Berlin que Munich.", note: "Addition positive." },
-        { de: "Ich trinke weder Kaffee noch Tee.", fr: "Je ne bois ni café ni thé.", note: "Addition négative." },
-        { de: "Es ist zwar teuer, aber es ist qualitativ.", fr: "C'est certes cher, mais c'est de qualité.", note: "Concession avec zwar... aber." },
-        { de: "Je mehr ich lerne, desto besser wird mein Deutsch.", fr: "Plus j'apprends, meilleur devient mon allemand.", note: "Proportion avec je... desto." },
-        { de: "Je schneller wir fahren, umso gefährlicher wird es.", fr: "Plus nous roulons vite, plus c'est dangereux.", note: "Proportion avec je... umso." }
+        { de: "Einerseits möchte ich bleiben, andererseits muss ich gehen.", fr: "On the one hand, I would like to stay; on the other hand, I have to leave.", note: "Contrast with einerseits... andererseits." },
+        { de: "Ich will sowohl Berlin als auch München besuchen.", fr: "I want to visit both Berlin and Munich.", note: "Positive addition." },
+        { de: "Ich trinke weder Kaffee noch Tee.", fr: "I drink neither coffee nor tea.", note: "Negative addition." },
+        { de: "Es ist zwar teuer, aber es ist qualitativ hochwertig.", fr: "It is admittedly expensive, but it is high quality.", note: "Concession with zwar... aber." },
+        { de: "Je mehr ich lerne, desto besser wird mein Deutsch.", fr: "The more I learn, the better my German becomes.", note: "Proportional relation with je... desto." },
+        { de: "Je schneller wir fahren, umso gefährlicher wird es.", fr: "The faster we drive, the more dangerous it becomes.", note: "Proportional relation with je... umso." }
       ]
     },
     {
       id: "c1-5-5-2",
-      title: "5.5.2 Connecteurs de Concession Complexes",
-      content: "Les connecteurs de concession permettent d'exprimer une opposition ou une restriction de manière nuancée et élégante.\n\n### obwohl (Bien que - B2, mais approfondi C1)\n\n**Usage** : Concession standard, opposition entre deux faits\n\n**Structure** : obwohl + Subjonctif (optionnel au C1) ou Indicatif\n\n**Exemples** :\n• **Obwohl** es regnet, gehen wir spazieren.\n(Bien qu'il pleuve, nous allons nous promener.)\n\n• Er kommt, **obwohl** er krank ist.\n(Il vient, bien qu'il soit malade.)\n\n**Formel (C1)** :\n• **Obwohl** es geregnet **habe**, gingen wir spazieren. (KI formel)\n\n### obgleich (Bien que - C1 formel)\n\n**Usage** : Synonyme plus formel de \"obwohl\"\n\n**Structure** : obgleich + Proposition\n\n**Exemples** :\n• **Obgleich** er krank war, kam er zur Arbeit.\n(Bien qu'il soit malade, il est venu au travail.)\n\n• **Obgleich** die Bedingungen schwierig sind, wird das Projekt fortgesetzt.\n(Bien que les conditions soient difficiles, le projet continue.)\n\n**Règle** : Plus formel que \"obwohl\", surtout dans le langage écrit et académique.\n\n### wenngleich (Bien que - C1 très formel)\n\n**Usage** : Synonyme très formel de \"obwohl\"\n\n**Structure** : wenngleich + Proposition\n\n**Exemples** :\n• **Wenngleich** dies problematisch erscheint, ist es dennoch möglich.\n(Bien que cela semble problématique, c'est néanmoins possible.)\n\n• **Wenngleich** die Kosten hoch sind, lohnt sich die Investition.\n(Bien que les coûts soient élevés, l'investissement en vaut la peine.)\n\n**Règle** : Très formel, surtout dans les textes académiques, juridiques ou administratifs.\n\n### trotzdem / dennoch / gleichwohl (Néanmoins, pourtant)\n\n**Usage** : Adverbes de concession (pas de subordonnée)\n\n**Structure** : Proposition 1. Trotzdem/dennoch/gleichwohl + Proposition 2\n\n**Exemples** :\n• Es regnet. **Trotzdem** gehen wir spazieren.\n(Il pleut. Néanmoins, nous allons nous promener.)\n\n• Die Bedingungen sind schwierig. **Dennoch** machen wir weiter.\n(Les conditions sont difficiles. Néanmoins, nous continuons.)\n\n• Er war krank. **Gleichwohl** kam er zur Arbeit.\n(Il était malade. Néanmoins, il est venu au travail.)\n\n**Différences** :\n• **trotzdem** : Courant et oral\n• **dennoch** : Plus formel et écrit\n• **gleichwohl** : Très formel et littéraire\n\n### Vergleich : obwohl vs obgleich vs wenngleich\n\n| Connecteur | Niveau de formalité | Usage |\n|---|---|---|\n| obwohl | Courant (B2-C1) | Général |\n| obgleich | Formel (C1) | Écrit, académique |\n| wenngleich | Très formel (C1) | Très écrit, juridique |\n\n### Tableau récapitulatif\n\n| Connecteur | Structure | Exemple |\n|---|---|---|\n| obwohl | obwohl + Proposition | Obwohl es regnet... |\n| obgleich | obgleich + Proposition | Obgleich es regnet... |\n| wenngleich | wenngleich + Proposition | Wenngleich es regnet... |\n| trotzdem | Proposition 1. Trotzdem... | Es regnet. Trotzdem... |\n| dennoch | Proposition 1. Dennoch... | Es regnet. Dennoch... |\n| gleichwohl | Proposition 1. Gleichwohl... | Es regnet. Gleichwohl... |",
+      title: "5.5.2 Complex Concessive Connectors",
+      content: `Concessive connectors express contrast, restriction, or an opposing fact with different levels of formality.
+
+### obwohl
+Meaning: although
+
+Use: standard concession.
+
+Examples:
+- **Obwohl** es regnet, gehen wir spazieren.
+- Er kommt, **obwohl** er krank ist.
+
+Formal KI can appear in highly formal reported contexts, but the indicative is normal in ordinary use.
+
+### obgleich
+Meaning: although, even though
+
+Use: more formal synonym of **obwohl**, especially in written German.
+
+Examples:
+- **Obgleich** er krank war, kam er zur Arbeit.
+- **Obgleich** die Bedingungen schwierig sind, wird das Projekt fortgesetzt.
+
+### wenngleich
+Meaning: although, even if
+
+Use: very formal, typical of academic, legal, administrative, and essay style.
+
+Examples:
+- **Wenngleich** dies problematisch erscheint, ist es dennoch möglich.
+- **Wenngleich** die Kosten hoch sind, lohnt sich die Investition.
+
+### trotzdem / dennoch / gleichwohl
+These are concessive adverbs, not subordinating conjunctions. They do not send the verb to the end.
+
+Examples:
+- Es regnet. **Trotzdem** gehen wir spazieren.
+- Die Bedingungen sind schwierig. **Dennoch** machen wir weiter.
+- Er war krank. **Gleichwohl** kam er zur Arbeit.
+
+Differences:
+- **trotzdem**: common and natural
+- **dennoch**: more formal, written
+- **gleichwohl**: very formal and literary
+
+### Comparison
+| Connector | Formality | Use |
+|---|---|---|
+| obwohl | common | general concession |
+| obgleich | formal | written, academic |
+| wenngleich | very formal | academic/legal/administrative |
+| trotzdem | common | adverbial contrast |
+| dennoch | formal | written adverbial contrast |
+| gleichwohl | very formal | literary/formal contrast |`,
       examples: [
-        { de: "Obwohl es regnet, gehen wir spazieren.", fr: "Bien qu'il pleuve, nous allons nous promener.", note: "Concession avec obwohl - courant." },
-        { de: "Obgleich die Bedingungen schwierig sind, wird das Projekt fortgesetzt.", fr: "Bien que les conditions soient difficiles, le projet continue.", note: "obgleich - plus formel." },
-        { de: "Wenngleich dies problematisch erscheint, ist es dennoch möglich.", fr: "Bien que cela semble problématique, c'est néanmoins possible.", note: "wenngleich - très formel." },
-        { de: "Es regnet. Trotzdem gehen wir spazieren.", fr: "Il pleut. Néanmoins, nous allons nous promener.", note: "trotzdem - adverbe." },
-        { de: "Die Bedingungen sind schwierig. Dennoch machen wir weiter.", fr: "Les conditions sont difficiles. Néanmoins, nous continuons.", note: "dennoch - plus formel que trotzdem." },
-        { de: "Er war krank. Gleichwohl kam er zur Arbeit.", fr: "Il était malade. Néanmoins, il est venu au travail.", note: "gleichwohl - très formel." }
+        { de: "Obwohl es regnet, gehen wir spazieren.", fr: "Although it is raining, we are going for a walk.", note: "Common concession with obwohl." },
+        { de: "Obgleich die Bedingungen schwierig sind, wird das Projekt fortgesetzt.", fr: "Although the conditions are difficult, the project is continuing.", note: "obgleich is more formal." },
+        { de: "Wenngleich dies problematisch erscheint, ist es dennoch möglich.", fr: "Although this appears problematic, it is nevertheless possible.", note: "Very formal concession." },
+        { de: "Es regnet. Trotzdem gehen wir spazieren.", fr: "It is raining. Nevertheless, we are going for a walk.", note: "trotzdem is an adverb." },
+        { de: "Die Bedingungen sind schwierig. Dennoch machen wir weiter.", fr: "The conditions are difficult. Nevertheless, we continue.", note: "dennoch is more formal than trotzdem." },
+        { de: "Er war krank. Gleichwohl kam er zur Arbeit.", fr: "He was ill. Nevertheless, he came to work.", note: "gleichwohl is very formal." }
       ]
     },
     {
       id: "c1-5-5-3",
-      title: "5.5.3 Connecteurs de Cause Complexes",
-      content: "Les connecteurs de cause complexes permettent d'exprimer la causalité de manière nuancée et formelle.\n\n### angesichts (+ Génitif) (Compte tenu de, vu)\n\n**Usage** : Cause/raison formelle, contexte spécifique\n\n**Structure** : angesichts + Génitif\n\n**Exemples** :\n• **Angesichts** der hohen Kosten entschieden wir uns dagegen.\n(Compte tenu des coûts élevés, nous avons décidé contre.)\n\n• **Angesichts** der aktuellen Situation müssen wir handeln.\n(Vu la situation actuelle, nous devons agir.)\n\n**Règle** : Toujours suivi du **génitif**. Style très formel.\n\n### infolge (+ Génitif) (En raison de, suite à)\n\n**Usage** : Cause formelle, conséquence d'un événement\n\n**Structure** : infolge + Génitif\n\n**Exemples** :\n• **Infolge** des Unwetters wurden Straßen gesperrt.\n(En raison des intempéries, des routes ont été fermées.)\n\n• **Infolge** der Kürzungen wurden Stellen gestrichen.\n(Suite aux réductions, des postes ont été supprimés.)\n\n**Règle** : Toujours suivi du **génitif**. Style formel.\n\n### zumal (D'autant plus que, surtout que)\n\n**Usage** : Cause supplémentaire, argument renforçant\n\n**Structure** : zumal + Proposition (Indicatif ou Subjonctif)\n\n**Exemples** :\n• Wir sollten gehen, **zumal** es schon spät ist.\n(Nous devrions partir, d'autant plus qu'il est déjà tard.)\n\n• Er ist der richtige Kandidat, **zumal** er viel Erfahrung hat.\n(Il est le bon candidat, surtout qu'il a beaucoup d'expérience.)\n\n• Es ist wichtig, **zumal** die Situation kritisch ist.\n(C'est important, d'autant plus que la situation est critique.)\n\n**Nuance** : \"zumal\" ajoute un argument **supplémentaire** qui renforce la proposition principale.\n\n### Vergleich : wegen vs aufgrund vs angesichts vs infolge\n\n| Connecteur | Suivi de | Niveau | Usage |\n|---|---|---|---|\n| wegen | Génitif ou Datif | B2-C1 | Général (cause simple) |\n| aufgrund | Génitif | C1 | Formel (cause raisonnée) |\n| angesichts | Génitif | C1 | Très formel (compte tenu de) |\n| infolge | Génitif | C1 | Formel (suite à un événement) |\n\n**Exemples** :\n• **Wegen** des Regens bleiben wir zu Hause. (général)\n• **Aufgrund** der Untersuchungen... (formel)\n• **Angesichts** der Beweise... (très formel)\n• **Infolge** des Unfalls... (formel, événement)\n\n### Tableau récapitulatif\n\n| Connecteur | Structure | Exemple |\n|---|---|---|\n| angesichts | angesichts + Génitif | Angesichts der Kosten... |\n| infolge | infolge + Génitif | Infolge des Unwetters... |\n| zumal | zumal + Proposition | ...zumal es spät ist. |\n| aufgrund | aufgrund + Génitif | Aufgrund der Untersuchungen... |",
+      title: "5.5.3 Complex Causal Connectors",
+      content: `Complex causal connectors let you express reasons in a more formal and nuanced way.
+
+### angesichts + genitive
+Meaning: in view of, given
+
+Use: formal reason based on a situation or circumstances.
+
+Examples:
+- **Angesichts** der hohen Kosten entschieden wir uns dagegen.
+- **Angesichts** der aktuellen Situation müssen wir handeln.
+
+Rule: followed by the genitive.
+
+### infolge + genitive
+Meaning: as a result of, due to
+
+Use: formal cause, often the result of an event.
+
+Examples:
+- **Infolge** des Unwetters wurden Straßen gesperrt.
+- **Infolge** der Kürzungen wurden Stellen gestrichen.
+
+Rule: followed by the genitive.
+
+### zumal
+Meaning: especially since, all the more because
+
+Use: adds an extra reason that strengthens the main statement.
+
+Examples:
+- Wir sollten gehen, **zumal** es schon spät ist.
+- Er ist der richtige Kandidat, **zumal** er viel Erfahrung hat.
+- Es ist wichtig, **zumal** die Situation kritisch ist.
+
+### wegen vs aufgrund vs angesichts vs infolge
+| Connector | Followed by | Style | Use |
+|---|---|---|---|
+| wegen | genitive, sometimes dative in speech | general | simple cause |
+| aufgrund | genitive | formal | reasoned cause |
+| angesichts | genitive | very formal | in view of circumstances |
+| infolge | genitive | formal | consequence of an event |
+
+Examples:
+- **Wegen** des Regens bleiben wir zu Hause.
+- **Aufgrund** der Untersuchungen wurde eine Entscheidung getroffen.
+- **Angesichts** der Beweise ist dies problematisch.
+- **Infolge** des Unfalls wurde die Straße gesperrt.`,
       examples: [
-        { de: "Angesichts der hohen Kosten entschieden wir uns dagegen.", fr: "Compte tenu des coûts élevés, nous avons décidé contre.", note: "angesichts + génitif - très formel." },
-        { de: "Infolge des Unwetters wurden Straßen gesperrt.", fr: "En raison des intempéries, des routes ont été fermées.", note: "infolge + génitif - formel." },
-        { de: "Wir sollten gehen, zumal es schon spät ist.", fr: "Nous devrions partir, d'autant plus qu'il est déjà tard.", note: "zumal - cause supplémentaire." },
-        { de: "Er ist der richtige Kandidat, zumal er viel Erfahrung hat.", fr: "Il est le bon candidat, surtout qu'il a beaucoup d'expérience.", note: "zumal - argument renforçant." },
-        { de: "Aufgrund der Untersuchungen wurde eine Entscheidung getroffen.", fr: "En raison des enquêtes, une décision a été prise.", note: "aufgrund + génitif." }
+        { de: "Angesichts der hohen Kosten entschieden wir uns dagegen.", fr: "Given the high costs, we decided against it.", note: "angesichts + genitive; very formal." },
+        { de: "Infolge des Unwetters wurden Straßen gesperrt.", fr: "As a result of the storm, roads were closed.", note: "infolge + genitive; formal." },
+        { de: "Wir sollten gehen, zumal es schon spät ist.", fr: "We should leave, especially since it is already late.", note: "zumal adds an additional reason." },
+        { de: "Er ist der richtige Kandidat, zumal er viel Erfahrung hat.", fr: "He is the right candidate, especially since he has a lot of experience.", note: "zumal strengthens the argument." },
+        { de: "Aufgrund der Untersuchungen wurde eine Entscheidung getroffen.", fr: "A decision was made based on the investigations.", note: "aufgrund + genitive." }
       ]
     },
     {
       id: "c1-5-5-4",
-      title: "5.5.4 Connecteurs de Condition Complexes",
-      content: "Les connecteurs de condition complexes permettent d'exprimer des conditions, des hypothèses et des exceptions de manière nuancée.\n\n### vorausgesetzt, dass... (À condition que, pourvu que)\n\n**Usage** : Condition formelle, prérequis\n\n**Structure** : vorausgesetzt, dass + Proposition\n\n**Exemples** :\n• Wir machen mit, **vorausgesetzt, dass** alle zustimmen.\n(Nous continuons, à condition que tous soient d'accord.)\n\n• Es funktioniert, **vorausgesetzt, dass** die Bedingungen erfüllt sind.\n(Cela fonctionne, à condition que les conditions soient remplies.)\n\n**Variante** : vorausgesetzt + Proposition (sans dass - plus formel)\n• Wir machen mit, **vorausgesetzt** alle stimmen zu.\n\n### im Falle, dass... / für den Fall, dass... (Au cas où)\n\n**Usage** : Condition hypothétique, éventualité\n\n**Structure** : im Falle, dass / für den Fall, dass + Proposition\n\n**Exemples** :\n• **Im Falle, dass** es regnet, bleiben wir zu Hause.\n(Au cas où il pleuvrait, nous restons à la maison.)\n\n• **Für den Fall, dass** er nicht kommt, haben wir einen Plan B.\n(Au cas où il ne viendrait pas, nous avons un plan B.)\n\n**Nuance** : Exprime une **éventualité**, pas une certitude.\n\n### es sei denn, (dass)... (Sauf si, à moins que)\n\n**Usage** : Exception, condition négative\n\n**Structure** : es sei denn, (dass) + Proposition\n\n**Exemples** :\n• Wir gehen spazieren, **es sei denn, es regnet**.\n(Nous allons nous promener, sauf s'il pleut.)\n\n• Ich komme, **es sei denn, dass** etwas dazwischenkommt.\n(Je viens, sauf si quelque chose intervient.)\n\n• Wir machen mit, **es sei denn**, Sie sind dagegen.\n(Nous continuons, à moins que vous ne soyez contre.)\n\n**Règle** : \"es sei denn\" utilise le **Subjonctif I** (forme fixe). Le reste de la proposition peut être à l'indicatif.\n\n### Tableau récapitulatif\n\n| Connecteur | Structure | Exemple |\n|---|---|---|\n| vorausgesetzt, dass | vorausgesetzt, dass + Prop. | ...vorausgesetzt, dass alle zustimmen. |\n| im Falle, dass | im Falle, dass + Prop. | Im Falle, dass es regnet... |\n| für den Fall, dass | für den Fall, dass + Prop. | Für den Fall, dass er nicht kommt... |\n| es sei denn | es sei denn + Prop. | ...es sei denn, es regnet. |\n\n### Comparaison avec 'wenn' et 'falls'\n\n| Connecteur | Niveau | Usage |\n|---|---|---|\n| wenn | B1 | Condition générale |\n| falls | B2 | Condition hypothétique |\n| vorausgesetzt, dass | C1 | Condition formelle (prérequis) |\n| im Falle, dass | C1 | Condition hypothétique (éventualité) |\n| es sei denn | C1 | Exception (condition négative) |",
+      title: "5.5.4 Complex Conditional Connectors",
+      content: `Complex conditional connectors express requirements, hypotheses, and exceptions more precisely than simple **wenn** or **falls**.
+
+### vorausgesetzt, dass
+Meaning: provided that, on condition that
+
+Use: formal condition or prerequisite.
+
+Examples:
+- Wir machen mit, **vorausgesetzt, dass** alle zustimmen.
+- Es funktioniert, **vorausgesetzt, dass** die Bedingungen erfüllt sind.
+
+More compact variant:
+- Wir machen mit, **vorausgesetzt** alle stimmen zu.
+
+### im Falle, dass / für den Fall, dass
+Meaning: in case, should it happen that
+
+Use: hypothetical condition or eventuality.
+
+Examples:
+- **Im Falle, dass** es regnet, bleiben wir zu Hause.
+- **Für den Fall, dass** er nicht kommt, haben wir einen Plan B.
+
+### es sei denn, (dass)
+Meaning: unless, except if
+
+Use: exception or negative condition.
+
+Examples:
+- Wir gehen spazieren, **es sei denn, es regnet**.
+- Ich komme, **es sei denn, dass** etwas dazwischenkommt.
+- Wir machen mit, **es sei denn**, Sie sind dagegen.
+
+**es sei denn** contains a fixed Konjunktiv I form (**sei**). The following clause can be indicative.
+
+### Comparison with wenn and falls
+| Connector | Level | Use |
+|---|---|---|
+| wenn | B1 | general condition |
+| falls | B2 | hypothetical condition |
+| vorausgesetzt, dass | C1 | formal prerequisite |
+| im Falle, dass | C1 | hypothetical eventuality |
+| für den Fall, dass | C1 | planned eventuality |
+| es sei denn | C1 | exception / negative condition |`,
       examples: [
-        { de: "Wir machen mit, vorausgesetzt, dass alle zustimmen.", fr: "Nous continuons, à condition que tous soient d'accord.", note: "vorausgesetzt - condition formelle." },
-        { de: "Es funktioniert, vorausgesetzt die Bedingungen sind erfüllt.", fr: "Cela fonctionne, à condition que les conditions soient remplies.", note: "Variante sans dass." },
-        { de: "Im Falle, dass es regnet, bleiben wir zu Hause.", fr: "Au cas où il pleuvrait, nous restons à la maison.", note: "Condition hypothétique." },
-        { de: "Für den Fall, dass er nicht kommt, haben wir einen Plan B.", fr: "Au cas où il ne viendrait pas, nous avons un plan B.", note: "Éventualité." },
-        { de: "Wir gehen spazieren, es sei denn, es regnet.", fr: "Nous allons nous promener, sauf s'il pleut.", note: "Exception avec es sei denn." },
-        { de: "Ich komme, es sei denn, dass etwas dazwischenkommt.", fr: "Je viens, sauf si quelque chose intervient.", note: "Avec dass." }
+        { de: "Wir machen mit, vorausgesetzt, dass alle zustimmen.", fr: "We will participate provided that everyone agrees.", note: "Formal condition." },
+        { de: "Es funktioniert, vorausgesetzt die Bedingungen sind erfüllt.", fr: "It works provided the conditions are met.", note: "Variant without dass." },
+        { de: "Im Falle, dass es regnet, bleiben wir zu Hause.", fr: "In case it rains, we will stay at home.", note: "Hypothetical condition." },
+        { de: "Für den Fall, dass er nicht kommt, haben wir einen Plan B.", fr: "In case he does not come, we have a plan B.", note: "Eventuality." },
+        { de: "Wir gehen spazieren, es sei denn, es regnet.", fr: "We are going for a walk unless it rains.", note: "Exception with es sei denn." },
+        { de: "Ich komme, es sei denn, dass etwas dazwischenkommt.", fr: "I will come unless something gets in the way.", note: "With dass." }
       ]
     },
     {
       id: "c1-5-5-5",
-      title: "5.5.5 Connecteurs de Conséquence",
-      content: "Les connecteurs de conséquence permettent d'exprimer les résultats et les conséquences de manière élégante et formelle.\n\n### folglich (Par conséquent, donc - C1 formel)\n\n**Usage** : Conséquence logique formelle\n\n**Structure** : Proposition 1. Folglich + Proposition 2\n\n**Exemples** :\n• Es regnet stark. **Folglich** bleiben wir zu Hause.\n(Il pleut beaucoup. Par conséquent, nous restons à la maison.)\n\n• Die Kosten sind zu hoch. **Folglich** müssen wir sparen.\n(Les coûts sont trop élevés. Par conséquent, nous devons économiser.)\n\n**Règle** : Style très formel et écrit. Pas utilisé à l'oral courant.\n\n### infolgedessen (Par conséquent, en conséquence - C1 très formel)\n\n**Usage** : Conséquence formelle suite à un événement\n\n**Structure** : Proposition 1. Infolgedessen + Proposition 2\n\n**Exemples** :\n• Die Preise sind gestiegen. **Infolgedessen** kaufen die Leute weniger.\n(Les prix ont augmenté. En conséquence, les gens achètent moins.)\n\n• Die Firma hat Verluste gemacht. **Infolgedessen** wurden Stellen gestrichen.\n(L'entreprise a fait des pertes. En conséquence, des postes ont été supprimés.)\n\n**Règle** : Très formel, surtout dans les textes administratifs et économiques.\n\n### demzufolge (Par conséquent, en conséquence - C1 formel)\n\n**Usage** : Conséquence logique déduite\n\n**Structure** : Proposition 1. Demzufolge + Proposition 2\n\n**Exemples** :\n• Die Untersuchungen zeigen positive Ergebnisse. **Demzufolge** können wir weitermachen.\n(Les enquêtes montrent des résultats positifs. Par conséquent, nous pouvons continuer.)\n\n• Alle Bedingungen sind erfüllt. **Demzufolge** wird der Vertrag unterschrieben.\n(Toutes les conditions sont remplies. En conséquence, le contrat sera signé.)\n\n**Nuance** : \"demzufolge\" suggère une **déduction logique** basée sur ce qui précède.\n\n### Vergleich : donc vs par conséquent vs en conséquence\n\n| Connecteur | Niveau | Style | Usage |\n|---|---|---|---|\n| deshalb | B2 | Courant | Général |\n| daher | B2 | Courant | Général |\n| deswegen | B2 | Courant | Général |\n| folglich | C1 | Formel | Écrit |\n| infolgedessen | C1 | Très formel | Écrit, admin |\n| demzufolge | C1 | Formel | Écrit, déduction |\n\n### Tableau récapitulatif\n\n| Connecteur | Structure | Exemple |\n|---|---|---|\n| folglich | Prop. 1. Folglich + Prop. 2 | Es regnet. Folglich bleiben wir zu Hause. |\n| infolgedessen | Prop. 1. Infolgedessen + Prop. 2 | Die Preise steigen. Infolgedessen... |\n| demzufolge | Prop. 1. Demzufolge + Prop. 2 | Die Bedingungen sind erfüllt. Demzufolge... |",
+      title: "5.5.5 Consequence Connectors",
+      content: `Consequence connectors express results and conclusions in a formal or elegant way.
+
+### folglich
+Meaning: consequently, therefore
+
+Use: formal logical consequence.
+
+Examples:
+- Es regnet stark. **Folglich** bleiben wir zu Hause.
+- Die Kosten sind zu hoch. **Folglich** müssen wir sparen.
+
+Style: very written; uncommon in casual speech.
+
+### infolgedessen
+Meaning: as a consequence, consequently
+
+Use: formal result following an event or development.
+
+Examples:
+- Die Preise sind gestiegen. **Infolgedessen** kaufen die Leute weniger.
+- Die Firma hat Verluste gemacht. **Infolgedessen** wurden Stellen gestrichen.
+
+Style: very formal, common in administrative, economic, or analytical texts.
+
+### demzufolge
+Meaning: accordingly, consequently
+
+Use: logical conclusion based on previous information.
+
+Examples:
+- Die Untersuchungen zeigen positive Ergebnisse. **Demzufolge** können wir weitermachen.
+- Alle Bedingungen sind erfüllt. **Demzufolge** wird der Vertrag unterschrieben.
+
+Nuance: **demzufolge** suggests a deduction from what was just stated.
+
+### Comparison
+| Connector | Level | Style | Use |
+|---|---|---|---|
+| deshalb | B2 | common | general result |
+| daher | B2 | common/written | general result |
+| deswegen | B2 | common | general result |
+| folglich | C1 | formal | logical consequence |
+| infolgedessen | C1 | very formal | consequence of an event |
+| demzufolge | C1 | formal | deduction |`,
       examples: [
-        { de: "Es regnet stark. Folglich bleiben wir zu Hause.", fr: "Il pleut beaucoup. Par conséquent, nous restons à la maison.", note: "folglich - très formel." },
-        { de: "Die Preise sind gestiegen. Infolgedessen kaufen die Leute weniger.", fr: "Les prix ont augmenté. En conséquence, les gens achètent moins.", note: "infolgedessen - conséquence formelle." },
-        { de: "Die Untersuchungen zeigen positive Ergebnisse. Demzufolge können wir weitermachen.", fr: "Les enquêtes montrent des résultats positifs. Par conséquent, nous pouvons continuer.", note: "demzufolge - déduction logique." },
-        { de: "Alle Bedingungen sind erfüllt. Demzufolge wird der Vertrag unterschrieben.", fr: "Toutes les conditions sont remplies. En conséquence, le contrat sera signé.", note: "Conséquence déduite." }
+        { de: "Es regnet stark. Folglich bleiben wir zu Hause.", fr: "It is raining heavily. Consequently, we are staying at home.", note: "Formal consequence." },
+        { de: "Die Preise sind gestiegen. Infolgedessen kaufen die Leute weniger.", fr: "Prices have risen. As a result, people buy less.", note: "Formal consequence after a development." },
+        { de: "Die Untersuchungen zeigen positive Ergebnisse. Demzufolge können wir weitermachen.", fr: "The investigations show positive results. Accordingly, we can continue.", note: "Logical deduction." },
+        { de: "Alle Bedingungen sind erfüllt. Demzufolge wird der Vertrag unterschrieben.", fr: "All conditions are fulfilled. Consequently, the contract will be signed.", note: "Deductive consequence." }
       ]
     }
   ]
 };
-
-

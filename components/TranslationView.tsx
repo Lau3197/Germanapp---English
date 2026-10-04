@@ -9,15 +9,15 @@ export const TranslationView: React.FC = () => {
   const [selectedTip, setSelectedTip] = useState<TranslationTip | null>(null);
   const [expandedExamples, setExpandedExamples] = useState<Set<string>>(new Set());
 
-  const filteredSections = selectedLevel === 'all' 
-    ? TRANSLATION_DATA 
+  const filteredSections = selectedLevel === 'all'
+    ? TRANSLATION_DATA
     : TRANSLATION_DATA.filter(s => s.level === selectedLevel);
 
   const levelLabels: Record<Level, string> = {
-    all: 'Tous les niveaux',
-    beginner: '🌱 Débutant',
-    intermediate: '🌿 Intermédiaire',
-    advanced: '🌳 Avancé'
+    all: 'All levels',
+    beginner: '🌱 Beginner',
+    intermediate: '🌿 Intermediate',
+    advanced: '🌳 Advanced'
   };
 
   const levelColors: Record<string, { bg: string; text: string; border: string }> = {
@@ -38,31 +38,30 @@ export const TranslationView: React.FC = () => {
     });
   };
 
-  // Vue liste des sections
+  // Section list view
   if (!selectedSection) {
     return (
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <h2 className="text-3xl font-black mb-2" style={{ color: 'var(--coral-700)' }}>
-            📰 Conseils de traduction
+            📰 Translation Tips
           </h2>
           <p className="text-lg" style={{ color: 'var(--sand-600)' }}>
-            Guide pratique pour traduire des articles de presse allemand → français
+            Practical guide for translating press articles from German to French
           </p>
         </div>
 
-        {/* Filtres par niveau */}
+        {/* Level filters */}
         <div className="flex flex-wrap gap-2 mb-8">
           {(Object.keys(levelLabels) as Level[]).map(level => (
             <button
               key={level}
               onClick={() => setSelectedLevel(level)}
-              className={`px-4 py-2 rounded-xl font-semibold transition-all ${
-                selectedLevel === level
-                  ? 'text-white shadow-lg'
-                  : 'bg-white hover:bg-gray-50'
-              }`}
+              className={`px-4 py-2 rounded-xl font-semibold transition-all ${selectedLevel === level
+                ? 'text-white shadow-lg'
+                : 'bg-white hover:bg-gray-50'
+                }`}
               style={{
                 backgroundColor: selectedLevel === level ? 'var(--coral-500)' : undefined,
                 color: selectedLevel !== level ? 'var(--sand-700)' : undefined
@@ -73,7 +72,7 @@ export const TranslationView: React.FC = () => {
           ))}
         </div>
 
-        {/* Grille des sections */}
+        {/* Section grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredSections.map(section => {
             const colors = levelColors[section.level];
@@ -90,12 +89,12 @@ export const TranslationView: React.FC = () => {
                       {section.title}
                     </h3>
                     <p className="text-sm mt-1 opacity-70">
-                      {section.tips.length} conseil{section.tips.length > 1 ? 's' : ''}
+                      {section.tips.length} tip{section.tips.length > 1 ? 's' : ''}
                     </p>
                     <span className={`inline-block mt-2 text-xs px-2 py-1 rounded-full ${colors.bg} ${colors.text} font-medium`}>
-                      {section.level === 'beginner' && '🌱 Débutant'}
-                      {section.level === 'intermediate' && '🌿 Intermédiaire'}
-                      {section.level === 'advanced' && '🌳 Avancé'}
+                      {section.level === 'beginner' && '🌱 Beginner'}
+                      {section.level === 'intermediate' && '🌿 Intermediate'}
+                      {section.level === 'advanced' && '🌳 Advanced'}
                     </span>
                   </div>
                 </div>
@@ -117,13 +116,13 @@ export const TranslationView: React.FC = () => {
               <p className="text-3xl font-black" style={{ color: 'var(--coral-600)' }}>
                 {TRANSLATION_DATA.reduce((acc, s) => acc + s.tips.length, 0)}
               </p>
-              <p className="text-sm" style={{ color: 'var(--sand-600)' }}>conseils</p>
+              <p className="text-sm" style={{ color: 'var(--sand-600)' }}>tips</p>
             </div>
             <div>
               <p className="text-3xl font-black" style={{ color: 'var(--coral-600)' }}>
                 {TRANSLATION_DATA.reduce((acc, s) => acc + s.tips.reduce((a, t) => a + t.examples.length, 0), 0)}
               </p>
-              <p className="text-sm" style={{ color: 'var(--sand-600)' }}>exemples</p>
+              <p className="text-sm" style={{ color: 'var(--sand-600)' }}>examples</p>
             </div>
           </div>
         </div>
@@ -131,7 +130,7 @@ export const TranslationView: React.FC = () => {
     );
   }
 
-  // Vue détail d'une section
+  // Section detail view
   if (!selectedTip) {
     const colors = levelColors[selectedSection.level];
     return (
@@ -145,10 +144,10 @@ export const TranslationView: React.FC = () => {
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          <span className="font-semibold">Retour aux sections</span>
+          <span className="font-semibold">Back to sections</span>
         </button>
 
-        {/* Header de la section */}
+        {/* Section header */}
         <div className={`p-8 rounded-3xl mb-8 ${colors.bg} border-2 ${colors.border}`}>
           <div className="flex items-center gap-4">
             <span className="text-5xl">{selectedSection.icon}</span>
@@ -157,15 +156,15 @@ export const TranslationView: React.FC = () => {
                 {selectedSection.title}
               </h2>
               <span className={`inline-block mt-2 text-sm px-3 py-1 rounded-full bg-white/50 ${colors.text} font-medium`}>
-                {selectedSection.level === 'beginner' && '🌱 Niveau débutant'}
-                {selectedSection.level === 'intermediate' && '🌿 Niveau intermédiaire'}
-                {selectedSection.level === 'advanced' && '🌳 Niveau avancé'}
+                {selectedSection.level === 'beginner' && '🌱 Beginner level'}
+                {selectedSection.level === 'intermediate' && '🌿 Intermediate level'}
+                {selectedSection.level === 'advanced' && '🌳 Advanced level'}
               </span>
             </div>
           </div>
         </div>
 
-        {/* Liste des conseils */}
+        {/* Tip list */}
         <div className="space-y-4">
           {selectedSection.tips.map((tip, index) => (
             <button
@@ -183,7 +182,7 @@ export const TranslationView: React.FC = () => {
                     {tip.title}
                   </h3>
                   <p className="text-sm mt-1" style={{ color: 'var(--sand-500)' }}>
-                    {tip.examples.length} exemple{tip.examples.length > 1 ? 's' : ''}
+                    {tip.examples.length} example{tip.examples.length > 1 ? 's' : ''}
                   </p>
                 </div>
                 <svg className="w-5 h-5 ml-auto flex-shrink-0" style={{ color: 'var(--sand-400)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -197,7 +196,7 @@ export const TranslationView: React.FC = () => {
     );
   }
 
-  // Vue détail d'un conseil
+  // Tip detail view
   const colors = levelColors[selectedSection.level];
   return (
     <div className="max-w-4xl mx-auto">
@@ -210,10 +209,10 @@ export const TranslationView: React.FC = () => {
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
-        <span className="font-semibold">Retour à {selectedSection.title}</span>
+        <span className="font-semibold">Back to {selectedSection.title}</span>
       </button>
 
-      {/* Header du conseil */}
+      {/* Tip header */}
       <div className={`p-8 rounded-3xl mb-8 ${colors.bg} border-2 ${colors.border}`}>
         <span className="text-4xl mb-4 block">{selectedSection.icon}</span>
         <h2 className={`text-2xl font-black ${colors.text}`}>
@@ -221,14 +220,14 @@ export const TranslationView: React.FC = () => {
         </h2>
       </div>
 
-      {/* Contenu */}
+      {/* Content */}
       <div className="bg-white rounded-2xl p-8 border border-gray-100 mb-8">
-        <div 
+        <div
           className="prose prose-lg max-w-none"
           style={{ color: 'var(--sand-800)' }}
         >
           {selectedTip.content.split('\n').map((paragraph, idx) => {
-            // Gestion des headers markdown
+            // Markdown headings
             if (paragraph.startsWith('### ')) {
               return (
                 <h3 key={idx} className="text-xl font-bold mt-6 mb-3" style={{ color: 'var(--coral-700)' }}>
@@ -236,7 +235,8 @@ export const TranslationView: React.FC = () => {
                 </h3>
               );
             }
-            // Gestion des tableaux markdown simples
+
+            // Simple markdown tables
             if (paragraph.startsWith('|')) {
               const rows = paragraph.split('\n').filter(r => r.startsWith('|'));
               if (rows.length > 0) {
@@ -270,7 +270,7 @@ export const TranslationView: React.FC = () => {
                 );
               }
             }
-            // Gestion des listes
+            // Lists
             if (paragraph.startsWith('- ') || paragraph.startsWith('• ')) {
               return (
                 <li key={idx} className="ml-4 my-1">
@@ -278,7 +278,7 @@ export const TranslationView: React.FC = () => {
                 </li>
               );
             }
-            // Paragraphes normaux
+            // Regular paragraphs
             if (paragraph.trim()) {
               return (
                 <p key={idx} className="my-3 leading-relaxed">
@@ -291,11 +291,11 @@ export const TranslationView: React.FC = () => {
         </div>
       </div>
 
-      {/* Exemples */}
+      {/* Examples */}
       {selectedTip.examples.length > 0 && (
         <div className="space-y-4">
           <h3 className="text-xl font-bold" style={{ color: 'var(--coral-700)' }}>
-            📝 Exemples
+            📝 Examples
           </h3>
           {selectedTip.examples.map((example, idx) => {
             const isExpanded = expandedExamples.has(`${selectedTip.id}-${idx}`);
@@ -311,28 +311,28 @@ export const TranslationView: React.FC = () => {
                         🇩🇪 {example.de}
                       </p>
                     </div>
-                    <svg 
-                      className={`w-5 h-5 flex-shrink-0 transition-transform ${isExpanded ? 'rotate-180' : ''}`} 
-                      style={{ color: 'var(--sand-400)' }} 
-                      fill="none" 
-                      stroke="currentColor" 
+                    <svg
+                      className={`w-5 h-5 flex-shrink-0 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                      style={{ color: 'var(--sand-400)' }}
+                      fill="none"
+                      stroke="currentColor"
                       viewBox="0 0 24 24"
                     >
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </div>
                 </button>
-                
+
                 {isExpanded && (
                   <div className="px-6 pb-6 space-y-3" style={{ backgroundColor: 'var(--sand-50)' }}>
                     {example.frBad && (
                       <div className="p-4 rounded-xl bg-red-50 border border-red-100">
-                        <p className="text-sm font-semibold text-red-600 mb-1">❌ À éviter :</p>
+                        <p className="text-sm font-semibold text-red-600 mb-1">❌ Avoid:</p>
                         <p className="text-red-800">{example.frBad}</p>
                       </div>
                     )}
                     <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-100">
-                      <p className="text-sm font-semibold text-emerald-600 mb-1">✅ Bonne traduction :</p>
+                      <p className="text-sm font-semibold text-emerald-600 mb-1">✅ Good translation:</p>
                       <p className="text-emerald-800">{example.frGood}</p>
                     </div>
                     {example.explanation && (
@@ -350,13 +350,13 @@ export const TranslationView: React.FC = () => {
         </div>
       )}
 
-      {/* Navigation entre conseils */}
+      {/* Tip navigation */}
       <div className="flex justify-between mt-8 pt-6 border-t" style={{ borderColor: 'var(--sand-200)' }}>
         {(() => {
           const currentIndex = selectedSection.tips.findIndex(t => t.id === selectedTip.id);
           const prevTip = currentIndex > 0 ? selectedSection.tips[currentIndex - 1] : null;
           const nextTip = currentIndex < selectedSection.tips.length - 1 ? selectedSection.tips[currentIndex + 1] : null;
-          
+
           return (
             <>
               {prevTip ? (
@@ -368,17 +368,17 @@ export const TranslationView: React.FC = () => {
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                   </svg>
-                  <span className="font-medium">Précédent</span>
+                  <span className="font-medium">Previous</span>
                 </button>
               ) : <div />}
-              
+
               {nextTip ? (
                 <button
                   onClick={() => setSelectedTip(nextTip)}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-gray-100 transition-colors"
                   style={{ color: 'var(--coral-600)' }}
                 >
-                  <span className="font-medium">Suivant</span>
+                  <span className="font-medium">Next</span>
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
@@ -392,9 +392,9 @@ export const TranslationView: React.FC = () => {
   );
 };
 
-// Fonction pour formater le texte markdown simple
+// Format simple markdown text
 function formatText(text: string): React.ReactNode {
-  // Gestion du gras **text**
+  // Bold text: **text**
   const parts = text.split(/(\*\*[^*]+\*\*)/g);
   return parts.map((part, i) => {
     if (part.startsWith('**') && part.endsWith('**')) {

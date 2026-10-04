@@ -4,8 +4,11 @@ import User from '../models/User.js';
 import { protect } from '../middleware/auth.js';
 
 const router = express.Router();
+const getRegistrationAccessCode = () => (
+  process.env.REGISTRATION_ACCESS_CODE || ''
+).trim();
 
-// Validation des erreurs
+// Validation error handler
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -18,38 +21,54 @@ const validate = (req, res, next) => {
 };
 
 // @route   POST /api/auth/register
-// @desc    Inscription d'un nouvel utilisateur
+// @desc    Register a new user
 // @access  Public
 router.post('/register', [
-  body('email').isEmail().withMessage('Email invalide'),
-  body('password').isLength({ min: 6 }).withMessage('Le mot de passe doit contenir au moins 6 caractères'),
+  body('email').isEmail().withMessage('Invalid email'),
+  body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
+  body('registrationCode').trim().notEmpty().withMessage('Access code required'),
   body('name').optional().trim().isLength({ max: 50 })
 ], validate, async (req, res) => {
   try {
-    const { email, password, name } = req.body;
+    const { email, password, name, registrationCode } = req.body;
+    const expectedRegistrationCode = getRegistrationAccessCode();
 
-    // Vérifier si l'utilisateur existe déjà
+    if (!expectedRegistrationCode) {
+      return res.status(500).json({
+        success: false,
+        message: 'Registration access code is not configured'
+      });
+    }
+
+    if (registrationCode !== expectedRegistrationCode) {
+      return res.status(403).json({
+        success: false,
+        message: 'Invalid access code'
+      });
+    }
+
+    // Check if the user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({
         success: false,
-        message: 'Cet email est déjà utilisé'
+        message: 'This email is already in use'
       });
     }
 
-    // Créer l'utilisateur
+    // Create the user
     const user = await User.create({
       email,
       password,
       name
     });
 
-    // Générer le token
+    // Generate the token
     const token = user.getSignedJwtToken();
 
     res.status(201).json({
       success: true,
-      message: 'Compte créé avec succès',
+      message: 'Account created successfully',
       token,
       user: {
         id: user._id,
@@ -58,52 +77,52 @@ router.post('/register', [
       }
     });
   } catch (error) {
-    console.error('Erreur inscription:', error);
+    console.error('Registration error:', error);
     res.status(500).json({
       success: false,
-      message: 'Erreur serveur lors de l\'inscription'
+      message: 'Server error during registration'
     });
   }
 });
 
 // @route   POST /api/auth/login
-// @desc    Connexion d'un utilisateur
+// @desc    Log a user in
 // @access  Public
 router.post('/login', [
-  body('email').isEmail().withMessage('Email invalide'),
-  body('password').exists().withMessage('Mot de passe requis')
+  body('email').isEmail().withMessage('Invalid email'),
+  body('password').exists().withMessage('Password required')
 ], validate, async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Vérifier si l'utilisateur existe (inclure le mot de passe)
+    // Check if the user exists (include the password)
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'Email ou mot de passe incorrect'
+        message: 'Incorrect email or password'
       });
     }
 
-    // Vérifier le mot de passe
+    // Check the password
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {
       return res.status(401).json({
         success: false,
-        message: 'Email ou mot de passe incorrect'
+        message: 'Incorrect email or password'
       });
     }
 
-    // Mettre à jour la dernière connexion
+    // Update the last login date
     user.lastLogin = Date.now();
     await user.save({ validateBeforeSave: false });
 
-    // Générer le token
+    // Generate the token
     const token = user.getSignedJwtToken();
 
     res.json({
       success: true,
-      message: 'Connexion réussie',
+      message: 'Signed in successfully',
       token,
       user: {
         id: user._id,
@@ -112,21 +131,21 @@ router.post('/login', [
       }
     });
   } catch (error) {
-    console.error('Erreur connexion:', error);
+    console.error('Login error:', error);
     res.status(500).json({
       success: false,
-      message: 'Erreur serveur lors de la connexion'
+      message: 'Server error during login'
     });
   }
 });
 
 // @route   GET /api/auth/me
-// @desc    Obtenir le profil de l'utilisateur connecté
+// @desc    Get the profile of the signed-in user
 // @access  Private
 router.get('/me', protect, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
-    
+
     res.json({
       success: true,
       user: {
@@ -138,16 +157,16 @@ router.get('/me', protect, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erreur profil:', error);
+    console.error('Profile error:', error);
     res.status(500).json({
       success: false,
-      message: 'Erreur serveur'
+      message: 'Server error'
     });
   }
 });
 
 // @route   PUT /api/auth/updateprofile
-// @desc    Mettre à jour le profil
+// @desc    Update the profile
 // @access  Private
 router.put('/updateprofile', protect, [
   body('name').optional().trim().isLength({ max: 50 }),
@@ -159,12 +178,12 @@ router.put('/updateprofile', protect, [
 
     if (name) updateFields.name = name;
     if (email) {
-      // Vérifier si l'email n'est pas déjà utilisé
+      // Check that the email is not already in use
       const existingUser = await User.findOne({ email, _id: { $ne: req.user.id } });
       if (existingUser) {
         return res.status(400).json({
           success: false,
-          message: 'Cet email est déjà utilisé'
+          message: 'This email is already in use'
         });
       }
       updateFields.email = email;
@@ -178,7 +197,7 @@ router.put('/updateprofile', protect, [
 
     res.json({
       success: true,
-      message: 'Profil mis à jour',
+      message: 'Profile updated',
       user: {
         id: user._id,
         email: user.email,
@@ -186,58 +205,58 @@ router.put('/updateprofile', protect, [
       }
     });
   } catch (error) {
-    console.error('Erreur mise à jour profil:', error);
+    console.error('Profile update error:', error);
     res.status(500).json({
       success: false,
-      message: 'Erreur serveur'
+      message: 'Server error'
     });
   }
 });
 
 // @route   PUT /api/auth/updatepassword
-// @desc    Mettre à jour le mot de passe
+// @desc    Update the password
 // @access  Private
 router.put('/updatepassword', protect, [
-  body('currentPassword').exists().withMessage('Mot de passe actuel requis'),
-  body('newPassword').isLength({ min: 6 }).withMessage('Le nouveau mot de passe doit contenir au moins 6 caractères')
+  body('currentPassword').exists().withMessage('Current password required'),
+  body('newPassword').isLength({ min: 6 }).withMessage('The new password must be at least 6 characters long')
 ], validate, async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
 
     const user = await User.findById(req.user.id).select('+password');
 
-    // Vérifier le mot de passe actuel
+    // Check the current password
     const isMatch = await user.matchPassword(currentPassword);
     if (!isMatch) {
       return res.status(401).json({
         success: false,
-        message: 'Mot de passe actuel incorrect'
+        message: 'Current password is incorrect'
       });
     }
 
-    // Mettre à jour le mot de passe
+    // Update the password
     user.password = newPassword;
     await user.save();
 
-    // Générer un nouveau token
+    // Generate a new token
     const token = user.getSignedJwtToken();
 
     res.json({
       success: true,
-      message: 'Mot de passe mis à jour',
+      message: 'Password updated',
       token
     });
   } catch (error) {
-    console.error('Erreur mise à jour mot de passe:', error);
+    console.error('Password update error:', error);
     res.status(500).json({
       success: false,
-      message: 'Erreur serveur'
+      message: 'Server error'
     });
   }
 });
 
 // @route   DELETE /api/auth/deleteaccount
-// @desc    Supprimer le compte
+// @desc    Delete the account
 // @access  Private
 router.delete('/deleteaccount', protect, async (req, res) => {
   try {
@@ -245,17 +264,15 @@ router.delete('/deleteaccount', protect, async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Compte supprimé avec succès'
+      message: 'Account deleted successfully'
     });
   } catch (error) {
-    console.error('Erreur suppression compte:', error);
+    console.error('Account deletion error:', error);
     res.status(500).json({
       success: false,
-      message: 'Erreur serveur'
+      message: 'Server error'
     });
   }
 });
 
 export default router;
-
-

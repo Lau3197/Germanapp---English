@@ -4,7 +4,7 @@ type ExpressionCategory = 'daily' | 'proverbs' | 'idioms' | 'formal';
 
 interface Expression {
   german: string;
-  french: string;
+  english: string;
   literal?: string;
   context?: string;
   example?: string;
@@ -16,252 +16,252 @@ export const ExpressionsView: React.FC = () => {
   const [expandedExpr, setExpandedExpr] = useState<string | null>(null);
 
   const dailyExpressions: Expression[] = [
-    { german: 'Wie geht\'s?', french: 'Comment ça va ?', context: 'Salutation informelle', example: 'Hey Maria, wie geht\'s?' },
-    { german: 'Was ist los?', french: 'Qu\'est-ce qui se passe ?', context: 'Demander ce qui ne va pas', example: 'Du siehst traurig aus. Was ist los?' },
-    { german: 'Keine Ahnung!', french: 'Aucune idée !', context: 'Exprimer l\'ignorance', example: 'Wo ist der Schlüssel? - Keine Ahnung!' },
-    { german: 'Macht nichts!', french: 'Ce n\'est pas grave !', context: 'Rassurer quelqu\'un', example: 'Entschuldigung! - Macht nichts!' },
-    { german: 'Genau!', french: 'Exactement !', context: 'Exprimer l\'accord', example: 'Das ist doch falsch! - Genau!' },
-    { german: 'Na ja...', french: 'Eh bien...', context: 'Hésitation', example: 'Magst du das? - Na ja, es geht.' },
-    { german: 'Ach so!', french: 'Ah d\'accord !', context: 'Comprendre quelque chose', example: 'Das war ein Witz! - Ach so!' },
-    { german: 'Stimmt!', french: 'C\'est vrai !', context: 'Confirmer', example: 'Berlin ist groß. - Stimmt!' },
-    { german: 'Auf jeden Fall!', french: 'Absolument !', context: 'Accord fort', example: 'Kommst du mit? - Auf jeden Fall!' },
-    { german: 'Lass mich in Ruhe!', french: 'Laisse-moi tranquille !', context: 'Demander qu\'on nous laisse', example: 'Lass mich in Ruhe, ich arbeite!' },
-    { german: 'Das ist mir egal.', french: 'Ça m\'est égal.', context: 'Indifférence', example: 'Pizza oder Pasta? - Das ist mir egal.' },
-    { german: 'Ich habe keine Lust.', french: 'Je n\'ai pas envie.', context: 'Refuser poliment', example: 'Gehen wir schwimmen? - Ich habe keine Lust.' },
-    { german: 'Gute Besserung!', french: 'Bon rétablissement !', context: 'À quelqu\'un de malade', example: 'Ich bin krank. - Gute Besserung!' },
-    { german: 'Viel Erfolg!', french: 'Bonne chance !', context: 'Souhaiter la réussite', example: 'Ich habe morgen eine Prüfung. - Viel Erfolg!' },
-    { german: 'Schönes Wochenende!', french: 'Bon week-end !', context: 'Salutation de fin de semaine', example: 'Bis Montag! - Schönes Wochenende!' },
-    { german: 'Alles klar?', french: 'Tout est clair ?', context: 'Vérifier la compréhension', example: 'Das musst du so machen. Alles klar?' },
-    { german: 'Kein Problem!', french: 'Pas de problème !', context: 'Rassurer', example: 'Kannst du mir helfen? - Kein Problem!' },
-    { german: 'Bis gleich!', french: 'À tout de suite !', context: 'Séparation courte', example: 'Ich hole nur meine Jacke. Bis gleich!' },
-    { german: 'Na klar!', french: 'Bien sûr !', context: 'Accord enthousiaste', example: 'Hilfst du mir? - Na klar!' },
-    { german: 'Ich bin gespannt!', french: 'J\'ai hâte de voir !', context: 'Anticipation', example: 'Morgen ist die Überraschung. - Ich bin gespannt!' }
+    { german: 'Wie geht\'s?', english: 'How are you?', context: 'Informal greeting', example: 'Hey Maria, wie geht\'s?' },
+    { german: 'Was ist los?', english: 'What\'s going on?', context: 'Asking what is wrong', example: 'Du siehst traurig aus. Was ist los?' },
+    { german: 'Keine Ahnung!', english: 'No idea!', context: 'Expressing that you do not know', example: 'Wo ist der Schlüssel? - Keine Ahnung!' },
+    { german: 'Macht nichts!', english: 'No worries!', context: 'Reassuring someone', example: 'Entschuldigung! - Macht nichts!' },
+    { german: 'Genau!', english: 'Exactly!', context: 'Expressing agreement', example: 'Das ist doch falsch! - Genau!' },
+    { german: 'Na ja...', english: 'Well...', context: 'Hesitation', example: 'Magst du das? - Na ja, es geht.' },
+    { german: 'Ach so!', english: 'Oh, I see!', context: 'Understanding something', example: 'Das war ein Witz! - Ach so!' },
+    { german: 'Stimmt!', english: 'That\'s true!', context: 'Confirming', example: 'Berlin ist groß. - Stimmt!' },
+    { german: 'Auf jeden Fall!', english: 'Absolutely!', context: 'Strong agreement', example: 'Kommst du mit? - Auf jeden Fall!' },
+    { german: 'Lass mich in Ruhe!', english: 'Leave me alone!', context: 'Asking to be left alone', example: 'Lass mich in Ruhe, ich arbeite!' },
+    { german: 'Das ist mir egal.', english: 'I don\'t care.', context: 'Indifference', example: 'Pizza oder Pasta? - Das ist mir egal.' },
+    { german: 'Ich habe keine Lust.', english: 'I don\'t feel like it.', context: 'Politely refusing', example: 'Gehen wir schwimmen? - Ich habe keine Lust.' },
+    { german: 'Gute Besserung!', english: 'Get well soon!', context: 'For someone who is ill', example: 'Ich bin krank. - Gute Besserung!' },
+    { german: 'Viel Erfolg!', english: 'Good luck!', context: 'Wishing success', example: 'Ich habe morgen eine Prüfung. - Viel Erfolg!' },
+    { german: 'Schönes Wochenende!', english: 'Have a nice weekend!', context: 'End-of-week greeting', example: 'Bis Montag! - Schönes Wochenende!' },
+    { german: 'Alles klar?', english: 'Is everything clear?', context: 'Checking understanding', example: 'Das musst du so machen. Alles klar?' },
+    { german: 'Kein Problem!', english: 'No problem!', context: 'Reassuring', example: 'Kannst du mir helfen? - Kein Problem!' },
+    { german: 'Bis gleich!', english: 'See you in a moment!', context: 'Short separation', example: 'Ich hole nur meine Jacke. Bis gleich!' },
+    { german: 'Na klar!', english: 'Of course!', context: 'Enthusiastic agreement', example: 'Hilfst du mir? - Na klar!' },
+    { german: 'Ich bin gespannt!', english: 'I\'m curious to see!', context: 'Anticipation', example: 'Morgen ist die Überraschung. - Ich bin gespannt!' }
   ];
 
   const proverbs: Expression[] = [
     { 
       german: 'Übung macht den Meister.', 
-      french: 'C\'est en forgeant qu\'on devient forgeron.', 
-      literal: 'L\'exercice fait le maître.',
-      context: 'Encourager la pratique régulière'
+      english: 'Practice makes perfect.', 
+      literal: 'Practice makes the master.',
+      context: 'Encouraging regular practice'
     },
     { 
       german: 'Morgenstund hat Gold im Mund.', 
-      french: 'Le monde appartient à ceux qui se lèvent tôt.', 
-      literal: 'L\'heure matinale a de l\'or dans la bouche.',
-      context: 'Valoriser le lever tôt'
+      english: 'The early bird catches the worm.', 
+      literal: 'The morning hour has gold in its mouth.',
+      context: 'Valuing getting up early'
     },
     { 
       german: 'Wer zuletzt lacht, lacht am besten.', 
-      french: 'Rira bien qui rira le dernier.', 
-      literal: 'Celui qui rit en dernier rit le mieux.',
-      context: 'Patience et persévérance'
+      english: 'He who laughs last laughs best.', 
+      literal: 'Whoever laughs last laughs best.',
+      context: 'Patience and perseverance'
     },
     { 
       german: 'Aller Anfang ist schwer.', 
-      french: 'Tout début est difficile.', 
-      literal: 'Tout commencement est difficile.',
-      context: 'Encourager face aux difficultés initiales'
+      english: 'Every beginning is hard.', 
+      literal: 'Every beginning is hard.',
+      context: 'Encouraging someone through initial difficulties'
     },
     { 
       german: 'Ohne Fleiß kein Preis.', 
-      french: 'On n\'a rien sans rien.', 
-      literal: 'Sans effort, pas de récompense.',
-      context: 'Valoriser le travail'
+      english: 'No pain, no gain.', 
+      literal: 'Without effort, no prize.',
+      context: 'Valuing hard work'
     },
     { 
       german: 'Der Apfel fällt nicht weit vom Stamm.', 
-      french: 'Tel père, tel fils.', 
-      literal: 'La pomme ne tombe pas loin du tronc.',
-      context: 'Ressemblance familiale'
+      english: 'The apple doesn\'t fall far from the tree.', 
+      literal: 'The apple does not fall far from the trunk.',
+      context: 'Family resemblance'
     },
     { 
       german: 'Was du heute kannst besorgen, das verschiebe nicht auf morgen.', 
-      french: 'Il ne faut pas remettre au lendemain ce qu\'on peut faire le jour même.', 
-      literal: 'Ce que tu peux faire aujourd\'hui, ne le reporte pas à demain.',
-      context: 'Contre la procrastination'
+      english: 'Don\'t put off until tomorrow what you can do today.', 
+      literal: 'What you can take care of today, do not postpone until tomorrow.',
+      context: 'Against procrastination'
     },
     { 
       german: 'Lügen haben kurze Beine.', 
-      french: 'Les mensonges ne mènent pas loin.', 
-      literal: 'Les mensonges ont de courtes jambes.',
-      context: 'Contre le mensonge'
+      english: 'Lies don\'t get you far.', 
+      literal: 'Lies have short legs.',
+      context: 'Against lying'
     },
     { 
       german: 'Stille Wasser sind tief.', 
-      french: 'Il faut se méfier de l\'eau qui dort.', 
-      literal: 'Les eaux calmes sont profondes.',
-      context: 'Apparences trompeuses'
+      english: 'Still waters run deep.', 
+      literal: 'Still waters are deep.',
+      context: 'Deceptive appearances'
     },
     { 
       german: 'Wer A sagt, muss auch B sagen.', 
-      french: 'Quand on commence quelque chose, il faut aller jusqu\'au bout.', 
-      literal: 'Qui dit A doit aussi dire B.',
-      context: 'Cohérence dans ses actes'
+      english: 'If you start something, you have to see it through.', 
+      literal: 'Whoever says A must also say B.',
+      context: 'Consistency in one\'s actions'
     },
     { 
       german: 'Viele Köche verderben den Brei.', 
-      french: 'Trop de cuisiniers gâtent la sauce.', 
-      literal: 'Beaucoup de cuisiniers gâtent la bouillie.',
-      context: 'Trop de personnes compliquent les choses'
+      english: 'Too many cooks spoil the broth.', 
+      literal: 'Many cooks spoil the porridge.',
+      context: 'Too many people complicate things'
     },
     { 
       german: 'In der Kürze liegt die Würze.', 
-      french: 'La brièveté est l\'âme de l\'esprit.', 
-      literal: 'Dans la brièveté réside l\'assaisonnement.',
-      context: 'Valoriser la concision'
+      english: 'Brevity is the soul of wit.', 
+      literal: 'In brevity lies the seasoning.',
+      context: 'Valuing concision'
     },
     { 
       german: 'Der frühe Vogel fängt den Wurm.', 
-      french: 'L\'avenir appartient à ceux qui se lèvent tôt.', 
-      literal: 'L\'oiseau matinal attrape le ver.',
-      context: 'Avantage d\'être proactif'
+      english: 'The early bird catches the worm.', 
+      literal: 'The early bird catches the worm.',
+      context: 'The advantage of being proactive'
     },
     { 
       german: 'Aus den Augen, aus dem Sinn.', 
-      french: 'Loin des yeux, loin du cœur.', 
-      literal: 'Hors des yeux, hors de l\'esprit.',
-      context: 'L\'éloignement fait oublier'
+      english: 'Out of sight, out of mind.', 
+      literal: 'Out of the eyes, out of the mind.',
+      context: 'Distance makes people forget'
     },
     { 
       german: 'Ende gut, alles gut.', 
-      french: 'Tout est bien qui finit bien.', 
-      literal: 'Fin bonne, tout bon.',
-      context: 'L\'important est le résultat final'
+      english: 'All\'s well that ends well.', 
+      literal: 'End good, everything good.',
+      context: 'What matters is the final result'
     }
   ];
 
   const idioms: Expression[] = [
     { 
       german: 'Da steppt der Bär!', 
-      french: 'C\'est la fête !', 
-      literal: 'L\'ours y danse !',
-      context: 'Ambiance festive',
+      english: 'The place is buzzing!', 
+      literal: 'The bear is dancing there!',
+      context: 'Festive atmosphere',
       example: 'Kommst du zur Party? Da steppt der Bär!'
     },
     { 
       german: 'Das ist nicht mein Bier.', 
-      french: 'Ce n\'est pas mon problème.', 
-      literal: 'Ce n\'est pas ma bière.',
-      context: 'Se désengager',
+      english: 'That\'s not my problem.', 
+      literal: 'That is not my beer.',
+      context: 'Disengaging',
       example: 'Warum hilfst du ihm nicht? - Das ist nicht mein Bier.'
     },
     { 
       german: 'Ich verstehe nur Bahnhof.', 
-      french: 'Je n\'y comprends rien.', 
-      literal: 'Je ne comprends que gare.',
-      context: 'Incompréhension totale',
+      english: 'It\'s all Greek to me.', 
+      literal: 'I only understand train station.',
+      context: 'Total incomprehension',
       example: 'Kannst du mir Physik erklären? - Ich verstehe nur Bahnhof.'
     },
     { 
       german: 'Die Daumen drücken', 
-      french: 'Croiser les doigts', 
-      literal: 'Presser les pouces',
-      context: 'Souhaiter bonne chance',
+      english: 'To keep one\'s fingers crossed', 
+      literal: 'To press the thumbs',
+      context: 'Wishing someone good luck',
       example: 'Ich drücke dir die Daumen für die Prüfung!'
     },
     { 
       german: 'Schwein haben', 
-      french: 'Avoir de la chance', 
-      literal: 'Avoir du cochon',
-      context: 'Chance inattendue',
+      english: 'To luck out', 
+      literal: 'To have pig',
+      context: 'Unexpected luck',
       example: 'Ich habe den Bus noch erwischt. Schwein gehabt!'
     },
     { 
       german: 'Tomaten auf den Augen haben', 
-      french: 'Ne pas voir ce qui est évident', 
-      literal: 'Avoir des tomates sur les yeux',
-      context: 'Ne pas remarquer l\'évident',
+      english: 'To be blind to what is obvious', 
+      literal: 'To have tomatoes on one\'s eyes',
+      context: 'Not noticing the obvious',
       example: 'Hast du Tomaten auf den Augen? Das Buch liegt direkt vor dir!'
     },
     { 
       german: 'Auf dem Holzweg sein', 
-      french: 'Faire fausse route', 
-      literal: 'Être sur le chemin de bois',
-      context: 'Se tromper',
+      english: 'To be on the wrong track', 
+      literal: 'To be on the wooden path',
+      context: 'Being mistaken',
       example: 'Wenn du das glaubst, bist du auf dem Holzweg.'
     },
     { 
       german: 'Einen Vogel haben', 
-      french: 'Être fou', 
-      literal: 'Avoir un oiseau',
-      context: 'Être un peu fou',
+      english: 'To be crazy', 
+      literal: 'To have a bird',
+      context: 'Being a bit crazy',
       example: 'Du hast wohl einen Vogel!'
     },
     { 
       german: 'Die Kirche im Dorf lassen', 
-      french: 'Ne pas exagérer', 
-      literal: 'Laisser l\'église au village',
-      context: 'Rester raisonnable',
+      english: 'To keep things in proportion', 
+      literal: 'To leave the church in the village',
+      context: 'Staying reasonable',
       example: 'Lass mal die Kirche im Dorf! So schlimm ist es nicht.'
     },
     { 
       german: 'Ins Fettnäpfchen treten', 
-      french: 'Faire une gaffe', 
-      literal: 'Marcher dans le petit pot de graisse',
-      context: 'Commettre une maladresse',
+      english: 'To put one\'s foot in it', 
+      literal: 'To step into the little fat bowl',
+      context: 'Making a social blunder',
       example: 'Mit diesem Kommentar bin ich voll ins Fettnäpfchen getreten.'
     },
     { 
       german: 'Alles in Butter', 
-      french: 'Tout va bien', 
-      literal: 'Tout dans le beurre',
-      context: 'Rassurer',
+      english: 'Everything is fine', 
+      literal: 'Everything in butter',
+      context: 'Reassuring',
       example: 'Keine Sorge, alles in Butter!'
     },
     { 
       german: 'Jetzt mal Butter bei die Fische!', 
-      french: 'Maintenant, passons aux choses sérieuses !', 
-      literal: 'Maintenant du beurre avec le poisson !',
-      context: 'Demander du concret',
+      english: 'Let\'s get down to business!', 
+      literal: 'Now butter with the fish!',
+      context: 'Asking for something concrete',
       example: 'Jetzt mal Butter bei die Fische! Was willst du wirklich?'
     },
     { 
       german: 'Das geht mir auf den Keks!', 
-      french: 'Ça me tape sur les nerfs !', 
-      literal: 'Ça me monte sur le biscuit !',
-      context: 'Exprimer l\'agacement',
+      english: 'That\'s getting on my nerves!', 
+      literal: 'That gets on my cookie!',
+      context: 'Expressing annoyance',
       example: 'Diese Musik geht mir auf den Keks!'
     },
     { 
       german: 'Um den heißen Brei herumreden', 
-      french: 'Tourner autour du pot', 
-      literal: 'Parler autour de la bouillie chaude',
-      context: 'Éviter le sujet',
+      english: 'To beat around the bush', 
+      literal: 'To talk around the hot porridge',
+      context: 'Avoiding the subject',
       example: 'Red nicht um den heißen Brei herum! Sag, was du denkst!'
     },
     { 
       german: 'Das ist mir Wurst.', 
-      french: 'Ça m\'est égal.', 
-      literal: 'C\'est saucisse pour moi.',
-      context: 'Indifférence totale',
+      english: 'I don\'t care.', 
+      literal: 'That is sausage to me.',
+      context: 'Complete indifference',
       example: 'Rot oder blau? - Das ist mir Wurst.'
     },
     { 
       german: 'Sich wie ein Elefant im Porzellanladen benehmen', 
-      french: 'Se comporter comme un éléphant dans un magasin de porcelaine', 
-      literal: 'Identique',
-      context: 'Être très maladroit',
+      english: 'To behave like a bull in a china shop', 
+      literal: 'To behave like an elephant in a porcelain shop',
+      context: 'Being very clumsy',
       example: 'Bei der Verhandlung hat er sich wie ein Elefant im Porzellanladen benommen.'
     }
   ];
 
   const formalExpressions: Expression[] = [
-    { german: 'Sehr geehrte Damen und Herren', french: 'Madame, Monsieur', context: 'Début de lettre formelle' },
-    { german: 'Mit freundlichen Grüßen', french: 'Cordialement', context: 'Fin de lettre formelle' },
-    { german: 'Ich wäre Ihnen sehr dankbar, wenn...', french: 'Je vous serais très reconnaissant si...', context: 'Demande polie' },
-    { german: 'Könnten Sie mir bitte mitteilen...', french: 'Pourriez-vous me faire savoir...', context: 'Demande d\'information' },
-    { german: 'Bezüglich Ihrer Anfrage...', french: 'Concernant votre demande...', context: 'Réponse à une demande' },
-    { german: 'Ich erlaube mir, Sie darauf hinzuweisen...', french: 'Je me permets de vous signaler...', context: 'Signaler quelque chose' },
-    { german: 'Es würde mich freuen, wenn...', french: 'Je serais ravi(e) si...', context: 'Exprimer un souhait' },
-    { german: 'Vielen Dank im Voraus', french: 'Merci d\'avance', context: 'Remercier par anticipation' },
-    { german: 'Ich bitte um Verständnis.', french: 'Je vous prie de bien vouloir comprendre.', context: 'Demander la compréhension' },
-    { german: 'Bei Rückfragen stehe ich Ihnen gerne zur Verfügung.', french: 'Je reste à votre disposition pour toute question.', context: 'Offrir son aide' },
-    { german: 'Hiermit möchte ich mich bewerben...', french: 'Par la présente, je souhaite poser ma candidature...', context: 'Lettre de motivation' },
-    { german: 'Ich freue mich auf Ihre Rückmeldung.', french: 'J\'attends votre réponse avec impatience.', context: 'Attendre une réponse' },
-    { german: 'Entschuldigen Sie die Unannehmlichkeiten.', french: 'Veuillez nous excuser pour la gêne occasionnée.', context: 'S\'excuser formellement' },
-    { german: 'In Anbetracht der Umstände...', french: 'Compte tenu des circonstances...', context: 'Justification' },
-    { german: 'Ich möchte Sie höflich darum bitten...', french: 'Je vous prie poliment de...', context: 'Demande très polie' }
+    { german: 'Sehr geehrte Damen und Herren', english: 'Dear Sir or Madam', context: 'Beginning a formal letter' },
+    { german: 'Mit freundlichen Grüßen', english: 'Kind regards', context: 'Ending a formal letter' },
+    { german: 'Ich wäre Ihnen sehr dankbar, wenn...', english: 'I would be very grateful if...', context: 'Polite request' },
+    { german: 'Könnten Sie mir bitte mitteilen...', english: 'Could you please let me know...', context: 'Request for information' },
+    { german: 'Bezüglich Ihrer Anfrage...', english: 'Regarding your inquiry...', context: 'Reply to an inquiry' },
+    { german: 'Ich erlaube mir, Sie darauf hinzuweisen...', english: 'I would like to draw your attention to...', context: 'Pointing something out' },
+    { german: 'Es würde mich freuen, wenn...', english: 'I would be pleased if...', context: 'Expressing a wish' },
+    { german: 'Vielen Dank im Voraus', english: 'Thank you in advance', context: 'Thanking in advance' },
+    { german: 'Ich bitte um Verständnis.', english: 'I ask for your understanding.', context: 'Asking for understanding' },
+    { german: 'Bei Rückfragen stehe ich Ihnen gerne zur Verfügung.', english: 'Please feel free to contact me if you have any questions.', context: 'Offering help' },
+    { german: 'Hiermit möchte ich mich bewerben...', english: 'I would like to apply...', context: 'Cover letter' },
+    { german: 'Ich freue mich auf Ihre Rückmeldung.', english: 'I look forward to your reply.', context: 'Waiting for a reply' },
+    { german: 'Entschuldigen Sie die Unannehmlichkeiten.', english: 'Please accept our apologies for the inconvenience.', context: 'Formal apology' },
+    { german: 'In Anbetracht der Umstände...', english: 'Given the circumstances...', context: 'Justification' },
+    { german: 'Ich möchte Sie höflich darum bitten...', english: 'I would kindly like to ask you to...', context: 'Very polite request' }
   ];
 
   const getCategoryData = () => {
@@ -276,14 +276,14 @@ export const ExpressionsView: React.FC = () => {
 
   const filteredExpressions = getCategoryData().filter(expr => 
     expr.german.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    expr.french.toLowerCase().includes(searchQuery.toLowerCase())
+    expr.english.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const categoryInfo = {
-    daily: { title: 'Expressions du quotidien', icon: '💬', color: 'indigo', description: 'Phrases utiles pour tous les jours' },
-    proverbs: { title: 'Proverbes allemands', icon: '📜', color: 'amber', description: 'Sagesse populaire allemande' },
-    idioms: { title: 'Expressions idiomatiques', icon: '🎭', color: 'emerald', description: 'Expressions imagées et colorées' },
-    formal: { title: 'Expressions formelles', icon: '👔', color: 'violet', description: 'Pour les contextes professionnels' }
+    daily: { title: 'Everyday Expressions', icon: '💬', color: 'indigo', description: 'Useful phrases for everyday use' },
+    proverbs: { title: 'German Proverbs', icon: '📜', color: 'amber', description: 'German folk wisdom' },
+    idioms: { title: 'Idiomatic Expressions', icon: '🎭', color: 'emerald', description: 'Colorful figurative expressions' },
+    formal: { title: 'Formal Expressions', icon: '👔', color: 'violet', description: 'For professional contexts' }
   };
 
   return (
@@ -291,7 +291,7 @@ export const ExpressionsView: React.FC = () => {
       {/* Header */}
       <div className="mb-12 text-center sm:text-left pb-10" style={{ borderBottom: '1px solid var(--terracotta-100)' }}>
         <h2 className="text-6xl font-black mb-4 tracking-tighter" style={{ color: 'var(--terracotta-800)' }}>Redewendungen</h2>
-        <p className="text-2xl font-medium max-w-2xl" style={{ color: 'var(--sand-600)' }}>Expressions idiomatiques et proverbes pour parler comme un vrai Allemand.</p>
+        <p className="text-2xl font-medium max-w-2xl" style={{ color: 'var(--sand-600)' }}>Idioms and proverbs for sounding more natural in German.</p>
       </div>
 
       {/* Search */}
@@ -300,7 +300,7 @@ export const ExpressionsView: React.FC = () => {
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Rechercher une expression..."
+          placeholder="Search for an expression..."
           className="w-full pl-12 pr-4 py-4 bg-white rounded-2xl outline-none transition-all"
           style={{ border: '1px solid var(--terracotta-200)' }}
         />
@@ -363,7 +363,7 @@ export const ExpressionsView: React.FC = () => {
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <p className="text-xl font-black mb-2" style={{ color: 'var(--terracotta-800)' }}>{expr.german}</p>
-                    <p className="font-bold" style={{ color: 'var(--terracotta-600)' }}>{expr.french}</p>
+                    <p className="font-bold" style={{ color: 'var(--terracotta-600)' }}>{expr.english}</p>
                     {expr.context && (
                       <span className="inline-block mt-2 px-3 py-1 text-xs font-bold rounded-full" style={{ backgroundColor: 'var(--sand-100)', color: 'var(--sand-600)' }}>
                         {expr.context}
@@ -380,13 +380,13 @@ export const ExpressionsView: React.FC = () => {
                 <div className="px-6 pb-6 pt-4 animate-in slide-in-from-top-2 duration-200" style={{ borderTop: '1px solid var(--terracotta-100)' }}>
                   {expr.literal && (
                     <div className="mb-3">
-                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Sens littéral</span>
+                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Literal meaning</span>
                       <p className="text-slate-600 mt-1 italic">"{expr.literal}"</p>
                     </div>
                   )}
                   {expr.example && (
                     <div className="bg-indigo-50 rounded-xl p-4 mt-3">
-                      <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider">Exemple</span>
+                      <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider">Example</span>
                       <p className="text-slate-800 font-medium mt-1">{expr.example}</p>
                     </div>
                   )}
@@ -394,7 +394,7 @@ export const ExpressionsView: React.FC = () => {
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                     </svg>
-                    Ajouter aux favoris
+                    Add to favorites
                   </button>
                 </div>
               )}
@@ -410,8 +410,8 @@ export const ExpressionsView: React.FC = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 20a8 8 0 100-16 8 8 0 000 16z" />
             </svg>
           </div>
-          <p className="text-slate-500 font-bold text-lg">Aucune expression trouvée</p>
-          <p className="text-slate-400 text-sm mt-1">Essayez un autre terme de recherche</p>
+          <p className="text-slate-500 font-bold text-lg">No expression found</p>
+          <p className="text-slate-400 text-sm mt-1">Try another search term</p>
         </div>
       )}
 
@@ -419,24 +419,23 @@ export const ExpressionsView: React.FC = () => {
       <div className="mt-12 bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 rounded-[2rem] p-8">
         <div className="flex items-center gap-3 mb-4">
           <span className="text-3xl">💡</span>
-          <h3 className="text-xl font-black text-amber-800">Conseils d'utilisation</h3>
+          <h3 className="text-xl font-black text-amber-800">Usage Tips</h3>
         </div>
         <ul className="space-y-2 text-amber-700">
           <li className="flex items-start gap-2">
             <span className="text-amber-500">•</span>
-            <span>Utilisez les expressions idiomatiques avec modération - elles impressionnent quand elles sont bien placées !</span>
+            <span>Use idiomatic expressions in moderation: they make an impression when they are well placed.</span>
           </li>
           <li className="flex items-start gap-2">
             <span className="text-amber-500">•</span>
-            <span>Les proverbes sont parfaits pour conclure une conversation ou illustrer un point.</span>
+            <span>Proverbs are useful for closing a conversation or illustrating a point.</span>
           </li>
           <li className="flex items-start gap-2">
             <span className="text-amber-500">•</span>
-            <span>En contexte formel, privilégiez toujours le vouvoiement (Sie) et les formules respectueuses.</span>
+            <span>In formal contexts, always prefer the formal address (Sie) and respectful formulas.</span>
           </li>
         </ul>
       </div>
     </div>
   );
 };
-
