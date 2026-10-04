@@ -8,9 +8,11 @@ import {
   getLocalDateKey,
   normalizeStats,
   readStatsFromStorage,
+  STATS_STORAGE_KEY,
   updateStreakForToday,
   writeStatsToStorage
 } from '../utils/studyStats';
+import { APP_DATA_SYNCED_EVENT } from '../utils/trainerStorage';
 
 // The study clock lives here, above the router, so it keeps running whatever
 // page the user is on. It measures wall-clock time (Date.now deltas) instead of
@@ -140,6 +142,21 @@ export const StudyTimeProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const refreshStats = useCallback(() => {
     setStats(readStatsFromStorage());
   }, []);
+
+  // Pick up stats merged in from another device by the cloud sync.
+  useEffect(() => {
+    const handleStorage = (event: StorageEvent) => {
+      if (event.storageArea !== window.localStorage) return;
+      if (event.key === null || event.key === STATS_STORAGE_KEY) refreshStats();
+    };
+
+    window.addEventListener(APP_DATA_SYNCED_EVENT, refreshStats);
+    window.addEventListener('storage', handleStorage);
+    return () => {
+      window.removeEventListener(APP_DATA_SYNCED_EVENT, refreshStats);
+      window.removeEventListener('storage', handleStorage);
+    };
+  }, [refreshStats]);
 
   const todayTimeSpent = getDayTimeSpent(stats) + pendingSeconds;
   const totalTimeSpent =

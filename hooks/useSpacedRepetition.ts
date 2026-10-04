@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { APP_DATA_SYNCED_EVENT } from '../utils/trainerStorage';
 
 // Spaced Repetition System based on Leitner system
 // Words are in "boxes" (1-5), the higher the box, the longer the interval
@@ -131,40 +132,59 @@ export function useSpacedRepetition() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [customLists, setCustomLists] = useState<CustomList[]>([]);
 
-  // Load data on startup
+  // Load data on startup, and again whenever the cloud sync (or another tab)
+  // rewrites localStorage: otherwise this hook keeps its stale copy and writes
+  // it back over the progress pulled from the other device.
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
+    const loadFromStorage = () => {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          const map = new Map<string, WordProgress>(Object.entries(parsed));
+          setProgress(map);
+        } catch (e) {
+          console.error('Error loading spaced repetition data:', e);
+        }
+      }
+
+      // Load today's counter
       try {
-        const parsed = JSON.parse(saved);
-        const map = new Map<string, WordProgress>(Object.entries(parsed));
-        setProgress(map);
+        const todayData = localStorage.getItem(TODAY_KEY);
+        const { date, count } = todayData ? JSON.parse(todayData) : { date: '', count: 0 };
+        const today = new Date().toISOString().split('T')[0];
+        setTodayReviewed(date === today && typeof count === 'number' ? count : 0);
       } catch (e) {
-        console.error('Error loading spaced repetition data:', e);
+        console.error('Error loading today counter:', e);
       }
-    }
 
-    // Load today's counter
-    const todayData = localStorage.getItem(TODAY_KEY);
-    if (todayData) {
-      const { date, count } = JSON.parse(todayData);
-      const today = new Date().toISOString().split('T')[0];
-      if (date === today) {
-        setTodayReviewed(count);
+      // Load custom lists
+      const savedLists = localStorage.getItem(CUSTOM_LISTS_KEY);
+      if (savedLists) {
+        try {
+          setCustomLists(JSON.parse(savedLists));
+        } catch (e) {
+          console.error('Error loading custom lists:', e);
+        }
       }
-    }
+    };
 
-    // Load custom lists
-    const savedLists = localStorage.getItem(CUSTOM_LISTS_KEY);
-    if (savedLists) {
-      try {
-        setCustomLists(JSON.parse(savedLists));
-      } catch (e) {
-        console.error('Error loading custom lists:', e);
-      }
-    }
-
+    loadFromStorage();
     setIsLoaded(true);
+
+    const handleStorage = (event: StorageEvent) => {
+      if (event.storageArea !== window.localStorage) return;
+      if (event.key === null || [STORAGE_KEY, TODAY_KEY, CUSTOM_LISTS_KEY].includes(event.key)) {
+        loadFromStorage();
+      }
+    };
+
+    window.addEventListener(APP_DATA_SYNCED_EVENT, loadFromStorage);
+    window.addEventListener('storage', handleStorage);
+    return () => {
+      window.removeEventListener(APP_DATA_SYNCED_EVENT, loadFromStorage);
+      window.removeEventListener('storage', handleStorage);
+    };
   }, []);
 
   // Save data

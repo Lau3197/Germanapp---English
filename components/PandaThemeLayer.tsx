@@ -180,7 +180,7 @@ const clampBuddyOffset = (
 };
 
 export const PandaThemeLayer: React.FC<PandaThemeLayerProps> = ({ showReward, onDismissReward }) => {
-  const { mood } = usePandaMascot();
+  const { mood, isMascotHidden, setMascotHidden } = usePandaMascot();
   const [animationChoice, setAnimationChoice] = useState<PandaAnimationChoice>(readStoredAnimation);
   const [isAnimationMenuOpen, setIsAnimationMenuOpen] = useState(false);
   const effectiveMood = animationChoice === 'auto' ? mood : animationChoice;
@@ -348,7 +348,7 @@ export const PandaThemeLayer: React.FC<PandaThemeLayerProps> = ({ showReward, on
       visualViewport?.removeEventListener('resize', keepBuddyInViewport);
       visualViewport?.removeEventListener('scroll', keepBuddyInViewport);
     };
-  }, []);
+  }, [isMascotHidden]);
 
   const nudgeBuddy = (deltaX: number, deltaY: number) => {
     const buddy = buddyRef.current;
@@ -377,6 +377,17 @@ export const PandaThemeLayer: React.FC<PandaThemeLayerProps> = ({ showReward, on
         <div className="panda-floating panda-float-four">🌿</div>
       </div>
 
+      {isMascotHidden ? (
+        <button
+          type="button"
+          className="mascot-show-button"
+          onClick={() => setMascotHidden(false)}
+          aria-label="Afficher Pandachan"
+          title="Afficher Pandachan"
+        >
+          🐼
+        </button>
+      ) : (
       <div
         ref={buddyRef}
         className={`panda-study-buddy panda-study-buddy-${effectiveMood}${isDragging ? ' is-dragging' : ''}`}
@@ -424,6 +435,20 @@ export const PandaThemeLayer: React.FC<PandaThemeLayerProps> = ({ showReward, on
           }
         }}
       >
+        <button
+          type="button"
+          className="mascot-hide-button"
+          onPointerDown={event => event.stopPropagation()}
+          onKeyDown={event => event.stopPropagation()}
+          onClick={() => {
+            setIsAnimationMenuOpen(false);
+            setMascotHidden(true);
+          }}
+          aria-label="Masquer Pandachan"
+          title="Masquer Pandachan"
+        >
+          ×
+        </button>
         <div className="panda-study-buddy-glow" />
         <div
           className="panda-study-buddy-character panda-study-buddy-sprite"
@@ -482,6 +507,7 @@ export const PandaThemeLayer: React.FC<PandaThemeLayerProps> = ({ showReward, on
           </div>
         </div>
       </div>
+      )}
 
       {showReward && (
         <div className="panda-theme-toast" role="status" aria-live="polite">

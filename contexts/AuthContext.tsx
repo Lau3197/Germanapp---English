@@ -153,6 +153,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'hidden') {
         scheduleSync(0);
+      } else {
+        // Mobile browsers freeze background tabs, so the live listener can miss
+        // what was done on another device meanwhile: force a full pull + push.
+        lastSyncedSignature = '';
+        scheduleSync(0);
       }
     };
 

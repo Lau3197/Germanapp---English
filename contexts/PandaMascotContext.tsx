@@ -10,14 +10,27 @@ interface PandaMascotContextValue {
   bambooNextGoal: number;
   awardBamboo: (amount?: number) => void;
   triggerMood: (mood: Exclude<PandaMascotMood, 'study' | 'sleeping'>, durationMs?: number) => void;
+  isMascotHidden: boolean;
+  setMascotHidden: (hidden: boolean) => void;
 }
 
 const PandaMascotContext = createContext<PandaMascotContextValue | null>(null);
 
 const IDLE_DELAY_MS = 18000;
+const MASCOT_HIDDEN_STORAGE_KEY = 'deutschmeister-mascot-hidden';
+
+const readStoredMascotHidden = () => {
+  try {
+    return window.localStorage.getItem(MASCOT_HIDDEN_STORAGE_KEY) === 'true';
+  } catch {
+    return false;
+  }
+};
+
 export const PandaMascotProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [mood, setMood] = useState<PandaMascotMood>('study');
   const [moodRevision, setMoodRevision] = useState(0);
+  const [isMascotHidden, setIsMascotHidden] = useState(readStoredMascotHidden);
   const bambooCount = 0;
   const transientRef = useRef(false);
   const transientTimerRef = useRef<number | null>(null);
@@ -69,6 +82,15 @@ export const PandaMascotProvider: React.FC<{ children: React.ReactNode }> = ({ c
     // Kept as a no-op so older exercise components can still call the mascot API.
   }, []);
 
+  const setMascotHidden = useCallback((hidden: boolean) => {
+    setIsMascotHidden(hidden);
+    try {
+      window.localStorage.setItem(MASCOT_HIDDEN_STORAGE_KEY, String(hidden));
+    } catch {
+      // Storage can be unavailable (private mode); the choice then lasts for the session only.
+    }
+  }, []);
+
   useEffect(() => {
     const activityEvents: (keyof WindowEventMap)[] = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll'];
 
@@ -95,7 +117,9 @@ export const PandaMascotProvider: React.FC<{ children: React.ReactNode }> = ({ c
         bambooRank: bambooProgress.rank,
         bambooNextGoal: bambooProgress.nextGoal,
         awardBamboo,
-        triggerMood
+        triggerMood,
+        isMascotHidden,
+        setMascotHidden
       }}
     >
       {children}

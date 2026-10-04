@@ -71,7 +71,7 @@ const sentenceBlocks: ContrastBlock[] = [
     it: 'Ieri ho parlato a lungo con mio fratello del problema.',
     de: 'Ich habe gestern mit meinem Bruder lange über das Problem gesprochen.',
     literal: 'parola per parola: «Ho ieri con mio fratello a lungo del problema parlato.»',
-    trap: 'In italiano «ho parlato» è un blocco unico. In tedesco separarlo non è una scelta stilistica: haben e gesprochen non possono stare vicini. Chi ascolta capisce che cosa hai fatto solo all’ultima parola — bisogna abituarsi ad aspettare la fine invece di rispondere a metà frase.'
+    trap: 'In italiano «ho parlato» è un blocco unico. In tedesco, nella frase principale, separarlo non è una scelta stilistica: habe resta al secondo posto e gesprochen va in fondo, con tutti i complementi in mezzo (si ritrovano vicini solo nella subordinata: «…, dass ich mit ihm gesprochen habe»). Chi ascolta capisce che cosa hai fatto solo all’ultima parola — bisogna abituarsi ad aspettare la fine invece di rispondere a metà frase.'
   },
   {
     id: 'nebensatz',
@@ -112,11 +112,11 @@ const sentenceBlocks: ContrastBlock[] = [
   {
     id: 'subjekt',
     badge: 'Soggetto',
-    title: 'Il soggetto non si può mai omettere',
-    rule: 'L’italiano è una lingua a soggetto nullo: «piove», «vengo subito». Il tedesco no: ogni frase ha un soggetto espresso, anche solo formale (es).',
+    title: 'Il soggetto (quasi) non si omette mai',
+    rule: 'L’italiano è una lingua a soggetto nullo: «piove», «vengo subito». Il tedesco no: la frase ha di norma un soggetto espresso, anche solo formale (es). Le eccezioni sono poche e fisse, come «Mir ist kalt» (ho freddo) o il passivo impersonale «Hier wird nicht geraucht».',
     it: 'Piove. / C’è troppo rumore. / Ci sono molti problemi.',
     de: 'Es regnet. / Es ist zu laut. / Es gibt viele Probleme.',
-    trap: 'es gibt regge sempre l’accusativo ed è sempre singolare: «es gibt viele Probleme», mai «es gibt sind». «C’è» e «ci sono» si traducono con la stessa identica forma.'
+    trap: 'es gibt regge sempre l’accusativo ed è sempre singolare: «es gibt viele Probleme», mai «es geben viele Probleme». «C’è» e «ci sono» si traducono con la stessa identica forma.'
   }
 ];
 
@@ -164,7 +164,7 @@ const caseBlocks: ContrastBlock[] = [
     rule: 'Ci sono cinque tipi di plurale (-e, -er, -(e)n, -s, invariato), più l’eventuale Umlaut sulla vocale della radice. Va memorizzato insieme all’articolo, come il genere.',
     it: 'il libro → i libri (regolare e prevedibile)',
     de: 'das Buch → die Bücher; der Mann → die Männer; die Frau → die Frauen; das Auto → die Autos',
-    trap: 'Al dativo plurale il nome prende una -n in più: mit den Kindern, mit den Freunden, aus den Städten. Insieme al genitivo singolare in -s è l’unico punto in cui si declina davvero anche il nome.'
+    trap: 'Al dativo plurale il nome prende una -n in più: mit den Kindern, mit den Freunden, aus den Städten. Insieme al genitivo singolare in -(e)s dei maschili e neutri, e ai maschili deboli che prendono -(e)n in tutti i casi tranne il nominativo (der Student → den/dem/des Studenten, der Herr → den Herrn), è il punto in cui si declina davvero anche il nome.'
   },
   {
     id: 'artikel',
@@ -186,7 +186,7 @@ const verbBlocks: ContrastBlock[] = [
     it: 'Mi alzo alle sette.',
     de: 'Ich stehe um sieben Uhr auf.',
     literal: 'parola per parola: «Io sto alle sette su.»',
-    trap: 'Il prefisso non è un dettaglio, è il verbo: stehen (stare in piedi), aufstehen (alzarsi), verstehen (capire), bestehen (superare un esame). Con zu il prefisso si infila in mezzo: aufzustehen, non «zu aufstehen».'
+    trap: 'Il prefisso non è un dettaglio, è il verbo: stehen (stare in piedi), aufstehen (alzarsi), aufhören (smettere) ≠ hören (sentire). Attenzione però: be-, ver-, er-, ent-, ge-, zer-, emp-, miss- non si staccano mai (verstehen → Ich verstehe dich). Con zu il prefisso separabile si infila in mezzo: aufzustehen, non «zu aufstehen».'
   },
   {
     id: 'vergangenheit',
@@ -210,10 +210,10 @@ const verbBlocks: ContrastBlock[] = [
     id: 'hilfsverb',
     badge: 'haben o sein',
     title: 'Le regole dell’ausiliare non sono quelle italiane',
-    rule: 'sein con i verbi di movimento con meta e di cambiamento di stato (gehen, fahren, kommen, aufstehen, einschlafen, werden, passieren) e con sein e bleiben. Tutto il resto vuole haben.',
+    rule: 'sein con i verbi intransitivi di spostamento (gehen, fahren, kommen, laufen, fliegen) e di cambiamento di stato (aufstehen, einschlafen, sterben, werden, passieren), più sein e bleiben. Tutto il resto vuole haben, compresi tutti i verbi riflessivi e i verbi con complemento oggetto.',
     it: 'Mi sono lavato. / Sono rimasto a casa.',
     de: 'Ich habe mich gewaschen. / Ich bin zu Hause geblieben.',
-    trap: 'Questo è l’errore automatico numero uno: i verbi riflessivi tedeschi prendono sempre haben, quelli italiani sempre essere. «Ich bin mich gewaschen» è la traduzione letterale di «mi sono lavato», ed è sbagliata.'
+    trap: 'Questo è l’errore automatico numero uno: i verbi riflessivi tedeschi prendono sempre haben, quelli italiani sempre essere. E a differenza dell’italiano («ho corso» / «sono corso a casa») la meta non conta: «Ich bin gelaufen» anche senza destinazione. «Ich bin mich gewaschen» è la traduzione letterale di «mi sono lavato», ed è sbagliata.'
   },
   {
     id: 'konjunktiv',
@@ -240,12 +240,12 @@ const rections: Rection[] = [
   { it: 'telefonare a qualcuno', de: 'jemanden anrufen (accusativo)', note: 'Ich rufe meine Mutter an. Qui succede il contrario: l’italiano ha «a», il tedesco è transitivo.' },
   { it: 'aiutare qualcuno', de: 'jemandem helfen (dativo)', note: 'Ich helfe dir. Stessa cosa con danken, folgen, gratulieren, antworten, gehören.' },
   { it: 'chiedere a qualcuno', de: 'jemanden fragen (accusativo)', note: 'Ich frage meinen Chef. Ma «rispondere a qualcuno» è jemandem antworten, col dativo.' },
-  { it: 'pensare a qualcosa', de: 'denken an + accusativo', note: 'Ich denke oft an dich. Con über + accusativo il senso cambia: riflettere su un tema.' },
+  { it: 'pensare a qualcosa', de: 'denken an + accusativo', note: 'Ich denke oft an dich. Con über + accusativo il senso cambia: avere un’opinione su qualcosa («Was denkst du über ihn?»). Riflettere su un tema è nachdenken über.' },
   { it: 'partecipare a qualcosa', de: 'teilnehmen an + dativo', note: 'Ich nehme an dem Kurs teil. Verbo separabile: teil vola in fondo.' },
   { it: 'avere paura di', de: 'Angst haben vor + dativo', note: 'Ich habe Angst vor Hunden. Mai «Angst von».' },
   { it: 'essere contento di', de: 'sich freuen über + acc. / auf + acc.', note: 'über per qualcosa che è già successo, auf per qualcosa che deve ancora arrivare.' },
   { it: 'interessarsi di', de: 'sich interessieren für + accusativo', note: 'Ich interessiere mich für Musik. Il riflessivo qui è obbligatorio.' },
-  { it: 'dipendere da', de: 'abhängen von + dativo', note: 'Das hängt von dir ab. Separabile, e la preposizione non è «da».' }
+  { it: 'dipendere da', de: 'abhängen von + dativo', note: 'Das hängt von dir ab. Separabile: ab va in fondo e von regge sempre il dativo.' }
 ];
 
 const mistakes: Mistake[] = [
@@ -264,7 +264,7 @@ const mistakes: Mistake[] = [
   { id: 'm13', tag: 'Verbi', wrong: 'Ich muss nicht rauchen (per dire «non posso fumare»).', right: 'Ich darf nicht rauchen.', why: 'nicht müssen = non è necessario. Il divieto si esprime con nicht dürfen.' },
   { id: 'm14', tag: 'Modo', wrong: 'Ich denke, dass er Recht hätte.', right: 'Ich denke, dass er Recht hat.', why: 'Dopo denken, glauben, hoffen si usa l’indicativo: il congiuntivo italiano qui non si traduce.' },
   { id: 'm15', tag: 'Preposizioni', wrong: 'Ich gehe zur Hause.', right: 'Ich gehe nach Hause. (ma: Ich bin zu Hause.)', why: 'nach Hause per il movimento, zu Hause per lo stato. Sono due espressioni fisse.' },
-  { id: 'm16', tag: 'Preposizioni', wrong: 'Ich fahre in Deutschland.', right: 'Ich fahre nach Deutschland.', why: 'nach per i paesi e le città senza articolo; in + accusativo solo per i paesi con articolo (in die Schweiz).' },
+  { id: 'm16', tag: 'Preposizioni', wrong: 'Ich fahre in Deutschland.', right: 'Ich fahre nach Deutschland.', why: 'Per la destinazione: nach con paesi e città senza articolo, in + accusativo con i paesi che hanno l’articolo (in die Schweiz). «Ich fahre in Deutschland» esiste, ma vuol dire «guido in Germania» (sono già lì).' },
   { id: 'm17', tag: 'Casi', wrong: 'Ich bin einverstanden mit dich.', right: 'Ich bin mit dir einverstanden.', why: 'mit regge sempre il dativo, e in tedesco l’aggettivo predicativo chiude la frase.' },
   { id: 'm18', tag: 'Casi', wrong: 'Ich lerne Deutsch seit drei Jahre.', right: 'Ich lerne seit drei Jahren Deutsch.', why: 'seit regge il dativo, e al dativo plurale il nome prende la -n.' },
   { id: 'm19', tag: 'Articoli', wrong: 'Ich bin ein Ingenieur.', right: 'Ich bin Ingenieur.', why: 'Mestieri, nazionalità e religioni vanno senza articolo dopo sein e werden.' },
@@ -280,9 +280,9 @@ const falseFriends: FalseFriend[] = [
   { de: 'die Peperoni', meaning: 'i peperoncini piccanti', looksLike: 'i peperoni', realWord: 'die Paprika' },
   { de: 'die Mappe', meaning: 'la cartellina', looksLike: 'la mappa', realWord: 'die Karte' },
   { de: 'die Birne', meaning: 'la pera (e la lampadina)', looksLike: 'la birra', realWord: 'das Bier' },
-  { de: 'die Note', meaning: 'il voto scolastico', looksLike: 'la nota, il conto', realWord: 'die Rechnung' },
+  { de: 'die Note', meaning: 'il voto scolastico (e la nota musicale)', looksLike: 'la nota, l’appunto', realWord: 'die Notiz, die Anmerkung' },
   { de: 'der Termin', meaning: 'l’appuntamento fissato', looksLike: 'il termine, la scadenza', realWord: 'die Frist' },
-  { de: 'das Konfetti', meaning: 'i coriandoli', looksLike: 'i confetti', realWord: 'die Dragees' },
+  { de: 'das Konfetti', meaning: 'i coriandoli', looksLike: 'i confetti', realWord: 'die Zuckermandeln' },
   { de: 'das Handy', meaning: 'il cellulare', looksLike: 'un anglicismo che in inglese non esiste', realWord: 'in inglese: mobile phone' }
 ];
 

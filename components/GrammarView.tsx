@@ -5,6 +5,7 @@ import { LanguageLevel } from '../types';
 import { useGrammar } from '../contexts/GrammarContext';
 import { usePandaMascot } from '../contexts/PandaMascotContext';
 import { getExercisesForTopic } from '../data/grammarExercises';
+import { APP_DATA_SYNCED_EVENT } from '../utils/trainerStorage';
 
 // Type pour les favoris
 interface Favorite {
@@ -77,15 +78,26 @@ export const GrammarView: React.FC = () => {
   const currentLevelData = GRAMMAR_DATA.find(l => l.level === selectedLevel) || GRAMMAR_DATA[0];
 
   // Charger les favoris et annotations depuis localStorage au démarrage
+  // (et les recharger quand la synchro cloud apporte ceux d'un autre appareil)
   useEffect(() => {
-    const savedFavorites = localStorage.getItem('grammarFavorites');
-    if (savedFavorites) {
-      setFavorites(JSON.parse(savedFavorites));
-    }
-    const savedAnnotations = localStorage.getItem('grammarAnnotations');
-    if (savedAnnotations) {
-      setAnnotations(JSON.parse(savedAnnotations));
-    }
+    const loadFromStorage = () => {
+      try {
+        const savedFavorites = localStorage.getItem('grammarFavorites');
+        if (savedFavorites) {
+          setFavorites(JSON.parse(savedFavorites));
+        }
+        const savedAnnotations = localStorage.getItem('grammarAnnotations');
+        if (savedAnnotations) {
+          setAnnotations(JSON.parse(savedAnnotations));
+        }
+      } catch (error) {
+        console.error('Could not load grammar favorites/notes', error);
+      }
+    };
+
+    loadFromStorage();
+    window.addEventListener(APP_DATA_SYNCED_EVENT, loadFromStorage);
+    return () => window.removeEventListener(APP_DATA_SYNCED_EVENT, loadFromStorage);
   }, []);
 
   // Sauvegarder les favoris dans localStorage

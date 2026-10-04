@@ -38,6 +38,37 @@ const TOTAL_EXAMPLES = STRUCTURE_COMPARISONS.reduce(
   0
 );
 
+const PRACTICE_MODIFIERS = [
+  { english: ' today.', german: ' heute.' },
+  { english: ' this week.', german: ' diese Woche.' },
+  { english: ' at home.', german: ' zu Hause.' },
+  { english: ' for now.', german: ' vorerst.' },
+  { english: ' in the end.', german: ' am Ende.' },
+  { english: ' as usual.', german: ' wie üblich.' },
+  { english: ' in Germany.', german: ' in Deutschland.' }
+];
+
+function getPracticeItems(pattern: StructureComparison) {
+  const items = pattern.examples.map((example, index) => ({
+    id: `${pattern.id}-example-${index}`,
+    structureTitle: pattern.title,
+    english: example.english,
+    german: example.german
+  }));
+
+  PRACTICE_MODIFIERS.forEach((modifier, index) => {
+    const source = pattern.examples[index % pattern.examples.length];
+    items.push({
+      id: `${pattern.id}-variant-${index}`,
+      structureTitle: pattern.title,
+      english: source.english.replace(/[.!?]$/, '') + modifier.english,
+      german: source.german.replace(/[.!?]$/, '') + modifier.german
+    });
+  });
+
+  return items.slice(0, 10);
+}
+
 function normalize(value: string): string {
   return value
     .toLowerCase()
@@ -90,6 +121,7 @@ export const StructureComparisonView: React.FC = () => {
   const [query, setQuery] = useState('');
   const deferredQuery = useDeferredValue(query);
   const [selectedId, setSelectedId] = useState(initialSelectedId);
+  const [revealedReviewItems, setRevealedReviewItems] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (patternId && STRUCTURE_COMPARISONS.some(pattern => pattern.id === patternId)) {
@@ -131,12 +163,25 @@ export const StructureComparisonView: React.FC = () => {
     filteredPatterns.find(pattern => pattern.id === selectedId) ||
     filteredPatterns[0] ||
     null;
+  const practiceItems = selectedPattern ? getPracticeItems(selectedPattern) : [];
   const hasActiveFilters = selectedCategory !== 'all' || selectedLevel !== 'all' || query.trim().length > 0;
 
   const resetFilters = () => {
     setQuery('');
     setSelectedCategory('all');
     setSelectedLevel('all');
+  };
+
+  const toggleReviewAnswer = (itemId: string) => {
+    setRevealedReviewItems(current => {
+      const next = new Set(current);
+      if (next.has(itemId)) {
+        next.delete(itemId);
+      } else {
+        next.add(itemId);
+      }
+      return next;
+    });
   };
 
   return (
@@ -149,6 +194,13 @@ export const StructureComparisonView: React.FC = () => {
           <p className="structure-hero-sub" style={{ color: 'var(--sand-600)' }}>
             Compare the English cue, the German structure, and the reflex to build before translating.
           </p>
+          <div className="structure-hero-guide" style={{ borderColor: 'var(--turquoise-200)', backgroundColor: 'var(--turquoise-50)' }}>
+            <strong style={{ color: 'var(--turquoise-800)' }}>How to use this library</strong>
+            <p style={{ color: 'var(--sand-700)' }}>
+              Do not translate word for word. First identify the meaning of the English sentence, then choose the German pattern,
+              place the verb correctly, and finally compare your sentence with the examples and the “Avoid” list.
+            </p>
+          </div>
           <p className="structure-hero-meta" style={{ color: 'var(--sand-500)' }}>
             <strong style={{ color: 'var(--terracotta-700)' }}>{STRUCTURE_COMPARISONS.length}</strong> patterns
             <span aria-hidden="true"> · </span>
@@ -318,9 +370,11 @@ export const StructureComparisonView: React.FC = () => {
                 </span>
               </div>
               <h3 style={{ color: 'var(--terracotta-800)' }}>{selectedPattern.title}</h3>
+              <p className="structure-detail-label" style={{ color: 'var(--terracotta-600)' }}>Short answer</p>
               <p className="structure-detail-core" style={{ color: 'var(--sand-800)' }}>
                 {selectedPattern.coreAnswer}
               </p>
+              <p className="structure-detail-label" style={{ color: 'var(--turquoise-700)' }}>Why the structure changes</p>
               <p className="structure-detail-explain" style={{ color: 'var(--sand-600)' }}>
                 {selectedPattern.explanation}
               </p>
@@ -339,6 +393,30 @@ export const StructureComparisonView: React.FC = () => {
                   <p style={{ color: 'var(--turquoise-700)' }}>German structure</p>
                   <p style={{ color: 'var(--sand-800)' }}>{selectedPattern.germanPattern}</p>
                 </div>
+              </section>
+
+              <section className="structure-reading-guide" aria-labelledby="structure-reading-guide-title">
+                <div className="structure-section-head">
+                  <h4 id="structure-reading-guide-title" style={{ color: 'var(--terracotta-800)' }}>Build this sentence step by step</h4>
+                </div>
+                <ol className="structure-reading-steps">
+                  <li style={{ borderColor: 'var(--sand-200)' }}>
+                    <span style={{ backgroundColor: 'var(--terracotta-600)' }}>1</span>
+                    <div><strong style={{ color: 'var(--sand-800)' }}>Start from the English cue</strong><p style={{ color: 'var(--sand-600)' }}>{selectedPattern.sourcePattern}. This is the meaning you need to express; do not copy its word order.</p></div>
+                  </li>
+                  <li style={{ borderColor: 'var(--sand-200)' }}>
+                    <span style={{ backgroundColor: 'var(--turquoise-700)' }}>2</span>
+                    <div><strong style={{ color: 'var(--sand-800)' }}>Build this German frame</strong><p className="structure-reading-formula" style={{ color: 'var(--turquoise-800)' }}>{selectedPattern.germanPattern}</p></div>
+                  </li>
+                  <li style={{ borderColor: 'var(--sand-200)' }}>
+                    <span style={{ backgroundColor: 'var(--sand-600)' }}>3</span>
+                    <div><strong style={{ color: 'var(--sand-800)' }}>Put the information into the frame</strong><p style={{ color: 'var(--sand-600)' }}>{selectedPattern.examples[0].german}</p></div>
+                  </li>
+                  <li style={{ borderColor: 'var(--sand-200)' }}>
+                    <span style={{ backgroundColor: 'var(--terracotta-600)' }}>4</span>
+                    <div><strong style={{ color: 'var(--sand-800)' }}>Check this specific point</strong><p style={{ color: 'var(--sand-600)' }}>{selectedPattern.examples[0].note || selectedPattern.avoid[0]}</p></div>
+                  </li>
+                </ol>
               </section>
 
               <section>
@@ -408,6 +486,51 @@ export const StructureComparisonView: React.FC = () => {
           </section>
         )}
       </div>
+
+      <section className="structure-final-review" aria-labelledby="structure-final-review-title">
+        <div className="structure-final-review-head">
+          <div>
+            <p className="structure-detail-label" style={{ color: 'var(--turquoise-700)' }}>Final check</p>
+            <h3 id="structure-final-review-title" style={{ color: 'var(--terracotta-800)' }}>Translate 10 sentences</h3>
+            <p style={{ color: 'var(--sand-600)' }}>
+              Translate ten different sentences using the structure above without looking at the answers. Then reveal each correction
+              and compare the word order, the verb position, and the specific German frame.
+            </p>
+          </div>
+          <span style={{ backgroundColor: 'var(--terracotta-50)', color: 'var(--terracotta-700)' }}>10 exercises for this structure</span>
+        </div>
+
+        <div className="structure-final-review-list">
+          {practiceItems.map((item, index) => {
+            const isRevealed = revealedReviewItems.has(item.id);
+
+            return (
+              <article key={item.id} className="structure-final-review-item" style={{ borderColor: 'var(--sand-200)' }}>
+                <div className="structure-final-review-number" style={{ color: 'var(--terracotta-700)' }}>{index + 1}</div>
+                <div className="structure-final-review-content">
+                  <p className="structure-final-review-pattern" style={{ color: 'var(--turquoise-700)' }}>{item.structureTitle}</p>
+                  <p className="structure-final-review-prompt" style={{ color: 'var(--sand-800)' }}>{item.english}</p>
+                  <button
+                    type="button"
+                    className="structure-final-review-button"
+                    onClick={() => toggleReviewAnswer(item.id)}
+                    style={{ backgroundColor: isRevealed ? 'var(--sand-100)' : 'var(--terracotta-600)', color: isRevealed ? 'var(--sand-700)' : 'white' }}
+                    aria-expanded={isRevealed}
+                  >
+                    {isRevealed ? 'Hide answer' : 'Show answer'}
+                  </button>
+                  {isRevealed && (
+                    <div className="structure-final-review-answer" style={{ borderColor: 'var(--turquoise-200)', backgroundColor: 'var(--turquoise-50)' }}>
+                      <span style={{ color: 'var(--turquoise-700)' }}>Correction</span>
+                      <strong style={{ color: 'var(--sand-800)' }}>{item.german}</strong>
+                    </div>
+                  )}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
     </div>
   );
 };

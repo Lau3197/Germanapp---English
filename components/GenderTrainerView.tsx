@@ -125,7 +125,7 @@ export const GenderTrainerView: React.FC<GenderTrainerViewProps> = ({ appTheme =
     [includePreviousErrors, unmasteredNouns, hasPastError]
   );
 
-  const startSession = useCallback((pool: GermanWord[], revision: boolean) => {
+  const startSession = useCallback((pool: GermanWord[], revision: boolean, includeMastered = false) => {
     const count = revision || wordCount === 'all'
       ? pool.length
       : Math.min(wordCount, pool.length);
@@ -133,10 +133,21 @@ export const GenderTrainerView: React.FC<GenderTrainerViewProps> = ({ appTheme =
     // hundreds of nouns, so a plain shuffle would almost never draw the few the
     // learner actually got wrong. Reshuffled afterwards so they aren't bunched
     // at the start of the drill.
-    const ordered = revision || !includePreviousErrors
+    const ordered = includeMastered
+      ? [...pool].sort((a, b) => {
+        const resultA = results[getNounId(a)];
+        const resultB = results[getNounId(b)];
+        const incorrectDifference = (resultB?.incorrect || 0) - (resultA?.incorrect || 0);
+        if (incorrectDifference !== 0) return incorrectDifference;
+        const accuracyA = resultA?.attempts ? resultA.correct / resultA.attempts : 0;
+        const accuracyB = resultB?.attempts ? resultB.correct / resultB.attempts : 0;
+        if (accuracyA !== accuracyB) return accuracyA - accuracyB;
+        return (resultA?.attempts || 0) - (resultB?.attempts || 0);
+      })
+      : revision || !includePreviousErrors
       ? shuffleArray(pool)
       : [...shuffleArray(pool.filter(hasPastError)), ...shuffleArray(pool.filter(word => !hasPastError(word)))];
-    const words = shuffleArray(ordered.slice(0, count));
+    const words = includeMastered ? ordered.slice(0, count) : shuffleArray(ordered.slice(0, count));
     setSessionWords(words);
     setCurrentIndex(0);
     setSelected(null);
@@ -147,7 +158,7 @@ export const GenderTrainerView: React.FC<GenderTrainerViewProps> = ({ appTheme =
     setIsRevision(revision);
     setShowHint(false);
     setPhase('drill');
-  }, [wordCount, includePreviousErrors, hasPastError]);
+  }, [wordCount, includePreviousErrors, hasPastError, results, getNounId]);
 
   const currentWord = sessionWords[currentIndex];
 
@@ -559,6 +570,15 @@ export const GenderTrainerView: React.FC<GenderTrainerViewProps> = ({ appTheme =
       >
         🚀 {drillNouns.length ? 'Continue drill' : 'All selected nouns mastered'} ({drillNouns.length} nouns)
       </button>
+      <button
+        type="button"
+        onClick={() => startSession(studyNouns, false, true)}
+        disabled={studyNouns.length === 0}
+        className="mt-3 w-full rounded-2xl border-2 border-[var(--terracotta-200)] bg-white py-4 font-black text-[var(--terracotta-700)] transition-all hover:bg-[var(--terracotta-50)] disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        🔁 Révision complète — {wordCount === 'all' ? `tous les ${studyNouns.length}` : `${Math.min(wordCount, studyNouns.length)}`} noms
+      </button>
+      <p className="mt-2 text-center text-xs font-bold text-slate-500">Inclut les noms déjà maîtrisés · erreurs en premier · progression conservée</p>
       <label className="mt-4 flex items-center justify-center gap-3 text-sm font-semibold text-slate-700 cursor-pointer">
         <input
           type="checkbox"

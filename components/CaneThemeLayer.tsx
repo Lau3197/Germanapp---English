@@ -38,7 +38,7 @@ const MOOD_ANIMATIONS: Record<PandaMascotMood, CaneAnimation> = {
 };
 
 export const CaneThemeLayer: React.FC = () => {
-  const { mood, moodRevision } = usePandaMascot();
+  const { mood, moodRevision, isMascotHidden, setMascotHidden } = usePandaMascot();
   const [selectedMood, setSelectedMood] = useState<PandaMascotMood | 'auto'>('auto');
   const activeMood = selectedMood === 'auto' ? mood : selectedMood;
   const animation = MOOD_ANIMATIONS[activeMood];
@@ -96,7 +96,30 @@ export const CaneThemeLayer: React.FC = () => {
           <option value="dancing">Balle rapide</option>
         </select>
       </label>
-      <div className="cane-study-buddy-name">Adolfino</div>
+      {isMascotHidden ? (
+        <button
+          type="button"
+          className="mascot-show-button"
+          onClick={() => setMascotHidden(false)}
+          aria-label="Afficher Adolfino"
+          title="Afficher Adolfino"
+        >
+          🐶
+        </button>
+      ) : (
+      <>
+      <div className="cane-study-buddy-name">
+        Adolfino
+        <button
+          type="button"
+          className="mascot-hide-button"
+          onClick={() => setMascotHidden(true)}
+          aria-label="Masquer Adolfino"
+          title="Masquer Adolfino"
+        >
+          ×
+        </button>
+      </div>
       <div className={`cane-study-buddy cane-study-buddy-${activeMood}`} title={animation.label}>
         <img
           className="cane-study-buddy-frame"
@@ -109,6 +132,8 @@ export const CaneThemeLayer: React.FC = () => {
           }}
         />
       </div>
+      </>
+      )}
     </div>
   );
 };

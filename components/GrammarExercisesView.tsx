@@ -4,9 +4,11 @@ import { GRAMMAR_EXERCISES } from '../data/grammarExercises';
 import { GRAMMAR_DATA } from '../data/grammarData';
 import { GrammarExercise, LanguageLevel } from '../types';
 import { GrammarExerciseSequence } from './GrammarExerciseSequence';
-import { MASTERY_THRESHOLD, useExerciseProgress } from '../hooks/useExerciseProgress';
+import { ExerciseResult, MASTERY_THRESHOLD, useExerciseProgress } from '../hooks/useExerciseProgress';
 
 const SESSION_SIZE = 10;
+const LEVEL_REVIEW_SIZES = [10, 20, 50, 'all'] as const;
+type LevelReviewSize = typeof LEVEL_REVIEW_SIZES[number];
 
 interface PracticeGoal {
   id: string;
@@ -219,6 +221,34 @@ const getSessionExercises = (exercises: GrammarExercise[], practicedIds: Set<str
   return [...unseen, ...learning, ...mastered].slice(0, SESSION_SIZE);
 };
 
+// A level review is deliberately separate from the learning queue above:
+// completing an exercise must never make it disappear from a learner's
+// optional refresher. Errors are the strongest signal, followed by accuracy,
+// so the exercises that need the most attention appear first.
+const getLevelReviewExercises = (
+  exercises: GrammarExercise[],
+  results: Record<string, ExerciseResult>,
+  size: LevelReviewSize,
+) => {
+  const ordered = [...exercises].sort((a, b) => {
+    const resultA = results[a.id];
+    const resultB = results[b.id];
+    const incorrectDifference = (resultB?.incorrect || 0) - (resultA?.incorrect || 0);
+    if (incorrectDifference !== 0) return incorrectDifference;
+
+    const accuracyA = resultA?.attempts ? resultA.correct / resultA.attempts : 0;
+    const accuracyB = resultB?.attempts ? resultB.correct / resultB.attempts : 0;
+    if (accuracyA !== accuracyB) return accuracyA - accuracyB;
+
+    // Keep unseen exercises ahead of exercises already answered perfectly,
+    // while retaining a stable alphabetical fallback for equal scores.
+    const attemptsDifference = (resultA?.attempts || 0) - (resultB?.attempts || 0);
+    return attemptsDifference || a.id.localeCompare(b.id);
+  });
+
+  return size === 'all' ? ordered : ordered.slice(0, size);
+};
+
 const GoalIcon: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[var(--terracotta-50)] text-[var(--terracotta-600)]">
     <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -232,6 +262,8 @@ export const GrammarExercisesView: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const requestedTopic = searchParams.get('topic');
   const requestedMode = searchParams.get('mode');
+  const requestedLevel = searchParams.get('level') as LanguageLevel | null;
+  const requestedSize = searchParams.get('size');
   const [selectedGoalId, setSelectedGoalId] = useState<string | null>(null);
   const [practiceLevel, setPracticeLevel] = useState<LanguageLevel>(LanguageLevel.A1);
   const [sessionRound, setSessionRound] = useState(0);
@@ -258,17 +290,33 @@ export const GrammarExercisesView: React.FC = () => {
   );
 
   const activeTopic = requestedTopic ? TOPIC_BY_ID.get(requestedTopic) : undefined;
+  const activeLevel = requestedMode === 'level-review' && requestedLevel
+    ? requestedLevel
+    : null;
+  const activeLevelExercises = activeLevel
+    ? TOPICS.filter(topic => topic.level === activeLevel).flatMap(topic => topic.exercises)
+    : [];
+  const levelReviewSize: LevelReviewSize = requestedSize === 'all'
+    ? 'all'
+    : LEVEL_REVIEW_SIZES.includes(Number(requestedSize) as 10 | 20 | 50)
+      ? Number(requestedSize) as 10 | 20 | 50
+      : 10;
   const sessionExercises = useMemo(() => requestedMode === 'mistakes'
     ? weakExercises.slice(0, SESSION_SIZE)
-    : activeTopic
-      ? getSessionExercises(activeTopic.exercises, practicedIds, completedIds)
-      : [], [requestedMode, requestedTopic, sessionRound]);
+    : activeLevel
+      ? getLevelReviewExercises(activeLevelExercises, results, levelReviewSize)
+      : activeTopic
+        ? getSessionExercises(activeTopic.exercises, practicedIds, completedIds)
+    : [], [requestedMode, requestedTopic, activeLevel, activeLevelExercises, levelReviewSize, results, practicedIds, completedIds, sessionRound]);
 
   const openTopic = (topicId: string) => setSearchParams({ topic: topicId });
   const leaveSession = () => setSearchParams({});
+  const startLevelReview = (size: LevelReviewSize) => {
+    setSearchParams({ mode: 'level-review', level: practiceLevel, size: String(size) });
+  };
 
-  if ((activeTopic || requestedMode === 'mistakes') && sessionExercises.length > 0) {
-    const sessionTitle = activeTopic?.title || 'Review your mistakes';
+  if ((activeTopic || requestedMode === 'mistakes' || activeLevel) && sessionExercises.length > 0) {
+    const sessionTitle = activeTopic?.title || (activeLevel ? `Review ${activeLevel}` : 'Review your mistakes');
     const topicPractised = activeTopic
       ? activeTopic.exercises.filter(exercise => practicedIds.has(exercise.id)).length
       : 0;
@@ -282,7 +330,9 @@ export const GrammarExercisesView: React.FC = () => {
           <div>
             <h2 className="text-4xl font-black tracking-tight text-[var(--terracotta-800)] sm:text-5xl">{sessionTitle}</h2>
             <p className="mt-3 text-lg font-medium text-[var(--sand-600)]">
-              {activeTopic
+              {activeLevel
+                ? <><strong>{sessionExercises.length} exercises</strong> · most difficult first · your progress is kept</>
+                : activeTopic
                 ? <><strong>{sessionExercises.length} exercises now</strong> · {topicPractised}/{activeTopic.exercises.length} practised · {topicRemaining} remaining</>
                 : <>A focused review of {sessionExercises.length} exercises.</>}
             </p>
@@ -293,6 +343,10 @@ export const GrammarExercisesView: React.FC = () => {
           {activeTopic ? (
             <button type="button" onClick={() => navigate(`/grammar/${activeTopic.level}?section=${activeTopic.sectionIndex}&topic=${activeTopic.id}`)} className="shrink-0 rounded-xl border border-[var(--terracotta-200)] bg-white px-4 py-3 text-sm font-black text-[var(--terracotta-700)] hover:bg-[var(--terracotta-50)]">
               Review the lesson
+            </button>
+          ) : activeLevel ? (
+            <button type="button" onClick={leaveSession} className="shrink-0 rounded-xl border border-[var(--terracotta-200)] bg-white px-4 py-3 text-sm font-black text-[var(--terracotta-700)] hover:bg-[var(--terracotta-50)]">
+              Change review options
             </button>
           ) : null}
         </div>
@@ -342,6 +396,31 @@ export const GrammarExercisesView: React.FC = () => {
                 ) : null}
               </div>
             </div>
+          </section>
+
+          <section className="mb-10 rounded-[2rem] border border-[var(--terracotta-100)] bg-[var(--terracotta-50)] p-6 shadow-sm sm:p-8" aria-labelledby="level-review-title">
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <h3 id="level-review-title" className="text-2xl font-black text-[var(--terracotta-800)]">🔁 Review a complete level</h3>
+                <p className="mt-2 max-w-2xl font-medium leading-6 text-[var(--sand-600)]">
+                  Keep your {practiceLevel} progress and practise again whenever you want. Exercises with the most errors come first.
+                </p>
+              </div>
+              <span className="shrink-0 rounded-full bg-white px-3 py-1 text-sm font-black text-[var(--terracotta-700)]">
+                {TOPICS.filter(topic => topic.level === practiceLevel).reduce((total, topic) => total + topic.exercises.length, 0)} exercises
+              </span>
+            </div>
+            <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {LEVEL_REVIEW_SIZES.map(size => {
+                const label = size === 'all' ? 'All' : String(size);
+                return (
+                  <button key={label} type="button" onClick={() => startLevelReview(size)} className="rounded-xl bg-[var(--terracotta-600)] px-4 py-3 font-black text-white shadow-sm hover:bg-[var(--terracotta-700)]">
+                    {label} {size === 'all' ? 'exercises' : 'questions'}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="mt-3 text-xs font-bold text-[var(--sand-500)]">A correct answer still counts normally, so your mastery history remains intact.</p>
           </section>
 
           <section aria-labelledby="choose-skill-title">
