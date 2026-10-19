@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { GrammarExercise } from '../types';
 import { useExerciseProgress } from '../hooks/useExerciseProgress';
+import { GRAMMAR_EXERCISE_PROGRESS_KEY } from '../utils/trainerStorage';
 import { isGrammarAnswerCorrect } from '../utils/grammarAnswer';
 
 interface GrammarExerciseCardProps {
@@ -11,7 +12,7 @@ interface GrammarExerciseCardProps {
 }
 
 export const GrammarExerciseCard: React.FC<GrammarExerciseCardProps> = ({ exercise, compact = false, onNext, nextLabel = 'Next exercise' }) => {
-  const { results, recordAnswer } = useExerciseProgress('grammarExerciseProgress');
+  const { results, recordAnswer } = useExerciseProgress(GRAMMAR_EXERCISE_PROGRESS_KEY);
   const [value, setValue] = useState('');
   const [checked, setChecked] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);

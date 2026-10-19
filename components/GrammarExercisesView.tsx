@@ -5,6 +5,7 @@ import { GRAMMAR_DATA } from '../data/grammarData';
 import { GrammarExercise, LanguageLevel } from '../types';
 import { GrammarExerciseSequence } from './GrammarExerciseSequence';
 import { ExerciseResult, MASTERY_THRESHOLD, useExerciseProgress } from '../hooks/useExerciseProgress';
+import { GRAMMAR_EXERCISE_PROGRESS_KEY } from '../utils/trainerStorage';
 
 const SESSION_SIZE = 10;
 const LEVEL_REVIEW_SIZES = [10, 20, 50, 'all'] as const;
@@ -267,7 +268,7 @@ export const GrammarExercisesView: React.FC = () => {
   const [selectedGoalId, setSelectedGoalId] = useState<string | null>(null);
   const [practiceLevel, setPracticeLevel] = useState<LanguageLevel>(LanguageLevel.A1);
   const [sessionRound, setSessionRound] = useState(0);
-  const { results, completedIds, practicedIds, summary } = useExerciseProgress('grammarExerciseProgress');
+  const { results, completedIds, practicedIds, summary } = useExerciseProgress(GRAMMAR_EXERCISE_PROGRESS_KEY);
 
   const latestTopic = useMemo(() => {
     let latestId: string | null = null;
