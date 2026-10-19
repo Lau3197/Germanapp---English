@@ -223,7 +223,7 @@ export const NomenVerbenView: React.FC = () => {
                                 placeholder="Type the German verb..."
                                 className="flex-1 px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
                                 aria-label="Missing German verb"
-                                disabled={answered}
+                                readOnly={answered}
                             />
                             {answered ? (
                                 <button

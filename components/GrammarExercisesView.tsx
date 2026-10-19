@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { GRAMMAR_EXERCISES } from '../data/grammarExercises';
 import { GRAMMAR_DATA } from '../data/grammarData';
@@ -302,13 +302,21 @@ export const GrammarExercisesView: React.FC = () => {
     : LEVEL_REVIEW_SIZES.includes(Number(requestedSize) as 10 | 20 | 50)
       ? Number(requestedSize) as 10 | 20 | 50
       : 10;
-  const sessionExercises = useMemo(() => requestedMode === 'mistakes'
+  // The session list is frozen once started: recording an answer changes
+  // progress, and recomputing from it would swap the exercise under the learner.
+  const sessionKey = `${requestedMode}|${requestedTopic}|${requestedLevel}|${levelReviewSize}|${sessionRound}`;
+  const frozenSession = useRef<{ key: string; exercises: GrammarExercise[] } | null>(null);
+  const computeSession = () => requestedMode === 'mistakes'
     ? weakExercises.slice(0, SESSION_SIZE)
     : activeLevel
       ? getLevelReviewExercises(activeLevelExercises, results, levelReviewSize)
       : activeTopic
         ? getSessionExercises(activeTopic.exercises, practicedIds, completedIds)
-    : [], [requestedMode, requestedTopic, activeLevel, activeLevelExercises, levelReviewSize, results, practicedIds, completedIds, sessionRound]);
+        : [];
+  if (!frozenSession.current || frozenSession.current.key !== sessionKey) {
+    frozenSession.current = { key: sessionKey, exercises: computeSession() };
+  }
+  const sessionExercises = frozenSession.current.exercises;
 
   const openTopic = (topicId: string) => setSearchParams({ topic: topicId });
   const leaveSession = () => setSearchParams({});

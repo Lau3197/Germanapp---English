@@ -224,7 +224,7 @@ export const VerbenMitPraepositionenView: React.FC = () => {
                 placeholder="Type the German preposition..."
                 className="flex-1 px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
                 aria-label="Missing German preposition"
-                disabled={answered}
+                readOnly={answered}
               />
               {answered ? (
                 <button
