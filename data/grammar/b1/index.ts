@@ -8,8 +8,8 @@ import { prepositionsSubtilitesB1 } from './prepositions-subtilites';
 
 export const b1Grammar: GrammarLevel = {
   level: LanguageLevel.B1,
-  title: "Niveau B1 : L'Autonomie",
-  description: "S'exprimer de façon simple et cohérente sur des sujets familiers et dans ses domaines d'intérêt.",
+  title: "B1 Level: Independence",
+  description: "Express yourself simply and coherently on familiar topics and in your areas of interest.",
   sections: [
     phraseComplexeB1,
     plusquamperfektB1,

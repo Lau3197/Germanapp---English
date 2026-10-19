@@ -2,33 +2,33 @@
 import { GrammarSection } from '../../../types';
 
 export const phraseComplexeB1: GrammarSection = {
-  title: "3.1 Maîtrise de la Phrase Complexe",
+  title: "3.1 Mastering Complex Sentences",
   topics: [
     {
       id: "b1-1-1",
-      title: "Les Pronoms Relatifs (Relativpronomen)",
-      content: "La proposition relative apporte une précision sur un nom. Le pronom relatif s'accorde en **genre** et en **nombre** avec le nom qu'il remplace, mais son **cas** dépend de sa fonction dans la subordonnée.\n\n| CAS | MASCULIN | FÉMININ | NEUTRE | PLURIEL |\n|---|---|---|---|---|\n| **Nominatif** | der | die | das | die |\n| **Accusatif** | den | die | das | die |\n| **Datif** | dem | der | dem | denen |\n| **Génitif** | dessen | deren | dessen | deren |",
+      title: "Relative Pronouns (Relativpronomen)",
+      content: "A relative clause gives extra information about a noun. The relative pronoun agrees in **gender** and **number** with the noun it replaces, but its **case** depends on its function inside the subordinate clause.\n\n| CASE | MASCULINE | FEMININE | NEUTER | PLURAL |\n|---|---|---|---|---|\n| **Nominative** | der | die | das | die |\n| **Accusative** | den | die | das | die |\n| **Dative** | dem | der | dem | denen |\n| **Genitive** | dessen | deren | dessen | deren |",
       examples: [
-        { de: "Das ist der Mann, **den** ich gestern gesehen habe.", fr: "C'est l'homme que j'ai vu hier.", note: "Accusatif masculin (COD)." },
-        { de: "Das sind die Kinder, **denen** ich geholfen habe.", fr: "Ce sont les enfants que j'ai aidés.", note: "Datif pluriel (helfen + datif)." }
+        { de: "Das ist der Mann, **den** ich gestern gesehen habe.", fr: "That is the man I saw yesterday.", note: "Masculine accusative (direct object)." },
+        { de: "Das sind die Kinder, **denen** ich geholfen habe.", fr: "Those are the children I helped.", note: "Plural dative (helfen + dative)." }
       ]
     },
     {
       id: "b1-1-2",
-      title: "Les Conjonctions Doubles (Zweiteilige Konnektoren)",
-      content: "Ces connecteurs permettent de lier deux idées avec des nuances précises d'alternative, d'opposition ou d'addition.\n\n• **Entweder ... oder** (Soit ... soit) : Alternative.\n• **Sowohl ... als auch** (Tant ... que) : Addition positive.\n• **Weder ... noch** (Ni ... ni) : Addition négative.\n• **Zwar ... aber** (Certes ... mais) : Concession.",
+      title: "Two-Part Conjunctions (Zweiteilige Konnektoren)",
+      content: "These connectors link two ideas with precise nuances of alternative, contrast, or addition.\n\n• **Entweder ... oder** (either ... or): alternative.\n• **Sowohl ... als auch** (both ... and): positive addition.\n• **Weder ... noch** (neither ... nor): negative addition.\n• **Zwar ... aber** (admittedly ... but): concession.",
       examples: [
-        { de: "Ich will **sowohl** Berlin **als auch** Munich besuchen.", fr: "Je veux visiter tant Berlin que Munich." },
-        { de: "**Entweder** wir gehen heute **oder** wir bleiben zu Hause.", fr: "Soit nous y allons aujourd'hui, soit nous restons à la maison." }
+        { de: "Ich will **sowohl** Berlin **als auch** München besuchen.", fr: "I want to visit both Berlin and Munich." },
+        { de: "**Entweder** wir gehen heute **oder** wir bleiben zu Hause.", fr: "Either we go today, or we stay at home." }
       ]
     },
     {
       id: "b1-1-3",
-      title: "L'infinitif avec 'zu' (um...zu, ohne...zu)",
-      content: "Ces structures permettent d'exprimer le but ou la manière sans répéter le sujet.\n\n• **um ... zu** : Pour (but).\n• **ohne ... zu** : Sans (manière).\n• **(an)statt ... zu** : Au lieu de (alternative).",
+      title: "The Infinitive with 'zu' (um...zu, ohne...zu)",
+      content: "These structures express purpose or manner without repeating the subject.\n\n• **um ... zu**: in order to / to (purpose).\n• **ohne ... zu**: without (manner).\n• **(an)statt ... zu**: instead of (alternative).",
       examples: [
-        { de: "Ich lerne, **um** die Prüfung **zu** bestehen.", fr: "J'étudie pour réussir l'examen." },
-        { de: "Er geht weg, **ohne** ein Wort **zu** sagen.", fr: "Il part sans dire un mot." }
+        { de: "Ich lerne, **um** die Prüfung **zu** bestehen.", fr: "I am studying in order to pass the exam." },
+        { de: "Er geht weg, **ohne** ein Wort **zu** sagen.", fr: "He leaves without saying a word." }
       ]
     }
   ]

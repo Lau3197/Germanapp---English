@@ -1,38 +1,38 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 
-// Middleware de protection des routes
+// Route protection middleware
 export const protect = async (req, res, next) => {
   let token;
 
-  // Vérifier le header Authorization
+  // Check the Authorization header
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     token = req.headers.authorization.split(' ')[1];
   }
-  // Ou vérifier dans les cookies
+  // Or check in the cookies
   else if (req.cookies && req.cookies.token) {
     token = req.cookies.token;
   }
 
-  // Vérifier si le token existe
+  // Check whether the token exists
   if (!token) {
     return res.status(401).json({
       success: false,
-      message: 'Non autorisé - Veuillez vous connecter'
+      message: 'Not authorized - Please sign in'
     });
   }
 
   try {
-    // Vérifier le token
+    // Verify the token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
-    // Récupérer l'utilisateur
+
+    // Retrieve the user
     req.user = await User.findById(decoded.id);
-    
+
     if (!req.user) {
       return res.status(401).json({
         success: false,
-        message: 'Utilisateur non trouvé'
+        message: 'User not found'
       });
     }
 
@@ -40,12 +40,12 @@ export const protect = async (req, res, next) => {
   } catch (error) {
     return res.status(401).json({
       success: false,
-      message: 'Token invalide ou expiré'
+      message: 'Invalid or expired token'
     });
   }
 };
 
-// Middleware optionnel - récupère l'utilisateur si connecté, sinon continue
+// Optional middleware - attaches the user if signed in, otherwise continues
 export const optionalAuth = async (req, res, next) => {
   let token;
 
@@ -60,12 +60,10 @@ export const optionalAuth = async (req, res, next) => {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       req.user = await User.findById(decoded.id);
     } catch (error) {
-      // Token invalide, continuer sans utilisateur
+      // Invalid token, continue without a user
       req.user = null;
     }
   }
 
   next();
 };
-
-

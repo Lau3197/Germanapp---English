@@ -2,16 +2,16 @@
 import { GrammarSection } from '../../../types';
 
 export const syntaxeBase: GrammarSection = {
-  title: "1.2 La Structure de la Phrase (Satzbau)",
+  title: "1.2 Sentence Structure (Satzbau)",
   topics: [
     {
       id: "a1-2",
-      title: "La place du verbe",
-      content: "La règle d'or en allemand : le verbe conjugué occupe TOUJOURS la 2ème position dans une phrase affirmative.",
+      title: "The Position of the Verb",
+      content: "The golden rule in German: the conjugated verb ALWAYS takes the 2nd position in an affirmative sentence.",
       examples: [
-        { de: "Ich lerne Deutsch.", fr: "Phrase affirmative (Sujet-Verbe-Complément)" },
-        { de: "Lernst du Deutsch?", fr: "Question fermée (Verbe en 1ère position)" },
-        { de: "Was lernst du?", fr: "Question ouverte (Mot en W + Verbe en 2ème)" }
+        { de: "Ich lerne Deutsch.", fr: "Affirmative sentence (Subject-Verb-Complement)" },
+        { de: "Lernst du Deutsch?", fr: "Yes/no question (verb in 1st position)" },
+        { de: "Was lernst du?", fr: "Open question (W-word + verb in 2nd position)" }
       ]
     }
   ]

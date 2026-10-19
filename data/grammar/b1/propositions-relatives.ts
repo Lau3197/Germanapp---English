@@ -2,14 +2,14 @@
 import { GrammarSection } from '../../../types';
 
 export const propositionsRelatives: GrammarSection = {
-  title: "3.1 Les Propositions Relatives",
+  title: "3.1 Relative Clauses",
   topics: [
     {
       id: "b1-1",
-      title: "Précision du discours",
-      content: "Utilisation de 'der, die, das' comme pronoms relatifs pour enrichir les phrases.",
+      title: "Adding Precision to Speech",
+      content: "Using 'der, die, das' as relative pronouns to make sentences richer.",
       examples: [
-        { de: "Das ist der Mann, der mir geholfen hat.", fr: "Le pronom relatif suit le genre du nom." }
+        { de: "Das ist der Mann, der mir geholfen hat.", fr: "The relative pronoun follows the gender of the noun." }
       ]
     }
   ]

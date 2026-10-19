@@ -2,163 +2,163 @@
 import { GrammarSection } from '../../../types';
 
 export const plusquamperfektB1: GrammarSection = {
-  title: "3.2.1 Le Plus-que-parfait (Plusquamperfekt)",
+  title: "3.2.1 The Pluperfect (Plusquamperfekt)",
   topics: [
     {
       id: "b1-2-1",
-      title: "L'antériorité au passé",
-      content: "Le Plus-que-parfait exprime une action qui s'est déroulée **avant** un moment précis du passé.\n\n### Formation\nOn utilise l'auxiliaire **haben** ou **sein** au **Prétérit** + le **Partizip II**.",
+      title: "Before Another Moment in the Past",
+      content: "The pluperfect expresses an action that happened **before** a specific moment in the past.\n\n### Formation\nUse the auxiliary **haben** or **sein** in the **Präteritum** + **Partizip II**.",
       examples: [
-        { de: "Nachdem ich **gegessen hatte**, ging ich spazieren.", fr: "Après avoir mangé, je suis allé me promener." },
-        { de: "Er **war** schon **gegangen**, als ich ankam.", fr: "Il était déjà parti quand je suis arrivé." }
+        { de: "Nachdem ich **gegessen hatte**, ging ich spazieren.", fr: "After I had eaten, I went for a walk." },
+        { de: "Er **war** schon **gegangen**, als ich ankam.", fr: "He had already left when I arrived." }
       ]
     }
   ]
 };
 
 export const futurB1: GrammarSection = {
-  title: "3.2.2 Le Futur (Futur I)",
+  title: "3.2.2 The Future (Future I)",
   topics: [
     {
       id: "b1-2-2",
-      title: "Exprimer l'avenir et les intentions",
-      content: "Le Futur I sert à exprimer une intention, un projet ou une prédiction.\n\n### Formation\nOn utilise l'auxiliaire **werden** (au présent) + l'**infinitif** à la fin.",
+      title: "Expressing the Future and Intentions",
+      content: "Future I is used to express an intention, a plan, or a prediction.\n\n### Formation\nUse the auxiliary **werden** in the present tense + the **infinitive** at the end.",
       examples: [
-        { de: "Ich **werde** nächstes Jahr nach Berlin **ziehen**.", fr: "J'emménagerai à Berlin l'année prochaine." },
-        { de: "Das Wetter **wird** morgen besser **werden**.", fr: "Le temps va s'améliorer demain." }
+        { de: "Ich **werde** nächstes Jahr nach Berlin **ziehen**.", fr: "I will move to Berlin next year." },
+        { de: "Das Wetter **wird** morgen besser **werden**.", fr: "The weather will get better tomorrow." }
       ]
     }
   ]
 };
 
 export const konjunktivIIB1: GrammarSection = {
-  title: "3.2.3 Le Subjonctif II (Konjunktiv II) - Masterclass",
+  title: "3.2.3 Subjunctive II (Konjunktiv II) - Masterclass",
   topics: [
     {
       id: "b1-2-3-1",
-      title: "I. LA FORME AVEC WÜRDE (PRÉSENT)",
-      content: "### 1. La construction standard : würde + Infinitif\nC'est la forme que vous utiliserez pour la quasi-totalité des verbes. Elle permet d'exprimer un souhait réalisable ou une demande polie.\n\n**Structure** : **würde** (conjugué) ... **Infinitif** (placé tout à la fin).\n\n| Personne | Auxiliaire | + Infinitif ([[machen]]) | Exemple de phrase |\n|---|---|---|---|\n| ich | **würde** | machen | Ich **würde** das gerne **machen**. |\n| du | **würdest** | machen | **würdest** du das **machen**? |\n| er/sie/es | **würde** | machen | Er **würde** es sicher **machen**. |\n| wir | **würden** | machen | Wir **würden** gerne Urlaub **machen**. |\n| ihr | **würdet** | machen | **würdet** ihr das auch **machen**? |\n| sie/Sie | **würden** | machen | Sie **würden** sicher Fehler **machen**. |",
+      title: "I. THE FORM WITH WÜRDE (PRESENT)",
+      content: "### 1. The standard construction: würde + infinitive\nThis is the form you will use for almost all verbs. It expresses a realistic wish or a polite request.\n\n**Structure**: **würde** (conjugated) ... **infinitive** (placed at the very end).\n\n| Person | Auxiliary | + Infinitive ([[machen]]) | Example sentence |\n|---|---|---|---|\n| ich | **würde** | machen | Ich **würde** das gerne **machen**. |\n| du | **würdest** | machen | **würdest** du das **machen**? |\n| er/sie/es | **würde** | machen | Er **würde** es sicher **machen**. |\n| wir | **würden** | machen | Wir **würden** gerne Urlaub **machen**. |\n| ihr | **würdet** | machen | **würdet** ihr das auch **machen**? |\n| sie/Sie | **würden** | machen | Sie **würden** sicher Fehler **machen**. |",
       examples: [
-        { de: "Ich **würde** gerne öfter Sport **treiben**.", fr: "J'aimerais faire du sport plus souvent." },
-        { de: "**Würden** Sie mir bitte die Tür **öffnen**?", fr: "Voudriez-vous m'ouvrir la porte s'il vous plaît ?" }
+        { de: "Ich **würde** gerne öfter Sport **treiben**.", fr: "I would like to do sports more often." },
+        { de: "**Würden** Sie mir bitte die Tür **öffnen**?", fr: "Would you please open the door for me?" }
       ]
     },
     {
       id: "b1-2-3-2",
-      title: "II. LES VERBES FORTS ET AUXILIAIRES",
-      content: "### 2. Les formes contractées (avec Umlaut)\nLes auxiliaires (haben, sein, werden) et certains verbes forts fréquents (verbes irréguliers) ne supportent pas la forme 'würde'. Ils se transforment à partir du radical du prétérit.\n\n*Cliquez sur les verbes pour voir la conjugaison complète.*\n\n| Infinitif | Forme KII | Traduction |\n|---|---|---|\n| [[haben]] | **hätte** | j'aurais |\n| [[sein]] | **wäre** | je serais |\n| [[werden]] | **würde** | je deviendrais |\n| [[wissen]] | **wüsste** | je saurais |\n| [[kommen]] | **käme** | je viendrais |\n| [[gehen]] | **ginge** | j'irais |\n| [[lassen]] | **ließe** | je laisserais |",
+      title: "II. STRONG VERBS AND AUXILIARIES",
+      content: "### 2. Contracted forms (with Umlaut)\nThe auxiliaries (haben, sein, werden) and some frequent strong verbs (irregular verbs) do not usually use the 'würde' form. They are formed from the Präteritum stem.\n\n*Click the verbs to see the full conjugation.*\n\n| Infinitive | KII Form | Translation |\n|---|---|---|\n| [[haben]] | **hätte** | I would have |\n| [[sein]] | **wäre** | I would be |\n| [[werden]] | **würde** | I would become |\n| [[wissen]] | **wüsste** | I would know |\n| [[kommen]] | **käme** | I would come |\n| [[gehen]] | **ginge** | I would go |\n| [[lassen]] | **ließe** | I would let/leave |",
       examples: [
-        { de: "Wenn ich Zeit **hätte**, **wäre** ich glücklich.", fr: "Si j'avais le temps, je serais heureux." },
-        { de: "Ich **wüsste** gerne, wo er ist.", fr: "J'aimerais savoir où il est." }
+        { de: "Wenn ich Zeit **hätte**, **wäre** ich glücklich.", fr: "If I had time, I would be happy." },
+        { de: "Ich **wüsste** gerne, wo er ist.", fr: "I would like to know where he is." }
       ]
     },
     {
       id: "b1-2-3-3",
-      title: "III. LES VERBES MODAUX AU PRÉSENT",
-      content: "### 3. Les modaux : Devoir et Pouvoir au subjonctif\nLes modaux sont indispensables au Konjunktiv II. Ils servent à donner des conseils ou à exprimer des probabilités. Ils prennent tous un **Umlaut** (sauf sollen et wollen).\n\n| Modal | KII Présent | Usage principal |\n|---|---|---|\n| [[können]] | **könnte** | Possibilité / Politesse |\n| [[müssen]] | **müsste** | Obligation théorique |\n| [[dürfen]] | **dürfte** | Probabilité / Autorisation |\n| [[sollen]] | **sollte** | **Le conseil** (tu devrais) |\n| [[wollen]] | **wollte** | Souhait intentionnel |\n| [[mögen]] | **möchte** | Désir poli |",
+      title: "III. MODAL VERBS IN THE PRESENT",
+      content: "### 3. Modals: obligation and ability in the subjunctive\nModal verbs are essential in Konjunktiv II. They are used to give advice or express probabilities. They all take an **Umlaut**, except sollen and wollen.\n\n| Modal | Present KII | Main Use |\n|---|---|---|\n| [[können]] | **könnte** | Possibility / politeness |\n| [[müssen]] | **müsste** | Theoretical obligation |\n| [[dürfen]] | **dürfte** | Probability / permission |\n| [[sollen]] | **sollte** | **Advice** (you should) |\n| [[wollen]] | **wollte** | Intended wish |\n| [[mögen]] | **möchte** | Polite desire |",
       examples: [
-        { de: "Du **solltest** mehr schlafen.", fr: "Tu devrais dormir plus (Conseil)." },
-        { de: "**Könntest** du mir kurz helfen?", fr: "Pourrais-tu m'aider un instant ?" }
+        { de: "Du **solltest** mehr schlafen.", fr: "You should sleep more (advice)." },
+        { de: "**Könntest** du mir kurz helfen?", fr: "Could you help me for a moment?" }
       ]
     },
     {
       id: "b1-2-3-4",
-      title: "IV. LE KONJUNKTIV II AU PASSÉ",
-      content: "### 4. Exprimer le regret (Ce qui est fini)\nOn utilise le passé pour parler de situations qui ne se sont pas produites. C'est l'irréel du passé.\n\n**Structure** : **hätte / wäre** (conjugué) ... **Partizip II** (à la fin).\n\n| Type de verbe | Auxiliaire | Exemple |\n|---|---|---|\n| Verbe d'action | **hätte** | Ich **hätte** das **getan** (J'aurais fait ça) |\n| Verbe de mouvement | **wäre** | Ich **wäre** **gekommen** (Je serais venu) |",
+      title: "IV. KONJUNKTIV II IN THE PAST",
+      content: "### 4. Expressing regret (something already finished)\nUse the past form to talk about situations that did not happen. This is the unreal past.\n\n**Structure**: **hätte / wäre** (conjugated) ... **Partizip II** (at the end).\n\n| Verb Type | Auxiliary | Example |\n|---|---|---|\n| Action verb | **hätte** | Ich **hätte** das **getan** (I would have done that) |\n| Movement verb | **wäre** | Ich **wäre** **gekommen** (I would have come) |",
       examples: [
-        { de: "Ich **hätte** dich **angerufen**, wenn ich Zeit **gehabt hätte**.", fr: "Je t'aurais appelé si j'avais eu le temps." },
-        { de: "Wenn ich den Bus nicht verpasst **hätte**, **wäre** ich pünktlich **gewesen**.", fr: "Si je n'avais pas raté le bus, j'aurais été à l'heure." }
+        { de: "Ich **hätte** dich **angerufen**, wenn ich Zeit **gehabt hätte**.", fr: "I would have called you if I had had time." },
+        { de: "Wenn ich den Bus nicht verpasst **hätte**, **wäre** ich pünktlich **gewesen**.", fr: "If I had not missed the bus, I would have been on time." }
       ]
     },
     {
       id: "b1-2-3-5",
-      title: "V. LES MODAUX AU PASSÉ",
-      content: "### 5. Le Double Infinitif (Ersatzinfinitiv)\nC'est la forme la plus technique du niveau B1. Pour dire 'j'aurais pu', on n'utilise pas le participe passé mais deux infinitifs à la fin.\n\n**Structure** : **hätte** ... **Infinitif du verbe** + **Infinitif du modal**.\n\n| Personne | Auxiliaire | + Double Infinitif ([[können]]) | Exemple |\n|---|---|---|---|\n| ich | **hätte** | machen können | Ich **hätte** es **machen können**. |\n| du | **hättest** | machen können | Du **hättest** es **machen können**. |\n| er/sie/es | **hätte** | machen können | Er **hätte** es **machen können**. |\n| wir | **hätten** | machen können | Wir **hätten** es **machen können**. |\n| ihr | **hättet** | machen können | Ihr **hättet** es **machen können**. |\n| sie/Sie | **hätten** | machen können | Sie **hätten** es **machen können**. |",
+      title: "V. MODALS IN THE PAST",
+      content: "### 5. The double infinitive (Ersatzinfinitiv)\nThis is the most technical form at B1 level. To say 'I could have', German does not use the past participle; it uses two infinitives at the end.\n\n**Structure**: **hätte** ... **infinitive of the main verb** + **infinitive of the modal**.\n\n| Person | Auxiliary | + Double Infinitive ([[können]]) | Example |\n|---|---|---|---|\n| ich | **hätte** | machen können | Ich **hätte** es **machen können**. |\n| du | **hättest** | machen können | Du **hättest** es **machen können**. |\n| er/sie/es | **hätte** | machen können | Er **hätte** es **machen können**. |\n| wir | **hätten** | machen können | Wir **hätten** es **machen können**. |\n| ihr | **hättet** | machen können | Ihr **hättet** es **machen können**. |\n| sie/Sie | **hätten** | machen können | Sie **hätten** es **machen können**. |",
       examples: [
-        { de: "Ich **hätte** gestern **arbeiten müssen**.", fr: "J'aurais dû travailler hier." },
-        { de: "Du **hättest** mir das **sagen sollen**.", fr: "Tu aurais dû me dire ça." },
-        { de: "Wir **hätten** länger **bleiben können**.", fr: "Nous aurions pu rester plus longtemps." }
+        { de: "Ich **hätte** gestern **arbeiten müssen**.", fr: "I should have worked yesterday." },
+        { de: "Du **hättest** mir das **sagen sollen**.", fr: "You should have told me that." },
+        { de: "Wir **hätten** länger **bleiben können**.", fr: "We could have stayed longer." }
       ]
     }
   ]
 };
 
 export const passivPresentB1: GrammarSection = {
-  title: "3.2.4 Le Passif au Présent",
+  title: "3.2.4 The Passive in the Present",
   topics: [
     {
       id: "b1-2-4-1",
-      title: "I. Règle de formation",
-      content: "Le passif de processus met l'accent sur l'action en cours.\n\n**Structure** : **werden** (conjugué au présent) + **Partizip II** (à la fin).\n\n| Personne | **Werden** | Exemple |\n|---|---|---|\n| ich | **werde** | ich werde operiert |\n| du | **wirst** | du wirst gerufen |\n| er/sie/es | **wird** | das Haus **wird** gebaut |\n| wir | **werden** | wir werden informiert |\n| ihr | **werdet** | ihr werdet gesucht |\n| sie/Sie | **werden** | sie werden gefragt |",
+      title: "I. Formation Rule",
+      content: "The process passive emphasizes the action in progress.\n\n**Structure**: **werden** (conjugated in the present tense) + **Partizip II** (at the end).\n\n| Person | **Werden** | Example |\n|---|---|---|\n| ich | **werde** | ich werde operiert |\n| du | **wirst** | du wirst gerufen |\n| er/sie/es | **wird** | das Haus **wird** gebaut |\n| wir | **werden** | wir werden informiert |\n| ihr | **werdet** | ihr werdet gesucht |\n| sie/Sie | **werden** | sie werden gefragt |",
       examples: [
-        { de: "Das Kind **wird** von der Mutter **geholt**.", fr: "L'enfant est allé chercher par la mère." },
-        { de: "Hier **wird** ein neues Hotel **gebaut**.", fr: "Un nouvel hôtel est en train d'être construit ici." }
+        { de: "Das Kind **wird** von der Mutter **geholt**.", fr: "The child is picked up by the mother." },
+        { de: "Hier **wird** ein neues Hotel **gebaut**.", fr: "A new hotel is being built here." }
       ]
     }
   ]
 };
 
 export const passivPasseB1: GrammarSection = {
-  title: "3.2.5 Le Passif au Passé",
+  title: "3.2.5 The Passive in the Past",
   topics: [
     {
       id: "b1-2-5-1",
-      title: "I. Le Prétérit (Passiv im Präteritum)",
-      content: "C'est la forme la plus utilisée pour raconter des événements passés au passif.\n\n**Structure** : **wurde** (werden au prétérit) + **Partizip II**.\n\n| Personne | **Wurde** | Exemple |\n|---|---|---|\n| ich | **wurde** | ich wurde informiert |\n| du | **wurdest** | du wurdest gerufen |\n| er/sie/es | **wurde** | das Haus **wurde** gebaut |\n| wir | **wurden** | wir wurden gerufen |\n| ihr | **wurdet** | ihr werdet informiert |\n| sie/Sie | **wurden** | sie wurden gefragt |\n\n**Note linguistique** : Grammaticalement, **wurde** est du **Präteritum**. L'équivalent exact en français est le **Passé Simple** (le temps des livres d'histoire et des romans). Comme nous n'utilisons plus le Passé Simple à l'oral en français (« elle fut découverte »), nous le remplaçons systématiquement par le **Passé Composé**. C'est pour cela que vous avez l'impression que c'est la même chose.",
+      title: "I. The Präteritum (Passiv im Präteritum)",
+      content: "This is the most common form for narrating past events in the passive.\n\n**Structure**: **wurde** (werden in the Präteritum) + **Partizip II**.\n\n| Person | **Wurde** | Example |\n|---|---|---|\n| ich | **wurde** | ich wurde informiert |\n| du | **wurdest** | du wurdest gerufen |\n| er/sie/es | **wurde** | das Haus **wurde** gebaut |\n| wir | **wurden** | wir wurden gerufen |\n| ihr | **wurdet** | ihr werdet informiert |\n| sie/Sie | **wurden** | sie wurden gefragt |\n\n**Language note**: Grammatically, **wurde** is the **Präteritum**. In English, it often corresponds to a simple past passive such as 'was discovered' or 'were informed'.",
       examples: [
-        { de: "Amerika **wurde** 1492 **entdeckt**.", fr: "L'Amérique a été découverte (fut découverte) en 1492." },
-        { de: "Der Brief **wurde** gestern **geschrieben**.", fr: "La lettre a été écrite hier." }
+        { de: "Amerika **wurde** 1492 **entdeckt**.", fr: "America was discovered in 1492." },
+        { de: "Der Brief **wurde** gestern **geschrieben**.", fr: "The letter was written yesterday." }
       ]
     },
     {
       id: "b1-2-5-2",
-      title: "II. Le Parfait (Passiv im Perfekt)",
-      content: "Utilisé principalement à l'oral. On utilise l'auxiliaire **sein** et on remplace 'geworden' par **worden**.\n\n**Structure** : **sein** (présent) + **Partizip II** + **worden**.\n\n| Personne | **Sein** | **Partizip II** | **Worden** |\n|---|---|---|---|\n| ich | bin | gefragt | **worden** |\n| du | bist | gefragt | **worden** |\n| er/sie/es | **ist** | **gefragt** | **worden** |\n| wir | sind | gefragt | **worden** |\n| ihr | seid | gefragt | **worden** |\n| sie/Sie | sind | gefragt | **worden** |",
+      title: "II. The Perfekt (Passiv im Perfekt)",
+      content: "Used mainly in speech. Use the auxiliary **sein** and replace 'geworden' with **worden**.\n\n**Structure**: **sein** (present tense) + **Partizip II** + **worden**.\n\n| Person | **Sein** | **Partizip II** | **Worden** |\n|---|---|---|---|\n| ich | bin | gefragt | **worden** |\n| du | bist | gefragt | **worden** |\n| er/sie/es | **ist** | **gefragt** | **worden** |\n| wir | sind | gefragt | **worden** |\n| ihr | seid | gefragt | **worden** |\n| sie/Sie | sind | gefragt | **worden** |",
       examples: [
-        { de: "Das Auto **ist** bereits **repariert worden**.", fr: "La voiture a déjà été réparée." },
-        { de: "Die Gäste **sind** noch nicht **einladend worden**.", fr: "Les invités n'ont pas encore été invités." }
+        { de: "Das Auto **ist** bereits **repariert worden**.", fr: "The car has already been repaired." },
+        { de: "Die Gäste **sind** noch nicht **eingeladen worden**.", fr: "The guests have not been invited yet." }
       ]
     },
     {
       id: "b1-2-5-3",
-      title: "III. Comment choisir entre wurde et ist... worden ?",
-      content: "Puisque la traduction française ne vous aide pas (c'est toujours 'a été'), vous devez regarder le **contexte allemand** :\n\n### A. Le **Präteritum** (**wurde**) : Pour l'**Histoire** et le récit\n• **Les faits historiques** : 1492, la guerre, la chute du Mur.\n• **Les récits écrits** : Journaux, romans, rapports officiels.\n\n### B. Le **Perfekt** (**ist... worden**) : Pour l'**oral** et le **résultat présent**\n• **La conversation orale** : Ce que vous racontez à un ami.\n• **Le constat présent** : L'action est finie, on voit le résultat **maintenant**.",
+      title: "III. How to Choose Between wurde and ist... worden",
+      content: "Since English can translate both forms with similar wording, you need to look at the **German context**:\n\n### A. **Präteritum** (**wurde**): for **history** and narrative\n• **Historical facts**: 1492, wars, the fall of the Wall.\n• **Written narratives**: newspapers, novels, official reports.\n\n### B. **Perfekt** (**ist... worden**): for **speech** and a **present result**\n• **Spoken conversation**: what you tell a friend.\n• **Present observation**: the action is finished and the result is visible **now**.",
       examples: [
-        { de: "JFK **wurde** 1963 **ermordet**.", fr: "JFK a été assassiné en 1963.", note: "Fait historique daté : **Prétérit**." },
-        { de: "Mein Auto **ist** endlich **repariert worden**!", fr: "Ma voiture a enfin été réparée !", note: "Résultat présent (je peux la conduire maintenant) : **Parfait**." }
+        { de: "JFK **wurde** 1963 **ermordet**.", fr: "JFK was assassinated in 1963.", note: "Dated historical fact: **Präteritum**." },
+        { de: "Mein Auto **ist** endlich **repariert worden**!", fr: "My car has finally been repaired!", note: "Present result: I can drive it now. **Perfekt**." }
       ]
     }
   ]
 };
 
 export const passivModauxB1: GrammarSection = {
-  title: "3.2.6 Le Passif avec Verbes Modaux",
+  title: "3.2.6 The Passive with Modal Verbs",
   topics: [
     {
       id: "b1-2-6-1",
-      title: "I. Au Présent",
-      content: "On conjugue le modal et on place **werden** à l'infinitif après le participe passé.\n\n**Structure** : **Modal** (présent) + **Partizip II** + **werden**.",
+      title: "I. In the Present",
+      content: "Conjugate the modal verb and place **werden** as an infinitive after the past participle.\n\n**Structure**: **Modal** (present tense) + **Partizip II** + **werden**.",
       examples: [
-        { de: "Die Hausaufgaben **müssen** gemacht **werden**.", fr: "Les devoirs doivent être faits." },
-        { de: "Hier **darf** nicht geparkt **werden**.", fr: "Il est interdit de stationner ici." }
+        { de: "Die Hausaufgaben **müssen** gemacht **werden**.", fr: "The homework must be done." },
+        { de: "Hier **darf** nicht geparkt **werden**.", fr: "Parking is not allowed here." }
       ]
     },
     {
       id: "b1-2-6-2",
-      title: "II. Au Prétérit",
-      content: "On utilise la forme passée du verbe modal.\n\n**Structure** : **Modal** (prétérit) + **Partizip II** + **werden**.",
+      title: "II. In the Präteritum",
+      content: "Use the past form of the modal verb.\n\n**Structure**: **Modal** (Präteritum) + **Partizip II** + **werden**.",
       examples: [
-        { de: "Das Haus **musste** renoviert **werden**.", fr: "La maison devait être rénovée." },
-        { de: "Der Termin **konnte** nicht verschoben **werden**.", fr: "Le rendez-vous n'a pas pu être déplacé." }
+        { de: "Das Haus **musste** renoviert **werden**.", fr: "The house had to be renovated." },
+        { de: "Der Termin **konnte** nicht verschoben **werden**.", fr: "The appointment could not be postponed." }
       ]
     },
     {
       id: "b1-2-6-3",
-      title: "III. Au Parfait (La forme complexe)",
-      content: "Utilise le **double infinitif** à la fin de la phrase.\n\n**Structure** : **hat** + **Partizip II** + **werden** + **Modal** (infinitif).",
+      title: "III. In the Perfekt (The Complex Form)",
+      content: "Use the **double infinitive** at the end of the sentence.\n\n**Structure**: **hat** + **Partizip II** + **werden** + **Modal** (infinitive).",
       examples: [
-        { de: "Das Auto **hat** repariert **werden müssen**.", fr: "La voiture a dû être réparée." },
-        { de: "Der Brief **hat** sofort geschickt **werden sollen**.", fr: "La lettre aurait dû être envoyée immédiatement." }
+        { de: "Das Auto **hat** repariert **werden müssen**.", fr: "The car had to be repaired." },
+        { de: "Der Brief **hat** sofort geschickt **werden sollen**.", fr: "The letter was supposed to be sent immediately." }
       ]
     }
   ]

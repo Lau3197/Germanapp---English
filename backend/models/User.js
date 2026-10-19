@@ -5,22 +5,22 @@ import jwt from 'jsonwebtoken';
 const UserSchema = new mongoose.Schema({
   email: {
     type: String,
-    required: [true, 'Email requis'],
+    required: [true, 'Email required'],
     unique: true,
     lowercase: true,
     trim: true,
-    match: [/^\S+@\S+\.\S+$/, 'Email invalide']
+    match: [/^\S+@\S+\.\S+$/, 'Invalid email']
   },
   password: {
     type: String,
-    required: [true, 'Mot de passe requis'],
-    minlength: [6, 'Le mot de passe doit contenir au moins 6 caractères'],
-    select: false // Ne pas inclure par défaut dans les requêtes
+    required: [true, 'Password required'],
+    minlength: [6, 'Password must be at least 6 characters long'],
+    select: false // Do not include by default in queries
   },
   name: {
     type: String,
     trim: true,
-    maxlength: [50, 'Le nom ne peut pas dépasser 50 caractères']
+    maxlength: [50, 'Name cannot exceed 50 characters']
   },
   createdAt: {
     type: Date,
@@ -29,7 +29,7 @@ const UserSchema = new mongoose.Schema({
   lastLogin: {
     type: Date
   },
-  // Données de l'application
+  // Application data
   appData: {
     favorites: {
       type: Array,
@@ -53,12 +53,12 @@ const UserSchema = new mongoose.Schema({
       }
     }
   },
-  // Token de réinitialisation de mot de passe
+  // Password reset token
   resetPasswordToken: String,
   resetPasswordExpire: Date
 });
 
-// Hasher le mot de passe avant sauvegarde
+// Hash the password before saving
 UserSchema.pre('save', async function(next) {
   if (!this.isModified('password')) {
     next();
@@ -67,7 +67,7 @@ UserSchema.pre('save', async function(next) {
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-// Générer un JWT
+// Generate a JWT
 UserSchema.methods.getSignedJwtToken = function() {
   return jwt.sign(
     { id: this._id },
@@ -76,12 +76,12 @@ UserSchema.methods.getSignedJwtToken = function() {
   );
 };
 
-// Vérifier le mot de passe
+// Check the password
 UserSchema.methods.matchPassword = async function(enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-// Générer un token de réinitialisation
+// Generate a reset token
 UserSchema.methods.getResetPasswordToken = function() {
   const resetToken = crypto.randomBytes(20).toString('hex');
   

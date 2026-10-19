@@ -5,7 +5,7 @@ import { protect } from '../middleware/auth.js';
 const router = express.Router();
 
 // @route   GET /api/sync
-// @desc    Récupérer les données de l'utilisateur
+// @desc    Retrieve the user's data
 // @access  Private
 router.get('/', protect, async (req, res) => {
   try {
@@ -17,16 +17,16 @@ router.get('/', protect, async (req, res) => {
       lastSync: new Date().toISOString()
     });
   } catch (error) {
-    console.error('Erreur récupération données:', error);
+    console.error('Data retrieval error:', error);
     res.status(500).json({
       success: false,
-      message: 'Erreur serveur lors de la récupération des données'
+      message: 'Server error while retrieving data'
     });
   }
 });
 
 // @route   POST /api/sync
-// @desc    Sauvegarder les données de l'utilisateur (remplace tout)
+// @desc    Save the user's data (replaces everything)
 // @access  Private
 router.post('/', protect, async (req, res) => {
   try {
@@ -45,21 +45,21 @@ router.post('/', protect, async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Données synchronisées avec succès',
+      message: 'Data synced successfully',
       data: user.appData,
       syncedAt: new Date().toISOString()
     });
   } catch (error) {
-    console.error('Erreur sauvegarde données:', error);
+    console.error('Data save error:', error);
     res.status(500).json({
       success: false,
-      message: 'Erreur serveur lors de la sauvegarde des données'
+      message: 'Server error while saving data'
     });
   }
 });
 
 // @route   PUT /api/sync/merge
-// @desc    Fusionner les données (intelligent merge)
+// @desc    Merge the data (intelligent merge)
 // @access  Private
 router.put('/merge', protect, async (req, res) => {
   try {
@@ -68,40 +68,40 @@ router.put('/merge', protect, async (req, res) => {
 
     const currentData = user.appData;
 
-    // Fusionner les favoris (éviter les doublons par id)
+    // Merge favorites (avoid duplicates by id)
     if (favorites && Array.isArray(favorites)) {
       const existingIds = new Set(currentData.favorites.map(f => f.id));
       const newFavorites = favorites.filter(f => !existingIds.has(f.id));
       currentData.favorites = [...currentData.favorites, ...newFavorites];
     }
 
-    // Fusionner les annotations (par topicId)
+    // Merge annotations (by topicId)
     if (annotations && Array.isArray(annotations)) {
       const annotationMap = new Map();
-      // D'abord les existantes
+      // First the existing ones
       currentData.annotations.forEach(a => annotationMap.set(a.topicId, a));
-      // Puis les nouvelles (écrasent les anciennes pour le même topicId)
+      // Then the new ones (overwrite the old ones for the same topicId)
       annotations.forEach(a => annotationMap.set(a.topicId, a));
       currentData.annotations = Array.from(annotationMap.values());
     }
 
-    // Fusionner les stats intelligemment
+    // Merge the stats intelligently
     if (stats) {
       const currentStats = currentData.stats || {};
-      
-      // Fusionner les leçons complétées (union)
+
+      // Merge completed lessons (union)
       const completedLessons = new Set([
         ...(currentStats.completedLessons || []),
         ...(stats.completedLessons || [])
       ]);
-      
-      // Fusionner l'historique quotidien
+
+      // Merge the daily history
       const historyMap = new Map();
       (currentStats.dailyHistory || []).forEach(d => historyMap.set(d.date, d));
       (stats.dailyHistory || []).forEach(d => {
         const existing = historyMap.get(d.date);
         if (existing) {
-          // Fusionner les données du même jour
+          // Merge the data for the same day
           historyMap.set(d.date, {
             date: d.date,
             timeSpent: Math.max(existing.timeSpent || 0, d.timeSpent || 0),
@@ -132,21 +132,21 @@ router.put('/merge', protect, async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Données fusionnées avec succès',
+      message: 'Data merged successfully',
       data: user.appData,
       syncedAt: new Date().toISOString()
     });
   } catch (error) {
-    console.error('Erreur fusion données:', error);
+    console.error('Data merge error:', error);
     res.status(500).json({
       success: false,
-      message: 'Erreur serveur lors de la fusion des données'
+      message: 'Server error while merging data'
     });
   }
 });
 
 // @route   DELETE /api/sync
-// @desc    Réinitialiser toutes les données
+// @desc    Reset all data
 // @access  Private
 router.delete('/', protect, async (req, res) => {
   try {
@@ -172,18 +172,16 @@ router.delete('/', protect, async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Données réinitialisées',
+      message: 'Data reset',
       data: defaultData
     });
   } catch (error) {
-    console.error('Erreur réinitialisation:', error);
+    console.error('Reset error:', error);
     res.status(500).json({
       success: false,
-      message: 'Erreur serveur'
+      message: 'Server error'
     });
   }
 });
 
 export default router;
-
-

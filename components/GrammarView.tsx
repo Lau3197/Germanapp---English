@@ -1,8 +1,11 @@
-
 import React, { useState, useEffect, useRef } from 'react';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { GRAMMAR_DATA, KII_CONJUGATIONS } from '../data/grammarData';
 import { LanguageLevel } from '../types';
 import { useGrammar } from '../contexts/GrammarContext';
+import { usePandaMascot } from '../contexts/PandaMascotContext';
+import { getExercisesForTopic } from '../data/grammarExercises';
+import { APP_DATA_SYNCED_EVENT } from '../utils/trainerStorage';
 
 // Type pour les favoris
 interface Favorite {
@@ -31,13 +34,35 @@ interface Annotation {
 }
 
 export const GrammarView: React.FC = () => {
-  const [selectedLevel, setSelectedLevel] = useState<LanguageLevel>(LanguageLevel.A1);
+  const { level } = useParams<{ level?: string }>();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  // Validate level or default to A1
+  const validLevel = Object.values(LanguageLevel).includes(level as LanguageLevel) ? (level as LanguageLevel) : LanguageLevel.A1;
+  const [selectedLevel, setSelectedLevel] = useState<LanguageLevel>(validLevel);
+
+  useEffect(() => {
+    if (level && Object.values(LanguageLevel).includes(level as LanguageLevel)) {
+      setSelectedLevel(level as LanguageLevel);
+    } else if (!level) {
+      // If no level in URL, navigate to default
+      navigate(`/grammar/${LanguageLevel.A1}`, { replace: true });
+    }
+  }, [level, navigate]);
+
+  const handleLevelSelect = (lvl: LanguageLevel) => {
+    // Clicking the already selected level is an explicit way back to that
+    // level's home/summary, even when a section is currently open.
+    navigate(`/grammar/${lvl}`);
+  };
+
   const [activeSectionIndex, setActiveSectionIndex] = useState<number | 'all'>('all');
   const [conjugationModal, setConjugationModal] = useState<{ verb: string; forms: string[] } | null>(null);
   const [declensionModal, setDeclensionModal] = useState<{ word: string; declension: { cas: string; article: string; form: string }[] } | null>(null);
   const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [showFavorites, setShowFavorites] = useState(false);
   const { markLessonCompleted, isLessonCompleted, toggleLessonCompleted } = useGrammar();
+  const { triggerMood } = usePandaMascot();
 
   // États pour la recherche
   const [searchQuery, setSearchQuery] = useState('');
@@ -53,15 +78,26 @@ export const GrammarView: React.FC = () => {
   const currentLevelData = GRAMMAR_DATA.find(l => l.level === selectedLevel) || GRAMMAR_DATA[0];
 
   // Charger les favoris et annotations depuis localStorage au démarrage
+  // (et les recharger quand la synchro cloud apporte ceux d'un autre appareil)
   useEffect(() => {
-    const savedFavorites = localStorage.getItem('grammarFavorites');
-    if (savedFavorites) {
-      setFavorites(JSON.parse(savedFavorites));
-    }
-    const savedAnnotations = localStorage.getItem('grammarAnnotations');
-    if (savedAnnotations) {
-      setAnnotations(JSON.parse(savedAnnotations));
-    }
+    const loadFromStorage = () => {
+      try {
+        const savedFavorites = localStorage.getItem('grammarFavorites');
+        if (savedFavorites) {
+          setFavorites(JSON.parse(savedFavorites));
+        }
+        const savedAnnotations = localStorage.getItem('grammarAnnotations');
+        if (savedAnnotations) {
+          setAnnotations(JSON.parse(savedAnnotations));
+        }
+      } catch (error) {
+        console.error('Could not load grammar favorites/notes', error);
+      }
+    };
+
+    loadFromStorage();
+    window.addEventListener(APP_DATA_SYNCED_EVENT, loadFromStorage);
+    return () => window.removeEventListener(APP_DATA_SYNCED_EVENT, loadFromStorage);
   }, []);
 
   // Sauvegarder les favoris dans localStorage
@@ -77,6 +113,58 @@ export const GrammarView: React.FC = () => {
   useEffect(() => {
     setActiveSectionIndex('all');
   }, [selectedLevel]);
+
+  // Keep the opened section in the URL so browser Back works after opening a
+  // card, and so the view can be restored when a grammar link is revisited.
+  useEffect(() => {
+    const sectionParam = searchParams.get('section');
+    if (sectionParam === null) {
+      setActiveSectionIndex('all');
+      return;
+    }
+
+    const sectionIndex = Number(sectionParam);
+    if (Number.isInteger(sectionIndex) && sectionIndex >= 0 && sectionIndex < currentLevelData.sections.length) {
+      setActiveSectionIndex(sectionIndex);
+    } else {
+      setActiveSectionIndex('all');
+    }
+  }, [searchParams, currentLevelData.sections.length]);
+
+  // Deep-link from the global search: scroll to (and briefly highlight) the
+  // requested topic. Declared after the level-reset effect so it wins the
+  // final activeSectionIndex when both fire on navigation.
+  useEffect(() => {
+    const topicId = searchParams.get('topic');
+    if (!topicId) return;
+
+    // Open the section that owns the topic so it is actually rendered: the
+    // "all" view is a table of contents on every level, not the full text.
+    const sectionIdx = currentLevelData.sections.findIndex(section =>
+      section.topics.some(topic => topic.id === topicId)
+    );
+    setActiveSectionIndex(sectionIdx >= 0 ? sectionIdx : 'all');
+
+    const timer = setTimeout(() => {
+      const element = document.getElementById(`topic-${topicId}`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        element.classList.add('ring-4', 'ring-indigo-300', 'rounded-2xl', 'transition-all');
+        setTimeout(() => {
+          element.classList.remove('ring-4', 'ring-indigo-300');
+        }, 2000);
+      }
+      // Clear the param so re-opening the same section later doesn't re-scroll.
+      setSearchParams(prev => {
+        const next = new URLSearchParams(prev);
+        next.delete('topic');
+        return next;
+      }, { replace: true });
+    }, 250);
+
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, selectedLevel]);
 
   // Focus sur le champ de recherche quand on ouvre
   useEffect(() => {
@@ -148,20 +236,14 @@ export const GrammarView: React.FC = () => {
     setSearchResults(results.slice(0, 20)); // Limiter à 20 résultats
   };
 
-  // Naviguer vers un résultat de recherche
+  // Naviguer vers un résultat de recherche. On passe par ?topic= : l'effet de
+  // deep-link ouvre la section propriétaire, sinon on retomberait sur le
+  // sommaire en cartes et le topic ne serait pas monté.
   const goToSearchResult = (result: SearchResult) => {
-    setSelectedLevel(result.level);
-    setActiveSectionIndex('all');
     setShowSearch(false);
     setSearchQuery('');
     setSearchResults([]);
-
-    setTimeout(() => {
-      const element = document.getElementById(`topic-${result.id}`);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }, 150);
+    navigate(`/grammar/${result.level}?topic=${result.id}`);
   };
 
   // Obtenir l'annotation d'un topic
@@ -224,20 +306,17 @@ export const GrammarView: React.FC = () => {
     }
   };
 
-  // Naviguer vers un favori
+  // Naviguer vers un favori (même mécanisme de deep-link que la recherche)
   const goToFavorite = (favorite: Favorite) => {
-    // Changer de niveau si nécessaire
-    if (selectedLevel !== favorite.level) {
-      setSelectedLevel(favorite.level);
-    }
-    setActiveSectionIndex('all');
+    navigate(`/grammar/${favorite.level}?topic=${favorite.id}`);
+  };
 
-    setTimeout(() => {
-      const element = document.getElementById(`topic-${favorite.id}`);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }, 100);
+  const handleLessonCompletionToggle = (topicId: string, isCompleted: boolean) => {
+    toggleLessonCompleted(topicId);
+
+    if (!isCompleted) {
+      triggerMood('dancing', 3200);
+    }
   };
 
   // Fonction pour scroller vers une section
@@ -307,20 +386,20 @@ export const GrammarView: React.FC = () => {
 
   const DECLENSIONS: { [key: string]: { cas: string; article: string; form: string }[] } = {
     'der Herr': [
-      { cas: 'Nominatif Singulier', article: 'der', form: 'Herr' },
-      { cas: 'Accusatif Singulier', article: 'den', form: 'Herrn' },
-      { cas: 'Datif Singulier', article: 'dem', form: 'Herrn' },
-      { cas: 'Génitif Singulier', article: 'des', form: 'Herrn' },
-      { cas: 'Nominatif Pluriel', article: 'die', form: 'Herren' },
-      { cas: 'Accusatif Pluriel', article: 'die', form: 'Herren' },
-      { cas: 'Datif Pluriel', article: 'den', form: 'Herren' },
-      { cas: 'Génitif Pluriel', article: 'der', form: 'Herren' }
+      { cas: 'Nominative Singular', article: 'der', form: 'Herr' },
+      { cas: 'Accusative Singular', article: 'den', form: 'Herrn' },
+      { cas: 'Dative Singular', article: 'dem', form: 'Herrn' },
+      { cas: 'Genitive Singular', article: 'des', form: 'Herrn' },
+      { cas: 'Nominative Plural', article: 'die', form: 'Herren' },
+      { cas: 'Accusative Plural', article: 'die', form: 'Herren' },
+      { cas: 'Dative Plural', article: 'den', form: 'Herren' },
+      { cas: 'Genitive Plural', article: 'der', form: 'Herren' }
     ],
     'das Herz': [
-      { cas: 'Nominatif', article: 'das', form: 'Herz' },
-      { cas: 'Accusatif', article: 'das', form: 'Herz' },
-      { cas: 'Datif', article: 'dem', form: 'Herzen' },
-      { cas: 'Génitif', article: 'des', form: 'Herzens' }
+      { cas: 'Nominative', article: 'das', form: 'Herz' },
+      { cas: 'Accusative', article: 'das', form: 'Herz' },
+      { cas: 'Dative', article: 'dem', form: 'Herzen' },
+      { cas: 'Genitive', article: 'des', form: 'Herzens' }
     ]
   };
 
@@ -355,7 +434,12 @@ export const GrammarView: React.FC = () => {
     });
   };
 
-  const renderTable = (rows: string[]) => {
+  const renderTable = (allRows: string[]) => {
+    // Markdown separator rows (|---|---|) carry no data: without this filter they
+    // render as a visible row of dashes under every table header.
+    const rows = allRows.filter(row => !/^\|[\s:|-]+\|?$/.test(row.trim()));
+    if (rows.length === 0) return null;
+
     return (
       <div className="my-8 overflow-hidden rounded-2xl border border-slate-200 shadow-sm overflow-x-auto">
         <table className="w-full text-left border-collapse">
@@ -453,33 +537,84 @@ export const GrammarView: React.FC = () => {
     return elements;
   };
 
-  const renderB2TOC = () => (
+  // Table of contents shown for every level: one card per section, opening it
+  // renders that section on its own instead of stacking the whole level.
+  const renderLevelTOC = () => (
     <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
       <div className="mb-12">
-        <h3 className="text-4xl font-black text-slate-900 mb-4">Programme B2</h3>
-        <p className="text-slate-500 text-lg">Sélectionnez une leçon pour approfondir vos connaissances.</p>
+        <h3 className="text-4xl font-black text-slate-900 mb-4">{selectedLevel} Program</h3>
+        <p className="text-slate-500 text-lg">{currentLevelData.description}</p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {currentLevelData.sections.map((section, idx) => (
-          <button
-            key={idx}
-            onClick={() => {
-              setActiveSectionIndex(idx);
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            className="group p-8 bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:border-indigo-200 transition-all text-left flex flex-col h-full"
-          >
-            <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-black text-xl mb-6 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all">
-              {idx + 1}
-            </div>
-            <h4 className="text-xl font-black text-slate-800 mb-3 group-hover:text-indigo-600 transition-colors">{section.title}</h4>
-            <p className="text-slate-400 text-sm font-medium line-clamp-3">Cliquez pour ouvrir la leçon complète sur ce sujet.</p>
-            <div className="mt-auto pt-6 flex items-center gap-2 text-indigo-600 font-black text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
-              Ouvrir la leçon
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14 5l7 7-7 7"></path></svg>
-            </div>
-          </button>
-        ))}
+        {currentLevelData.sections.map((section, idx) => {
+          const totalTopics = section.topics.length;
+          const doneTopics = section.topics.filter(topic => isLessonCompleted(topic.id)).length;
+          const sectionProgress = totalTopics > 0 ? Math.round((doneTopics / totalTopics) * 100) : 0;
+          const isSectionDone = totalTopics > 0 && doneTopics === totalTopics;
+
+          return (
+            <button
+              key={idx}
+              onClick={() => {
+                navigate(`/grammar/${selectedLevel}?section=${idx}`);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="group p-8 bg-white rounded-[2rem] shadow-sm hover:shadow-xl transition-all text-left flex flex-col h-full"
+              style={{ border: '1px solid var(--terracotta-100)' }}
+            >
+              <div className="flex items-start justify-between gap-4 mb-6">
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-xl transition-all group-hover:scale-110 ${isSectionDone
+                  ? 'bg-green-100 text-green-600'
+                  : 'bg-indigo-50 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white'
+                  }`}>
+                  {isSectionDone ? (
+                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                  ) : (
+                    idx + 1
+                  )}
+                </div>
+                <span className="px-3 py-1 rounded-lg bg-slate-50 text-slate-400 text-[10px] font-black uppercase tracking-widest shrink-0">
+                  {totalTopics} lesson{totalTopics > 1 ? 's' : ''}
+                </span>
+              </div>
+
+              <h4 className="text-xl font-black text-slate-800 mb-4 group-hover:text-indigo-600 transition-colors">{section.title}</h4>
+
+              <ul className="space-y-2">
+                {section.topics.slice(0, 3).map(topic => (
+                  <li key={topic.id} className="flex items-start gap-2 text-sm text-slate-400 font-medium">
+                    <span className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${isLessonCompleted(topic.id) ? 'bg-green-500' : 'bg-slate-200'}`}></span>
+                    <span className="line-clamp-1">{topic.title}</span>
+                  </li>
+                ))}
+                {totalTopics > 3 && (
+                  <li className="text-sm text-slate-300 font-bold pl-3.5">+ {totalTopics - 3} more</li>
+                )}
+              </ul>
+
+              <div className="mt-auto pt-6">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    {doneTopics}/{totalTopics} completed
+                  </span>
+                  <span className="flex items-center gap-2 text-indigo-600 font-black text-[10px] uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+                    Open lesson
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14 5l7 7-7 7"></path></svg>
+                  </span>
+                </div>
+                <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--sand-100)' }}>
+                  <div
+                    className="h-full rounded-full transition-all duration-700"
+                    style={{
+                      width: `${sectionProgress}%`,
+                      backgroundColor: isSectionDone ? 'var(--sage-600)' : 'var(--terracotta-600)'
+                    }}
+                  ></div>
+                </div>
+              </div>
+            </button>
+          );
+        })}
       </div>
     </div>
   );
@@ -515,7 +650,7 @@ export const GrammarView: React.FC = () => {
           <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-300" onClick={(e) => e.stopPropagation()}>
             <div className="bg-indigo-600 p-8 text-white flex justify-between items-center">
               <div>
-                <p className="text-[10px] font-black uppercase tracking-widest opacity-80 mb-1">Déclinaison Complète</p>
+                <p className="text-[10px] font-black uppercase tracking-widest opacity-80 mb-1">Full Declension</p>
                 <h5 className="text-3xl font-black tracking-tight">{declensionModal.word}</h5>
               </div>
               <button onClick={() => setDeclensionModal(null)} className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/40 transition-all">
@@ -527,9 +662,9 @@ export const GrammarView: React.FC = () => {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-slate-50 border-b border-slate-200">
-                      <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-indigo-600">Cas</th>
+                      <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-indigo-600">Case</th>
                       <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-indigo-600">Article</th>
-                      <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-indigo-600">Forme</th>
+                      <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-indigo-600">Form</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -566,7 +701,7 @@ export const GrammarView: React.FC = () => {
                     setSearchQuery(e.target.value);
                     performSearch(e.target.value);
                   }}
-                  placeholder="Rechercher un mot, une règle, un concept..."
+                  placeholder="Search for a word, a rule, or a concept..."
                   className="flex-1 text-lg font-medium text-slate-900 outline-none placeholder:text-slate-300"
                 />
                 <kbd className="px-2 py-1 bg-slate-100 text-slate-400 text-xs font-bold rounded">ESC</kbd>
@@ -582,8 +717,8 @@ export const GrammarView: React.FC = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                   </div>
-                  <p className="text-slate-400 font-medium">Tapez au moins 2 caractères pour rechercher</p>
-                  <p className="text-slate-300 text-sm mt-1">Utilisez <kbd className="px-1.5 py-0.5 bg-slate-100 rounded text-xs font-bold">Ctrl</kbd> + <kbd className="px-1.5 py-0.5 bg-slate-100 rounded text-xs font-bold">K</kbd> pour ouvrir rapidement</p>
+                  <p className="text-slate-400 font-medium">Type at least 2 characters to search</p>
+                  <p className="text-slate-300 text-sm mt-1">Use <kbd className="px-1.5 py-0.5 bg-slate-100 rounded text-xs font-bold">Ctrl</kbd> + <kbd className="px-1.5 py-0.5 bg-slate-100 rounded text-xs font-bold">K</kbd> to open search quickly</p>
                 </div>
               ) : searchResults.length === 0 ? (
                 <div className="p-8 text-center">
@@ -592,11 +727,11 @@ export const GrammarView: React.FC = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 20a8 8 0 100-16 8 8 0 000 16z" />
                     </svg>
                   </div>
-                  <p className="text-slate-400 font-medium">Aucun résultat pour "{searchQuery}"</p>
+                  <p className="text-slate-400 font-medium">No results for "{searchQuery}"</p>
                 </div>
               ) : (
                 <div className="p-4 space-y-2">
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider px-2 mb-3">{searchResults.length} résultat{searchResults.length > 1 ? 's' : ''}</p>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider px-2 mb-3">{searchResults.length} result{searchResults.length > 1 ? 's' : ''}</p>
                   {searchResults.map((result, idx) => (
                     <button
                       key={idx}
@@ -645,7 +780,7 @@ export const GrammarView: React.FC = () => {
             <div className="bg-emerald-600 p-6 text-white flex justify-between items-center">
               <div>
                 <p className="text-[10px] font-black uppercase tracking-widest opacity-80 mb-1">
-                  {annotationModal.existingNote ? 'Modifier la note' : 'Ajouter une note'}
+                  {annotationModal.existingNote ? 'Edit note' : 'Add note'}
                 </p>
                 <h5 className="text-xl font-black tracking-tight line-clamp-1">{annotationModal.topicTitle}</h5>
               </div>
@@ -657,7 +792,7 @@ export const GrammarView: React.FC = () => {
               <textarea
                 value={annotationText}
                 onChange={(e) => setAnnotationText(e.target.value)}
-                placeholder="Écrivez votre note personnelle ici... (points importants, rappels, exemples supplémentaires...)"
+                placeholder="Write your personal note here... (important points, reminders, extra examples...)"
                 className="w-full h-40 p-4 border border-slate-200 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-slate-700 placeholder:text-slate-300"
               />
               <div className="flex justify-between items-center mt-4">
@@ -669,7 +804,7 @@ export const GrammarView: React.FC = () => {
                     }}
                     className="px-4 py-2 text-red-500 hover:bg-red-50 rounded-lg font-bold text-sm transition-all"
                   >
-                    Supprimer la note
+                    Delete note
                   </button>
                 )}
                 <div className={`flex gap-3 ${!annotationModal.existingNote ? 'ml-auto' : ''}`}>
@@ -677,13 +812,13 @@ export const GrammarView: React.FC = () => {
                     onClick={() => setAnnotationModal(null)}
                     className="px-4 py-2 text-slate-500 hover:bg-slate-50 rounded-lg font-bold text-sm transition-all"
                   >
-                    Annuler
+                    Cancel
                   </button>
                   <button
                     onClick={saveAnnotation}
                     className="px-6 py-2 bg-emerald-600 text-white rounded-lg font-bold text-sm hover:bg-emerald-700 transition-all"
                   >
-                    Enregistrer
+                    Save
                   </button>
                 </div>
               </div>
@@ -695,8 +830,8 @@ export const GrammarView: React.FC = () => {
       <div className="mb-12 text-center sm:text-left pb-10" style={{ borderBottom: '1px solid var(--terracotta-100)' }}>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h2 className="text-6xl font-black mb-4 tracking-tighter" style={{ color: 'var(--terracotta-800)' }}>Grammatik</h2>
-            <p className="text-2xl font-medium max-w-2xl" style={{ color: 'var(--sand-600)' }}>Maîtrisez les structures de la langue allemande avec clarté et précision.</p>
+            <h2 className="text-6xl font-black mb-4 tracking-tighter" style={{ color: 'var(--terracotta-800)' }}>Grammar</h2>
+            <p className="text-2xl font-medium max-w-2xl" style={{ color: 'var(--sand-600)' }}>Master German language structures with clarity and precision.</p>
           </div>
           {/* Bouton de recherche */}
           <button
@@ -707,7 +842,7 @@ export const GrammarView: React.FC = () => {
             <svg className="w-5 h-5 transition-colors" style={{ color: 'var(--sand-500)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
-            <span className="font-medium" style={{ color: 'var(--sand-500)' }}>Rechercher...</span>
+            <span className="font-medium" style={{ color: 'var(--sand-500)' }}>Search...</span>
             <kbd className="px-2 py-1 text-[10px] font-bold rounded ml-2" style={{ backgroundColor: 'var(--sand-100)', color: 'var(--sand-600)' }}>Ctrl+K</kbd>
           </button>
         </div>
@@ -729,7 +864,7 @@ export const GrammarView: React.FC = () => {
           return (
             <button
               key={lvl}
-              onClick={() => setSelectedLevel(lvl)}
+              onClick={() => handleLevelSelect(lvl)}
               className={`relative px-8 py-4 rounded-xl font-black transition-all overflow-hidden ${selectedLevel === lvl
                 ? 'text-white shadow-xl scale-105'
                 : 'hover:bg-white/80'
@@ -785,8 +920,8 @@ export const GrammarView: React.FC = () => {
                   {progress === 100 ? '✓' : selectedLevel}
                 </div>
                 <div>
-                  <p className="font-black" style={{ color: 'var(--terracotta-800)' }}>Progression {selectedLevel}</p>
-                  <p className="text-sm" style={{ color: 'var(--sand-500)' }}>{completedTopics} sur {totalTopics} leçons terminées</p>
+                  <p className="font-black" style={{ color: 'var(--terracotta-800)' }}>{selectedLevel} Progress</p>
+                  <p className="text-sm" style={{ color: 'var(--sand-500)' }}>{completedTopics} of {totalTopics} lessons completed</p>
                 </div>
               </div>
               <div className="text-right">
@@ -798,344 +933,169 @@ export const GrammarView: React.FC = () => {
                 className="h-full rounded-full transition-all duration-700"
                 style={{
                   width: `${progress}%`,
-                  background: progress === 100
-                    ? 'linear-gradient(to right, var(--sage-600), var(--sage-500))'
-                    : 'linear-gradient(to right, var(--terracotta-600), var(--terracotta-400))'
+                  backgroundColor: progress === 100 ? 'var(--sage-600)' : 'var(--terracotta-600)'
                 }}
               ></div>
             </div>
-            {progress === 100 && (
-              <p className="mt-3 font-bold text-sm flex items-center gap-2" style={{ color: 'var(--sage-600)' }}>
-                <span>🎉</span> Félicitations ! Vous avez terminé le niveau {selectedLevel} !
-              </p>
-            )}
           </div>
         );
       })()}
 
-      {/* Spécifique B2 : Table des matières en mode Dashboard si rien n'est sélectionné */}
-      {selectedLevel === LanguageLevel.B2 && activeSectionIndex === 'all' ? (
-        renderB2TOC()
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
-          <div className="lg:col-span-4">
-            <div className="sticky top-24 bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100">
-              <div className="mb-8">
-                <span className="inline-block px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase tracking-widest rounded-md mb-3">Module Actuel</span>
-                <h3 className="text-3xl font-black text-slate-900 mb-2">{currentLevelData.title}</h3>
-                <p className="text-slate-400 text-sm leading-relaxed italic">"{currentLevelData.description}"</p>
-              </div>
+      <div className="grid grid-cols-1 gap-8 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-150">
+        {activeSectionIndex === 'all' ? (
+          renderLevelTOC()
+        ) : (
+          <div className="space-y-16">
+            {currentLevelData.sections.map((section, sectionIdx) => {
+              // Reached only from a TOC card, so exactly one section is open.
+              if (activeSectionIndex !== sectionIdx) return null;
 
-              {/* Section Favoris */}
-              {favorites.length > 0 && (
-                <div className="mb-6 pb-6 border-b border-slate-100">
-                  <button
-                    onClick={() => setShowFavorites(!showFavorites)}
-                    className="w-full flex items-center justify-between p-3 rounded-xl text-sm font-bold text-amber-600 hover:bg-amber-50 transition-all"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-xl bg-amber-100 flex items-center justify-center">
-                        <svg className="w-4 h-4 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                      </div>
-                      <span>Mes Favoris ({favorites.length})</span>
-                    </div>
-                    <svg className={`w-4 h-4 transition-transform ${showFavorites ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-
-                  {showFavorites && (
-                    <div className="mt-2 space-y-1 animate-in slide-in-from-top-2 duration-200">
-                      {favorites.map((fav, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => goToFavorite(fav)}
-                          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left hover:bg-amber-50 transition-all group"
-                        >
-                          <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-[10px] font-medium text-slate-400 truncate">{fav.level} · {fav.sectionTitle}</p>
-                            <p className="text-[11px] font-semibold text-slate-600 truncate group-hover:text-amber-600">{fav.title}</p>
-                          </div>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleFavorite(fav.id, fav.title, fav.sectionTitle, fav.level);
-                            }}
-                            className="opacity-0 group-hover:opacity-100 p-1 hover:bg-red-100 rounded transition-all"
-                            title="Retirer des favoris"
-                          >
-                            <svg className="w-3 h-3 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                          </button>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
-                <button
-                  onClick={() => setActiveSectionIndex('all')}
-                  className={`w-full flex items-center gap-5 p-5 rounded-2xl text-sm font-black transition-all text-left ${activeSectionIndex === 'all'
-                    ? 'bg-slate-900 text-white shadow-2xl scale-[1.02]'
-                    : 'text-slate-400 hover:bg-slate-50 hover:text-slate-600'
-                    }`}
-                >
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm shrink-0 ${activeSectionIndex === 'all' ? 'bg-white/20' : 'bg-slate-100'}`}>
-                    {selectedLevel === LanguageLevel.B2 ? '🏠' : '∞'}
-                  </div>
-                  {selectedLevel === LanguageLevel.B2 ? 'Table des matières' : 'Tout le programme'}
-                </button>
-
-                {currentLevelData.sections.map((section, idx) => {
-                  // Calculer la progression de la section
-                  const sectionTotal = section.topics.length;
-                  const sectionCompleted = section.topics.filter(t => isLessonCompleted(t.id)).length;
-                  const sectionProgress = sectionTotal > 0 ? Math.round((sectionCompleted / sectionTotal) * 100) : 0;
-
-                  return (
-                    <div key={idx} className="space-y-1">
-                      {/* Niveau 1: Titre de la section */}
-                      <button
-                        onClick={() => scrollToSection(idx)}
-                        className="w-full flex items-start gap-3 p-3 rounded-xl text-sm font-bold transition-all text-left group text-slate-600 hover:bg-indigo-50 hover:text-indigo-700"
-                      >
-                        <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] shrink-0 transition-all font-black ${sectionProgress === 100
-                          ? 'bg-green-100 text-green-600 group-hover:bg-green-600 group-hover:text-white'
-                          : 'bg-indigo-100 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white'
-                          }`}>
-                          {sectionProgress === 100 ? '✓' : idx + 1}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <span className="leading-snug text-[11px] font-bold block">{section.title}</span>
-                          <div className="flex items-center gap-2 mt-1">
-                            <div className="flex-1 h-1 bg-slate-100 rounded-full overflow-hidden">
-                              <div
-                                className={`h-full rounded-full transition-all ${sectionProgress === 100 ? 'bg-green-500' : 'bg-indigo-400'}`}
-                                style={{ width: `${sectionProgress}%` }}
-                              ></div>
-                            </div>
-                            <span className="text-[9px] text-slate-400 font-medium">{sectionCompleted}/{sectionTotal}</span>
-                          </div>
-                        </div>
-                      </button>
-
-                      {/* Niveau 2: Topics */}
-                      <div className="ml-4 pl-3 border-l-2 border-slate-100 space-y-0.5">
-                        {section.topics.map((topic, tIdx) => {
-                          const headings = extractHeadings(topic.content);
-                          const completed = isLessonCompleted(topic.id);
-                          return (
-                            <div key={tIdx}>
-                              {/* Titre du topic */}
-                              <button
-                                onClick={() => scrollToTopic(topic.id)}
-                                className={`w-full text-left px-2 py-1.5 rounded-lg text-[10px] font-semibold transition-all flex items-center gap-2 group ${completed
-                                  ? 'text-green-600 bg-green-50/50'
-                                  : 'text-slate-500 hover:bg-indigo-50 hover:text-indigo-600'
-                                  }`}
-                              >
-                                {completed ? (
-                                  <svg className="w-3.5 h-3.5 text-green-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                                  </svg>
-                                ) : (
-                                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-300 group-hover:bg-indigo-500 transition-colors shrink-0"></span>
-                                )}
-                                <span className="line-clamp-1">{topic.title}</span>
-                              </button>
-
-                              {/* Niveau 3: Sous-titres (###) */}
-                              {headings.length > 0 && (
-                                <div className="ml-4 pl-2 border-l border-slate-100 space-y-0">
-                                  {headings.slice(0, 5).map((heading, hIdx) => (
-                                    <button
-                                      key={hIdx}
-                                      onClick={() => scrollToHeading(heading.id)}
-                                      className="w-full text-left px-2 py-1 rounded text-[9px] text-slate-400 hover:text-indigo-500 hover:bg-indigo-50/50 transition-all flex items-center gap-1.5 group"
-                                    >
-                                      <span className="w-1 h-1 rounded-full bg-slate-200 group-hover:bg-indigo-400 transition-colors shrink-0"></span>
-                                      <span className="line-clamp-1">{heading.title}</span>
-                                    </button>
-                                  ))}
-                                  {headings.length > 5 && (
-                                    <span className="text-[8px] text-slate-300 pl-4">+{headings.length - 5} autres...</span>
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-
-          <div className="lg:col-span-8 space-y-32">
-            {activeSectionIndex !== 'all' && (
-              <button
-                onClick={() => setActiveSectionIndex('all')}
-                className="inline-flex items-center gap-2 text-indigo-600 font-black text-sm hover:translate-x-[-4px] transition-transform mb-8"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                Retour au programme {selectedLevel}
-              </button>
-            )}
-
-            {(activeSectionIndex === 'all' ? currentLevelData.sections : [currentLevelData.sections[activeSectionIndex]]).map((section, sIdx) => {
-              const actualIdx = activeSectionIndex === 'all' ? sIdx : activeSectionIndex;
               return (
-                <div key={sIdx} id={`section-${actualIdx}`} className="animate-in fade-in slide-in-from-right-8 duration-700 scroll-mt-8">
-                  <div className="mb-12 relative">
-                    <div className="flex items-center gap-6 mb-6">
-                      <span className="text-8xl font-black text-slate-100 leading-none select-none">
-                        {actualIdx + 1}
-                      </span>
-                      <div className="h-0.5 bg-slate-100 flex-1"></div>
+                <div key={sectionIdx} id={`section-${sectionIdx}`} className="bg-white rounded-[2.5rem] shadow-xl overflow-hidden border border-slate-100 scroll-mt-24">
+                  <div className="bg-slate-900 px-10 py-8 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
+                    <div className="relative z-10 flex items-center gap-6">
+                      <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center text-white font-black text-2xl shadow-inner border border-white/10">
+                        {sectionIdx + 1}
+                      </div>
+                      <div>
+                        <h3 className="text-3xl font-black text-white tracking-tight">{section.title}</h3>
+                        <p className="text-slate-400 font-medium mt-1">{section.topics.length} lessons in this module</p>
+                      </div>
+                      <button
+                        onClick={() => {
+                          navigate(`/grammar/${selectedLevel}`);
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                        className="ml-auto px-4 py-2 rounded-xl bg-white/10 text-white text-sm font-bold hover:bg-white/20 transition-all flex items-center gap-2"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                        Back to summary
+                      </button>
                     </div>
-                    <h4 className="text-5xl font-black text-slate-900 tracking-tight leading-tight">
-                      {section.title}
-                    </h4>
                   </div>
 
-                  <div className="space-y-20">
-                    {section.topics.map((topic, tIdx) => (
-                      <div key={tIdx} id={`topic-${topic.id}`} className="relative scroll-mt-8 transition-all duration-500">
-                        <div className="bg-white border border-slate-100 p-12 rounded-[3rem] shadow-xl shadow-slate-200/30 mb-12 relative overflow-hidden">
-                          <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-[5rem] -mr-16 -mt-16 opacity-50"></div>
-                          <div className="flex items-start justify-between gap-4 mb-8">
-                            <h5 className="text-2xl font-black text-indigo-600 flex items-center gap-3">
-                              <span className="w-8 h-1 bg-indigo-600 rounded-full"></span>
-                              {topic.title}
-                            </h5>
-                            <div className="flex items-center gap-2">
-                              {/* Bouton Marquer comme terminé */}
-                              <button
-                                onClick={() => toggleLessonCompleted(topic.id)}
-                                className={`p-2 rounded-xl transition-all ${isLessonCompleted(topic.id)
-                                  ? 'bg-green-100 text-green-500'
-                                  : 'bg-slate-100 text-slate-300 hover:bg-green-50 hover:text-green-400'
-                                  }`}
-                                title={isLessonCompleted(topic.id) ? 'Marquer comme non terminé' : 'Marquer comme terminé'}
-                              >
-                                <svg className="w-5 h-5" fill={isLessonCompleted(topic.id) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                              </button>
-                              {/* Bouton Annotation */}
-                              <button
-                                onClick={() => openAnnotationModal(topic.id, topic.title)}
-                                className={`p-2 rounded-xl transition-all ${getAnnotation(topic.id)
-                                  ? 'bg-emerald-100 text-emerald-500 hover:bg-emerald-200'
-                                  : 'bg-slate-100 text-slate-300 hover:bg-emerald-50 hover:text-emerald-400'
-                                  }`}
-                                title={getAnnotation(topic.id) ? 'Modifier ma note' : 'Ajouter une note'}
-                              >
-                                <svg className="w-5 h-5" fill={getAnnotation(topic.id) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                </svg>
-                              </button>
-                              {/* Bouton Favori */}
-                              <button
-                                onClick={() => toggleFavorite(topic.id, topic.title, section.title, selectedLevel)}
-                                className={`p-2 rounded-xl transition-all ${isFavorite(topic.id)
-                                  ? 'bg-amber-100 text-amber-500 hover:bg-amber-200'
-                                  : 'bg-slate-100 text-slate-300 hover:bg-amber-50 hover:text-amber-400'
-                                  }`}
-                                title={isFavorite(topic.id) ? 'Retirer des favoris' : 'Ajouter aux favoris'}
-                              >
-                                <svg className="w-5 h-5" fill={isFavorite(topic.id) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                                </svg>
-                              </button>
-                            </div>
-                          </div>
-                          {renderFormattedContent(topic.content)}
+                  <div className="p-8 sm:p-12 space-y-12">
+                    {section.topics.map((topic, topicIdx) => {
+                      const isCompleted = isLessonCompleted(topic.id);
+                      const isAnnotated = !!getAnnotation(topic.id);
+                      const isFavorited = isFavorite(topic.id);
 
-                          {/* Affichage de l'annotation personnelle */}
-                          {getAnnotation(topic.id) && (
-                            <div className="mt-8 p-6 bg-emerald-50 border border-emerald-100 rounded-2xl relative group">
-                              <div className="flex items-start gap-4">
-                                <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
-                                  <svg className="w-5 h-5 text-emerald-600" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                  </svg>
-                                </div>
-                                <div className="flex-1">
-                                  <div className="flex items-center justify-between mb-2">
-                                    <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Ma note personnelle</p>
-                                    <button
-                                      onClick={() => openAnnotationModal(topic.id, topic.title)}
-                                      className="opacity-0 group-hover:opacity-100 text-emerald-500 hover:text-emerald-700 transition-all p-1"
-                                      title="Modifier"
-                                    >
-                                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                      </svg>
-                                    </button>
-                                  </div>
-                                  <p className="text-emerald-800 font-medium whitespace-pre-wrap">{getAnnotation(topic.id)?.text}</p>
-                                </div>
+                      return (
+                        <div key={topic.id} id={`topic-${topic.id}`} className="scroll-mt-32 group">
+                          <div className="flex items-start gap-6 mb-8">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-3 mb-3">
+                                <span className="px-3 py-1 rounded-lg bg-indigo-50 text-indigo-600 text-xs font-black uppercase tracking-widest">
+                                  Lesson {topicIdx + 1}
+                                </span>
+                                {isCompleted && (
+                                  <span className="flex items-center gap-1 px-3 py-1 rounded-lg bg-green-50 text-green-600 text-xs font-black uppercase tracking-widest">
+                                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                                    Completed
+                                  </span>
+                                )}
+                              </div>
+                              <h4 className="text-3xl font-black text-slate-900 mb-4 group-hover:text-indigo-600 transition-colors">
+                                {topic.title}
+                              </h4>
+                              {/* Barre d'outils de la leçon */}
+                              <div className="flex flex-wrap gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
+                                <button
+                                  onClick={() => handleLessonCompletionToggle(topic.id, isCompleted)}
+                                  className={`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-all ${isCompleted
+                                    ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                                    : 'bg-slate-100 text-slate-600 hover:bg-green-50 hover:text-green-600'
+                                    }`}
+                                >
+                                  {isCompleted ? 'Mark as to do' : 'Mark as done'}
+                                </button>
+
+                                <button
+                                  onClick={() => openAnnotationModal(topic.id, topic.title)}
+                                  className={`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-all ${isAnnotated
+                                    ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'
+                                    : 'bg-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-600'
+                                    }`}
+                                >
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                  {isAnnotated ? 'View note' : 'Annotate'}
+                                </button>
+
+                                <button
+                                  onClick={() => toggleFavorite(topic.id, topic.title, section.title, selectedLevel)}
+                                  className={`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-all ${isFavorited
+                                    ? 'bg-amber-100 text-amber-700 hover:bg-amber-200'
+                                    : 'bg-slate-100 text-slate-600 hover:bg-amber-50 hover:text-amber-600'
+                                    }`}
+                                >
+                                  <svg className="w-4 h-4" fill={isFavorited ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
+                                  {isFavorited ? 'Favorite' : 'Add to favorites'}
+                                </button>
                               </div>
                             </div>
+                            <button
+                              onClick={() => {
+                                const element = document.getElementById(`topic-${topic.id}`);
+                                element?.classList.toggle('is-collapsed');
+                              }}
+                              className="p-3 rounded-xl bg-slate-50 text-slate-400 hover:bg-indigo-50 hover:text-indigo-600 transition-all"
+                            >
+                              <svg className="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                          </div>
+
+                          <div className="prose prose-lg prose-slate max-w-none text-slate-600 leading-relaxed bg-white/50 rounded-2xl p-2 transition-all">
+                            {renderFormattedContent(topic.content)}
+
+                            {topic.examples && topic.examples.length > 0 && (
+                              <div className="mt-10 bg-indigo-50/50 rounded-3xl p-8 border border-indigo-100/50">
+                                <h5 className="font-black text-indigo-900 mb-6 flex items-center gap-2 text-lg">
+                                  <span className="text-2xl">💡</span> Concrete examples
+                                </h5>
+                                <div className="space-y-6">
+                                  {topic.examples.map((ex, i) => (
+                                    <div key={i} className="bg-white p-6 rounded-2xl shadow-sm border border-indigo-50 hover:border-indigo-200 transition-all flex gap-4">
+                                      <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs shrink-0">
+                                        {i + 1}
+                                      </div>
+                                      <div>
+                                        <p className="text-slate-900 font-bold text-lg mb-1">{ex.de}</p>
+                                        <p className="text-slate-500 font-medium">{ex.fr}</p>
+                                        {ex.note && <p className="text-xs text-indigo-500 font-bold mt-2 uppercase tracking-wide">{ex.note}</p>}
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {getExercisesForTopic(topic.id).length > 0 && (
+                              <div className="mt-10 flex flex-col gap-4 rounded-2xl border border-[var(--terracotta-100)] bg-[var(--terracotta-50)] p-5 sm:flex-row sm:items-center sm:justify-between">
+                                <div>
+                                  <p className="font-black text-[var(--terracotta-800)]">Ready to apply this lesson?</p>
+                                  <p className="mt-1 text-sm font-medium text-[var(--sand-600)]">Open a short, focused practice session.</p>
+                                </div>
+                                <button type="button" onClick={() => navigate(`/grammar/exercises?topic=${topic.id}`)} className="shrink-0 rounded-xl bg-[var(--terracotta-600)] px-5 py-3 font-black text-white hover:bg-[var(--terracotta-700)]">
+                                  Practice this lesson
+                                </button>
+                              </div>
+                            )}
+                          </div>
+
+                          {topicIdx < section.topics.length - 1 && (
+                            <div className="h-px bg-slate-100 my-12"></div>
                           )}
                         </div>
-
-                        {topic.examples && (
-                          <div className="space-y-8 pl-4 lg:pl-8 border-l-4 border-indigo-50">
-                            <div className="flex items-center gap-4">
-                              <div className="flex -space-x-2">
-                                <div className="w-3 h-3 bg-indigo-400 rounded-full animate-ping"></div>
-                                <div className="w-3 h-3 bg-indigo-600 rounded-full"></div>
-                              </div>
-                              <p className="text-[11.4px] font-black text-slate-400 uppercase tracking-[0.4em]">Exemples d'application</p>
-                            </div>
-                            <div className="grid grid-cols-1 gap-6">
-                              {topic.examples.map((ex, exIdx) => (
-                                <div key={exIdx} className="bg-white border border-slate-100 p-8 rounded-[2rem] hover:ring-2 hover:ring-indigo-100 hover:shadow-2xl transition-all duration-500 group">
-                                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-10">
-                                    <div className="space-y-3">
-                                      <p className="text-slate-900 font-black text-[19.95px] group-hover:text-indigo-600 transition-colors">
-                                        {parseInlineMarkdown(ex.de)}
-                                      </p>
-                                      <p className="text-slate-400 font-bold text-[13.3px]">
-                                        {parseInlineMarkdown(ex.fr)}
-                                      </p>
-                                    </div>
-                                    {ex.note && (
-                                      <div className="bg-indigo-50/50 px-6 py-5 rounded-2xl border border-indigo-100 lg:max-w-[340px] shrink-0">
-                                        <div className="flex items-center gap-2 mb-2">
-                                          <svg className="w-4 h-4 text-indigo-600" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" fillRule="evenodd" clipRule="evenodd"></path></svg>
-                                          <p className="text-[10px] text-indigo-600 font-black uppercase tracking-widest">Le conseil du prof</p>
-                                        </div>
-                                        <p className="text-[13.3px] text-slate-600 font-semibold leading-relaxed">
-                                          {parseInlineMarkdown(ex.note)}
-                                        </p>
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               );
             })}
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

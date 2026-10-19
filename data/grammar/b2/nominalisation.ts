@@ -2,51 +2,51 @@
 import { GrammarSection } from '../../../types';
 
 export const nominalisationB2: GrammarSection = {
-  title: "4. La nominalisation (Nominalisierung)",
+  title: "4. Nominalization (Nominalisierung)",
   topics: [
     {
       id: "b2-4-1",
-      title: "4.1 Philosophie : Pourquoi nominaliser ?",
-      content: "La nominalisation consiste à transformer un message porté par un verbe (**Style Verbal**) en un message porté par un nom (**Style Nominal**).\n\n### Pourquoi l'utiliser ?\n• **Formalité** : C'est la langue de l'administration, de la science et de la presse.\n• **Concision** : On gagne de la place en supprimant les subordonnées (weil, obwohl, wenn).\n• **Objectivité** : Le nom efface souvent l'action pour se concentrer sur le concept.\n\n### La règle de base\nAu lieu de dire : *On a décidé que...* (Verbe)\nOn dit : *La décision de...* (Nom)",
+      title: "4.1 Philosophy: Why Nominalize?",
+      content: "Nominalization means transforming a message carried by a verb (**verbal style**) into a message carried by a noun (**nominal style**).\n\n### Why use it?\n• **Formality**: It is the language of administration, science, and the press.\n• **Conciseness**: You save space by removing subordinate clauses (weil, obwohl, wenn).\n• **Objectivity**: The noun often removes the action and focuses on the concept.\n\n### Basic Rule\nInstead of saying: *It was decided that...* (verb)\nSay: *The decision to/of...* (noun)",
       examples: [
-        { de: "Er entscheidet schnell.", fr: "Il décide vite (Style verbal)." },
-        { de: "Seine **schnelle Entscheidung** überraschte uns.", fr: "Sa décision rapide nous a surpris (Style nominal)." }
+        { de: "Er entscheidet schnell.", fr: "He decides quickly (verbal style)." },
+        { de: "Seine **schnelle Entscheidung** überraschte uns.", fr: "His quick decision surprised us (nominal style)." }
       ]
     },
     {
       id: "b2-4-2",
-      title: "4.2 La mécanique : Les 3 transformations clés",
-      content: "Pour nominaliser une phrase, vous devez effectuer un glissement grammatical systématique :\n\n### 1. Le Verbe devient un Nom\nC'est le pivot. Vous devez trouver le nom correspondant au verbe.\n• *entscheiden* -> die Entscheidung\n• *besuchen* -> der Besuch\n• *essen* -> das Essen\n\n### 2. Le Sujet devient un complément au Génitif\nLe sujet de l'action se place après le nouveau nom, généralement au **Génitif**.\n• *Der Chef* entscheidet -> Die Entscheidung **des Chefs**.\n\n### 3. L'Adverbe devient un Adjectif\nL'adverbe qui qualifiait le verbe doit maintenant qualifier le nom. Il se place devant lui et se décline.\n• Er entscheidet *schnell* -> Seine **schnelle** Entscheidung.",
+      title: "4.2 Mechanics: The 3 Key Transformations",
+      content: "To nominalize a sentence, you need to perform a systematic grammatical shift:\n\n### 1. The Verb Becomes a Noun\nThis is the pivot. You need to find the noun corresponding to the verb.\n• *entscheiden* → die Entscheidung\n• *besuchen* → der Besuch\n• *essen* → das Essen\n\n### 2. The Subject Becomes a Genitive Complement\nThe subject of the action is placed after the new noun, usually in the **genitive**.\n• *Der Chef* entscheidet → Die Entscheidung **des Chefs**.\n\n### 3. The Adverb Becomes an Adjective\nThe adverb that described the verb must now describe the noun. It goes before the noun and is declined.\n• Er entscheidet *schnell* → Seine **schnelle** Entscheidung.",
       examples: [
-        { de: "Die Regierung (S) diskutiert (V) intensiv (Adv).", fr: "Le gouvernement discute intensément." },
-        { de: "Die **intensive Diskussion der Regierung**.", fr: "L'intense discussion du gouvernement.", note: "Notez l'accord de l'adjectif intensive." }
+        { de: "Die Regierung (S) diskutiert (V) intensiv (Adv).", fr: "The government discusses intensively." },
+        { de: "Die **intensive Diskussion der Regierung**.", fr: "The government's intensive discussion.", note: "Notice the adjective agreement in intensive." }
       ]
     },
     {
       id: "b2-4-3",
-      title: "4.3 Tableau de conversion : Connecteurs logiques",
-      content: "C'est le point le plus important pour les examens B2. Vous devez savoir remplacer une conjonction (parce que, bien que...) par une préposition équivalente.\n\n| Logique | Conjonction (Verbal + Verbe fin) | Préposition (Nominal + Cas) |\n|---|---|---|\n| **Cause** | weil / da | **wegen / aufgrund** (+ Gen) |\n| **Concession** | obwohl | **trotz** (+ Gen) |\n| **Temps (après)** | nachdem | **nach** (+ Dat) |\n| **Temps (avant)** | bevor | **vor** (+ Dat) |\n| **Temps (pendant)** | während | **während** (+ Gen) |\n| **Condition** | wenn / falls | **bei** (+ Dat) |\n| **Manière** | indem | **durch** (+ Acc) |",
+      title: "4.3 Conversion Table: Logical Connectors",
+      content: "This is the most important point for B2 exams. You need to know how to replace a conjunction (because, although...) with an equivalent preposition.\n\n| Logic | Conjunction (verbal + final verb) | Preposition (nominal + case) |\n|---|---|---|\n| **Cause** | weil / da | **wegen / aufgrund** (+ gen.) |\n| **Concession** | obwohl | **trotz** (+ gen.) |\n| **Time (after)** | nachdem | **nach** (+ dat.) |\n| **Time (before)** | bevor | **vor** (+ dat.) |\n| **Time (during)** | während | **während** (+ gen.) |\n| **Condition** | wenn / falls | **bei** (+ dat.) |\n| **Manner** | indem | **durch** (+ acc.) |",
       examples: [
-        { de: "**Obwohl** es regnete, gingen wir raus.", fr: "Bien qu'il plût, nous sommes sortis." },
-        { de: "**Trotz des Regens** gingen wir raus.", fr: "Malgré la pluie, nous sommes sortis.", note: "Transformation de la subordonnée en groupe prépositionnel." }
+        { de: "**Obwohl** es regnete, gingen wir raus.", fr: "Although it was raining, we went out." },
+        { de: "**Trotz des Regens** gingen wir raus.", fr: "Despite the rain, we went out.", note: "Transformation of the subordinate clause into a prepositional group." }
       ]
     },
     {
       id: "b2-4-4",
-      title: "4.4 Gérer les compléments (COD et COI)",
-      content: "Que faire du complément d'objet quand le verbe disparaît ?\n\n### I. Le COD (Accusatif) -> Génitif\nSi le verbe avait un COD, celui-ci devient souvent le complément du nom au génitif.\n• *Wir bauen das Haus* -> Der Bau **des Hauses**.\n\n### II. Les prépositions fixes\nSi le verbe utilisait une préposition, le nom la garde presque toujours.\n• *Wir warten auf den Bus* -> Das Warten **auf den Bus**.\n• *Er interessiert sich für Kunst* -> Sein Interesse **für Kunst**.",
+      title: "4.4 Handling Complements (Direct and Indirect Objects)",
+      content: "What happens to the object when the verb disappears?\n\n### I. The Direct Object (Accusative) → Genitive\nIf the verb had a direct object, it often becomes the noun's genitive complement.\n• *Wir bauen das Haus* → Der Bau **des Hauses**.\n\n### II. Fixed Prepositions\nIf the verb used a fixed preposition, the noun almost always keeps it.\n• *Wir warten auf den Bus* → Das Warten **auf den Bus**.\n• *Er interessiert sich für Kunst* → Sein Interesse **für Kunst**.",
       examples: [
-        { de: "Wir prüfen die Dokumente.", fr: "Nous vérifions les documents." },
-        { de: "Die Prüfung **der Dokumente** dauert lange.", fr: "La vérification des documents dure longtemps." }
+        { de: "Wir prüfen die Dokumente.", fr: "We check the documents." },
+        { de: "Die Prüfung **der Dokumente** dauert lange.", fr: "Checking the documents takes a long time." }
       ]
     },
     {
       id: "b2-4-5",
-      title: "4.5 Focus : La formation des noms (Suffixes)",
-      content: "Comment trouver le nom à partir du verbe ? Voici les modèles fréquents :\n\n• **-ung (Féminin)** : Le plus fréquent pour les processus. *planen -> die Planung*.\n• **L'Infinitif Substantivé (Neutre)** : Pour l'action brute. *essen -> das Essen*.\n• **Le radical pur** : Souvent masculin. *besuchen -> der Besuch*, *laufen -> der Lauf*.\n• **Changement de voyelle** : *schließen -> der Schluss*, *ziehen -> der Zug*.\n• **-ion / -tät / -ur** : Pour les mots d'origine latine. *produzieren -> die Produktion*.",
+      title: "4.5 Focus: Forming Nouns (Suffixes)",
+      content: "How do you find the noun from the verb? Here are frequent patterns:\n\n• **-ung (feminine)**: The most frequent ending for processes. *planen → die Planung*.\n• **Substantivized infinitive (neuter)**: For the raw action. *essen → das Essen*.\n• **Bare stem**: Often masculine. *besuchen → der Besuch*, *laufen → der Lauf*.\n• **Vowel change**: *schließen → der Schluss*, *ziehen → der Zug*.\n• **-ion / -tät / -ur**: For words of Latin origin. *produzieren → die Produktion*.",
       examples: [
-        { de: "Wir informieren die Kunden.", fr: "Nous informons les clients." },
-        { de: "Die **Information** der Kunden ist wichtig.", fr: "L'information des clients est importante." }
+        { de: "Wir informieren die Kunden.", fr: "We inform the customers." },
+        { de: "Die **Information** der Kunden ist wichtig.", fr: "Informing the customers is important." }
       ]
     }
   ]
